@@ -1,112 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
 
-<!DOCTYPE html>
-<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
-<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
-<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
-<head>
-  <meta charset="utf-8">
-  <title>@ijin</title>
-  <meta name="author" content="Michael H. Oshita">
-
-  
-  <meta name="description" content="3回目の参戦となる#tuningathonで@tnmtさんと共に優勝してきました。 やった事は相方のブログに書かれているので、補足。 開演前 朝起きると、やたらとアラートが飛んでいるので調べると、うるう秒のせいでサーバ達が高負荷状態に。
-@ &hellip;">
-  
-
-  <!-- http://t.co/dKP3o1e -->
-  <meta name="HandheldFriendly" content="True">
-  <meta name="MobileOptimized" content="320">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-
-  
-  <link rel="canonical" href="http://ijin.github.com/">
-  <link href="/favicon.png" rel="icon">
-  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
-  <script src="/javascripts/modernizr-2.0.js"></script>
-  <script src="/javascripts/ender.js"></script>
-  <script src="/javascripts/octopress.js" type="text/javascript"></script>
-  <link href="/atom.xml" rel="alternate" title="@ijin" type="application/atom+xml">
-  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
-<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
-<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
-
-  
-  <script type="text/javascript">
-    var _gaq = _gaq || [];
-    _gaq.push(['_setAccount', 'UA-33110241-1']);
-    _gaq.push(['_trackPageview']);
-
-    (function() {
-      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-    })();
-  </script>
-
-
-</head>
-
-<body   >
-  <header role="banner"><hgroup>
-  <h1><a href="/">@ijin</a></h1>
-  
-    <h2>[Michael H. Oshita]</h2>
-  
-</hgroup>
-
-</header>
-  <nav role="navigation"><ul class="subscription" data-subscription="rss">
-  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
-  
-</ul>
-  
-<form action="http://google.com/search" method="get">
-  <fieldset role="search">
-    <input type="hidden" name="q" value="site:ijin.github.com" />
-    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
-  </fieldset>
-</form>
-  
-<ul class="main-navigation">
-  <li><a href="/">Blog</a></li>
-  <li><a href="/blog/archives">Archives</a></li>
-</ul>
-
-</nav>
-  <div id="main">
-    <div id="content">
-      <div class="blog-index">
-  
-  
-  
-    <article>
-      
-  <header>
+  <title><![CDATA[Category: events | @ijin]]></title>
+  <link href="http://ijin.github.com/blog/categories/events/atom.xml" rel="self"/>
+  <link href="http://ijin.github.com/"/>
+  <updated>2012-07-03T20:46:17+09:00</updated>
+  <id>http://ijin.github.com/</id>
+  <author>
+    <name><![CDATA[Michael H. Oshita]]></name>
     
-      <h1 class="entry-title"><a href="/blog/2012/07/03/tuningathon4/">第4回チューニンガソン(Tuningathon)で優勝してきた</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
 
   
-
-
-<time datetime="2012-07-03T01:29:00+09:00" pubdate data-updated="true">Jul 3<span>rd</span>, 2012</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>3回目の参戦となる<a href="http://www.zusaar.com/event/312053">#tuningathon</a>で<a href="https://twitter.com/tnmt">@tnmt</a>さんと共に優勝してきました。</p>
+  <entry>
+    <title type="html"><![CDATA[第4回チューニンガソン(Tuningathon)で優勝してきた]]></title>
+    <link href="http://ijin.github.com/blog/2012/07/03/tuningathon4/"/>
+    <updated>2012-07-03T01:29:00+09:00</updated>
+    <id>http://ijin.github.com/blog/2012/07/03/tuningathon4</id>
+    <content type="html"><![CDATA[<p>3回目の参戦となる<a href="http://www.zusaar.com/event/312053">#tuningathon</a>で<a href="https://twitter.com/tnmt">@tnmt</a>さんと共に優勝してきました。</p>
 
 <p>やった事は相方の<a href="http://blog.tnmt.info/2012/07/01/tuningathon4/">ブログに書かれて</a>いるので、補足。</p>
 
@@ -135,7 +47,7 @@ my.cnfも見て全然パラメータ設定されてないけど/var/lib/mysqlの
 <p>ビルドが終えた頃にデフォルト状態のままで動かして、まずベースとなるベンチマーク。
 大体こんな感じでした。</p>
 
-<div><script src='https://gist.github.com/3038461.js?file='></script>
+<p><div><script src='https://gist.github.com/3038461.js?file='></script>
 <noscript><pre><code>12 fetches, 9 max parallel, 45576 bytes, in 10 seconds
 3798 mean bytes/connection
 1.2 fetches/sec, 4557.6 bytes/sec
@@ -144,7 +56,7 @@ msecs/first-response: 4880.63 mean, 6446.66 max, 2048.37 min
 HTTP response codes:
   code 200 -- 12
 Score: 2.439 (get=1.200, comment=1.239(2), check=1.000)</code></pre></noscript></div>
-
+</p>
 
 <p>topで見ると完全にrubyがCPUを専有しているので、まずそこから着手することに。</p>
 
@@ -211,7 +123,7 @@ DBを初期化し、railsを再起動して待ちかまえる。次の計測で�
 <p>ちなみにローカル計測ベスト（3200.23）だとこんな感じだったけど、リモート経由だとネットワーク（？）がボトルネックになって
 そこまで出ませんでした。</p>
 
-<div><script src='https://gist.github.com/3038562.js?file='></script>
+<p><div><script src='https://gist.github.com/3038562.js?file='></script>
 <noscript><pre><code>32005 fetches, 9 max parallel, 1.20014e+08 bytes, in 10.0008 seconds  
 3749.86 mean bytes/connection 
 3200.23 fetches/sec, 1.20004e+07 bytes/sec  
@@ -221,7 +133,7 @@ msecs/first-response: 2.02407 mean, 1094.87 max, 0.188 min
 HTTP response codes:  
   code 200 -- 32005    
 Score: 3203.969 (get=3200.244, comment=3.725(4), check=1.000)    </code></pre></noscript></div>
-
+</p>
 
 <p>varnishの設定ファイルはこんな感じ。
 TTLを強制有効にして、POST後にいかにキャッシュクリアさせるかがポイント。
@@ -229,7 +141,7 @@ TTLを強制有効にして、POST後にいかにキャッシュクリアさせ�
 
 <p>/etc/sysconfig/varnish</p>
 
-<div><script src='https://gist.github.com/3038946.js?file='></script>
+<h2><div><script src='https://gist.github.com/3038946.js?file='></script>
 <noscript><pre><code>NFILES=131072
 MEMLOCK=82000
 RELOAD_VCL=1
@@ -246,12 +158,9 @@ DAEMON_OPTS=&quot;-a :3000 \
              -p thread_pools=2 \
              -p thread_pool_min=100 \
              -p thread_pool_max=200&quot;</code></pre></noscript></div>
+</h2>
 
-
-<hr />
-
-<p>/etc/varnish/default.vcl</p>
-
+<p>/etc/varnish/default.vcl
 <div><script src='https://gist.github.com/3038775.js?file='></script>
 <noscript><pre><code># This is a basic VCL configuration file for varnish.  See the vcl(7)
 # man page for details on VCL syntax and semantics.
@@ -269,12 +178,12 @@ backend default {
 # appended to your code.
 # sub vcl_recv {
 #     if (req.restarts == 0) {
-#   if (req.http.x-forwarded-for) {
-#       set req.http.X-Forwarded-For =
-#       req.http.X-Forwarded-For + &quot;, &quot; + client.ip;
-#   } else {
-#       set req.http.X-Forwarded-For = client.ip;
-#   }
+# 	if (req.http.x-forwarded-for) {
+# 	    set req.http.X-Forwarded-For =
+# 		req.http.X-Forwarded-For + &quot;, &quot; + client.ip;
+# 	} else {
+# 	    set req.http.X-Forwarded-For = client.ip;
+# 	}
 #     }
 #     if (req.request != &quot;GET&quot; &amp;&amp;
 #       req.request != &quot;HEAD&quot; &amp;&amp;
@@ -298,8 +207,8 @@ backend default {
 # }
 sub vcl_recv {
     if (req.request == &quot;POST&quot;) {
-    ban(&quot;req.url ~ /&quot;);
-    return(pass);
+	ban(&quot;req.url ~ /&quot;);
+	return(pass);
     }
 }
 
@@ -340,17 +249,17 @@ sub vcl_recv {
 #     if (beresp.ttl &lt;= 0s ||
 #         beresp.http.Set-Cookie ||
 #         beresp.http.Vary == &quot;*&quot;) {
-#       /*
-#        * Mark as &quot;Hit-For-Pass&quot; for the next 2 minutes
-#        */
-#       set beresp.ttl = 120 s;
-#       return (hit_for_pass);
+# 		/*
+# 		 * Mark as &quot;Hit-For-Pass&quot; for the next 2 minutes
+# 		 */
+# 		set beresp.ttl = 120 s;
+# 		return (hit_for_pass);
 #     }
 #     return (deliver);
 # }
 sub vcl_fetch {
     if (beresp.ttl &lt;= 0s) {
-    set beresp.ttl = 120s;
+	set beresp.ttl = 120s;
     }
 }
 
@@ -391,14 +300,14 @@ sub vcl_deliver {
 # }
 # 
 # sub vcl_init {
-#   return (ok);
+# 	return (ok);
 # }
 # 
 # sub vcl_fini {
-#   return (ok);
+# 	return (ok);
 # }
 </code></pre></noscript></div>
-
+</p>
 
 <p>世に出てるの設定例はVarnish 2系が多いので、3系はsyntaxが違うので注意。
 コメントアウトされたコードはデフォルト挙動なので、記述されたのとマージされます。
@@ -424,69 +333,7 @@ Varnishの<a href="https://www.varnish-software.com/static/book/_images/vcl.png"
 <p><img src="http://s1-05.twitpicproxy.com/photos/large/610358637.jpg" alt="tuningathon優勝記念" /></p>
 
 <p>最後に運営の皆様、ありがとうございました！</p>
-</div>
+]]></content>
+  </entry>
   
-  
-
-
-    </article>
-  
-  <div class="pagination">
-    
-    <a href="/blog/archives">Blog Archives</a>
-    
-  </div>
-</div>
-<aside class="sidebar">
-  
-    <section>
-  <h1>Recent Posts</h1>
-  <ul id="recent_posts">
-    
-      <li class="post">
-        <a href="/blog/2012/07/03/tuningathon4/">第4回チューニンガソン(Tuningathon)で優勝してきた</a>
-      </li>
-    
-  </ul>
-</section>
-
-
-
-
-
-
-  
-</aside>
-
-    </div>
-  </div>
-  <footer role="contentinfo"><p>
-  Copyright &copy; 2012 - Michael H. Oshita -
-  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
-</p>
-
-</footer>
-  
-
-
-
-
-
-
-
-  <script type="text/javascript">
-    (function(){
-      var twitterWidgets = document.createElement('script');
-      twitterWidgets.type = 'text/javascript';
-      twitterWidgets.async = true;
-      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
-      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
-    })();
-  </script>
-
-
-
-
-
-</body>
-</html>
+</feed>

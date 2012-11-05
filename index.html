@@ -9,8 +9,8 @@
   <meta name="author" content="Michael H. Oshita">
 
   
-  <meta name="description" content="3回目の参戦となる#tuningathonで@tnmtさんと共に優勝してきました。 やった事は相方のブログに書かれているので、補足。 開演前 朝起きると、やたらとアラートが飛んでいるので調べると、うるう秒のせいでサーバ達が高負荷状態に。
-@ &hellip;">
+  <meta name="description" content="開催2年目となるISUCON (Iikanjini Speed Up CONTEST)に参加してきました。 結果は3位。 事前準備 @cadsと@fruweに声をかけ、「Mr. Frank &amp; Co.」という米西独チームを編成。
+去年のお題を見ると、簡単なブログサイト。実装はphp, &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -77,6 +77,170 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2012/11/05/isucon2/">ISUCON2に参加してきた</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-11-05T21:58:00+09:00" pubdate data-updated="true">Nov 5<span>th</span>, 2012</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>開催2年目となる<a href="http://blog.livedoor.jp/techblog/archives/67700199.html">ISUCON (Iikanjini Speed Up CONTEST)</a>に参加してきました。</p>
+
+<p>結果は3位。</p>
+
+<h3>事前準備</h3>
+
+<p><a href="https://twitter.com/cads">@cads</a>と<a href="https://twitter.com/fruwe">@fruwe</a>に声をかけ、「Mr. Frank &amp; Co.」という米西独チームを編成。
+去年のお題を見ると、簡単なブログサイト。実装はphp, python, perl, ruby, node.jsのいずれか。</p>
+
+<ul>
+<li>キャッシュ機構入れるんだったら、慣れてるrubyで実装できるようにrailsでスケルトンプロジェクトをgithubに作っておいてみんなで共有。</li>
+<li>VarnishやResque/Sidekiq, Redisの復習をしてコード追加</li>
+<li>試しに他のrubyバージョンのインストール</li>
+<li>後はテスト用のec2インスタンスの用意。</li>
+</ul>
+
+
+<h3>お題発表</h3>
+
+<p>「NHN48」と「はだいろクローバーZ」のチケット販売システムw。
+お、似たようなシステム前作った事あるからいけるかな？セッション対応でもESI使えるからアドバンテージがあるかもと思ってみる。</p>
+
+<h3>前半戦</h3>
+
+<p>まずは、いつものようにバックアップして戻れるように、gitプロジェクトにも追加。</p>
+
+<p>チームメイト2人にはソースコードを解析をしてもらいつつ、自分は現在の環境の把握とベンチマークを動かすところに集中。どうやら公開されている去年の構成と似た感じでsupervisorによって指定言語のwebアプリが動いている模様。</p>
+
+<p>ひとまず指標となるベースが必要なので、デフォルトで動いているperl版で計ったら大体こんな感じでした。（Scoreが低い方が良い）</p>
+
+<pre><code>Score:533093
+Tickets:922
+</code></pre>
+
+<p>webとdbの負荷が両方高い事を確認。</p>
+
+<p>SQLを見たらCOUNTしてるので、slot分割したcounterテーブルかredisを使えば速くなるよね、と指摘。フロントにキャッシュ入れたいので普段使っているVarnishサポートのlacquer gemがあるので、二人はRailsでの再実装を開始。</p>
+
+<p>ちなみにアクセス分布はこんな感じでした。</p>
+
+<div><script src='https://gist.github.com/4017160.js?file='></script>
+<noscript><pre><code>$grep &quot;POST&quot; access_log  | wc -l
+960
+$ grep &quot;GET /js/&quot; access_log  | wc -l
+1663
+$ grep &quot;GET /css/&quot; access_log  | wc -l
+1113
+$ grep &quot;GET /images/&quot; access_log  | wc -l
+539
+$ grep &quot;GET /ticket/&quot; access_log  | wc -l
+1561
+$ grep &quot;GET /artist/&quot; access_log  | wc -l
+1534
+$ grep &quot;GET / &quot; access_log  | wc -l
+1624</code></pre></noscript></div>
+
+
+<p>perl版のスコアは分かったので、sinatraフレームワークを使ったruby版に変えてベンチマークを取ってみると、</p>
+
+<pre><code>Score:10755528
+Tickets:457
+</code></pre>
+
+<p>性能は約半分。遅いのは分かっていたけど、ジョブワーカーとキャッシュを使えば、対応コードの入ったRailsでもなんとかなるという思いで特に意に介さず。</p>
+
+<p>ただ、unicornが50プロセスもあったので、さすがにこれは多いのでベンチをしつつ、いろいろ調整。
+結局スコアが一番高かった10プロセスに落ち着く。ついでにrubyのGCを切ったりしたけど、目立った効果はなし。
+まだ再実装中で時間もあり、そういえば速いという<a href="http://rubini.us/">rubinius</a>にしたらどうなんだろうと思い、<a href="http://puma.io/">puma</a>も入れてみたけどmysql2 gemが動かず断念。</p>
+
+<p>DBのmy.cnfも見たけど、データ量の割には十分なパラメータだったので、commit毎のflushを変えたぐらい。</p>
+
+<pre><code>innodb_flush_log_at_trx_commit = 0
+</code></pre>
+
+<p>また、いつでも使えるようにと、VarnishとRedisもインストールしておく。</p>
+
+<p>次にデプロイ用のテストができるようにテスト用サーバに環境を用意しつつ、capistrano対応。</p>
+
+<h3>後半戦</h3>
+
+<p>再実装はブラウザからの見た目上は前半でほぼ出来上がっていて、後はベンチを通るかを確認して最適化を始めるというシナリオでした。
+ところが、全然通らずここからハマることに。。</p>
+
+<div><script src='https://gist.github.com/4017170.js?file='></script>
+<noscript><pre><code>{&quot;No one tickets are rendered in /ticket/x&quot;:25}
+{&quot;No one tickets are rendered in /ticket/x&quot;:20}
+{&quot;No one tickets are rendered in /ticket/x&quot;:24}
+{&quot;No one tickets are rendered in /ticket/x&quot;:21}
+Main Bench:agent bench command execute error, code:1
+GET failure response too many, success response: 87%</code></pre></noscript></div>
+
+
+<p>表示エラーなのか遅いからなのか、原因が掴めず四苦八苦。
+ベンチマークアプリは未公開なのでエラー内容を運営側に聞きつつ、アプリを修正。</p>
+
+<p>その間、リバースプロクシをapacheからnginxに変えてimages/css/js等のstatic contentを直接配信するようにしたけど、あまり効果がなかったので元に戻す。
+アプリ修正の度にベンチを走らせるので、別の作業で最適化の確認をとるのが大変でした。チーム内でcontext switchingの問題が発生！</p>
+
+<p>そうこうしていると時間がどんどん流れ、残り1時間を切ったところでRailsを捨てる決断をする。
+せめてキャッシュ入れて最適化しよういう事でVarnishを設定し始める。
+そうするとスコアはぐんぐん伸びて行き、上位に食い込む。</p>
+
+<pre><code>Score:180724
+</code></pre>
+
+<p>さらにESIを使えばもう一段跳ね上がるかもという思いでsinatraにコードを追加してテスト。
+しかし、圧倒的に時間が足りず最後の1分半まで粘ったが断念。
+最後に再起同時のアプリ起動ができる確認をして終了。</p>
+
+<p>最終スコアは以下の通りでした。</p>
+
+<pre><code>Score:216868
+</code></pre>
+
+<p>正直ダメかなと思っていたけど、3位という結果に驚きました。
+チューニングが実質1時間未満の割にはまずまずかも知れないけど、残念感の方が強かったですね。</p>
+
+<h3>反省点</h3>
+
+<p>方向性の転換をもっと早く見極めるべきでした。後ちょっと、後ちょっとの思いでずるずる再実装にこだわったのが良くなくて、捨てる勇気を持てたらと。ジョブワーカーやRedis対応の案（とコード）はあったので後半戦直後にやっていたら優勝の可能性はあったかも。。。後の祭りですが。</p>
+
+<p>ともあれ、非常に楽しかったのでまた来年参加してみたいと思います。
+運営したNHNの方々、ありがとうございます＆お疲れ様でした！</p>
+
+<h3>おまけ</h3>
+
+<p>帰ってから<a href="https://twitter.com/netmarkjp">@netmarkjp</a>さんと平行して#soloconやってました。
+直後に<a href="https://github.com/tagomoris/isucon2">公開</a>されたnode.jsで書かれたベンチマークが動かなくてもいろいろ修正したけど、良い勉強になりました。（今は対応版が再アップ済み）
+chckerがrails版に対して失敗していたような箇所を見つけたので後日検証してみようと思います。</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -442,6 +606,10 @@ Varnishの<a href="https://www.varnish-software.com/static/book/_images/vcl.png"
     <section>
   <h1>Recent Posts</h1>
   <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2012/11/05/isucon2/">ISUCON2に参加してきた</a>
+      </li>
     
       <li class="post">
         <a href="/blog/2012/07/03/tuningathon4/">第4回チューニンガソン(Tuningathon)で優勝してきた</a>

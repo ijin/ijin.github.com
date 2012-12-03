@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Auto Scalingの設定と運用方法"
+title: "Auto Scalingの設定とデプロイ方法"
 date: 2012-12-03 01:34
 comments: true
 categories: 

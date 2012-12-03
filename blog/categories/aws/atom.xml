@@ -4,7 +4,7 @@
   <title><![CDATA[Category: aws | @ijin]]></title>
   <link href="http://ijin.github.com/blog/categories/aws/atom.xml" rel="self"/>
   <link href="http://ijin.github.com/"/>
-  <updated>2012-12-03T21:05:10+09:00</updated>
+  <updated>2012-12-03T21:10:45+09:00</updated>
   <id>http://ijin.github.com/</id>
   <author>
     <name><![CDATA[Michael H. Oshita]]></name>
@@ -14,7 +14,7 @@
 
   
   <entry>
-    <title type="html"><![CDATA[Auto Scalingの設定と運用方法]]></title>
+    <title type="html"><![CDATA[Auto Scalingの設定とデプロイ方法]]></title>
     <link href="http://ijin.github.com/blog/2012/12/03/cdp/"/>
     <updated>2012-12-03T01:34:00+09:00</updated>
     <id>http://ijin.github.com/blog/2012/12/03/cdp</id>

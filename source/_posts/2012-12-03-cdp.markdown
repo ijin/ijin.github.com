@@ -64,7 +64,7 @@ Cloudwatchで閾値を超えたらスケールアウトするように設定。�
 
 ### Cloudwatchトリガー（Scaling Down） ###
 
-スケールダウンのトリガーは平均CPUが35%を25分間下回った場合に実行されます。この閾値周辺のアラーとメールはいらないので設定してません。
+スケールダウンのトリガーは平均CPUが35%を25分間下回った場合に実行されます。この閾値周辺のアラートメールはいらないので設定してません。
 
     mon-put-metric-alarm CDPLowCPUAlarm --comparison-operator LessThanThreshold \
     --evaluation-periods 1 --metric-name CPUUtilization --namespace "AWS/EC2" --period 1500 \

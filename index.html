@@ -165,7 +165,7 @@ arn:aws:sns:ap-northeast-1:494850320039:cdp-alert, arn:aws:autoscaling:ap-northe
 
 <h3>Cloudwatchトリガー（Scaling Down）</h3>
 
-<p>スケールダウンのトリガーは平均CPUが35%を25分間下回った場合に実行されます。この閾値周辺のアラーとメールはいらないので設定してません。</p>
+<p>スケールダウンのトリガーは平均CPUが35%を25分間下回った場合に実行されます。この閾値周辺のアラートメールはいらないので設定してません。</p>
 
 <pre><code>mon-put-metric-alarm CDPLowCPUAlarm --comparison-operator LessThanThreshold \
 --evaluation-periods 1 --metric-name CPUUtilization --namespace "AWS/EC2" --period 1500 \

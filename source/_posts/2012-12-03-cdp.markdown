@@ -102,7 +102,7 @@ role :app do servers end
 
 ## 注意点 ##
 
-- 同期するファイル数が多すぎる（数十万個）と、チェックサム比較で時間がかかってしまい同期が終了する前にAuto Scalingの死活監視によってインスタンスがterminateされ、またlaunchされterminateされるというスケールループ地獄に陥る。。。（これ、制限できないのかな）
+- 同期するファイル数が多すぎる（数十万個）と、チェックサム比較で時間がかかってしまい同期が終了する前にAuto Scalingの死活監視によってインスタンスがterminateされ、またlaunchされterminateされるという恐怖のスケールループ地獄に陥る。。。（これ、制限できないのかな）
 - あらかじめトラフィック増の時間帯が分かっていたら[Scheduled Action](http://docs.amazonwebservices.com/AutoScaling/latest/DeveloperGuide/scaling_plan.html#schedule_time)で多めに設定しておいて自動スケールダウンさせた方が吉。
 - マスタサーバがSPOFとなりうるので冗長化する、もしくはrsyncよりs3経由にした方が良い。
 - 急激なトラフィック増ではELB自体のスケールが追いつかない場合も。

@@ -4,7 +4,7 @@
   <title><![CDATA[Category: aws | @ijin]]></title>
   <link href="http://ijin.github.com/blog/categories/aws/atom.xml" rel="self"/>
   <link href="http://ijin.github.com/"/>
-  <updated>2012-12-03T22:04:29+09:00</updated>
+  <updated>2013-02-08T10:09:29+09:00</updated>
   <id>http://ijin.github.com/</id>
   <author>
     <name><![CDATA[Michael H. Oshita]]></name>
@@ -12,6 +12,124 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[非ELBなAutoscalingによる自動復旧]]></title>
+    <link href="http://ijin.github.com/blog/2013/02/08/self-healing-with-non-elb-autoscaling/"/>
+    <updated>2013-02-08T09:29:00+09:00</updated>
+    <id>http://ijin.github.com/blog/2013/02/08/self-healing-with-non-elb-autoscaling</id>
+    <content type="html"><![CDATA[<p>バッチ処理等、サーバの冗長化が難しく仕方なく1台で動かさざるを得ない場合があります。でも可用性は確保したい。また、Pacemakerやkeepalived等できなくはないが、お金もあんまりかけられない場合もあります。
+そんな時にAWS上でよく使うのがAutoscalingによる1台構成です。最低台数・最大台数共に「1」に設定しておけばEC2インスタンスが壊れても自動的に新しいのにリプレースされて復旧されます。</p>
+
+<p>しかし、Autoscalingのhealth-check-typeを「EC2」にした場合、インスタンスの起動状態（running, stopped）しか見てくれないので、今までこの構成を実現するのにELBによる死活監視が必要でした。インスタンスがHTTPサーバじゃない場合、ちょっとムダです。</p>
+
+<p>ところが、ちょっと前にAutoscalingがインスタンスの健康状態をチェックするEC2 status checkに<a href="http://aws.amazon.com/about-aws/whats-new/2012/12/14/auto-scaling-now-uses-amazon-ec2-status-checks/">対応</a>し、ELBが不要になったはずなので試してみました。</p>
+
+<p>今回は各種AWSサービスに対応した統合されたPython版の<a href="http://aws.amazon.com/cli/">AWS CLI</a>ツールを使います。</p>
+
+<h3>セットアップ</h3>
+
+<p>まずは、ツールのインストール</p>
+
+<pre><code>sudo apt-get install python-pip
+sudo pip install awscli
+complete -C aws_completer was
+</code></pre>
+
+<h3>Autoscaling設定</h3>
+
+<p>Launch Configの設定</p>
+
+<pre><code>aws autoscaling create-launch-configuration --image-id ami-4a12aa4b \
+--launch-configuration-name test-lc --instance-type t1.micro --key-name ijin-tokyo \
+--security-groups test --iam-instance-profile test_iam
+
+{
+    "ResponseMetadata": {
+        "RequestId": "c0e66974-7103-11e2-9780-a53199bac60e"
+    }
+}
+</code></pre>
+
+<p>Scaling Groupの設定</p>
+
+<pre><code>aws autoscaling create-auto-scaling-group --auto-scaling-group-name test-sg \
+--launch-configuration-name test-lc --min-size 1 --max-size 1 \
+--health-check-grace-period 180 --tags '{"key":"Name", "value":"as-test"}' \
+'{"key":"Use Case", "value":"test"}' --availability-zones ap-northeast-1a --health-check-type "EC2"
+
+{
+    "ResponseMetadata": {
+        "RequestId": "e3808ef3-7103-11e2-9780-a53199bac60e"
+    }
+}
+</code></pre>
+
+<p>通知</p>
+
+<pre><code>aws autoscaling put-notification-configuration --auto-scaling-group-name test-sg \
+--topic-arn arn:aws:sns:ap-northeast-1:521026608000:test \
+--notification-types autoscaling:EC2_INSTANCE_LAUNCH autoscaling:EC2_INSTANCE_TERMINATE \
+autoscaling:EC2_INSTANCE_LAUNCH_ERROR autoscaling:EC2_INSTANCE_TERMINATE_ERROR
+
+{
+    "ResponseMetadata": {
+        "RequestId": "f68359be-7103-11e2-9a1a-5f77b12b596e"
+    }
+}
+</code></pre>
+
+<p>レスポンスがjsonなのが良いですね。
+また、<a href="http://aws.amazon.com/developertools/2535">Auto Scaling Command Line Tool</a>と違って、tagでスペースが使えるようになったのが素晴らしい！</p>
+
+<p>以上の設定でAutoscalingによってインスタンスが1台立ち上がります。</p>
+
+<h3>自動復旧</h3>
+
+<p>最後にインスタンス不調（status check failure）をシミュレートする為にインスタンス内からネットワークを落とします。</p>
+
+<pre><code>ubuntu@ip-10-128-25-25:~$ sudo ifdown eth0
+</code></pre>
+
+<p>これでstatus checkがfailし、Autoscalingが自動的に新しいインスタンスと取り替えてくれるはず！</p>
+
+<p><img src="https://lh6.googleusercontent.com/-9FpM6ywjg84/URN6q29FD-I/AAAAAAAAAsw/paP8HBnisPE/s161/aws_status_check_2013-02-07+18.06.20.png"></p>
+
+<p><img src="https://lh5.googleusercontent.com/-5avxLvp5RH8/URN6n-ihwiI/AAAAAAAAAso/zOHxli4vM8o/s702/aws_instance_check_2013-02-07+18.09.19.png"></p>
+
+<p>と、期待して待っていたらなかなかアラートメールが来ません。。</p>
+
+<p>設定間違ったかなーっていろいろ見直していたら20分経った頃にやっと到着。</p>
+
+<p><code>
+Service: AWS Auto Scaling
+Time: 2013-02-07T09:17:42.304Z
+RequestId: f395660b-4847-4415-ad33-f8cc5091bdb3
+Event: autoscaling:EC2_INSTANCE_TERMINATE
+AccountId: 521026608000
+AutoScalingGroupName: test-sg
+AutoScalingGroupARN: arn:aws:autoscaling:ap-northeast-1:521026608000:autoScalingGroup:a036877b-dab7-4e5d-a6e1-1d3424b20d14:autoScalingGroupName/test-sg
+ActivityId: f395660b-4837-4415-ad33-f8cc5071bdb3
+Description: Terminating EC2 instance: i-15fadd17
+Cause: At 2013-02-07T09:16:57Z an instance was taken out of service in response to a system health-check.
+StartTime: 2013-02-07T09:16:57.389Z
+EndTime: 2013-02-07T09:17:42.304Z
+StatusCode: InProgress
+StatusMessage:
+Progress: 50
+EC2InstanceId: i-15fadd17
+Details: {}
+</code></p>
+
+<p>うーん。動く事は動いたけど、ちょっと時間がかかるなぁ。</p>
+
+<p>この後何回か試してみたけど、Autoscaling発動までどれも20分ぐらいかかりました。</p>
+
+<h3>結論</h3>
+
+<p>20分程サーバダウンが許容できるようなゆるめの条件に限定した場合には非ELBでも使えるかな。まあ、それでも適用する場面は多々あるとは思いますが。（早める方法あるのかなー。）</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Auto Scalingの設定とデプロイ方法]]></title>

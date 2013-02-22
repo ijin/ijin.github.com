@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: mysql | @ijin]]></title>
+  <link href="http://ijin.github.com/blog/categories/mysql/atom.xml" rel="self"/>
+  <link href="http://ijin.github.com/"/>
+  <updated>2013-02-22T17:46:07+09:00</updated>
+  <id>http://ijin.github.com/</id>
+  <author>
+    <name><![CDATA[Michael H. Oshita]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[AWS SSD vs Fusion-IOでのMySQLベンチマーク]]></title>
+    <link href="http://ijin.github.com/blog/2013/02/22/mysql-benchmarks-on-aws-ssd-vs-fusion-io/"/>
+    <updated>2013-02-22T17:32:00+09:00</updated>
+    <id>http://ijin.github.com/blog/2013/02/22/mysql-benchmarks-on-aws-ssd-vs-fusion-io</id>
+    <content type="html"><![CDATA[<p>巷ではMySQL 5.6 GAが出て騒がしいですが、ちょっと前に5.5系でAWSのSSDインスタンス（hi1.4xlarge）に載せ替える案件があったので、その時に取ったベンチマークを公表します。以前Fusion-IO (ioDrive Duo)でも同じようにやったので、比較になれば。</p>
+
+<h2>経緯</h2>
+
+<ul>
+<li>あるウェブサービスのDBサイズが巨大でm2.4xlargeでも辛くなってきている</li>
+<li>アクセスパターンによりパーティショニングが効かない</li>
+<li>シャーディングをするにはアプリ改修が大変</li>
+<li>数週間後に急激なアクセスが予想され、時間的余裕がない！</li>
+<li>データサイズの急激な増加によりbuffer poolから溢れ、ディスクアクセスのさらなる発生が懸念</li>
+</ul>
+
+
+<p>というわけで、時間がないのでSSDへの移行を検討し、ベンチマークを取りました。</p>
+
+<h2>ベンチマーク</h2>
+
+<p>buffer poolが徐々に足りなくなった場合のディスクアクセスの発生をシミュレート</p>
+
+<ul>
+<li>sysbenchのoltpモード</li>
+<li>データサイズは12G（5000万件）</li>
+<li>readonly</li>
+<li>uniform（フルスキャン）</li>
+</ul>
+
+
+<p>主要my.cnfパラメータ</p>
+
+<pre><code> sync_binlog = 0
+ innodb_buffer_pool_size = XXG
+ innodb_flush_method = O_DIRECT
+ innodb_flush_log_at_trx_commit = 1
+ innodb_file_per_table
+ innodb_io_capacity = 2000
+</code></pre>
+
+<p>コマンド</p>
+
+<pre><code> time sysbench --test=oltp --oltp-table-size=50000000 --db-driver=mysql --mysql-user=root prepare                                                                                                         
+ time sysbench --test=oltp --oltp-table-size=50000000 --db-driver=mysql --mysql-user=root --num-threads=16 --max-requests=0 --max-time=180 --init-rng=on --oltp-read-only=on --oltp-dist-type=uniform 2&gt;&amp;1 run                                                                                                         
+</code></pre>
+
+<h2>結果</h2>
+
+<p>トランザクション推移</p>
+
+<p><img src="https://docs.google.com/spreadsheet/oimg?key=0Aliw9SoXFJNMdFhhcHJkcDA5MGlackNHTXlPcWt0VWc&amp;oid=2&amp;zx=ii4lryrf8pz8"></p>
+
+<p>レスポンスタイム推移</p>
+
+<p><img src="https://docs.google.com/spreadsheet/oimg?key=0Aliw9SoXFJNMdFhhcHJkcDA5MGlackNHTXlPcWt0VWc&amp;oid=3&amp;zx=c2drap7b5561"></p>
+
+<p>Fusion-IOと比べて半分ぐらい。ioDrvie Duoの公称IOPSが250,000+ IOPSでhi1.4xlargeが120,000 IOPSなので、まあ合致しますね。</p>
+
+<p>まだ整理されてないベンチマーク結果があるので、後ほど追記しようと思います。</p>
+]]></content>
+  </entry>
+  
+</feed>

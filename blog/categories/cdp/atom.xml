@@ -4,7 +4,7 @@
   <title><![CDATA[Category: cdp | @ijin]]></title>
   <link href="http://ijin.github.com/blog/categories/cdp/atom.xml" rel="self"/>
   <link href="http://ijin.github.com/"/>
-  <updated>2013-04-03T13:02:39+09:00</updated>
+  <updated>2013-04-03T14:37:51+09:00</updated>
   <id>http://ijin.github.com/</id>
   <author>
     <name><![CDATA[Michael H. Oshita]]></name>
@@ -26,8 +26,9 @@
 
 <ul>
 <li>東京(server1) -> アメリカ西海岸(server2)</li>
-<li>EC2 instance type: m1.large</li>
 <li>RTT: 120msぐらい</li>
+<li>EC2 instance type: m1.large</li>
+<li>OS: Ubuntu 12.04</li>
 </ul>
 
 
@@ -54,6 +55,7 @@ server1$ dd if=/dev/zero of=10G count=1 bs=1 seek=10G
 <pre><code>sudo apt-get install make gcc autoconf
 wget http://downloads.sourceforge.net/project/tsunami-udp/tsunami-udp/tsunami-v1.1-cvsbuild42/tsunami-v1.1-cvsbuild42.tar.gz
 tar xvfz tsunami-v1.1-cvsbuild42.tar.gz
+cd tsunami-udp-v11-b42
 make
 sudo make install
 </code></pre>

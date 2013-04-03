@@ -4,7 +4,7 @@
   <title><![CDATA[Category: cdp | @ijin]]></title>
   <link href="http://ijin.github.com/blog/categories/cdp/atom.xml" rel="self"/>
   <link href="http://ijin.github.com/"/>
-  <updated>2013-02-22T17:46:07+09:00</updated>
+  <updated>2013-04-03T13:02:39+09:00</updated>
   <id>http://ijin.github.com/</id>
   <author>
     <name><![CDATA[Michael H. Oshita]]></name>
@@ -12,6 +12,164 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[リージョン間高速データ転送]]></title>
+    <link href="http://ijin.github.com/blog/2013/04/03/accelerating-cross-region-data-transfer/"/>
+    <updated>2013-04-03T09:05:00+09:00</updated>
+    <id>http://ijin.github.com/blog/2013/04/03/accelerating-cross-region-data-transfer</id>
+    <content type="html"><![CDATA[<p>先日の<a href="http://jaws-ug.jp/jawsdays2013/">JAWS DAYS</a>のセッション<a href="http://www.publickey1.jp/blog/13/obama_for_america.html">「Behind the scenes of Presidential Campaign」</a>でリージョン間のデータ転送を高速化するツールとして<a href="http://tsunami-udp.sourceforge.net">tsunami udp</a>と<a href="http://www.cloudopt.com">cloudopt</a>を使った話が出てたので試してみました。</p>
+
+<p>通常、遠距離のサーバはRTTが大きくなるのでスループットが下がり、巨大なデータ転送には苦労しますが、なんと27TBを9時間で転送したとのこと！実際はマシンを並列にして同時転送したらしいので1台での実験です。</p>
+
+<h3>前提</h3>
+
+<ul>
+<li>東京(server1) -> アメリカ西海岸(server2)</li>
+<li>EC2 instance type: m1.large</li>
+<li>RTT: 120msぐらい</li>
+</ul>
+
+
+<h3>ベーステスト</h3>
+
+<p>10Gファイルの作成</p>
+
+<pre><code>server1$ mkdir _tmp; cd _tmp
+server1$ dd if=/dev/zero of=10G count=1 bs=1 seek=10G
+</code></pre>
+
+<p>転送</p>
+
+<pre><code>server1$ scp -rp 10G server2:
+10G     100%   10GB  11.1MB/s   15:22
+</code></pre>
+
+<p>だいたい、90Mbpsぐらい。</p>
+
+<h3>Tsunami UDP</h3>
+
+<p>インストールは両サーバで</p>
+
+<pre><code>sudo apt-get install make gcc autoconf
+wget http://downloads.sourceforge.net/project/tsunami-udp/tsunami-udp/tsunami-v1.1-cvsbuild42/tsunami-v1.1-cvsbuild42.tar.gz
+tar xvfz tsunami-v1.1-cvsbuild42.tar.gz
+make
+sudo make install
+</code></pre>
+
+<p>tsunami udpはfetch型の作りなので、送信側のサーバ（server1）で対象ファイルのあるディレクトリに移動してサービス起動</p>
+
+<pre><code>server1$ cd _tmp
+server1$ tsunamid *
+</code></pre>
+
+<p>で、クライアント(server2)からファイルをfetch</p>
+
+<pre><code>server2$ tsunami connect ec2-xx-x-xx-x-x get 10G quit
+</code></pre>
+
+<p>本当はftp-likeは対話型クライアントだけど、ワンライナーでも可能。  <br/>
+転送が完了するとクライアント側で情報が出力されます。</p>
+
+<pre><code>Transfer complete. Flushing to disk and signaling server to stop...
+!!!!
+PC performance figure : 224947 packets dropped (if high this indicates receiving PC overload)
+Transfer duration     : 419.32 seconds
+Total packet data     : 183339.18 Mbit
+Goodput data          : 181958.17 Mbit
+File data             : 81920.00 Mbit
+Throughput            : 437.23 Mbps
+Goodput w/ restarts   : 433.93 Mbps
+Final file rate       : 195.36 Mbps
+Transfer mode         : lossless
+</code></pre>
+
+<p>おお、確かに速い！スループットもセッションでも言ってた476Mbpsに近いし。</p>
+
+<p>サーバ側では</p>
+
+<pre><code>Server 1 transferred 10737418241 bytes in 419.33 seconds (195.4 Mbps)
+</code></pre>
+
+<p>ファイル自身の実際の転送レートはFinal file rateである<strong>195.4Mbps</strong>。
+多分、パラメータチューニングやより速いディスクを使うとスループットはさらに向上すると予想。</p>
+
+<h3>cloudopt</h3>
+
+<p>次は圧縮、TCP最適化、data deduplication等、様々な技術を用いてWANを高速化する<a href="http://www.cloudopt.com">cloudopt</a>の実験。こちらは有料で、ソフトウェアをインストールしてライセンスを購入（15日間のお試しあり）して使う方法とAmazon Marketplaceでセットアップ済みの課金型AMIを起動する方法がとれます。今回はてっとり早く後者で。</p>
+
+<p>AMIはMarketplaceでCloudoptを検索し、各リージョンで1台づつ起動。</p>
+
+<p><img src="https://lh5.googleusercontent.com/-7PWSb_8ClIo/UVuL_bzBeAI/AAAAAAAAAtc/8Lw_bDnaPVE/s665/cloudopt_marketplace_+2013-03-30+at+2.08.07+PM.png"></p>
+
+<p>Ubuntuベースなのが良いですね。</p>
+
+<p>まずscpから呼べるcloudcopyを使っての転送</p>
+
+<pre><code>server1$ scp -rp -S cloudcopy 10G server2:
+10G                 100%   10GB  41.5MB/s   04:07     
+CloudCopy transferred 17.22 MB, saving 99.8% of bandwidth by sending 9.983 fewer GB 
+</code></pre>
+
+<p>お、速い。しかしよく見てみると17.22MBしか転送されてません。どうやらファイル自体が全てゼロ埋めなので圧縮とdeduplicationが最大限効いているみたい。</p>
+
+<p>では、今度は実際のDBのバックアップで転送実験（容量14GB）</p>
+
+<pre><code>server1$ scp -rp -S cloudcopy dbbackup.tar server2:
+dbbackup.tar                100%   14GB  11.2MB/s   20:42   
+CloudCopy transferred 6.041 GB, saving 55.5% of bandwidth by sending 7.528 fewer GB
+</code></pre>
+
+<p>スループットはほぼ一緒だけど、転送容量が削減できてます。</p>
+
+<p>一度転送したファイルはbyte cacheされるので、次に転送する時は差分だけ送るので高速化されます。</p>
+
+<pre><code>server2$ rm dbbackup.tar 
+
+server1$ tar rvf dbbackup.tar file
+server1$ scp -rp -S cloudcopy dbbackup.tar server2:
+dbbackup.tar                100%   14GB  20.0MB/s   11:35  
+CloudCopy transferred 59.57 MB, saving 99.6% of bandwidth by sending 13.511 fewer GB
+</code></pre>
+
+<h3>リージョン間レプリケーション</h3>
+
+<p>次はMySQLのレプリケーション実験。</p>
+
+<p>各インスタンスでのピア設定</p>
+
+<pre><code>server1$ sudo cloudconfig peer_add server2 server2_local_ip(10.x.x.x)
+server2$ sudo cloudconfig peer_add server1 server1_local_ip(10.x.x.x)
+</code></pre>
+
+<p>これでcloudoptを使ったサーバ間のトンネルが確立されます。MySQLのレプリケーションはprivate ipでの設定が必要。
+一通りレプリケーションが出来き、スレーブIOを停止した状態でマスターにしばらく書き込んだのちに再開すると、binlogが転送されるのでcloudstatsコマンドで統計が見れます。</p>
+
+<pre><code>Component - cloudoptimizer
+------------------------------------------------------------
+           Number of connections:                    1
+              Original data size:            111.96 MB
+           Transferred data size:             52.44 MB
+
+            Bandwidth Saving:             59.51 MB (53.2%)
+</code></pre>
+
+<p><strong>53.2%</strong>の転送容量削減！</p>
+
+<h3>結論</h3>
+
+<p>以上を組み合わせれば、新たなCDP候補である「<strong>リージョン間レプリケーションパターン (Cross-Region Replication Pattern)</strong>」が実現できます。</p>
+
+<ul>
+<li>巨大データをリージョン間で転送するにはtsunami udpが有効そう</li>
+<li>リージョン間での差分バックアップやレプリケーション向けにはcloudoptで高速化</li>
+<li>普通のHTTP通信とかも使えるかも</li>
+<li>s3へのアップロード高速化も対応しているのでいずれ試してみたい</li>
+</ul>
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Auto Scalingの設定とデプロイ方法]]></title>

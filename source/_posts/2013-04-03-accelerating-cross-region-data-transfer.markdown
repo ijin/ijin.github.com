@@ -18,8 +18,9 @@ categories:
 ### 前提 ###
 
 - 東京(server1) -> アメリカ西海岸(server2)
-- EC2 instance type: m1.large
 - RTT: 120msぐらい
+- EC2 instance type: m1.large
+- OS: Ubuntu 12.04
 
 ### ベーステスト ###
 
@@ -41,6 +42,7 @@ categories:
 	sudo apt-get install make gcc autoconf
 	wget http://downloads.sourceforge.net/project/tsunami-udp/tsunami-udp/tsunami-v1.1-cvsbuild42/tsunami-v1.1-cvsbuild42.tar.gz
 	tar xvfz tsunami-v1.1-cvsbuild42.tar.gz
+	cd tsunami-udp-v11-b42
 	make
 	sudo make install
 

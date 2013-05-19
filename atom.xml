@@ -4,7 +4,7 @@
   <title><![CDATA[@ijin]]></title>
   <link href="http://ijin.github.com/atom.xml" rel="self"/>
   <link href="http://ijin.github.com/"/>
-  <updated>2013-05-19T13:37:12+09:00</updated>
+  <updated>2013-05-19T13:40:19+09:00</updated>
   <id>http://ijin.github.com/</id>
   <author>
     <name><![CDATA[Michael H. Oshita]]></name>
@@ -239,7 +239,7 @@ server2$ sudo cloudconfig peer_add server1 server1_local_ip(10.x.x.x)
 
 <h2>追記 <a name="add">&nbsp;</a></h2>
 
-<p>先日（5/17/13）の<a href="http://www.zusaar.com/event/668006">cloudpack night #6 - Re:Generate -</a>でADSJの荒木さんの発表でMySQLのパフォーマンスの話があったので以前<a href="https://code.launchpad.net/~percona-dev/perconatools/tpcc-mysql">tpcc-mysql</a>でベンチマークを取った資料を思い出し追記しました。</p>
+<p>先日（5/17/13）の<a href="http://www.zusaar.com/event/668006">cloudpack night #6 - Re:Generate -</a>でADSJの荒木さんの発表でMySQLのパフォーマンスの話があったので<a href="https://code.launchpad.net/~percona-dev/perconatools/tpcc-mysql">tpcc-mysql</a>でベンチマークを取った資料を思い出し追記しました。</p>
 
 <ul>
 <li>500 warehouses (50GBぐらい)</li>

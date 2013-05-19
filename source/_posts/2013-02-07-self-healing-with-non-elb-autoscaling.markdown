@@ -22,7 +22,7 @@ categories:
 
 	sudo apt-get install python-pip
 	sudo pip install awscli
-	complete -C aws_completer was
+	complete -C aws_completer aws
 
 ### Autoscaling設定  ###
 

@@ -62,7 +62,7 @@ Fusion-IOと比べて半分ぐらい。ioDrvie Duoの公称IOPSが250,000+ IOPS�
 
 ## 追記 <a name="add">&nbsp;</a> ##
 
-先日（5/17/13）の[cloudpack night #6 - Re:Generate -](http://www.zusaar.com/event/668006)でADSJの荒木さんの発表でMySQLのパフォーマンスの話があったので以前[tpcc-mysql](https://code.launchpad.net/~percona-dev/perconatools/tpcc-mysql)でベンチマークを取った資料を思い出し追記しました。
+先日（5/17/13）の[cloudpack night #6 - Re:Generate -](http://www.zusaar.com/event/668006)でADSJの荒木さんの発表でMySQLのパフォーマンスの話があったので[tpcc-mysql](https://code.launchpad.net/~percona-dev/perconatools/tpcc-mysql)でベンチマークを取った資料を思い出し追記しました。
 
 - 500 warehouses (50GBぐらい)
 - 24GB Buffer pool

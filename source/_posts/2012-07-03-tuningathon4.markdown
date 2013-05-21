@@ -135,6 +135,6 @@ Varnishの[フロー](https://www.varnish-software.com/static/book/_images/vcl.p
 ### おまけ ###
 翌日、出社したら何故か優勝記念と称してMountain Dewが10本贈呈されてましたw
 
-![tuningathon優勝記念](http://s1-05.twitpicproxy.com/photos/large/610358637.jpg)
+![tuningathon優勝記念](https://lh5.googleusercontent.com/-Ws35zyPY6Ww/UZtL9Wjw9jI/AAAAAAAAAv4/hMp5PFfAFAY/w743-h557-no/IMG_8811.JPG)
 
 最後に運営の皆様、ありがとうございました！

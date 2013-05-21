@@ -4,7 +4,7 @@
   <title><![CDATA[Category: mysql | @ijin]]></title>
   <link href="http://ijin.github.com/blog/categories/mysql/atom.xml" rel="self"/>
   <link href="http://ijin.github.com/"/>
-  <updated>2013-05-21T19:08:27+09:00</updated>
+  <updated>2013-05-21T19:16:07+09:00</updated>
   <id>http://ijin.github.com/</id>
   <author>
     <name><![CDATA[Michael H. Oshita]]></name>
@@ -94,7 +94,7 @@
 
 <h2>おわりに</h2>
 
-<p>とまあ、こんなLTをした分けですが、この後に続いたCookpadの<a href="https://twitter.com/sgwr_dts">菅原</a>さんの<a href="http://www.slideshare.net/winebarrel/ec2keepalivedlvsdsr">LT</a>の方が盛り上がって、自分のは余興に終わってしまったけど。</p>
+<p>とまあ、こんなLTをしたわけですが、この後に続いたCookpadの<a href="https://twitter.com/sgwr_dts">菅原</a>さんの<a href="http://www.slideshare.net/winebarrel/ec2keepalivedlvsdsr">LT</a>の方が盛り上がって自分のは余興に終わってしまいました。</p>
 
 <p>あ、ついでにその日はcpniteの資料作成やDJの選曲であんまり寝てなかったにもかかわらず、無事AWSソリューションアーキテクト（Associate）の認定試験に受かりました！</p>
 

@@ -1,0 +1,357 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Non-RDSなオレオレMulti-AZ MySQL Replication - @ijin</title>
+  <meta name="author" content="Michael H. Oshita">
+
+  
+  <meta name="description" content="先日（5/17/13）cloudpack night #6 - Re:Generate -に参加してきました。 当日の様子はcloudpack吉田さんの以下のレポートで。
+cloudpack Night #6 - re:Generate - を開催しました &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://ijin.github.com/blog/2013/05/21/custom-non-rds-multi-az-mysql-replication/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/stylesheets/data-table.css" rel="stylesheet" type="text/css" />
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="@ijin" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-33110241-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">@ijin</a></h1>
+  
+    <h2>[Michael H. Oshita]</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:ijin.github.com" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Non-RDSなオレオレMulti-AZ MySQL Replication</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-05-21T18:03:00+09:00" pubdate data-updated="true">May 21<span>st</span>, 2013</time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>先日（5/17/13）<a href="http://www.zusaar.com/event/668006">cloudpack night #6 - Re:Generate -</a>に参加してきました。</p>
+
+<p>当日の様子はcloudpack<a href="https://twitter.com/yoshidashingo">吉田</a>さんの以下のレポートで。<br />
+<a href="http://d.hatena.ne.jp/yoshidashingo/20130518/1368853720">cloudpack Night #6 - re:Generate - を開催しました</a></p>
+
+<p>私はDJを少々とLTで参加させて頂いたのでその内容になります。</p>
+
+<h2>オレオレMulti-AZのススメ</h2>
+
+<p>AWS上でMySQLを使う場合、RDSはてっとり早くて良いんですが、たまにもうちょっと柔軟性が欲しい時があります。
+例えば別のストーレジエンジンやディストリビューションを使ったり（Percona Server, MariaDB, TokuDB, Mronnga等）、RDSでは使えないインスタンスファミリー（hi1, m3, c1系）を使ったり、OSレベルでのチューニングができたり、スレーブのバッファプールを予め温めておいたり。等々。</p>
+
+<p>しかし、RDSにはAvailability Zone (AZ)をまたいでフェールオーバーするMulti-AZ機能があり、AWSで設計するにはAZ障害を考慮した方が推奨されます。</p>
+
+<p>そこで、MHAとVPCを組み合わせて柔軟性をもったMulti-AZ環境を実現します。
+（ちなみに私の場合はhi1.4xlargeでPercona Serverを冗長化をする必要があったから）</p>
+
+<h3>MHA</h3>
+
+<p><a href="https://code.google.com/p/mysql-master-ha/">MHA</a>とはFacebookの<a href="http://yoshinorimatsunobu.blogspot.jp/">松信</a>さんがDeNA時代に作ったMySQLの自動フェールオーバーしてくれうナイスなツールです。Master障害時にbinlog同期とSlaveの昇格を全自動でやってくれます。昇格時にはカタログデータベースに更新をかけて新DB構成のIPの情報を更新するか、Virtual IPを切り替えるかをする必要（この担当部分はmaster_ip_failover_scriptで対応）があるけど、今回は後者的なアプローチになります。</p>
+
+<h3>VPC</h3>
+
+<p>ENIを使えばVirtual IP的な使い方はできるけどAZは超えられないので、source/dest. checkを無効化した上でrouting tableによって擬似Virtual IPを実現する<a href="http://aws.clouddesignpattern.org/index.php/CDP:Routing-Based_HA%E3%83%91%E3%82%BF%E3%83%BC%E3%83%B3">Routing-Based HAパターン</a>（CDP 2.0候補）を使います。ADSJ<a href="https://twitter.com/c9katayama">片山</a>さんの<a href="http://d.hatena.ne.jp/c9katayama/20111225/1324837509">エントリ</a>が発端ですね。</p>
+
+<h2>Demo</h2>
+
+<p>以下、LT時に見せたデモ動画</p>
+
+<div class="embed-video-container"><iframe src="http://www.youtube.com/embed/tovb29K6ddc "></iframe></div>
+
+
+<p>擬似Virtual IPに対してそれぞれread/writeを行いつつMasterのプロセスをkillすると、通信できなくエラーが出続けるが20秒以内に自動フェールオーバーが完了しread/write共に再開します。pingも平均0.5msから2.0msに変わった事からAZが移った事が確認できます。</p>
+
+<p>RDSのMulti-AZの場合、フェールオーバーには3-6分かかるので、かなり短時間で復旧が可能です。
+また、RDSはCNAME切替によるDNSベースに対して、MHA+VPC構成の場合はIP指定することができます。そうするとアプリからのresolveが不要になり、去年起こった内部DNSが引けない障害が起きても問題ありません。</p>
+
+<h2>注意点</h2>
+
+<ul>
+<li>RDSな自動バックアップがない
+
+<ul>
+<li>Xtrabackupとbinlogの定期s3保存で対応</li>
+</ul>
+</li>
+<li>Point in Timeリカバリー
+
+<ul>
+<li>Chef等で自動化しましょう</li>
+</ul>
+</li>
+<li>Read Replicaの作成
+
+<ul>
+<li>Chefで頑張りましょう</li>
+</ul>
+</li>
+<li>学習曲線
+
+<ul>
+<li>勉強しましょう</li>
+</ul>
+</li>
+<li>API backplaneがSPoF
+
+<ul>
+<li>AWSに祈りましょう</li>
+</ul>
+</li>
+</ul>
+
+
+<p>特に一番の懸念点は最後のAPI backplane。AWSの今までの大規模障害状況を見ていると、皆が同時に復旧をしようとしAPIへのリクエストが大量に集中してそこがボトルネックになり、リソースの操作不能に陥るという悲惨な事象が何回かありました。まあ、その場合はRDSでも同じような気はしますが、ここは当時の障害を経験にキャパシティが増加されている事を信じておくしかありませんね。。</p>
+
+<h2>おわりに</h2>
+
+<p>とまあ、こんなLTをした分けですが、この後に続いたCookpadの<a href="https://twitter.com/sgwr_dts">菅原</a>さんの<a href="http://www.slideshare.net/winebarrel/ec2keepalivedlvsdsr">LT</a>の方が盛り上がって、自分のは余興に終わってしまったけど。</p>
+
+<p>あ、ついでにその日はcpniteの資料作成やDJの選曲であんまり寝てなかったにもかかわらず、無事AWSソリューションアーキテクト（Associate）の認定試験に受かりました！</p>
+
+<p><img src="https://lh5.googleusercontent.com/-d_HVsb6DgBc/UZs39XB1KGI/AAAAAAAAAuw/ntgPp33hcOI/w294-h120-no/Solutions-Architect-Associate.png"></p>
+
+<h2>LTスライド</h2>
+
+<div class="embed-ss-container"><iframe src="http://www.slideshare.net/slideshow/embed_code/21341276 "></iframe></div>
+
+
+
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Michael H. Oshita</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-05-21T18:03:00+09:00" pubdate data-updated="true">May 21<span>st</span>, 2013</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/aws/'>aws</a>, <a class='category' href='/blog/categories/events/'>events</a>, <a class='category' href='/blog/categories/mysql/'>mysql</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://ijin.github.com/blog/2013/05/21/custom-non-rds-multi-az-mysql-replication/" data-via="ijin" data-counturl="http://ijin.github.com/blog/2013/05/21/custom-non-rds-multi-az-mysql-replication/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2013/04/03/accelerating-cross-region-data-transfer/" title="Previous Post: リージョン間高速データ転送">&laquo; リージョン間高速データ転送</a>
+      
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2013/05/21/custom-non-rds-multi-az-mysql-replication/">Non-RDSなオレオレMulti-AZ MySQL Replication</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/04/03/accelerating-cross-region-data-transfer/">リージョン間高速データ転送</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/02/22/mysql-benchmarks-on-aws-ssd-vs-fusion-io/">AWS SSD (hi1.4xlarge) vs Fusion-IOでのMySQLベンチマーク</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/02/08/self-healing-with-non-elb-autoscaling/">非ELBなAutoscalingによる自動復旧</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/12/03/cdp/">Auto Scalingの設定とデプロイ方法</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+<section>
+  <h1>Latest Tweets</h1>
+  <ul id="tweets">
+    <li class="loading">Status updating...</li>
+  </ul>
+  <script type="text/javascript">
+    $.domReady(function(){
+      getTwitterFeed("ijin", 4, false);
+    });
+  </script>
+  <script src="/javascripts/twitter.js" type="text/javascript"> </script>
+  
+    <a href="http://twitter.com/ijin" class="twitter-follow-button" data-show-count="false">Follow @ijin</a>
+  
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2013 - Michael H. Oshita -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'ijin';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://ijin.github.com/blog/2013/05/21/custom-non-rds-multi-az-mysql-replication/';
+        var disqus_url = 'http://ijin.github.com/blog/2013/05/21/custom-non-rds-multi-az-mysql-replication/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

@@ -4,7 +4,7 @@
   <title><![CDATA[Category: aws | @ijin]]></title>
   <link href="http://ijin.github.com/blog/categories/aws/atom.xml" rel="self"/>
   <link href="http://ijin.github.com/"/>
-  <updated>2013-05-21T19:16:07+09:00</updated>
+  <updated>2013-06-11T11:56:21+09:00</updated>
   <id>http://ijin.github.com/</id>
   <author>
     <name><![CDATA[Michael H. Oshita]]></name>
@@ -12,6 +12,103 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[AWS Game Day Tokyo 2013で受賞してきた]]></title>
+    <link href="http://ijin.github.com/blog/2013/06/10/aws-game-day-tokyo-2013/"/>
+    <updated>2013-06-10T23:33:00+09:00</updated>
+    <id>http://ijin.github.com/blog/2013/06/10/aws-game-day-tokyo-2013</id>
+    <content type="html"><![CDATA[<p>大統領選挙でオバマ陣営のシステムを堅牢化する為に用いた手法である仮想対戦シミュレーション「<a href="http://gameday2013.doorkeeper.jp/events/3960">AWS Game Day Tokyo</a>」が日本で初めて（世界2番目に）開催されたので参加してきました。</p>
+
+<p>結果、ベスト・ディフェンス賞こと「<strong>Most Awesome Fix!</strong>」賞を受賞しました。</p>
+
+<h2>経緯</h2>
+
+<p>以前、<a href="http://jaws-ug.jp/jawsdays2013/">JAWS DAYS 2013</a>でMiles Wardが講演した「<a href="http://www.publickey1.jp/blog/13/obama_for_america.html">Behind the Scenes of the Presidential Campaign</a>」でチームを攻撃・防御に分けて対戦させ、そこから学んだ事をフィードバックしてシステムをより堅牢にするという「Game Day」を知り、日本でもやりたいねという話になってました。そこで先日の<a href="http://www.awssummittokyo.com/">AWS Summit Tokyo</a>のスピンオフイベントとして、Milesの再来日に合せてADSJ（アマゾンデータサービスジャパン株式会社）さんによって開催される事になりました。チーム戦の大会は<a href="http://ijin.github.io/blog/2012/07/03/tuningathon4/">チューニンガソン</a>や<a href="http://ijin.github.io/blog/2012/11/05/isucon2/">ISUCON</a>以来なので、わくわくしながら速攻で応募をしました。</p>
+
+<h2>概要</h2>
+
+<p>大体、こんな流れです。</p>
+
+<ul>
+<li>システムの構築・堅牢化</li>
+<li>相手システムの攻撃（この間、自システムも攻撃される）</li>
+<li>自システムの修復</li>
+<li>評価</li>
+</ul>
+
+
+<p>それぞれ、2〜3人のチームに別れ、計18チームにより対戦。私のチーム名は時事ネタとして今流行りの「<a href="http://jp.techcrunch.com/2013/06/07/20130606report-nsa-collects-data-directly-from-servers-of-google-apple-microsoft-facebook-and-more/">PRISM</a>」としました。
+システム概要はnginksさんの<a href="http://d.hatena.ne.jp/nginks/20130608/1370700185">ブログ</a>が非常に分かりやすいです。
+要するに画像変換処理バッチクラスターですね。</p>
+
+<h2>構築</h2>
+
+<p>手順書をざっと見ながら画像処理クラスターを構築。相方はシステムの人間ではなかったので、動作確認を手伝ってもらいつつ実質一人でもくもくと作業。s3作成、sqs作成、アプリのインストール・設定・動作確認、AMI化、Cloudwatch設定、AutoScaling設定等を淡々と。構築しながらシステムを把握して行くけど、結構これだけで時間がとられます。なので、じっくりと防衛策は練れなかったのでひとまず、プロセスの自動復旧をしてくれるmonitをインストール・設定し（upstartでやりかけたけどうまく動かなかった）、主要ファイルのchecksumを取って改善検知してメール通知する仕組みを導入。</p>
+
+<h2>攻撃</h2>
+
+<p>AWSキー（Poweruser権限）を奪取したという仮定の元、相手システムに攻撃をしかけるターン。
+単純に全部消したり、セキュリティグループの権限を変えたりではあまりにもつまらないので、いろいろ考えます。（無論、システムの全消しは誰でもできる最低の攻撃手法）</p>
+
+<p>まず、状況把握する為にいろいろ動作確認。キューに画像を突っ込んで、ちゃんと処理されるとか。あれ、でも動かない。。
+どうやらTokyoで作りかけたけど、結局Virginiaリージョンで仕上げたと運営側から伝えられる。いきなりのタイムロス！</p>
+
+<p>気を取り直して、稼働中のインスタンスに入る方法を思いつく。通常はキー設定されているのでsshでは入れないので仮のインスタンスを起動し旧インスタンスのroot volumeのEBSを強制detachし、仮インスタンスにattachして中身をいじってからre-attachする事に。見た目は同じinstance-idなのに中身だけ違う、一見すると分かりづらいです。そこで旧インスタンスを一旦停止させる為にstopさせると、、terminateされちゃいました。。よくよく調べて見ると、Auto Scalingの設定になっていて、min-sizeの制約によって旧インスタンスが消され、代替インスタンスが自動的に起動するようになってました。</p>
+
+<p>どうやら構築が間に合わなかったチーム用に運営側が用意した自動構築をしてくれる虎の子のCloudformationを使った模様。
+そこで、相手チームのスキルレベルがそれ程高くないと判断し、Auto Scalingの元AMIを置き換える事に。
+新たなlaunch configを作成し、既存のscaling groupと同盟のものを作成。</p>
+
+<p>次にs3への攻撃。bucket名はglobalなnamespaceなので、こいつを削除して同名のを別AWSアカウントで作れば乗っ取りが可能。。
+のはずが、削除してから一定時間経過しないと作成不可だったので1字違いのbucketを作成しておく。</p>
+
+<p>最後にs3のbucket一覧を取得して、常に空のディレクトリと同期し続ける攻撃を思いつき、実装を始める。システムはs3に出力するのでそこを継続的に空にする攻撃です。しかし、実装を初めて動作確認の途中で時間切れになりシステムに埋め込めなくて断念。もうちょっと時間が欲しかったです</p>
+
+<h2>修復</h2>
+
+<p>次は自システムが受けた攻撃を修復するターン。</p>
+
+<p>いろいろ余計なインスタンスが起動していたが、まずやったのがAMI番号の確認。（これが無事であればOSに侵入されていようがAMIをベースに全体の再構築が速やかにできるので）
+幸い、控えていたのと一致していたので他のインスタンスを全て停止。一応monitのアラートメールが飛んでいなかったので、インスタンスに対しての操作は限定されているのだろうとは踏んでましたが。</p>
+
+<p>AMIが無事なら次はAuto Scalingの確認。ざっと見た感じだと、lauch configは操作されておらず、scaling groupのmin-sizeが0に変更されている模様。他の変更点は確認が面倒だったので、一旦全部削除してさくっと再作成。後で聞いた話だと、Auto Scalingのrecurring schedule設定で1分起きに0台にする設定をしていたらしいが、消された時点で攻撃は無効化。</p>
+
+<p>次にSQS。消して再作成すればてっとり早いけど、相手チームがキューに投入した画像を最終的に表示させないといけないルールだと誤解していて、その復旧に務める。新しく作ったSQSと比較するとパラメータ（Default Visibility Timeout, Retention Period, Message Size等）が異常な値に変更されていると分かり、通常の値へ戻す。</p>
+
+<p>この時点でアプリとSQSの通信を確認するも疎通できない事を把握。pingが通らない事からSecurity Group, Routing Table, Network ACLが変更されていないかを確認。どうやらSecurity GroupのIn/Outルールが削除されている単純な攻撃だと判明し、なんなく再設定。</p>
+
+<p>キュー内のメッセージが1コ処理されるのを確認し、SQS周りは対応済みかと思ったけど残り2コのメッセージがいくら待てども処理されず、若干悩む。
+ログを見たり、メッセージの中身を覗くとと「<strong>--max-redirect=99999999</strong> 」が目に留まる。どうやら変換する画像をダウンロードする部分で無限ループさせている模様。メッセージを削除し、そのパラメータを除外したものを流してちゃんとキューが処理される事を確認。</p>
+
+<p>最後にs3周りで怪しい設定がないかを調査して、一通りの動作確認をして復旧完了。</p>
+
+<h2>振り返り</h2>
+
+<p>お互いに対戦したチームと顔合わせをし、攻撃や復旧の手の内を明かします。全チームの行動記録を集約して運営側で審査を行われ各賞が授与される中、我がPRISMはSQS内の無限ループを検知・修復したのが評価されて最も優れた修復を行った「<strong>Most Awesome Fix!賞</strong>」を頂きました。後で他のチームに聞いた所、monitのような検知・通知の仕組みを導入した所はなさそうだったので、それも評価ポイントだったかも知れません。</p>
+
+<p>賞の内容としては、ワンタイムトークンを生成するハードウェアMFAデバイスとAWSのクーポンコードでした。ありがとうございます。</p>
+
+<p>最後にMilesが壊れても戻せるようにあるべき状態の定義と常に比較して自動的に自己治癒するのが最高のシステムと言ってました。AWSの状態を保存するにはCloudformerでCloudformationテンプレート化すれば便利で楽だけど、chefみたいにIdempotency（冪等性）を継続的に保証する仕組みをそのレイヤーで組むのはなかなか大変ですね。（個々のサーバ単位は可能だとしても）</p>
+
+<h2>感想</h2>
+
+<p>「<em>チューニンガソン</em>」や私が他にお手伝いをしている「<em>トラブル☆しゅーたーず</em>」とも一味違って、非常に楽しめました。</p>
+
+<p>以下、思った事をいくつか。</p>
+
+<ul>
+<li>構築に時間が取られたのでなるべく出来合いのシステムがあった方が防衛策に専念できそう</li>
+<li>攻撃可能な時間が思ったより短かったのでもうちょっと長めで</li>
+<li>Default-VPCとEC2-Classicでは挙動が違うのでアカウントタイプは統一した方が良い</li>
+<li>ターン性ではなく、攻撃と修復・防御のリアルタイム性を試すとか</li>
+<li>あるべき正しい状態を把握する為のツールがあると他のタスクに集中できるかも</li>
+</ul>
+
+
+<p>次に開催される時も参加したいですね。もしくは運営側のお手伝いでも！</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Non-RDSなオレオレMulti-AZ MySQL Replication]]></title>
@@ -501,140 +598,6 @@ Details: {}
 <h3>結論</h3>
 
 <p>20分程サーバダウンが許容できるようなゆるめの条件に限定した場合には非ELBでも使えるかな。まあ、それでも適用する場面は多々あるとは思いますが。（早める方法あるのかなー。）</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Auto Scalingの設定とデプロイ方法]]></title>
-    <link href="http://ijin.github.com/blog/2012/12/03/cdp/"/>
-    <updated>2012-12-03T01:34:00+09:00</updated>
-    <id>http://ijin.github.com/blog/2012/12/03/cdp</id>
-    <content type="html"><![CDATA[<p><a href="http://www.zusaar.com/event/451061">CDP Advent Calendar 2012</a>に登録しました。ここ1年ちょいで使い慣れてきたパターンがあり、作った当時はクラウドデザインパターンはなかったのですが、<a href="http://aws.clouddesignpattern.org/index.php/CDP:Clone_Server%E3%83%91%E3%82%BF%E3%83%BC%E3%83%B3">Clone Server</a>と<a href="http://aws.clouddesignpattern.org/index.php/CDP:Scale_Out%E3%83%91%E3%82%BF%E3%83%BC%E3%83%B3">Scale Out</a>パターンの組合せに当てはまると思うので紹介します。ちなみにアプリはRails。</p>
-
-<p>常にデプロイして更新し続けるシステムを手動、あるいは自動スケールアウトする時に便利な手法だったりします。</p>
-
-<p>図にするとこんな感じですかね。</p>
-
-<p><img src="https://lh4.googleusercontent.com/-eDSfSiz0XhU/ULyOlKj_JKI/AAAAAAAAArw/QzSfVJeeUfw/w727-h490-p-k/CDP_Clone%252BScale_Out.png"></p>
-
-<h2>Auto Scaling設定</h2>
-
-<h3>Launch Config</h3>
-
-<p>まず、ベースとなるAMIの起動インスタンスサイズやセキュリティーグループを定義したLaunch Configを設定。</p>
-
-<pre><code>as-create-launch-config cdp-lc --image-id ami-22a51d23 --instance-type m1.small \
---group cdp_web, cdp_admin
-</code></pre>
-
-<h3>Scaling Group</h3>
-
-<p>次に、Scaling Groupで適用するAvailability Zone、インスタンス数の最小・最大閾値設定、紐尽くELB、死活監視方法・開始待ち時間、タグ等を定義。（ec2addtagではスペース入りのキーを設定できるのにas-create-auto-scaling-groupではできないので注意。早く直して。。）</p>
-
-<pre><code>as-create-auto-scaling-group cdp-sg --launch-configuration cdp-lc \
---availability-zones ap-northeast-1a  --min-size 1 --max-size 9 --load-balancers cdp \
---health-check-type ELB --grace-period 300 --tag "k=Name, v=web.cdp" --tag "k=Use_Case, v=Test"
-</code></pre>
-
-<h3>Scaling Out Policy</h3>
-
-<p>Scaling Outのポリシー設定。以下の例ではインスタンス1台を追加し、次のスケールアクションまでは5分間待機。ポリシーのARN (Amazon Resource Name)が出力されるので控えます。</p>
-
-<pre><code>as-put-scaling-policy CDPOut --auto-scaling-group cdp-sg --adjustment 1 --type ChangeInCapacity \
---cooldown 300
-
-&gt; arn:aws:autoscaling:ap-northeast-1:494850320039:scalingPolicy:d0d4dcf1-fb44-428a-a19c-38946633acf5:autoScalingGroupName/cdp-sg:policyName/CDPOut
-</code></pre>
-
-<h3>Cloudwatchトリガー（Scaling Out）</h3>
-
-<p>Cloudwatchで閾値を超えたらスケールアウトするように設定。以下の例では対象Scaling Group配下のインスタンス達のCPUが1分間で平均75%以上で推移した場合、先ほど設定したScaling OutポリシーがARN経由で実行されます。また、閾値を超過あるいは下回った場合にSNS経由でアラートメールを飛ばします。</p>
-
-<pre><code>mon-put-metric-alarm  CDPHighCPUAlarm --comparison-operator GreaterThanThreshold \
---evaluation-periods 1 --metric-name CPUUtilization --namespace "AWS/EC2" --period 60 \
---statistic Average --threshold 75 --dimensions "AutoScalingGroupName=cdp-sg" \
---ok-actions arn:aws:sns:ap-northeast-1:494850320039:cdp-alert --alarm-actions \
-arn:aws:sns:ap-northeast-1:494850320039:cdp-alert, arn:aws:autoscaling:ap-northeast-1:494850320039:scalingPolicy:d0d4dcf1-fb44-428a-a19c-38946633acf5:autoScalingGroupName/cdp-sg:policyName/CDPOut
-</code></pre>
-
-<h3>Scaling Down Policy</h3>
-
-<p>同じくScaling Downのポリシー設定。インスタンスが起動すると最低1時間は課金されるので頻繁に伸縮するともったいないのでスケールダウンアクションはゆっくりやるのがポイントです。</p>
-
-<pre><code>as-put-scaling-policy CDPDown --auto-scaling-group cdp-sg --adjustment=-1 \
---type ChangeInCapacity --cooldown 1500
-
-&gt; arn:aws:autoscaling:ap-northeast-1:494850320039:scalingPolicy:de53fbd5-130c-46a8-bf47-25e29f7d358e:autoScalingGroupName/cdp-sg:policyName/CDPDown
-</code></pre>
-
-<h3>Cloudwatchトリガー（Scaling Down）</h3>
-
-<p>スケールダウンのトリガーは平均CPUが35%を25分間下回った場合に実行されます。この閾値周辺のアラートメールはいらないので設定してません。</p>
-
-<pre><code>mon-put-metric-alarm CDPLowCPUAlarm --comparison-operator LessThanThreshold \
---evaluation-periods 1 --metric-name CPUUtilization --namespace "AWS/EC2" --period 1500 \
---statistic Average --threshold 35 --dimensions "AutoScalingGroupName=cdp-sg" --alarm-actions \
-arn:aws:autoscaling:ap-northeast-1:494850320039:scalingPolicy:de53fbd5-130c-46a8-bf47-25e29f7d358e:autoScalingGroupName/cdp-sg:policyName/CDPDown
-</code></pre>
-
-<h3>通知</h3>
-
-<p>最後にスケールアクション時に通知が飛ぶように設定。例えば、あるインスタンスが不調により反応がなく、ポリシーによってリプレースされる場合に飛んだりします。</p>
-
-<pre><code>as-put-notification-configuration cdp-sg -t arn:aws:sns:ap-northeast-1:494850320039:cdp-alert \
--n autoscaling:EC2_INSTANCE_LAUNCH, autoscaling:EC2_INSTANCE_TERMINATE, \
-autoscaling:EC2_INSTANCE_LAUNCH_ERROR, autoscaling:EC2_INSTANCE_TERMINATE_ERROR
-</code></pre>
-
-<h2>APP側の設定</h2>
-
-<h3>ソースコード同期</h3>
-
-<p>同期には起動時にupstart経由でrsyncを叩いて管理サーバから最新ソースを取ってきてサービスを再起動します。転送時の圧縮モードはarcfourが一番スループットが出たのでそれに。</p>
-
-<p><div><script src='https://gist.github.com/4191986.js?file='></script>
-<noscript><pre><code># sync source code
-description &quot;Update source code&quot;
-
-start on filesystem
-stop on shutdown
-
-task
-console output
-
-script
-time sudo -u deploy rsync -av --delete -e 'ssh -c arcfour -i /home/deploy/.ssh/id_dsa -o StrictHostKeyChecking=no' deploy@admin.cdp:/usr/local/apps/project/ /usr/local/rails_apps/project &gt;&gt; /mnt/update.log 2&gt;&amp;1
-/etc/init.d/unicorn upgrade &gt;&gt; /mnt/update.log 2&gt;&amp;1
-/etc/init.d/nginx restart &gt;&gt; /mnt/update.log 2&gt;&amp;1
-end script
-</code></pre></noscript></div>
-</p>
-
-<h2>Capistrano</h2>
-
-<p>デプロイはマスターサーバ（管理兼）上でCapistranoを実行し、ELB配下の生きているインスタンスに対して更新をかけます。deploy.rbに追加する記述は以下の通り。昔はec2 api toolsを直接呼んでパースしたりしてコードが長かったのですが、今は<a href="http://aws.amazon.com/sdkforruby/">AWS SDK for Ruby</a>があり、<a href="http://aws.amazon.com/iam/">IAM role</a>でinstance profileを設定すればわずか数行でできてしまいます！</p>
-
-<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="nb">require</span> <span class="s1">&#39;aws-sdk&#39;</span>
-</span><span class='line'><span class="no">AWS</span><span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="ss">:ec2_endpoint</span> <span class="o">=&gt;</span> <span class="s1">&#39;ec2.ap-northeast-1.amazonaws.com&#39;</span><span class="p">,</span> <span class="ss">:elb_endpoint</span> <span class="o">=&gt;</span> <span class="s1">&#39;elasticloadbalancing.ap-northeast-1.amazonaws.com&#39;</span><span class="p">)</span>
-</span><span class='line'><span class="n">instances</span> <span class="o">=</span> <span class="no">AWS</span><span class="o">::</span><span class="no">ELB</span><span class="o">.</span><span class="n">new</span><span class="o">.</span><span class="n">load_balancers</span><span class="o">[</span><span class="s1">&#39;cdp&#39;</span><span class="o">].</span><span class="n">instances</span><span class="o">.</span><span class="n">select</span><span class="p">{</span><span class="o">|</span><span class="n">i</span><span class="o">|</span> <span class="n">i</span><span class="o">.</span><span class="n">exists?</span> <span class="o">&amp;</span><span class="n">amp</span><span class="p">;</span><span class="o">&amp;</span><span class="n">amp</span><span class="p">;</span> <span class="n">i</span><span class="o">.</span><span class="n">elb_health</span><span class="o">[</span><span class="ss">:state</span><span class="o">]</span> <span class="o">==</span> <span class="s2">&quot;InService&quot;</span><span class="p">}</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="o">&amp;</span><span class="n">amp</span><span class="p">;</span><span class="ss">:public_dns_name</span><span class="p">)</span>
-</span><span class='line'><span class="n">servers</span> <span class="o">=</span> <span class="n">instances</span> <span class="o">&amp;</span><span class="n">lt</span><span class="p">;</span><span class="o">&amp;</span><span class="n">lt</span><span class="p">;</span> <span class="s2">&quot;localhost&quot;</span>
-</span><span class='line'><span class="n">role</span> <span class="ss">:app</span> <span class="k">do</span> <span class="n">servers</span> <span class="k">end</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div></p>
-
-<h2>注意点</h2>
-
-<ul>
-<li>同期するファイル数が多すぎる（数十万個）と、チェックサム比較で時間がかかってしまい同期が終了する前にAuto Scalingの死活監視によってインスタンスがterminateされ、またlaunchされterminateされるという恐怖のスケールループ地獄に陥る。。。（これ、制限できないのかな）</li>
-<li>あらかじめトラフィック増の時間帯が分かっていたら<a href="http://docs.amazonwebservices.com/AutoScaling/latest/DeveloperGuide/scaling_plan.html#schedule_time">Scheduled Action</a>で多めに設定しておいて自動スケールダウンさせた方が吉。</li>
-<li>マスタサーバがSPOFとなりうるので冗長化する、もしくはrsyncよりs3経由にした方が良い。</li>
-<li>急激なトラフィック増ではELB自体のスケールが追いつかない場合も。</li>
-</ul>
-
 ]]></content>
   </entry>
   

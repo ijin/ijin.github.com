@@ -4,7 +4,7 @@
   <title><![CDATA[@ijin]]></title>
   <link href="http://ijin.github.com/atom.xml" rel="self"/>
   <link href="http://ijin.github.com/"/>
-  <updated>2013-05-21T19:16:07+09:00</updated>
+  <updated>2013-06-11T11:56:21+09:00</updated>
   <id>http://ijin.github.com/</id>
   <author>
     <name><![CDATA[Michael H. Oshita]]></name>
@@ -12,6 +12,103 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[AWS Game Day Tokyo 2013で受賞してきた]]></title>
+    <link href="http://ijin.github.com/blog/2013/06/10/aws-game-day-tokyo-2013/"/>
+    <updated>2013-06-10T23:33:00+09:00</updated>
+    <id>http://ijin.github.com/blog/2013/06/10/aws-game-day-tokyo-2013</id>
+    <content type="html"><![CDATA[<p>大統領選挙でオバマ陣営のシステムを堅牢化する為に用いた手法である仮想対戦シミュレーション「<a href="http://gameday2013.doorkeeper.jp/events/3960">AWS Game Day Tokyo</a>」が日本で初めて（世界2番目に）開催されたので参加してきました。</p>
+
+<p>結果、ベスト・ディフェンス賞こと「<strong>Most Awesome Fix!</strong>」賞を受賞しました。</p>
+
+<h2>経緯</h2>
+
+<p>以前、<a href="http://jaws-ug.jp/jawsdays2013/">JAWS DAYS 2013</a>でMiles Wardが講演した「<a href="http://www.publickey1.jp/blog/13/obama_for_america.html">Behind the Scenes of the Presidential Campaign</a>」でチームを攻撃・防御に分けて対戦させ、そこから学んだ事をフィードバックしてシステムをより堅牢にするという「Game Day」を知り、日本でもやりたいねという話になってました。そこで先日の<a href="http://www.awssummittokyo.com/">AWS Summit Tokyo</a>のスピンオフイベントとして、Milesの再来日に合せてADSJ（アマゾンデータサービスジャパン株式会社）さんによって開催される事になりました。チーム戦の大会は<a href="http://ijin.github.io/blog/2012/07/03/tuningathon4/">チューニンガソン</a>や<a href="http://ijin.github.io/blog/2012/11/05/isucon2/">ISUCON</a>以来なので、わくわくしながら速攻で応募をしました。</p>
+
+<h2>概要</h2>
+
+<p>大体、こんな流れです。</p>
+
+<ul>
+<li>システムの構築・堅牢化</li>
+<li>相手システムの攻撃（この間、自システムも攻撃される）</li>
+<li>自システムの修復</li>
+<li>評価</li>
+</ul>
+
+
+<p>それぞれ、2〜3人のチームに別れ、計18チームにより対戦。私のチーム名は時事ネタとして今流行りの「<a href="http://jp.techcrunch.com/2013/06/07/20130606report-nsa-collects-data-directly-from-servers-of-google-apple-microsoft-facebook-and-more/">PRISM</a>」としました。
+システム概要はnginksさんの<a href="http://d.hatena.ne.jp/nginks/20130608/1370700185">ブログ</a>が非常に分かりやすいです。
+要するに画像変換処理バッチクラスターですね。</p>
+
+<h2>構築</h2>
+
+<p>手順書をざっと見ながら画像処理クラスターを構築。相方はシステムの人間ではなかったので、動作確認を手伝ってもらいつつ実質一人でもくもくと作業。s3作成、sqs作成、アプリのインストール・設定・動作確認、AMI化、Cloudwatch設定、AutoScaling設定等を淡々と。構築しながらシステムを把握して行くけど、結構これだけで時間がとられます。なので、じっくりと防衛策は練れなかったのでひとまず、プロセスの自動復旧をしてくれるmonitをインストール・設定し（upstartでやりかけたけどうまく動かなかった）、主要ファイルのchecksumを取って改善検知してメール通知する仕組みを導入。</p>
+
+<h2>攻撃</h2>
+
+<p>AWSキー（Poweruser権限）を奪取したという仮定の元、相手システムに攻撃をしかけるターン。
+単純に全部消したり、セキュリティグループの権限を変えたりではあまりにもつまらないので、いろいろ考えます。（無論、システムの全消しは誰でもできる最低の攻撃手法）</p>
+
+<p>まず、状況把握する為にいろいろ動作確認。キューに画像を突っ込んで、ちゃんと処理されるとか。あれ、でも動かない。。
+どうやらTokyoで作りかけたけど、結局Virginiaリージョンで仕上げたと運営側から伝えられる。いきなりのタイムロス！</p>
+
+<p>気を取り直して、稼働中のインスタンスに入る方法を思いつく。通常はキー設定されているのでsshでは入れないので仮のインスタンスを起動し旧インスタンスのroot volumeのEBSを強制detachし、仮インスタンスにattachして中身をいじってからre-attachする事に。見た目は同じinstance-idなのに中身だけ違う、一見すると分かりづらいです。そこで旧インスタンスを一旦停止させる為にstopさせると、、terminateされちゃいました。。よくよく調べて見ると、Auto Scalingの設定になっていて、min-sizeの制約によって旧インスタンスが消され、代替インスタンスが自動的に起動するようになってました。</p>
+
+<p>どうやら構築が間に合わなかったチーム用に運営側が用意した自動構築をしてくれる虎の子のCloudformationを使った模様。
+そこで、相手チームのスキルレベルがそれ程高くないと判断し、Auto Scalingの元AMIを置き換える事に。
+新たなlaunch configを作成し、既存のscaling groupと同盟のものを作成。</p>
+
+<p>次にs3への攻撃。bucket名はglobalなnamespaceなので、こいつを削除して同名のを別AWSアカウントで作れば乗っ取りが可能。。
+のはずが、削除してから一定時間経過しないと作成不可だったので1字違いのbucketを作成しておく。</p>
+
+<p>最後にs3のbucket一覧を取得して、常に空のディレクトリと同期し続ける攻撃を思いつき、実装を始める。システムはs3に出力するのでそこを継続的に空にする攻撃です。しかし、実装を初めて動作確認の途中で時間切れになりシステムに埋め込めなくて断念。もうちょっと時間が欲しかったです</p>
+
+<h2>修復</h2>
+
+<p>次は自システムが受けた攻撃を修復するターン。</p>
+
+<p>いろいろ余計なインスタンスが起動していたが、まずやったのがAMI番号の確認。（これが無事であればOSに侵入されていようがAMIをベースに全体の再構築が速やかにできるので）
+幸い、控えていたのと一致していたので他のインスタンスを全て停止。一応monitのアラートメールが飛んでいなかったので、インスタンスに対しての操作は限定されているのだろうとは踏んでましたが。</p>
+
+<p>AMIが無事なら次はAuto Scalingの確認。ざっと見た感じだと、lauch configは操作されておらず、scaling groupのmin-sizeが0に変更されている模様。他の変更点は確認が面倒だったので、一旦全部削除してさくっと再作成。後で聞いた話だと、Auto Scalingのrecurring schedule設定で1分起きに0台にする設定をしていたらしいが、消された時点で攻撃は無効化。</p>
+
+<p>次にSQS。消して再作成すればてっとり早いけど、相手チームがキューに投入した画像を最終的に表示させないといけないルールだと誤解していて、その復旧に務める。新しく作ったSQSと比較するとパラメータ（Default Visibility Timeout, Retention Period, Message Size等）が異常な値に変更されていると分かり、通常の値へ戻す。</p>
+
+<p>この時点でアプリとSQSの通信を確認するも疎通できない事を把握。pingが通らない事からSecurity Group, Routing Table, Network ACLが変更されていないかを確認。どうやらSecurity GroupのIn/Outルールが削除されている単純な攻撃だと判明し、なんなく再設定。</p>
+
+<p>キュー内のメッセージが1コ処理されるのを確認し、SQS周りは対応済みかと思ったけど残り2コのメッセージがいくら待てども処理されず、若干悩む。
+ログを見たり、メッセージの中身を覗くとと「<strong>&#8211;max-redirect=99999999</strong> 」が目に留まる。どうやら変換する画像をダウンロードする部分で無限ループさせている模様。メッセージを削除し、そのパラメータを除外したものを流してちゃんとキューが処理される事を確認。</p>
+
+<p>最後にs3周りで怪しい設定がないかを調査して、一通りの動作確認をして復旧完了。</p>
+
+<h2>振り返り</h2>
+
+<p>お互いに対戦したチームと顔合わせをし、攻撃や復旧の手の内を明かします。全チームの行動記録を集約して運営側で審査を行われ各賞が授与される中、我がPRISMはSQS内の無限ループを検知・修復したのが評価されて最も優れた修復を行った「<strong>Most Awesome Fix!賞</strong>」を頂きました。後で他のチームに聞いた所、monitのような検知・通知の仕組みを導入した所はなさそうだったので、それも評価ポイントだったかも知れません。</p>
+
+<p>賞の内容としては、ワンタイムトークンを生成するハードウェアMFAデバイスとAWSのクーポンコードでした。ありがとうございます。</p>
+
+<p>最後にMilesが壊れても戻せるようにあるべき状態の定義と常に比較して自動的に自己治癒するのが最高のシステムと言ってました。AWSの状態を保存するにはCloudformerでCloudformationテンプレート化すれば便利で楽だけど、chefみたいにIdempotency（冪等性）を継続的に保証する仕組みをそのレイヤーで組むのはなかなか大変ですね。（個々のサーバ単位は可能だとしても）</p>
+
+<h2>感想</h2>
+
+<p>「<em>チューニンガソン</em>」や私が他にお手伝いをしている「<em>トラブル☆しゅーたーず</em>」とも一味違って、非常に楽しめました。</p>
+
+<p>以下、思った事をいくつか。</p>
+
+<ul>
+<li>構築に時間が取られたのでなるべく出来合いのシステムがあった方が防衛策に専念できそう</li>
+<li>攻撃可能な時間が思ったより短かったのでもうちょっと長めで</li>
+<li>Default-VPCとEC2-Classicでは挙動が違うのでアカウントタイプは統一した方が良い</li>
+<li>ターン性ではなく、攻撃と修復・防御のリアルタイム性を試すとか</li>
+<li>あるべき正しい状態を把握する為のツールがあると他のタスクに集中できるかも</li>
+</ul>
+
+
+<p>次に開催される時も参加したいですね。もしくは運営側のお手伝いでも！</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Non-RDSなオレオレMulti-AZ MySQL Replication]]></title>
@@ -1116,7 +1213,7 @@ Varnishの<a href="https://www.varnish-software.com/static/book/_images/vcl.png"
 
 <p>翌日、出社したら何故か優勝記念と称してMountain Dewが10本贈呈されてましたw</p>
 
-<p><img src="http://s1-05.twitpicproxy.com/photos/large/610358637.jpg" alt="tuningathon優勝記念" /></p>
+<p><img src="https://lh5.googleusercontent.com/-Ws35zyPY6Ww/UZtL9Wjw9jI/AAAAAAAAAv4/hMp5PFfAFAY/w743-h557-no/IMG_8811.JPG" alt="tuningathon優勝記念" /></p>
 
 <p>最後に運営の皆様、ありがとうございました！</p>
 ]]></content>

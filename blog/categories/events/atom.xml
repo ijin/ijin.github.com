@@ -4,7 +4,7 @@
   <title><![CDATA[Category: events | @ijin]]></title>
   <link href="http://ijin.github.com/blog/categories/events/atom.xml" rel="self"/>
   <link href="http://ijin.github.com/"/>
-  <updated>2013-10-07T12:59:12+09:00</updated>
+  <updated>2013-10-07T13:06:25+09:00</updated>
   <id>http://ijin.github.com/</id>
   <author>
     <name><![CDATA[Michael H. Oshita]]></name>
@@ -139,7 +139,8 @@ Score:    14694.2
 <div class='embed tweet'><blockquote class="twitter-tweet"><p>isuconは外国県人会が暴れてるのかな？</p>&mdash; ばば としあき (@netmarkjp) <a href="https://twitter.com/netmarkjp/statuses/386393051230261248">October 5, 2013</a></blockquote>
 <script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div></p>
 
-<hr />
+<br />
+
 
 <p>しかしその後privateページのキャッシュexpire方法を模索するも、なかなか進まずにタイムリミットが刻々と迫り、他のチームがどんどん上位に食い込んできて若干焦り始める。ひとまず、強制フラッシュするエンドポイントと裏で定期実行するバックグランドタスク（Varnishでいう所のbanlurker相当）を即席で実装したりしてスコアを伸ばすもトップには届かず敢え無く終了。</p>
 
@@ -150,6 +151,9 @@ Score:    14694.2
 
 <p>結果、送信できた最終スコアは「<strong>20599.5</strong>」でした（ローカルスコアは22000ぐらいだったけど）。
 予選突破（暫定）はできたものの、まだまだ課題山積な感じです。</p>
+
+<p>今回も前回同様、非常に楽しめました。
+運営の皆様、お疲れ様でした&amp;本戦はさらなる期待をしてます！</p>
 
 <h3>良かった点</h3>
 

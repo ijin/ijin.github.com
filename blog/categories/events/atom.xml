@@ -4,7 +4,7 @@
   <title><![CDATA[Category: events | @ijin]]></title>
   <link href="http://ijin.github.com/blog/categories/events/atom.xml" rel="self"/>
   <link href="http://ijin.github.com/"/>
-  <updated>2013-12-13T18:28:52+09:00</updated>
+  <updated>2013-12-13T18:35:11+09:00</updated>
   <id>http://ijin.github.com/</id>
   <author>
     <name><![CDATA[Michael H. Oshita]]></name>
@@ -51,6 +51,7 @@
 <li>memcachedからmysqlへの非同期処理（5ms間隔）</li>
 <li>mysqlの更新処理はそんなにいらないので基本チューニングとInnoDBにしただけで、5.1のまま</li>
 <li>サーバはM8までいらないのでM4で</li>
+<li>海外から参戦したけど、GUIが重いのでAPI経由での操作</li>
 </ul>
 
 

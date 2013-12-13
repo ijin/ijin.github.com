@@ -4,7 +4,7 @@
   <title><![CDATA[@ijin]]></title>
   <link href="http://ijin.github.com/atom.xml" rel="self"/>
   <link href="http://ijin.github.com/"/>
-  <updated>2013-11-12T15:43:47+09:00</updated>
+  <updated>2013-12-13T18:28:52+09:00</updated>
   <id>http://ijin.github.com/</id>
   <author>
     <name><![CDATA[Michael H. Oshita]]></name>
@@ -12,6 +12,216 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[サバフェス！2013に参加してきた]]></title>
+    <link href="http://ijin.github.com/blog/2013/12/13/serverfesta-2013-autumn/"/>
+    <updated>2013-12-13T15:59:00+09:00</updated>
+    <id>http://ijin.github.com/blog/2013/12/13/serverfesta-2013-autumn</id>
+    <content type="html"><![CDATA[<p>少し前に<a href="http://connpass.com/event/3690/">サバフェス！2013 Autumn</a>に参加してきました。
+内容を忘れないうちにやった事を書いておきます。</p>
+
+<p>スコアはトップレベルだったものの、運営側がサーバを起動した所、自動でサービスが立ち上がらなかったらしいので残念な事に参考値のみに。（提出前に2回ぐらい再起動確認したのにおかしいなぁ。。）
+優勝スコアは90.830 (GET 199,802 : POST 18,106)で、私のは<strong>93.410</strong> (GET 162,923 : POST 29,930)でした。</p>
+
+<h2>お題</h2>
+
+<p>「最速インフラを構築せよ！！！</p>
+
+<p>WordPressに一切手を加えずに、どこまで高速化できるのか！？</p>
+
+<p>OSチューニング、サーバチューニング、負荷分散…最適解を探せ！」</p>
+
+<p>&#8211;</p>
+
+<p><a href="http://www.idcf.jp/cloud/service/self.html">IDCFクラウド</a>上で仮想マシン5台（M8タイプまで）を使ってスコアを競うというもの。
+<a href="https://www.facebook.com/tuningathon">チューニンガソン</a>と似てますが、サーバが複数台使えるのが良いですね。</p>
+
+<h2>構成</h2>
+
+<p>表彰式でLTしたけど、LVS (DSR) + php 5.5 + apcu + Varnish + nginx (lua) + memcached</p>
+
+<p>ポイントは</p>
+
+<ul>
+<li>GET時は1台では帯域の限界に達したのでLVS (DSR)による4台での並列応答</li>
+<li>POST時には必ず各Varnishのキャッシュクリア（ban）する</li>
+<li>POST時にnginx->memcachedへ渡すと高速すぎたのであえてsleepを5msして遅延させる</li>
+<li>nginx(lua)はコード量が多いと通らないのでぎりぎりまで削減</li>
+<li>memcachedからmysqlへの非同期処理（5ms間隔）</li>
+<li>mysqlの更新処理はそんなにいらないので基本チューニングとInnoDBにしただけで、5.1のまま</li>
+<li>サーバはM8までいらないのでM4で</li>
+</ul>
+
+
+<p>でしょうか。特に意識したのはmemcachedからmysqlへの許容範囲内での同期と複数台あるVarnishのキャッシュクリアですね。他のチームはnginxでTTLを設定して逃げたようですが、実運用時にはPOST時にキャッシュクリアを確実にする必要があるのでVarnish moduleをコンパイルして他のsiblingへ並列でban処理を投げてました。まあ、今回のベンチマークツールはそこまで厳格じゃなかったけど、最終チェックは人間が動作させるので。</p>
+
+<p>LT資料。スコア推移と簡単な構成の紹介</p>
+
+<div class="embed-ss-container"><iframe src="http://www.slideshare.net/slideshow/embed_code/29171459 "></iframe></div>
+
+
+<h2>設定ファイル</h2>
+
+<p>以下、設定ファイルです。いらない所は削ったけど動くはず。。</p>
+
+<p>backend varnish vcl （各backendの設定は微妙に違う）:</p>
+
+<div><script src='https://gist.github.com/7941009.js?file='></script>
+<noscript><pre><code>&lt;html&gt;&lt;body&gt;You are being &lt;a href=&quot;https://github.com/gist/7941009&quot;&gt;redirected&lt;/a&gt;.&lt;/body&gt;&lt;/html&gt;</code></pre></noscript></div>
+
+
+<p>backend nginx.conf:</p>
+
+<div><script src='https://gist.github.com/7940999.js?file='></script>
+<noscript><pre><code>&lt;html&gt;&lt;body&gt;You are being &lt;a href=&quot;https://github.com/gist/7940999&quot;&gt;redirected&lt;/a&gt;.&lt;/body&gt;&lt;/html&gt;</code></pre></noscript></div>
+
+
+<p>base nginx.conf:</p>
+
+<div><script src='https://gist.github.com/7941214.js?file='></script>
+<noscript><pre><code>&lt;html&gt;&lt;body&gt;You are being &lt;a href=&quot;https://github.com/gist/7941214&quot;&gt;redirected&lt;/a&gt;.&lt;/body&gt;&lt;/html&gt;</code></pre></noscript></div>
+
+
+<p>base syncer.rb:</p>
+
+<div><script src='https://gist.github.com/7941042.js?file='></script>
+<noscript><pre><code>&lt;html&gt;&lt;body&gt;You are being &lt;a href=&quot;https://github.com/gist/7941042&quot;&gt;redirected&lt;/a&gt;.&lt;/body&gt;&lt;/html&gt;</code></pre></noscript></div>
+
+
+<p>base supervisord.conf:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>[program:syncer]
+</span><span class='line'>command=/home/mho/.rvm/bin/ruby /home/mho/syncer/sync.rb 5
+</span><span class='line'>stdout_logfile_maxbytes=1MB
+</span><span class='line'>stderr_logfile_maxbytes=1MB
+</span><span class='line'>stdout_logfile=/tmp/%(program_name)s-stdout.log
+</span><span class='line'>stderr_logfile=/tmp/%(program_name)s-stderr.log
+</span><span class='line'>user=mho
+</span><span class='line'>directory=/home/mho/syncer
+</span><span class='line'>autostart=true
+</span><span class='line'>autorestart=true</span></code></pre></td></tr></table></div></figure>
+
+
+<p>base my.cnf:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>[mysqld]
+</span><span class='line'>datadir=/var/lib/mysql
+</span><span class='line'>socket=/var/lib/mysql/mysql.sock
+</span><span class='line'>user=mysql
+</span><span class='line'># Disabling symbolic-links is recommended to prevent assorted security risks
+</span><span class='line'>symbolic-links=0
+</span><span class='line'>character-set-server = utf8
+</span><span class='line'>max_connections = 1000
+</span><span class='line'> 
+</span><span class='line'>key_buffer_size = 32M
+</span><span class='line'>max_allowed_packet = 16M
+</span><span class='line'>thread_stack = 192K
+</span><span class='line'>thread_cache_size  = 200
+</span><span class='line'> 
+</span><span class='line'>#slow_query_log=1
+</span><span class='line'>#long_query_time=0
+</span><span class='line'>query_cache_type = 0
+</span><span class='line'>skip-innodb_doublewrite
+</span><span class='line'>innodb_buffer_pool_size = 192M
+</span><span class='line'>innodb_log_buffer_size = 4M
+</span><span class='line'>innodb_flush_log_at_trx_commit = 0
+</span><span class='line'>innodb_support_xa = 0</span></code></pre></td></tr></table></div></figure>
+
+
+<p>sysctl.conf:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>fs.file-max = 1048576
+</span><span class='line'>
+</span><span class='line'>net.ipv4.ip_local_port_range = 1024 65535
+</span><span class='line'>
+</span><span class='line'>net.core.wmem_max = 16777216
+</span><span class='line'>net.core.rmem_max = 16777216
+</span><span class='line'>
+</span><span class='line'>net.ipv4.tcp_wmem = 4096 65536 16777216
+</span><span class='line'>net.ipv4.tcp_rmem = 4096 87380 16777216
+</span><span class='line'>
+</span><span class='line'>net.core.somaxconn = 8192
+</span><span class='line'>
+</span><span class='line'>net.core.netdev_max_backlog = 8000
+</span><span class='line'>
+</span><span class='line'>net.ipv4.tcp_max_syn_backlog = 8192
+</span><span class='line'>
+</span><span class='line'>net.ipv4.tcp_synack_retries = 3
+</span><span class='line'>net.ipv4.tcp_retries2 = 5
+</span><span class='line'>
+</span><span class='line'>net.ipv4.tcp_keepalive_time = 900
+</span><span class='line'>
+</span><span class='line'>net.ipv4.tcp_keepalive_probes = 3
+</span><span class='line'>
+</span><span class='line'>net.ipv4.tcp_keepalive_intvl = 15
+</span><span class='line'>
+</span><span class='line'>net.nf_conntrack_max = 1000000</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>終わりに</h2>
+
+<p>最初はecho選手権になってたのであんまりやる気がなかったけど、後半はちょっと楽しめました。結果は惜しかったけど、今まで<a href="https://www.facebook.com/tuningathon">チューニンガソン</a>や<a href="http://isucon.net">ISUCON</a>に出場したり、トラブル☆しゅーたーずを主催したり、日々の運用等の経験が生きた感じがします。運営の皆様、ありがとうございました。次があれば楽しみにしています！（レビュレーションの解釈が微妙だったのでそこはブラッシュアップして欲しいですね）</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[ISUCON3の本戦に参加してきた]]></title>

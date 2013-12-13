@@ -9,7 +9,8 @@
   <meta name="author" content="Michael H. Oshita">
 
   
-  <meta name="description" content="先月の予選に通過したので、ISUCON3の本戦に参加してきました。 完敗。 お題発表 画像版twitter。投稿する画像の公開レベルをpublic, private, followers onlyに設定できるシステムが1台のVPS（2コア、4GB RAM）で動いている状態。プレスを打った為、 &hellip;">
+  <meta name="description" content="少し前にサバフェス！2013 Autumnに参加してきました。
+内容を忘れないうちにやった事を書いておきます。 スコアはトップレベルだったものの、運営側がサーバを起動した所、自動でサービスが立ち上がらなかったらしいので残念な事に参考値のみに。（提出前に2回ぐらい再起動確認したのにおかしいなぁ &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -77,6 +78,243 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2013/12/13/serverfesta-2013-autumn/">サバフェス！2013に参加してきた</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-12-13T15:59:00+09:00" pubdate data-updated="true">Dec 13<span>th</span>, 2013</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>少し前に<a href="http://connpass.com/event/3690/">サバフェス！2013 Autumn</a>に参加してきました。
+内容を忘れないうちにやった事を書いておきます。</p>
+
+<p>スコアはトップレベルだったものの、運営側がサーバを起動した所、自動でサービスが立ち上がらなかったらしいので残念な事に参考値のみに。（提出前に2回ぐらい再起動確認したのにおかしいなぁ。。）
+優勝スコアは90.830 (GET 199,802 : POST 18,106)で、私のは<strong>93.410</strong> (GET 162,923 : POST 29,930)でした。</p>
+
+<h2>お題</h2>
+
+<p>「最速インフラを構築せよ！！！</p>
+
+<p>WordPressに一切手を加えずに、どこまで高速化できるのか！？</p>
+
+<p>OSチューニング、サーバチューニング、負荷分散…最適解を探せ！」</p>
+
+<p>&#8211;</p>
+
+<p><a href="http://www.idcf.jp/cloud/service/self.html">IDCFクラウド</a>上で仮想マシン5台（M8タイプまで）を使ってスコアを競うというもの。
+<a href="https://www.facebook.com/tuningathon">チューニンガソン</a>と似てますが、サーバが複数台使えるのが良いですね。</p>
+
+<h2>構成</h2>
+
+<p>表彰式でLTしたけど、LVS (DSR) + php 5.5 + apcu + Varnish + nginx (lua) + memcached</p>
+
+<p>ポイントは</p>
+
+<ul>
+<li>GET時は1台では帯域の限界に達したのでLVS (DSR)による4台での並列応答</li>
+<li>POST時には必ず各Varnishのキャッシュクリア（ban）する</li>
+<li>POST時にnginx->memcachedへ渡すと高速すぎたのであえてsleepを5msして遅延させる</li>
+<li>nginx(lua)はコード量が多いと通らないのでぎりぎりまで削減</li>
+<li>memcachedからmysqlへの非同期処理（5ms間隔）</li>
+<li>mysqlの更新処理はそんなにいらないので基本チューニングとInnoDBにしただけで、5.1のまま</li>
+<li>サーバはM8までいらないのでM4で</li>
+</ul>
+
+
+<p>でしょうか。特に意識したのはmemcachedからmysqlへの許容範囲内での同期と複数台あるVarnishのキャッシュクリアですね。他のチームはnginxでTTLを設定して逃げたようですが、実運用時にはPOST時にキャッシュクリアを確実にする必要があるのでVarnish moduleをコンパイルして他のsiblingへ並列でban処理を投げてました。まあ、今回のベンチマークツールはそこまで厳格じゃなかったけど、最終チェックは人間が動作させるので。</p>
+
+<p>LT資料。スコア推移と簡単な構成の紹介</p>
+
+<div class="embed-ss-container"><iframe src="http://www.slideshare.net/slideshow/embed_code/29171459 "></iframe></div>
+
+
+<h2>設定ファイル</h2>
+
+<p>以下、設定ファイルです。いらない所は削ったけど動くはず。。</p>
+
+<p>backend varnish vcl （各backendの設定は微妙に違う）:</p>
+
+<div><script src='https://gist.github.com/7941009.js?file='></script>
+<noscript><pre><code>&lt;html&gt;&lt;body&gt;You are being &lt;a href=&quot;https://github.com/gist/7941009&quot;&gt;redirected&lt;/a&gt;.&lt;/body&gt;&lt;/html&gt;</code></pre></noscript></div>
+
+
+<p>backend nginx.conf:</p>
+
+<div><script src='https://gist.github.com/7940999.js?file='></script>
+<noscript><pre><code>&lt;html&gt;&lt;body&gt;You are being &lt;a href=&quot;https://github.com/gist/7940999&quot;&gt;redirected&lt;/a&gt;.&lt;/body&gt;&lt;/html&gt;</code></pre></noscript></div>
+
+
+<p>base nginx.conf:</p>
+
+<div><script src='https://gist.github.com/7941214.js?file='></script>
+<noscript><pre><code>&lt;html&gt;&lt;body&gt;You are being &lt;a href=&quot;https://github.com/gist/7941214&quot;&gt;redirected&lt;/a&gt;.&lt;/body&gt;&lt;/html&gt;</code></pre></noscript></div>
+
+
+<p>base syncer.rb:</p>
+
+<div><script src='https://gist.github.com/7941042.js?file='></script>
+<noscript><pre><code>&lt;html&gt;&lt;body&gt;You are being &lt;a href=&quot;https://github.com/gist/7941042&quot;&gt;redirected&lt;/a&gt;.&lt;/body&gt;&lt;/html&gt;</code></pre></noscript></div>
+
+
+<p>base supervisord.conf:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>[program:syncer]
+</span><span class='line'>command=/home/mho/.rvm/bin/ruby /home/mho/syncer/sync.rb 5
+</span><span class='line'>stdout_logfile_maxbytes=1MB
+</span><span class='line'>stderr_logfile_maxbytes=1MB
+</span><span class='line'>stdout_logfile=/tmp/%(program_name)s-stdout.log
+</span><span class='line'>stderr_logfile=/tmp/%(program_name)s-stderr.log
+</span><span class='line'>user=mho
+</span><span class='line'>directory=/home/mho/syncer
+</span><span class='line'>autostart=true
+</span><span class='line'>autorestart=true</span></code></pre></td></tr></table></div></figure>
+
+
+<p>base my.cnf:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>[mysqld]
+</span><span class='line'>datadir=/var/lib/mysql
+</span><span class='line'>socket=/var/lib/mysql/mysql.sock
+</span><span class='line'>user=mysql
+</span><span class='line'># Disabling symbolic-links is recommended to prevent assorted security risks
+</span><span class='line'>symbolic-links=0
+</span><span class='line'>character-set-server = utf8
+</span><span class='line'>max_connections = 1000
+</span><span class='line'> 
+</span><span class='line'>key_buffer_size = 32M
+</span><span class='line'>max_allowed_packet = 16M
+</span><span class='line'>thread_stack = 192K
+</span><span class='line'>thread_cache_size  = 200
+</span><span class='line'> 
+</span><span class='line'>#slow_query_log=1
+</span><span class='line'>#long_query_time=0
+</span><span class='line'>query_cache_type = 0
+</span><span class='line'>skip-innodb_doublewrite
+</span><span class='line'>innodb_buffer_pool_size = 192M
+</span><span class='line'>innodb_log_buffer_size = 4M
+</span><span class='line'>innodb_flush_log_at_trx_commit = 0
+</span><span class='line'>innodb_support_xa = 0</span></code></pre></td></tr></table></div></figure>
+
+
+<p>sysctl.conf:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>fs.file-max = 1048576
+</span><span class='line'>
+</span><span class='line'>net.ipv4.ip_local_port_range = 1024 65535
+</span><span class='line'>
+</span><span class='line'>net.core.wmem_max = 16777216
+</span><span class='line'>net.core.rmem_max = 16777216
+</span><span class='line'>
+</span><span class='line'>net.ipv4.tcp_wmem = 4096 65536 16777216
+</span><span class='line'>net.ipv4.tcp_rmem = 4096 87380 16777216
+</span><span class='line'>
+</span><span class='line'>net.core.somaxconn = 8192
+</span><span class='line'>
+</span><span class='line'>net.core.netdev_max_backlog = 8000
+</span><span class='line'>
+</span><span class='line'>net.ipv4.tcp_max_syn_backlog = 8192
+</span><span class='line'>
+</span><span class='line'>net.ipv4.tcp_synack_retries = 3
+</span><span class='line'>net.ipv4.tcp_retries2 = 5
+</span><span class='line'>
+</span><span class='line'>net.ipv4.tcp_keepalive_time = 900
+</span><span class='line'>
+</span><span class='line'>net.ipv4.tcp_keepalive_probes = 3
+</span><span class='line'>
+</span><span class='line'>net.ipv4.tcp_keepalive_intvl = 15
+</span><span class='line'>
+</span><span class='line'>net.nf_conntrack_max = 1000000</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>終わりに</h2>
+
+<p>最初はecho選手権になってたのであんまりやる気がなかったけど、後半はちょっと楽しめました。結果は惜しかったけど、今まで<a href="https://www.facebook.com/tuningathon">チューニンガソン</a>や<a href="http://isucon.net">ISUCON</a>に出場したり、トラブル☆しゅーたーずを主催したり、日々の運用等の経験が生きた感じがします。運営の皆様、ありがとうございました。次があれば楽しみにしています！（レビュレーションの解釈が微妙だったのでそこはブラッシュアップして欲しいですね）</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -1456,360 +1694,9 @@ chckerがrails版に対して失敗していたような箇所を見つけたの
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2012/07/03/tuningathon4/">第4回チューニンガソン(Tuningathon)で優勝してきた</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-07-03T01:29:00+09:00" pubdate data-updated="true">Jul 3<span>rd</span>, 2012</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>3回目の参戦となる<a href="http://www.zusaar.com/event/312053">#tuningathon</a>で<a href="https://twitter.com/tnmt">@tnmt</a>さんと共に優勝してきました。</p>
-
-<p>やった事は相方の<a href="http://blog.tnmt.info/2012/07/01/tuningathon4/">ブログに書かれて</a>いるので、補足。</p>
-
-<h3>開演前</h3>
-
-<p>朝起きると、やたらとアラートが飛んでいるので調べると、うるう秒のせいでサーバ達が高負荷状態に。
-<a href="https://twitter.com/tnmt">@tnmt</a>さんも同じ原因で障害対応中で待ち合わせ時間には間に合わず、参加が危うい感じ。
-自分の方はなんとか片付けて、ぎりぎり開演前に到着。</p>
-
-<h3>お題発表</h3>
-
-<p>前々からやって欲しかったRuby on Rails! で、Refinery CMSというブログのチューニング。<br/>
-内心喜びました。</p>
-
-<h3>前半戦</h3>
-
-<p>作業開始前にはまず何よりもバックアップ。
-いつでも環境を戻せるようにRailsのフォルダをコピーしてMySQLのdumpを取っておく。</p>
-
-<p>速攻でrbenv + ruby-buildを入れて、rubyの最新バージョン（1.9.3-p194）をインストール。
-ビルドの間、まずは環境把握。システムのパッケージ版ruby 1.8.7が入っている事を確認して、
-設定フォルダ（tuningathon/config）配下をさらっと目を通す。
-my.cnfも見て全然パラメータ設定されてないけど/var/lib/mysqlの容量をチェックしたらほぼ空なので、
-ここのチューニングはあまり効果が望めずと判断。やるなら後回し。</p>
-
-<p>ビルドが終えた頃にデフォルト状態のままで動かして、まずベースとなるベンチマーク。
-大体こんな感じでした。</p>
-
-<div><script src='https://gist.github.com/3038461.js?file='></script>
-<noscript><pre><code>12 fetches, 9 max parallel, 45576 bytes, in 10 seconds
-3798 mean bytes/connection
-1.2 fetches/sec, 4557.6 bytes/sec
-msecs/connect: 83.4978 mean, 1000.51 max, 0.044 min
-msecs/first-response: 4880.63 mean, 6446.66 max, 2048.37 min
-HTTP response codes:
-  code 200 -- 12
-Score: 2.439 (get=1.200, comment=1.239(2), check=1.000)</code></pre></noscript></div>
-
-
-<p>topで見ると完全にrubyがCPUを専有しているので、まずそこから着手することに。</p>
-
-<p>次にdevelopment.rbのキャッシュ周りのパラメータをいじる。
-development modeだとソースの変更が即時反映・確認できるよう、毎回クラスをロードしているので遅いんです。</p>
-
-<pre><code>config.cache_classes = true
-config.action_controller.perform_caching = true
-</code></pre>
-
-<p>これでだけでスコアが倍に。</p>
-
-<pre><code>Score: 5.255 (get=2.900, comment=2.355(3), check=1.000)
-</code></pre>
-
-<p>次にruby 1.9.3-p194で動かして計測し、6超え。</p>
-
-<pre><code>Score: 6.102 (get=3.600, comment=2.502(3), check=1.000)
-</code></pre>
-
-<p>この頃にやっと相方が合流し、予めGoogle Docsに書いてあった作業ログを共有。
-unicornへの置き換えを試しみる事に合意。
-設定ファイルを作ってもらっている最中に、jrubyへの置き換えを試すが、
-制約上Gemfileの変更が不可だった為、mysql2のgemを外す事ができずDB接続ができなかったので断念。</p>
-
-<p>unicorn単体で動かすと9ぐらい出たので、worker数を変えたり、
-unicorn_rails gemからRails 3で推奨されている素のunicorn gemを試したりして、16-21。</p>
-
-<pre><code>Score: 16.205 (get=9.900, comment=6.305(7), check=1.000)
-Score: 19.869 (get=13.000, comment=6.869(7), check=1.000)
-Score: 21.812 (get=14.000, comment=7.812(8), check=1.000)
-</code></pre>
-
-<p>ベンチを取り続けると、commentがどんどん溜まって行くので
-viewのrender時間が増えてスコアが落ちたりしたので、毎回DBを初期化したのとRailsを再起動する事によってスコアが安定しだす。</p>
-
-<p>最後にrubyのガベージコレクションを切ったりして、この時点での自己ベストがこんな感じでした。</p>
-
-<pre><code>Score: 29.733 (get=19.000, comment=10.733(11), check=1.000)
-</code></pre>
-
-<h3>後半戦</h3>
-
-<p>rubyで出来そうなところは一通りやったので、次は前々から構想していた
-Railsの前段にReverse Proxyを置く事にチャレンジ。Varnishを入れて設定し始める。</p>
-
-<p>ちょうどこの時期にTL上で<a href="https://twitter.com/netmarkjp">@netmarkjp</a>さんが1000超えのスコアを呟きはじめるので、
-なんらかのReverse Proxyを使ったんだと確信。</p>
-
-<p>実はこの時、1000超えのスコアはこちらでも出てたけど、たまに1とか0が出る不安定さだったので、
-呟きませんでした。（運営側に計測されなかったのは別port&lt;Varnishデフォルトの6081番>で試していたから）</p>
-
-<p>後は黙々と設定をいじりつつ、相方に念の為DBのテーブルにインデックスを張ってもらったり、
-ベンチマークスクリプトを解析してもらって、適切な設定を探るべく試行錯誤な感じ。</p>
-
-<p>16時からの公式計測  段階ではまだスコアが安定してなかったので、ひとまず入賞が確実なrubyオンリーな構成で
-2〜3回来るのを確認。その後、終了20分前になんとか安定したので一気にportを置き換えて、
-DBを初期化し、railsを再起動して待ちかまえる。次の計測でそれまでトップだった<a href="https://twitter.com/netmarkjp">@netmarkjp</a>さんを逆転したようです。</p>
-
-<p>まだ若干時間が余っていたので、Varnishのスレッド数等をいじったりして、17時終了の30秒前に設定を入れて再起動。
-後から知ったのですが、この設定がどうやら効いたようで1番最後の計測でさらにスコアが跳ねた模様。
-最終的なスコアは「<strong>1351.54</strong>」でした。</p>
-
-<p>ちなみにローカル計測ベスト（3200.23）だとこんな感じだったけど、リモート経由だとネットワーク（？）がボトルネックになって
-そこまで出ませんでした。</p>
-
-<div><script src='https://gist.github.com/3038562.js?file='></script>
-<noscript><pre><code>32005 fetches, 9 max parallel, 1.20014e+08 bytes, in 10.0008 seconds  
-3749.86 mean bytes/connection 
-3200.23 fetches/sec, 1.20004e+07 bytes/sec  
-msecs/connect: 0.249777 mean, 64.577 max, 0.023 min 
-msecs/first-response: 2.02407 mean, 1094.87 max, 0.188 min  
-15156 bad byte counts
-HTTP response codes:  
-  code 200 -- 32005    
-Score: 3203.969 (get=3200.244, comment=3.725(4), check=1.000)    </code></pre></noscript></div>
-
-
-<p>varnishの設定ファイルはこんな感じ。
-TTLを強制有効にして、POST後にいかにキャッシュクリアさせるかがポイント。
-じゃないと、チェックの成功率の2乗でペナルティが課され、すごい勢いでスコアが減点されます。</p>
-
-<p>/etc/sysconfig/varnish</p>
-
-<div><script src='https://gist.github.com/3038946.js?file='></script>
-<noscript><pre><code>NFILES=131072
-MEMLOCK=82000
-RELOAD_VCL=1
-
-DAEMON_OPTS=&quot;-a :3000 \
-             -T :6082 \
-             -f /etc/varnish/default.vcl \
-             -t 120 \
-             -S /etc/varnish/secret \
-             -s malloc,64M \
-             -p ban_lurker_sleep=0.01 \
-             -p thread_pool_stack=262144 \
-             -p thread_pool_add_delay=2 \
-             -p thread_pools=2 \
-             -p thread_pool_min=100 \
-             -p thread_pool_max=200&quot;</code></pre></noscript></div>
-
-
-<hr />
-
-<p>/etc/varnish/default.vcl</p>
-
-<div><script src='https://gist.github.com/3038775.js?file='></script>
-<noscript><pre><code># This is a basic VCL configuration file for varnish.  See the vcl(7)
-# man page for details on VCL syntax and semantics.
-# 
-# Default backend definition.  Set this to point to your content
-# server.
-# 
-backend default {
-  .host = &quot;127.0.0.1&quot;;
-  .port = &quot;3001&quot;;
-}
-# 
-# Below is a commented-out copy of the default VCL logic.  If you
-# redefine any of these subroutines, the built-in logic will be
-# appended to your code.
-# sub vcl_recv {
-#     if (req.restarts == 0) {
-#   if (req.http.x-forwarded-for) {
-#       set req.http.X-Forwarded-For =
-#       req.http.X-Forwarded-For + &quot;, &quot; + client.ip;
-#   } else {
-#       set req.http.X-Forwarded-For = client.ip;
-#   }
-#     }
-#     if (req.request != &quot;GET&quot; &amp;&amp;
-#       req.request != &quot;HEAD&quot; &amp;&amp;
-#       req.request != &quot;PUT&quot; &amp;&amp;
-#       req.request != &quot;POST&quot; &amp;&amp;
-#       req.request != &quot;TRACE&quot; &amp;&amp;
-#       req.request != &quot;OPTIONS&quot; &amp;&amp;
-#       req.request != &quot;DELETE&quot;) {
-#         /* Non-RFC2616 or CONNECT which is weird. */
-#         return (pipe);
-#     }
-#     if (req.request != &quot;GET&quot; &amp;&amp; req.request != &quot;HEAD&quot;) {
-#         /* We only deal with GET and HEAD by default */
-#         return (pass);
-#     }
-#     if (req.http.Authorization || req.http.Cookie) {
-#         /* Not cacheable by default */
-#         return (pass);
-#     }
-#     return (lookup);
-# }
-sub vcl_recv {
-    if (req.request == &quot;POST&quot;) {
-    ban(&quot;req.url ~ /&quot;);
-    return(pass);
-    }
-}
-
-# 
-# sub vcl_pipe {
-#     # Note that only the first request to the backend will have
-#     # X-Forwarded-For set.  If you use X-Forwarded-For and want to
-#     # have it set for all requests, make sure to have:
-#     # set bereq.http.connection = &quot;close&quot;;
-#     # here.  It is not set by default as it might break some broken web
-#     # applications, like IIS with NTLM authentication.
-#     return (pipe);
-# }
-# 
-# sub vcl_pass {
-#     return (pass);
-# }
-# 
-# sub vcl_hash {
-#     hash_data(req.url);
-#     if (req.http.host) {
-#         hash_data(req.http.host);
-#     } else {
-#         hash_data(server.ip);
-#     }
-#     return (hash);
-# }
-# 
-# sub vcl_hit {
-#     return (deliver);
-# }
-# 
-# sub vcl_miss {
-#     return (fetch);
-# }
-# 
-# sub vcl_fetch {
-#     if (beresp.ttl &lt;= 0s ||
-#         beresp.http.Set-Cookie ||
-#         beresp.http.Vary == &quot;*&quot;) {
-#       /*
-#        * Mark as &quot;Hit-For-Pass&quot; for the next 2 minutes
-#        */
-#       set beresp.ttl = 120 s;
-#       return (hit_for_pass);
-#     }
-#     return (deliver);
-# }
-sub vcl_fetch {
-    if (beresp.ttl &lt;= 0s) {
-    set beresp.ttl = 120s;
-    }
-}
-
-# 
-# sub vcl_deliver {
-#     return (deliver);
-# }
-sub vcl_deliver {
-    if (obj.hits &gt; 0) {
-        set resp.http.X-Cache = &quot;HIT&quot;;
-    } else {
-        set resp.http.X-Cache = &quot;MISS&quot;;
-    }
-}
-# 
-# sub vcl_error {
-#     set obj.http.Content-Type = &quot;text/html; charset=utf-8&quot;;
-#     set obj.http.Retry-After = &quot;5&quot;;
-#     synthetic {&quot;
-# &lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
-# &lt;!DOCTYPE html PUBLIC &quot;-//W3C//DTD XHTML 1.0 Strict//EN&quot;
-#  &quot;http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd&quot;&gt;
-# &lt;html&gt;
-#   &lt;head&gt;
-#     &lt;title&gt;&quot;} + obj.status + &quot; &quot; + obj.response + {&quot;&lt;/title&gt;
-#   &lt;/head&gt;
-#   &lt;body&gt;
-#     &lt;h1&gt;Error &quot;} + obj.status + &quot; &quot; + obj.response + {&quot;&lt;/h1&gt;
-#     &lt;p&gt;&quot;} + obj.response + {&quot;&lt;/p&gt;
-#     &lt;h3&gt;Guru Meditation:&lt;/h3&gt;
-#     &lt;p&gt;XID: &quot;} + req.xid + {&quot;&lt;/p&gt;
-#     &lt;hr&gt;
-#     &lt;p&gt;Varnish cache server&lt;/p&gt;
-#   &lt;/body&gt;
-# &lt;/html&gt;
-# &quot;};
-#     return (deliver);
-# }
-# 
-# sub vcl_init {
-#   return (ok);
-# }
-# 
-# sub vcl_fini {
-#   return (ok);
-# }
-</code></pre></noscript></div>
-
-
-<p>世に出てるの設定例はVarnish 2系が多いので、3系はsyntaxが違うので注意。
-コメントアウトされたコードはデフォルト挙動なので、記述されたのとマージされます。
-<a href="https://twitter.com/netmarkjp">@netmarkjp</a>さんの<a href="http://netmark.jp/2012/07/tuningathon-4.html">設定</a>はvcl_fetch()内でキャッシュクリアしてるけど、
-Varnishの<a href="https://www.varnish-software.com/static/book/_images/vcl.png">フロー</a>的には
-一番最初に呼ばれるvcl_recv()内でやった方がより効果的です。</p>
-
-<h3>まとめ</h3>
-
-<ul>
-<li>Railsは比較的遅いので、いかにヒットさせないかを考える</li>
-<li>でもRubyのチューニングも重要。多分これが2位との差</li>
-<li>ベンチマークスクリプトをよく読んで動きやスコアリングを把握する</li>
-<li>運営側はチャレンジングな事は先にやっておけと推奨していたけど、まず堅実なチューニングをして最後の冒険が良いかと。</li>
-<li>最後まで諦めない気持ち</li>
-</ul>
-
-
-<h3>おまけ</h3>
-
-<p>翌日、出社したら何故か優勝記念と称してMountain Dewが10本贈呈されてましたw</p>
-
-<p><img src="https://lh5.googleusercontent.com/-Ws35zyPY6Ww/UZtL9Wjw9jI/AAAAAAAAAv4/hMp5PFfAFAY/w743-h557-no/IMG_8811.JPG" alt="tuningathon優勝記念" /></p>
-
-<p>最後に運営の皆様、ありがとうございました！</p>
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
+    
+      <a class="prev" href="/blog/page/2/">&larr; Older</a>
     
     <a href="/blog/archives">Blog Archives</a>
     
@@ -1820,6 +1707,10 @@ Varnishの<a href="https://www.varnish-software.com/static/book/_images/vcl.png"
     <section>
   <h1>Recent Posts</h1>
   <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2013/12/13/serverfesta-2013-autumn/">サバフェス！2013に参加してきた</a>
+      </li>
     
       <li class="post">
         <a href="/blog/2013/11/11/isucon3-final/">ISUCON3の本戦に参加してきた</a>
@@ -1855,10 +1746,6 @@ Varnishの<a href="https://www.varnish-software.com/static/book/_images/vcl.png"
     
       <li class="post">
         <a href="/blog/2012/11/05/isucon2/">ISUCON2に参加してきた</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2012/07/03/tuningathon4/">第4回チューニンガソン(Tuningathon)で優勝してきた</a>
       </li>
     
   </ul>

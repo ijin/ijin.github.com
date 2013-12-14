@@ -4,7 +4,7 @@
   <title><![CDATA[@ijin]]></title>
   <link href="http://ijin.github.com/atom.xml" rel="self"/>
   <link href="http://ijin.github.com/"/>
-  <updated>2013-12-13T18:56:13+09:00</updated>
+  <updated>2013-12-14T23:59:10+09:00</updated>
   <id>http://ijin.github.com/</id>
   <author>
     <name><![CDATA[Michael H. Oshita]]></name>
@@ -12,6 +12,264 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Autoscalingによるな自動復旧(Immutable Infrastucture)]]></title>
+    <link href="http://ijin.github.com/blog/2013/12/14/self-healing-with-non-elb-autoscaling2/"/>
+    <updated>2013-12-14T23:40:00+09:00</updated>
+    <id>http://ijin.github.com/blog/2013/12/14/self-healing-with-non-elb-autoscaling2</id>
+    <content type="html"><![CDATA[<p>以前、「<a href="http://ijin.github.com/blog/2013/02/08/self-healing-with-non-elb-autoscaling/">非ELBなAutoscalingによる自動復旧</a>」でインスタンスの自動復旧の挙動をテストしました。
+障害が発生したサーバをterminateし、新サーバをstartしてリプレースする仕組みはまさに最近話題のImmutable Infrastructureですね。
+CDP的には「<a href="http://aws.clouddesignpattern.org/index.php/CDP:Server_Swapping%E3%83%91%E3%82%BF%E3%83%BC%E3%83%B3">Server Swappingパターン</a>」が一番近いですが、今後はImmutable分類もあっても良いような気がします。</p>
+
+<p>前回はAuto Scalingがインスタンス障害を認知してリプレースするまでのタイムラグが約20分だと分かりました。
+本日、インスタンスの状態をチェックするEC2 Status Checkが1分間隔になった（以前は5分間隔）と<a href="https://forums.aws.amazon.com/ann.jspa?annID=2266">発表</a>されたので、
+これによってタイムラグが短縮されたか検証してみます。</p>
+
+<h3>設定</h3>
+
+<p>手順は前回と一緒なので省略</p>
+
+<h3>自動復旧</h3>
+
+<p>通信を遮断し、Status Check Failを発動させる</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>ubuntu@ip-10-123-32-180:~$ date; sudo ifdown eth0
+</span><span class='line'>Sat Dec 14 14:19:19 UTC 2013
+</span><span class='line'>Write failed: Broken pipe</span></code></pre></td></tr></table></div></figure>
+
+
+<p>EC2のStatus Checkを流す</p>
+
+<pre><code>while true; do date; aws ec2 describe-instance-status --instance-ids i-b03788b5 --query 'InstanceStatuses[*].InstanceStatus' --output text ; echo ; sleep 10; done
+</code></pre>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>Sat Dec 14 23:22:05 JST 2013
+</span><span class='line'>ok
+</span><span class='line'>DETAILS reachability    passed
+</span><span class='line'>
+</span><span class='line'>Sat Dec 14 23:22:16 JST 2013
+</span><span class='line'>ok
+</span><span class='line'>DETAILS reachability    passed
+</span><span class='line'>
+</span><span class='line'>Sat Dec 14 23:22:27 JST 2013
+</span><span class='line'>impaired
+</span><span class='line'>DETAILS 2013-12-14T14:22:00.000Z        reachability    failed
+</span><span class='line'>
+</span><span class='line'>Sat Dec 14 23:22:37 JST 2013
+</span><span class='line'>impaired
+</span><span class='line'>DETAILS 2013-12-14T14:22:00.000Z        reachability    failed</span></code></pre></td></tr></table></div></figure>
+
+
+<p>約3分でStatus異常が検知されました。</p>
+
+<p>Auto ScalingのHealthStatusを流す</p>
+
+<pre><code>while true; do date; aws autoscaling describe-auto-scaling-instances --query 'AutoScalingInstances[*].HealthStatus' --output text; echo; sleep 10; done
+</code></pre>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+<span class='line-number'>62</span>
+<span class='line-number'>63</span>
+<span class='line-number'>64</span>
+<span class='line-number'>65</span>
+<span class='line-number'>66</span>
+<span class='line-number'>67</span>
+<span class='line-number'>68</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>Sat Dec 14 23:38:06 JST 2013
+</span><span class='line'>[
+</span><span class='line'>    {
+</span><span class='line'>        "State": "InService", 
+</span><span class='line'>        "Health": "HEALTHY", 
+</span><span class='line'>        "ID": "i-b03788b5"
+</span><span class='line'>    }
+</span><span class='line'>]
+</span><span class='line'>
+</span><span class='line'>Sat Dec 14 23:38:17 JST 2013
+</span><span class='line'>[
+</span><span class='line'>    {
+</span><span class='line'>        "State": "InService", 
+</span><span class='line'>        "Health": "UNHEALTHY", 
+</span><span class='line'>        "ID": "i-b03788b5"
+</span><span class='line'>    }
+</span><span class='line'>]
+</span><span class='line'>
+</span><span class='line'>Sat Dec 14 23:38:28 JST 2013
+</span><span class='line'>[
+</span><span class='line'>    {
+</span><span class='line'>        "State": "InService", 
+</span><span class='line'>        "Health": "UNHEALTHY", 
+</span><span class='line'>        "ID": "i-b03788b5"
+</span><span class='line'>    }
+</span><span class='line'>]
+</span><span class='line'>
+</span><span class='line'>Sat Dec 14 23:38:38 JST 2013
+</span><span class='line'>[
+</span><span class='line'>    {
+</span><span class='line'>        "State": "Terminating", 
+</span><span class='line'>        "Health": "UNHEALTHY", 
+</span><span class='line'>        "ID": "i-b03788b5"
+</span><span class='line'>    }
+</span><span class='line'>]
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'>Sat Dec 14 23:38:49 JST 2013
+</span><span class='line'>[
+</span><span class='line'>    {
+</span><span class='line'>        "State": "Terminating", 
+</span><span class='line'>        "Health": "UNHEALTHY", 
+</span><span class='line'>        "ID": "i-b03788b5"
+</span><span class='line'>    }
+</span><span class='line'>]
+</span><span class='line'>
+</span><span class='line'>Sat Dec 14 23:38:59 JST 2013
+</span><span class='line'>[
+</span><span class='line'>    {
+</span><span class='line'>        "State": "Terminating", 
+</span><span class='line'>        "Health": "UNHEALTHY", 
+</span><span class='line'>        "ID": "i-b03788b5"
+</span><span class='line'>    }
+</span><span class='line'>]
+</span><span class='line'>
+</span><span class='line'>Sat Dec 14 23:39:10 JST 2013
+</span><span class='line'>[
+</span><span class='line'>    {
+</span><span class='line'>        "State": "Pending", 
+</span><span class='line'>        "Health": "HEALTHY", 
+</span><span class='line'>        "ID": "i-4cc7a849"
+</span><span class='line'>    }, 
+</span><span class='line'>    {
+</span><span class='line'>        "State": "Terminating", 
+</span><span class='line'>        "Health": "UNHEALTHY", 
+</span><span class='line'>        "ID": "i-b03788b5"
+</span><span class='line'>    }
+</span><span class='line'>]
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>やっとAuto Scalingの方でも異常検知。</p>
+
+<p>SNS通知</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>Service: AWS Auto Scaling
+</span><span class='line'>Time: 2013-12-14T14:39:41.271Z
+</span><span class='line'>RequestId: f622c6d2-8c77-4fef-8b38-ece463574712
+</span><span class='line'>Event: autoscaling:EC2_INSTANCE_TERMINATE
+</span><span class='line'>AccountId: 111155559999
+</span><span class='line'>AutoScalingGroupName: test-sg
+</span><span class='line'>AutoScalingGroupARN: arn:aws:autoscaling:ap-northeast-1:11115559999:autoScalingGroup:0e771015-f979-4afe-b065-595abafdbf9b:autoScalingGroupName/test-sg
+</span><span class='line'>ActivityId: f622c6d2-8c77-4fef-8b38-ece463574712
+</span><span class='line'>Description: Terminating EC2 instance: i-b03788b5
+</span><span class='line'>Cause: At 2013-12-14T14:38:38Z an instance was taken out of service in response to a system health-check.
+</span><span class='line'>StartTime: 2013-12-14T14:38:38.257Z
+</span><span class='line'>EndTime: 2013-12-14T14:39:41.271Z
+</span><span class='line'>StatusCode: InProgress
+</span><span class='line'>StatusMessage:
+</span><span class='line'>Progress: 50
+</span><span class='line'>EC2InstanceId: i-b03788b5</span></code></pre></td></tr></table></div></figure>
+
+
+<p>やはり20分のタイムラグ変わらずですね。。</p>
+
+<h3>結論</h3>
+
+<p>というわけで、EC2 Status Checkが1分間隔になっても、EC2のみ（ELBを使わず）のAuto Scalingによる自動復旧時間は変わらずでした。</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[サバフェス！2013に参加してきた]]></title>

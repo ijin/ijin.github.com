@@ -85,7 +85,7 @@ CDP的には「Server &hellip;">
       
   <header>
     
-      <h1 class="entry-title"><a href="/blog/2013/12/14/self-healing-with-non-elb-autoscaling2/">Autoscalingによるな自動復旧(Immutable Infrastucture)</a></h1>
+      <h1 class="entry-title"><a href="/blog/2013/12/14/self-healing-with-non-elb-autoscaling2/">Autoscalingによる自動復旧(Immutable Infrastucture)</a></h1>
     
     
       <p class="meta">
@@ -112,9 +112,9 @@ CDP的には「Server &hellip;">
 障害が発生したサーバをterminateし、新サーバをstartしてリプレースする仕組みはまさに最近話題のImmutable Infrastructureですね。
 CDP的には「<a href="http://aws.clouddesignpattern.org/index.php/CDP:Server_Swapping%E3%83%91%E3%82%BF%E3%83%BC%E3%83%B3">Server Swappingパターン</a>」が一番近いですが、今後はImmutable分類もあっても良いような気がします。</p>
 
-<p>前回はAuto Scalingがインスタンス障害を認知してリプレースするまでのタイムラグが約20分だと分かりました。
+<p>前回はAuto Scalingがインスタンス障害を検知してリプレースするまでのタイムラグが約20分だと分かりました。
 本日、インスタンスの状態をチェックするEC2 Status Checkが1分間隔になった（以前は5分間隔）と<a href="https://forums.aws.amazon.com/ann.jspa?annID=2266">発表</a>されたので、
-これによってタイムラグが短縮されたか検証してみます。</p>
+これによってタイムラグが短縮されたかを検証してみます。</p>
 
 <h3>設定</h3>
 
@@ -170,6 +170,8 @@ CDP的には「<a href="http://aws.clouddesignpattern.org/index.php/CDP:Server_S
 
 
 <p>約3分でStatus異常が検知されました。</p>
+
+<p><img src="https://lh5.googleusercontent.com/-pabfvBU5fW0/Uqx4SEmBYLI/AAAAAAAAA2E/abCLUwoESds/w734-h154-no/Instance_status_check_2013-12-14+at+11.34.27+PM.png"></p>
 
 <p>Auto ScalingのHealthStatusを流す</p>
 
@@ -317,6 +319,8 @@ CDP的には「<a href="http://aws.clouddesignpattern.org/index.php/CDP:Server_S
 
 <p>やっとAuto Scalingの方でも異常検知。</p>
 
+<p><img src="https://lh4.googleusercontent.com/-8Dj_s0mm9I8/Uqx4R1-Wl9I/AAAAAAAAA2I/laUZmwhUw8o/w873-h151-no/Autoscaling_health_2013-12-14+at+11.57.42+PM.png"></p>
+
 <p>SNS通知</p>
 
 <figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
@@ -358,6 +362,8 @@ CDP的には「<a href="http://aws.clouddesignpattern.org/index.php/CDP:Server_S
 <h3>結論</h3>
 
 <p>というわけで、EC2 Status Checkが1分間隔になっても、EC2のみ（ELBを使わず）のAuto Scalingによる自動復旧時間は変わらずでした。</p>
+
+<p>ちなみにAWS ConsoleでAuto Scalingの設定ができるようになったけど、まだscaling groupにtagが付けられないのがちょっと微妙ですね。。GUIで状態を見る分には楽だけど。</p>
 </div>
   
   
@@ -1832,7 +1838,7 @@ end script
   <ul id="recent_posts">
     
       <li class="post">
-        <a href="/blog/2013/12/14/self-healing-with-non-elb-autoscaling2/">Autoscalingによるな自動復旧(Immutable Infrastucture)</a>
+        <a href="/blog/2013/12/14/self-healing-with-non-elb-autoscaling2/">Autoscalingによる自動復旧(Immutable Infrastucture)</a>
       </li>
     
       <li class="post">

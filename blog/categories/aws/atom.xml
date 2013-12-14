@@ -4,7 +4,7 @@
   <title><![CDATA[Category: aws | @ijin]]></title>
   <link href="http://ijin.github.com/blog/categories/aws/atom.xml" rel="self"/>
   <link href="http://ijin.github.com/"/>
-  <updated>2013-12-15T00:38:28+09:00</updated>
+  <updated>2013-12-15T00:49:47+09:00</updated>
   <id>http://ijin.github.com/</id>
   <author>
     <name><![CDATA[Michael H. Oshita]]></name>
@@ -191,7 +191,7 @@ EC2InstanceId: i-b03788b5
 
 <h3>結論</h3>
 
-<p>というわけで、EC2 Status Checkが1分間隔になっても、EC2のみ（ELBを使わず）のAuto Scalingによる自動復旧時間は変わらずでした。</p>
+<p>というわけで、EC2 Status Checkが1分間隔になっても、EC2のみ（ELBを使わい場合）のAuto Scalingによる自動復旧時間は変わらずでした。</p>
 
 <p>ちなみにAWS ConsoleでAuto Scalingの設定ができるようになったけど、まだscaling groupにtagが付けられないのがちょっと微妙ですね。。GUIで状態を見る分には楽だけど。</p>
 ]]></content>

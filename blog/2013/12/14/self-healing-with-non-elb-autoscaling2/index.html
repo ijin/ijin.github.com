@@ -358,7 +358,7 @@ CDP的には「<a href="http://aws.clouddesignpattern.org/index.php/CDP:Server_S
 
 <h3>結論</h3>
 
-<p>というわけで、EC2 Status Checkが1分間隔になっても、EC2のみ（ELBを使わい場合）のAuto Scalingによる自動復旧時間は変わらずでした。</p>
+<p>というわけで、EC2 Status Checkが1分間隔になっても、EC2のみ（ELBを使わい場合）のAuto Scalingによる不調インスタンスの自動復旧時間は変わらずでした。</p>
 
 <p>ちなみにAWS ConsoleでAuto Scalingの設定ができるようになったけど、まだscaling groupにtagが付けられないのがちょっと微妙ですね。。GUIで状態を見る分には楽だけど。</p>
 </div>
@@ -409,6 +409,8 @@ CDP的には「<a href="http://aws.clouddesignpattern.org/index.php/CDP:Server_S
         <a class="basic-alignment left" href="/blog/2013/12/13/serverfesta-2013-autumn/" title="Previous Post: サバフェス！2013に参加してきた">&laquo; サバフェス！2013に参加してきた</a>
       
       
+        <a class="basic-alignment right" href="/blog/2014/01/01/mysql-benchmarks-on-aws-i2-instance-ssds/" title="Next Post: i2 instanceでのMySQLベンチマーク">i2 instanceでのMySQLベンチマーク &raquo;</a>
+      
     </p>
   </footer>
 </article>
@@ -426,6 +428,10 @@ CDP的には「<a href="http://aws.clouddesignpattern.org/index.php/CDP:Server_S
     <section>
   <h1>Recent Posts</h1>
   <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2014/01/01/mysql-benchmarks-on-aws-i2-instance-ssds/">i2 instanceでのMySQLベンチマーク</a>
+      </li>
     
       <li class="post">
         <a href="/blog/2013/12/14/self-healing-with-non-elb-autoscaling2/">Autoscalingによる自動復旧(Immutable Infrastucture)</a>
@@ -461,10 +467,6 @@ CDP的には「<a href="http://aws.clouddesignpattern.org/index.php/CDP:Server_S
     
       <li class="post">
         <a href="/blog/2013/02/08/self-healing-with-non-elb-autoscaling/">非ELBなAutoscalingによる自動復旧</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2012/12/03/cdp/">Auto Scalingの設定とデプロイ方法</a>
       </li>
     
   </ul>

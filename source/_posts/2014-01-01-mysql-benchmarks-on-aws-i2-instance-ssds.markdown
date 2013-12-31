@@ -71,4 +71,8 @@ hi1.4xlargeはSSD1台で計測した事を考えると、同価格帯のi2.4xlar
 
 {% img https://docs.google.com/spreadsheet/oimg?key=0Aliw9SoXFJNMdFhhcHJkcDA5MGlackNHTXlPcWt0VWc&oid=9&zx=v7nbywda04bp %}
 
+## その他 ##
+
 いやー。spot instanceがないので計測だけで結構かかってしまった。
+
+しかし、なんでhi1世代の次はhi2ではなく、i2なんだろう。

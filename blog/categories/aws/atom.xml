@@ -4,7 +4,7 @@
   <title><![CDATA[Category: aws | @ijin]]></title>
   <link href="http://ijin.github.com/blog/categories/aws/atom.xml" rel="self"/>
   <link href="http://ijin.github.com/"/>
-  <updated>2013-12-31T23:59:39+09:00</updated>
+  <updated>2014-01-01T00:03:12+09:00</updated>
   <id>http://ijin.github.com/</id>
   <author>
     <name><![CDATA[Michael H. Oshita]]></name>
@@ -88,6 +88,8 @@ sudo mount -t xfs -o noatime,logbufs=8 /dev/md0 /data
 <p>ついでにfioでそれぞれRAID0した場合のベンチマークも取ってみたけど、<a href="http://d.hatena.ne.jp/rx7/20131224/p1">並河さん</a>と結果が違ってwriteがスケールしてます。OSとmkfs.xfsのオプションしか違わないはずだけど。。</p>
 
 <p><img src="https://docs.google.com/spreadsheet/oimg?key=0Aliw9SoXFJNMdFhhcHJkcDA5MGlackNHTXlPcWt0VWc&amp;oid=9&amp;zx=v7nbywda04bp"></p>
+
+<p>いやー。spot instanceがないので計測だけで結構かかってしまった。</p>
 ]]></content>
   </entry>
   

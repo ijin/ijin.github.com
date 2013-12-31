@@ -4,7 +4,7 @@
   <title><![CDATA[Category: cdp | @ijin]]></title>
   <link href="http://ijin.github.com/blog/categories/cdp/atom.xml" rel="self"/>
   <link href="http://ijin.github.com/"/>
-  <updated>2014-01-01T01:44:09+09:00</updated>
+  <updated>2014-01-01T01:44:58+09:00</updated>
   <id>http://ijin.github.com/</id>
   <author>
     <name><![CDATA[Michael H. Oshita]]></name>
@@ -103,7 +103,7 @@ Transfer mode         : lossless
 
 <p>AMIはMarketplaceでCloudoptを検索し、各リージョンで1台づつ起動。</p>
 
-<p><img src="https://lh5.googleusercontent.com/-7PWSb_8ClIo/UVuL_bzBeAI/AAAAAAAAAtc/8Lw_bDnaPVE/s665/cloudopt_marketplace_+2013-03-30+at+2.08.07+PM.png"></p>
+<p>{% img https://lh5.googleusercontent.com/-7PWSb_8ClIo/UVuL_bzBeAI/AAAAAAAAAtc/8Lw_bDnaPVE/s665/cloudopt_marketplace_+2013-03-30+at+2.08.07+PM.png %}</p>
 
 <p>Ubuntuベースなのが良いですね。</p>
 
@@ -184,7 +184,7 @@ server2$ sudo cloudconfig peer_add server1 server1_local_ip(10.x.x.x)
 
 <p>図にするとこんな感じですかね。</p>
 
-<p><img src="https://lh4.googleusercontent.com/-eDSfSiz0XhU/ULyOlKj_JKI/AAAAAAAAArw/QzSfVJeeUfw/w727-h490-p-k/CDP_Clone%252BScale_Out.png"></p>
+<p>{% img https://lh4.googleusercontent.com/-eDSfSiz0XhU/ULyOlKj_JKI/AAAAAAAAArw/QzSfVJeeUfw/w727-h490-p-k/CDP_Clone%252BScale_Out.png %}</p>
 
 <h2>Auto Scaling設定</h2>
 
@@ -261,39 +261,19 @@ autoscaling:EC2_INSTANCE_LAUNCH_ERROR, autoscaling:EC2_INSTANCE_TERMINATE_ERROR
 
 <p>同期には起動時にupstart経由でrsyncを叩いて管理サーバから最新ソースを取ってきてサービスを再起動します。転送時の圧縮モードはarcfourが一番スループットが出たのでそれに。</p>
 
-<p><div><script src='https://gist.github.com/4191986.js?file='></script>
-<noscript><pre><code># sync source code
-description &quot;Update source code&quot;
-
-start on filesystem
-stop on shutdown
-
-task
-console output
-
-script
-time sudo -u deploy rsync -av --delete -e 'ssh -c arcfour -i /home/deploy/.ssh/id_dsa -o StrictHostKeyChecking=no' deploy@admin.cdp:/usr/local/apps/project/ /usr/local/rails_apps/project &gt;&gt; /mnt/update.log 2&gt;&amp;1
-/etc/init.d/unicorn upgrade &gt;&gt; /mnt/update.log 2&gt;&amp;1
-/etc/init.d/nginx restart &gt;&gt; /mnt/update.log 2&gt;&amp;1
-end script
-</code></pre></noscript></div>
-</p>
+<p>{% gist 4191986 %}</p>
 
 <h2>Capistrano</h2>
 
 <p>デプロイはマスターサーバ（管理兼）上でCapistranoを実行し、ELB配下の生きているインスタンスに対して更新をかけます。deploy.rbに追加する記述は以下の通り。昔はec2 api toolsを直接呼んでパースしたりしてコードが長かったのですが、今は<a href="http://aws.amazon.com/sdkforruby/">AWS SDK for Ruby</a>があり、<a href="http://aws.amazon.com/iam/">IAM role</a>でinstance profileを設定すればわずか数行でできてしまいます！</p>
 
-<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="nb">require</span> <span class="s1">&#39;aws-sdk&#39;</span>
-</span><span class='line'><span class="no">AWS</span><span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="ss">:ec2_endpoint</span> <span class="o">=&gt;</span> <span class="s1">&#39;ec2.ap-northeast-1.amazonaws.com&#39;</span><span class="p">,</span> <span class="ss">:elb_endpoint</span> <span class="o">=&gt;</span> <span class="s1">&#39;elasticloadbalancing.ap-northeast-1.amazonaws.com&#39;</span><span class="p">)</span>
-</span><span class='line'><span class="n">instances</span> <span class="o">=</span> <span class="no">AWS</span><span class="o">::</span><span class="no">ELB</span><span class="o">.</span><span class="n">new</span><span class="o">.</span><span class="n">load_balancers</span><span class="o">[</span><span class="s1">&#39;cdp&#39;</span><span class="o">].</span><span class="n">instances</span><span class="o">.</span><span class="n">select</span><span class="p">{</span><span class="o">|</span><span class="n">i</span><span class="o">|</span> <span class="n">i</span><span class="o">.</span><span class="n">exists?</span> <span class="o">&amp;</span><span class="n">amp</span><span class="p">;</span><span class="o">&amp;</span><span class="n">amp</span><span class="p">;</span> <span class="n">i</span><span class="o">.</span><span class="n">elb_health</span><span class="o">[</span><span class="ss">:state</span><span class="o">]</span> <span class="o">==</span> <span class="s2">&quot;InService&quot;</span><span class="p">}</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="o">&amp;</span><span class="n">amp</span><span class="p">;</span><span class="ss">:public_dns_name</span><span class="p">)</span>
-</span><span class='line'><span class="n">servers</span> <span class="o">=</span> <span class="n">instances</span> <span class="o">&amp;</span><span class="n">lt</span><span class="p">;</span><span class="o">&amp;</span><span class="n">lt</span><span class="p">;</span> <span class="s2">&quot;localhost&quot;</span>
-</span><span class='line'><span class="n">role</span> <span class="ss">:app</span> <span class="k">do</span> <span class="n">servers</span> <span class="k">end</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+<p>{% codeblock lang:ruby %}
+require 'aws-sdk'
+AWS.config(:ec2_endpoint => 'ec2.ap-northeast-1.amazonaws.com', :elb_endpoint => 'elasticloadbalancing.ap-northeast-1.amazonaws.com')
+instances = AWS::ELB.new.load_balancers['cdp'].instances.select{|i| i.exists? &amp;&amp; i.elb_health[:state] == "InService"}.map(&amp;:public_dns_name)
+servers = instances &lt;&lt; "localhost"
+role :app do servers end
+{% endcodeblock %}</p>
 
 <h2>注意点</h2>
 

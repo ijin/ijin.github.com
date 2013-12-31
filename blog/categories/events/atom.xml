@@ -4,7 +4,7 @@
   <title><![CDATA[Category: events | @ijin]]></title>
   <link href="http://ijin.github.com/blog/categories/events/atom.xml" rel="self"/>
   <link href="http://ijin.github.com/"/>
-  <updated>2014-01-01T01:44:09+09:00</updated>
+  <updated>2014-01-01T01:44:58+09:00</updated>
   <id>http://ijin.github.com/</id>
   <author>
     <name><![CDATA[Michael H. Oshita]]></name>
@@ -58,31 +58,23 @@
 <p>でしょうか。特に意識したのはmemcachedからmysqlへの許容範囲内での同期と複数台あるVarnishのキャッシュクリアですね。他のチームはnginxでTTLを設定して逃げたようですが、実運用時にはPOST時にキャッシュクリアを確実にする必要があるのでVarnish moduleをコンパイルして他のsiblingへ並列でban処理を投げてました。まあ、今回のベンチマークツールはそこまで厳格じゃなかったけど、最終チェックは人間が動作させるので。</p>
 
 <p>LT資料。スコア推移と簡単な構成の紹介
-<div class="embed-ss-container"><iframe src="http://www.slideshare.net/slideshow/embed_code/29171459 "></iframe></div></p>
+{% slideshare 29171459 %}</p>
 
 <h2>設定ファイル</h2>
 
 <p>以下、設定ファイルです。いらない所は削ったけど動くはず。。</p>
 
 <p>backend varnish vcl （各backendの設定は微妙に違う）:
-<div><script src='https://gist.github.com/7941009.js?file='></script>
-<noscript><pre><code>&lt;html&gt;&lt;body&gt;You are being &lt;a href=&quot;https://github.com/gist/7941009&quot;&gt;redirected&lt;/a&gt;.&lt;/body&gt;&lt;/html&gt;</code></pre></noscript></div>
-</p>
+{% gist 7941009  %}</p>
 
 <p>backend nginx.conf:
-<div><script src='https://gist.github.com/7940999.js?file='></script>
-<noscript><pre><code>&lt;html&gt;&lt;body&gt;You are being &lt;a href=&quot;https://github.com/gist/7940999&quot;&gt;redirected&lt;/a&gt;.&lt;/body&gt;&lt;/html&gt;</code></pre></noscript></div>
-</p>
+{% gist 7940999 %}</p>
 
 <p>base nginx.conf:
-<div><script src='https://gist.github.com/7941214.js?file='></script>
-<noscript><pre><code>&lt;html&gt;&lt;body&gt;You are being &lt;a href=&quot;https://github.com/gist/7941214&quot;&gt;redirected&lt;/a&gt;.&lt;/body&gt;&lt;/html&gt;</code></pre></noscript></div>
-</p>
+{% gist 7941214 %}</p>
 
 <p>base syncer.rb:
-<div><script src='https://gist.github.com/7941042.js?file='></script>
-<noscript><pre><code>&lt;html&gt;&lt;body&gt;You are being &lt;a href=&quot;https://github.com/gist/7941042&quot;&gt;redirected&lt;/a&gt;.&lt;/body&gt;&lt;/html&gt;</code></pre></noscript></div>
-</p>
+{% gist 7941042 %}</p>
 
 <p>base supervisord.conf:
 <code>
@@ -363,10 +355,8 @@ Score:    14694.2
 
 <p>この辺で暫定一位。</p>
 
-<p><div class='embed tweet'><blockquote class="twitter-tweet"><p><a href="https://twitter.com/search?q=%23isucon&amp;src=hash">#isucon</a> オンライン予選一日目 中間発表二回目です。残り2時間となった16時時点での順位は以下の通り&#10;1. The Revenge of Mr. Frank &amp; Co.&#10;2. hidekiy&#10;3. ( (0) / (0)) ☆祝☆&#10;4. パイの実g&#10;5. 白金動物園&#10;続く</p>&mdash; 941 (@941) <a href="https://twitter.com/941/statuses/386386593696604161">October 5, 2013</a></blockquote>
-<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
-<div class='embed tweet'><blockquote class="twitter-tweet"><p>isuconは外国県人会が暴れてるのかな？</p>&mdash; ばば としあき (@netmarkjp) <a href="https://twitter.com/netmarkjp/statuses/386393051230261248">October 5, 2013</a></blockquote>
-<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div></p>
+<p>{% tweet https://twitter.com/941/statuses/386386593696604161 %}
+{% tweet https://twitter.com/netmarkjp/statuses/386393051230261248 %}</p>
 
 <br />
 
@@ -545,7 +535,7 @@ Score:    14694.2
 
 <p>以下、LT時に見せたデモ動画</p>
 
-<p><div class="embed-video-container"><iframe src="http://www.youtube.com/embed/tovb29K6ddc "></iframe></div></p>
+<p>{% youtube tovb29K6ddc %}</p>
 
 <p>擬似Virtual IPに対してそれぞれread/writeを行いつつMasterのプロセスをkillすると、通信できなくエラーが出続けるが20秒以内に自動フェールオーバーが完了しread/write共に再開します。pingも平均0.5msから2.0msに変わった事からAZが移った事が確認できます。</p>
 
@@ -596,11 +586,11 @@ Score:    14694.2
 
 <p>あ、ついでにその日はcpniteの資料作成やDJの選曲であんまり寝てなかったにもかかわらず、無事AWSソリューションアーキテクト（Associate）の認定試験に受かりました！</p>
 
-<p><img src="https://lh5.googleusercontent.com/-d_HVsb6DgBc/UZs39XB1KGI/AAAAAAAAAuw/ntgPp33hcOI/w294-h120-no/Solutions-Architect-Associate.png"></p>
+<p>{% img https://lh5.googleusercontent.com/-d_HVsb6DgBc/UZs39XB1KGI/AAAAAAAAAuw/ntgPp33hcOI/w294-h120-no/Solutions-Architect-Associate.png %}</p>
 
 <h2>LTスライド</h2>
 
-<p><div class="embed-ss-container"><iframe src="http://www.slideshare.net/slideshow/embed_code/21341276 "></iframe></div></p>
+<p>{% slideshare 21341276 %}</p>
 ]]></content>
   </entry>
   

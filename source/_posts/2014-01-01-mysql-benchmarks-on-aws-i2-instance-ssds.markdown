@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "i2 instanceでのMySQLベンチマーク"
+title: "i2 instanceでMySQLベンチマーク"
 date: 2014-01-01 00:00
 comments: true
 categories: 
@@ -10,7 +10,7 @@ categories:
 
 新年明けました。おめでとうございます。
 
-すっかり年末の[aws](http://www.zusaar.com/event/1117005)/[mysql](http://www.zusaar.com/event/1847003) advent calendarに乗り遅れたので、AWSのi2 instanceでのMySQLのベンチマークを公表します。
+すっかり12月の[aws](http://www.zusaar.com/event/1117005)/[mysql](http://www.zusaar.com/event/1847003) advent calendarに乗り遅れたので、AWSのi2 instanceでのMySQLのベンチマークを勝手におまけとして公表します。
 以前取ったhi1.4xlargeとの比較になります。
 
 

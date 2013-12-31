@@ -4,7 +4,7 @@
   <title><![CDATA[Category: aws | @ijin]]></title>
   <link href="http://ijin.github.com/blog/categories/aws/atom.xml" rel="self"/>
   <link href="http://ijin.github.com/"/>
-  <updated>2014-01-01T01:29:29+09:00</updated>
+  <updated>2014-01-01T01:44:09+09:00</updated>
   <id>http://ijin.github.com/</id>
   <author>
     <name><![CDATA[Michael H. Oshita]]></name>
@@ -20,7 +20,7 @@
     <id>http://ijin.github.com/blog/2014/01/01/mysql-benchmarks-on-aws-i2-instance-ssds</id>
     <content type="html"><![CDATA[<p>新年明けました。おめでとうございます。</p>
 
-<p>すっかり年末の<a href="http://www.zusaar.com/event/1117005">aws</a>/<a href="http://www.zusaar.com/event/1847003">mysql</a> advent calendarに乗り遅れたので、AWSのi2 instanceでのMySQLのベンチマークを公表します。
+<p>すっかり年末の<a href="http://www.zusaar.com/event/1117005">aws</a>/<a href="http://www.zusaar.com/event/1847003">mysql</a> advent calendarに乗り遅れたので、AWSのi2 instanceでのMySQLのベンチマークを勝手におまけとして公表します。
 以前取ったhi1.4xlargeとの比較になります。</p>
 
 <h2>構築</h2>

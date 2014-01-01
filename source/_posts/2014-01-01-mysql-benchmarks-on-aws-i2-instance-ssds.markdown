@@ -26,7 +26,7 @@ OSはkernel versionが3.8以上が[望ましい](http://docs.aws.amazon.com/AWSE
 
 ## sysbench ##
 
-やり方やパラメータは[前回](//blog/2013/02/22/mysql-benchmarks-on-aws-ssd-vs-fusion-io/)の計測方法と同じ。i2.8xlaregは32coreですが、今回はhi1.4xlargeの時と比較する為に敢えて16スレッドで計測しました。
+やり方やパラメータは[前回](/blog/2013/02/22/mysql-benchmarks-on-aws-ssd-vs-fusion-io/)の計測方法と同じ。i2.8xlaregは32coreですが、今回はhi1.4xlargeの時と比較する為に敢えて16スレッドで計測しました。
 
 - sysbenchのoltpモード
 - データサイズは12G（5000万件）
@@ -49,7 +49,7 @@ OSはkernel versionが3.8以上が[望ましい](http://docs.aws.amazon.com/AWSE
 
 ## tpcc-mysql ##
 
-こちらも[前回](//blog/2013/02/22/mysql-benchmarks-on-aws-ssd-vs-fusion-io/))の計測方法と同じ。
+こちらも[前回](/blog/2013/02/22/mysql-benchmarks-on-aws-ssd-vs-fusion-io/))の計測方法と同じ。
 
 - 500 warehouses (50GBぐらい)
 - 24GB Buffer pool

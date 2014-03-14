@@ -4,7 +4,7 @@
   <title><![CDATA[@ijin]]></title>
   <link href="http://ijin.github.com/atom.xml" rel="self"/>
   <link href="http://ijin.github.com/"/>
-  <updated>2014-01-01T03:08:20+09:00</updated>
+  <updated>2014-03-15T00:24:40+09:00</updated>
   <id>http://ijin.github.com/</id>
   <author>
     <name><![CDATA[Michael H. Oshita]]></name>
@@ -12,6 +12,90 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[AWS Game Day Japan 2014春を開催してきた]]></title>
+    <link href="http://ijin.github.com/blog/2014/03/14/aws-game-day-japan-2014-spring/"/>
+    <updated>2014-03-14T23:11:00+09:00</updated>
+    <id>http://ijin.github.com/blog/2014/03/14/aws-game-day-japan-2014-spring</id>
+    <content type="html"><![CDATA[<p>過去に2度参加した事（東京・ラスベガス）がある<a href="http://ijin.github.com/blog/2013/06/10/aws-game-day-tokyo-2013/">Game Day</a>に今回は運営側に周りました。3/15に行われる<a href="http://jawsdays2014.jaws-ug.jp/">JAWS Days 2014</a>の前夜祭という位置づけです。</p>
+
+<p>日本では前回、東京のみだったけど<a href="http://jaws-days.doorkeeper.jp/events/8945">今回</a>は東京・大阪・名古屋・仙台と4都市同時開催。</p>
+
+<h2>お題</h2>
+
+<p>前回と全く一緒。。SQSを使った疎結合でオートスケーリングする画像変換処理システム（ｻｰｾﾝ）。まあ、1年前と比べてAWSの機能やできる事も大分変わったので2回目の人もいろいろ工夫のしようがあったかと。</p>
+
+<h2>チーム</h2>
+
+<p>1チーム3〜4人に別れて計14チームとなりました。</p>
+
+<p><strong>東京</strong></p>
+
+<ul>
+<li>Cookie Devil</li>
+<li>Bluescreens</li>
+<li>沖縄</li>
+<li>Blue Light of Death</li>
+<li>時計じかけのオレンジ</li>
+<li>I am みどり</li>
+</ul>
+
+
+<p><strong>名古屋</strong></p>
+
+<ul>
+<li>Shachihoko</li>
+<li>ななちゃんだがや</li>
+<li>ゴーゴーひつまぶし</li>
+</ul>
+
+
+<p><strong>大阪</strong></p>
+
+<ul>
+<li>大都会</li>
+<li>AWS学坊や</li>
+<li>初心者</li>
+</ul>
+
+
+<p><strong>仙台</strong></p>
+
+<ul>
+<li>Zao</li>
+<li>八重の桜</li>
+</ul>
+
+
+<h2>内容</h2>
+
+<p>当日の迫力ある詳しい内容は参加者の方がきっとブログに書いてくれるはず！その代わり、運営側で評価用に使っていた攻撃・修復内容のまとめを公開して欲しいというツィートを頂いたので下記に表示しておきます。</p>
+
+<div class='embed tweet'>Tweet could not be processed</div>
+
+
+<p></p>
+
+<p>（実は今回もイベントオーナーのMiles Wardが来日していたので、Google Spreadsheetに書き込まれていた内容を運営側で逐一翻訳していました）</p>
+
+<iframe src="https://docs.google.com/spreadsheets/d/16-qSbw_XQGgl_4bYqy9REL-nq15yOVj2f1HBJvMy_qM/pubhtml?widget=true&amp;headers=false" height="500" width="750"></iframe>
+
+
+<p>個人的にはs3の「Requester Payオプション有効化」がお気に入りでしたね。</p>
+
+<h2>結果</h2>
+
+<p>総合優勝はチーム<strong>「AWS学坊や」</strong>の優勝となりました。おめでとうございます！
+（地方賞はすみません、総合結果評議中で聞けてませんでした）</p>
+
+<p>今回、運営側のトラブルで攻撃対象が重複してしまう等いろいろ問題がありましたが、開催する側としても楽しかったです。次回はさらにチャレンジングな内容にしていきたいと思っています。</p>
+
+<h2>JAWS DAYS</h2>
+
+<p>明日の<a href="http://jawsdays2014.jaws-ug.jp/">JAWS DAYS 2014</a>はスタッフとしていろいろ動くので今回は手短に。</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[i2 instanceでMySQLベンチマーク]]></title>

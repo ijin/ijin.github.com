@@ -1,0 +1,447 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>#ChefConf 2014に参加してきた - @ijin</title>
+  <meta name="author" content="Michael H. Oshita">
+
+  
+  <meta name="description" content="San Franciscoで行われた#ChefConfに参加してきました。
+忘れないうちに忘備録的に少しメモっておく。 Day 1 Awesome Postmortems by Dave Zwieback システム障害に対して素晴らしいPost Mortem（振り返り／報告書） &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://ijin.github.com/blog/2014/04/21/chefconf-2014/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/stylesheets/data-table.css" rel="stylesheet" type="text/css" />
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="@ijin" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-33110241-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">@ijin</a></h1>
+  
+    <h2>[Michael H. Oshita]</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:ijin.github.com" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">#ChefConf 2014に参加してきた</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-04-21T12:10:00+09:00" pubdate data-updated="true">Apr 21<span>st</span>, 2014</time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>San Franciscoで行われた<a href="http://chefconf.opscode.com/chefconf/">#ChefConf</a>に参加してきました。
+忘れないうちに忘備録的に少しメモっておく。</p>
+
+<h2>Day 1</h2>
+
+<h3>Awesome Postmortems by Dave Zwieback</h3>
+
+<p>システム障害に対して素晴らしいPost Mortem（振り返り／報告書）の書き方に関する丸一日のワークショップ</p>
+
+<h4>前半</h4>
+
+<p>まずはチームに分かれて断片的且つ関連性の不明な情報を渡される。
+例えば、</p>
+
+<ul>
+<li>Tomは紫色の家の住人より短い</li>
+<li>Jimは両隣の住人より高い</li>
+<li>赤色の家の隣人は子供が5人いる</li>
+</ul>
+
+
+<p>各メンバーは情報を全部開示できないまま、ある不明確なタスクを時間内に完了させる必要がある。しかし、紙やモノを使って情報の整理をしてはならず、口頭による連絡のみなので当然情報は錯綜しタスクは未完のまま終了。</p>
+
+<p>障害時の情報不足・体制不足のシミュレーション。Nosey Neighborsと言うゲームらしい。</p>
+
+<p>その後、お怒りのCEOからDarth Vader風のオーディオ・メッセージで以下を解答せよとのお達しが。。</p>
+
+<ul>
+<li>根本原因は何か</li>
+<li>何をすれば良かったか</li>
+<li>誰の責任か</li>
+</ul>
+
+
+<p>メンバー間で議論して各グループとの比較・プレゼンする</p>
+
+<h4>後半</h4>
+
+<p>パラダイム・シフトとディスカッション形式</p>
+
+<p>以下、メモ</p>
+
+<ul>
+<li>たった一つの根本原因は存在しない。システムはimpermanence（非恒久・無常）である。コレに対して誰かが「なんてZenなんだ！」w</li>
+<li>そもそもHuman Error（人的エラー）は原因ではなくもっと大きな問題を示すサインであり、症状であり個人やグループのせいにしてはいけない。そうすると簡単で気持ち良いが解決にはならない。80年代の航空会社の事故分析のパラダイム・シフトを引き合いに</li>
+<li>Accountability vs Responsibility（個人・グループに責任は負わせないけど説明・報告はさせるべき）</li>
+<li>その為にもBlameless（誰かを責める事のないように）でNonpunitive（非罰則）にするべき。火災の消防活動に対する消防隊員の扱いの例が面白かった</li>
+<li>Hindsight/Outcome Bias（事後だと情報が多くより物事がより鮮明になるけどそれは偏見である）</li>
+<li>Counterfactual（事実に反する。タラレバ）な事を書いてはならない。起こった事は事象は変えられない</li>
+<li>3 Rs (Regret, Reason, Remedy)　遺憾を示し、事象のリニアなタイムラインを記載し、解決案の列挙</li>
+<li>5 Whys 日本では「なぜなぜ分析」というらしい。要因追求のイテレーティブ・プロセス。</li>
+<li>Sharp End vs Blunt End（顕在的エラー vs 潜在的エラー）</li>
+<li><a href="https://github.com/etsy/morgue">Morgue</a> - Postmortem用の便利なツール</li>
+</ul>
+
+
+<p>主に組織論やカルチャーの話やDevOpsとの関連性の議論等。今度<em>#トラしゅ</em>に組み込もうかな。</p>
+
+<p>※ <em>山◯君はこっちではボブと呼ばれる</em></p>
+
+<h2>Day 2</h2>
+
+<h3>Keynote</h3>
+
+<ul>
+<li>ヘビメタ風のBGM</li>
+<li>Barry Crist CEOによるDelightful Economyの熱いプレゼン。Uberの紹介</li>
+<li><a href="https://github.com/opscode/chef-metal">Chef Metal</a>の紹介／デモ（DockerやMongoDBで）</li>
+<li><a href="http://www.getchef.com/blog/2014/04/15/chef-development-kit/">ChefDK (Chef Development Kit)</a>の紹介</li>
+</ul>
+
+
+<h3>Hunting the DevOps Whale in Large Enterprises</h3>
+
+<ul>
+<li>大企業でのDevOpsの話</li>
+<li>かなり抽象的でメタファー引用多数</li>
+<li>Scrumfall (Scrum + Waterfall)という悪い冗談のような本当にあった怖い話</li>
+</ul>
+
+
+<h3>Spice up your recipes with Chef Sugar</h3>
+
+<p>ChefSpec、Test Kitchen、BerkshelfのコアコミッターであるSeth Vargoによる<a href="https://github.com/sethvargo/chef-sugar"><strong>Chef Sugar</strong></a>の紹介。コードをよりrubyっぽく、より美しくする為のsyntax sugar</p>
+
+<h3>The Berkshelf Vision</h3>
+
+<ul>
+<li><a href="http://berkshelf.com/">Berkshelf</a>の原作者であるJamie WinsorによるBerkshelf 3.0の紹介</li>
+<li><a href="http://www.getchef.com/blog/2014/04/15/chef-development-kit/">ChefDK</a>でのインストールを推奨</li>
+<li>推奨されるべき新しいワークフロー管理や手法について</li>
+<li>その補助ツールである<a href="https://github.com/reset/berkflow">Berkflow</a>の説明</li>
+<li>このセッションが一番面白かったのでyoutubeに上がったらまた見るべし！</li>
+<li><a href="http://www.slideshare.net/resetexistence/chef-conf2014">スライド</a></li>
+</ul>
+
+
+<h3>Implementing Continuous Delivery in Chef</h3>
+
+<p>継続デリバリーのお話。発表者がつまらなかったので、お仕事してた。</p>
+
+<h3>Chef and Docker</h3>
+
+<ul>
+<li>Dockerの紹介やロードマップ</li>
+<li>実装方法</li>
+<li>Chefとの組み合わせ方</li>
+<li>2014 2QのDockerConで1.0が発表されるかも</li>
+<li>監視に関して突っ込んで質問したら、夏以降に出るであろう監視用コンテナに期待とな</li>
+<li>ついでにTシャツもらった</li>
+</ul>
+
+
+<h3>BoF - Chef on AWS</h3>
+
+<ul>
+<li>AWS上でのChef利用に関してBoF (Birds of Feather)形式のディスカッション</li>
+<li>Cloudformation、Autoscaling、Opsworks、Ohai等</li>
+<li>特にOpsworksの使い勝手の悪さを熱く議論してきた</li>
+<li>また、OhaiはIAM roleの情報をキャッシュするのでChef Serverとの組み合わせが悪い</li>
+<li><a href="https://github.com/balanced-cookbooks/citadel">Citadel</a>というので回避してる人も</li>
+</ul>
+
+
+<h2>Day 3</h2>
+
+<h3>Keynote</h3>
+
+<p>Adam Jacob CTOによるChef社の歴史、思想や方向性やDevOps Cultureについて</p>
+
+<h3>Get Up Again (Over and Over): Learning and Relearning with Chef</h3>
+
+<p>変化への対応、リファクタリング、実験的コードの組み立て方等</p>
+
+<h3>Foreman and Chef Integration</h3>
+
+<p>Red HatによるForemanの発表。あんまり聞いてなかった</p>
+
+<h3>DevOps Culture And Practices To Create Flow</h3>
+
+<ul>
+<li>ThoughtworksのJez Humbleによる発表</li>
+<li>自動化や継続デリバリーによるリーンな開発手法</li>
+<li>トヨタやHPの事例</li>
+<li>社内カルチャーの話</li>
+<li>Jesse&#8217;s rule - &#8220;Don&#8217;t fight stupid. Make awesome&#8221;</li>
+<li>なかなか良いスピーカーであった</li>
+</ul>
+
+
+<h3>その他</h3>
+
+<ul>
+<li>アメリカのクライアントやリモートでの仕事仲間と初顔合わせ</li>
+<li>ランチで会った人は同じくCassandra構築に苦労してて盛り上がった</li>
+<li>Chef Zeroの作者と会って中の動きについてお話した</li>
+<li>mizzy氏を発見。立ち話を少々</li>
+</ul>
+
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Michael H. Oshita</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-04-21T12:10:00+09:00" pubdate data-updated="true">Apr 21<span>st</span>, 2014</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/chef/'>chef</a>, <a class='category' href='/blog/categories/events/'>events</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://ijin.github.com/blog/2014/04/21/chefconf-2014/" data-via="ijin" data-counturl="http://ijin.github.com/blog/2014/04/21/chefconf-2014/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2014/03/14/aws-game-day-japan-2014-spring/" title="Previous Post: AWS Game Day Japan 2014春を開催してきた">&laquo; AWS Game Day Japan 2014春を開催してきた</a>
+      
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2014/04/21/chefconf-2014/">#ChefConf 2014に参加してきた</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/03/14/aws-game-day-japan-2014-spring/">AWS Game Day Japan 2014春を開催してきた</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/01/01/mysql-benchmarks-on-aws-i2-instance-ssds/">i2 instanceでMySQLベンチマーク</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/12/14/self-healing-with-non-elb-autoscaling2/">Autoscalingによる自動復旧(Immutable Infrastucture)</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/12/13/serverfesta-2013-autumn/">サバフェス！2013に参加してきた</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/11/11/isucon3-final/">ISUCON3の本戦に参加してきた</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/10/07/isucon3-preliminary/">ISUCON3の予選を通過した（はず）</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/06/10/aws-game-day-tokyo-2013/">AWS Game Day Tokyo 2013で受賞してきた</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/05/21/custom-non-rds-multi-az-mysql-replication/">Non-RDSなオレオレMulti-AZ MySQL Replication</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/04/03/accelerating-cross-region-data-transfer/">リージョン間高速データ転送</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+<section>
+  <h1>Latest Tweets</h1>
+  <ul id="tweets">
+    <li class="loading">Status updating...</li>
+  </ul>
+  <script type="text/javascript">
+    $.domReady(function(){
+      getTwitterFeed("ijin", 4, false);
+    });
+  </script>
+  <script src="/javascripts/twitter.js" type="text/javascript"> </script>
+  
+    <a href="http://twitter.com/ijin" class="twitter-follow-button" data-show-count="false">Follow @ijin</a>
+  
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2014 - Michael H. Oshita -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'ijin';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://ijin.github.com/blog/2014/04/21/chefconf-2014/';
+        var disqus_url = 'http://ijin.github.com/blog/2014/04/21/chefconf-2014/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

@@ -1,0 +1,142 @@
+---
+layout: post
+title: "#ChefConf 2014に参加してきた"
+date: 2014-04-21 12:10
+comments: true
+categories: 
+- events
+- chef
+---
+
+San Franciscoで行われた[#ChefConf](http://chefconf.opscode.com/chefconf/)に参加してきました。
+忘れないうちに忘備録的に少しメモっておく。
+
+## Day 1 ##
+
+### Awesome Postmortems by Dave Zwieback ##
+
+システム障害に対して素晴らしいPost Mortem（振り返り／報告書）の書き方に関する丸一日のワークショップ
+
+#### 前半 ####
+
+まずはチームに分かれて断片的且つ関連性の不明な情報を渡される。
+例えば、
+
+* Tomは紫色の家の住人より短い
+* Jimは両隣の住人より高い
+* 赤色の家の隣人は子供が5人いる
+
+各メンバーは情報を全部開示できないまま、ある不明確なタスクを時間内に完了させる必要がある。しかし、紙やモノを使って情報の整理をしてはならず、口頭による連絡のみなので当然情報は錯綜しタスクは未完のまま終了。
+
+障害時の情報不足・体制不足のシミュレーション。Nosey Neighborsと言うゲームらしい。
+
+その後、お怒りのCEOからDarth Vader風のオーディオ・メッセージで以下を解答せよとのお達しが。。
+
+* 根本原因は何か
+* 何をすれば良かったか
+* 誰の責任か
+
+メンバー間で議論して各グループとの比較・プレゼンする
+
+#### 後半 ####
+
+パラダイム・シフトとディスカッション形式
+
+以下、メモ
+
+* たった一つの根本原因は存在しない。システムはimpermanence（非恒久・無常）である。コレに対して誰かが「なんてZenなんだ！」w
+* そもそもHuman Error（人的エラー）は原因ではなくもっと大きな問題を示すサインであり、症状であり個人やグループのせいにしてはいけない。そうすると簡単で気持ち良いが解決にはならない。80年代の航空会社の事故分析のパラダイム・シフトを引き合いに
+* Accountability vs Responsibility（個人・グループに責任は負わせないけど説明・報告はさせるべき）
+* その為にもBlameless（誰かを責める事のないように）でNonpunitive（非罰則）にするべき。火災の消防活動に対する消防隊員の扱いの例が面白かった
+* Hindsight/Outcome Bias（事後だと情報が多くより物事がより鮮明になるけどそれは偏見である）
+* Counterfactual（事実に反する。タラレバ）な事を書いてはならない。起こった事は事象は変えられない
+* 3 Rs (Regret, Reason, Remedy)　遺憾を示し、事象のリニアなタイムラインを記載し、解決案の列挙
+* 5 Whys 日本では「なぜなぜ分析」というらしい。要因追求のイテレーティブ・プロセス。
+* Sharp End vs Blunt End（顕在的エラー vs 潜在的エラー）
+* [Morgue](https://github.com/etsy/morgue) - Postmortem用の便利なツール
+
+主に組織論やカルチャーの話やDevOpsとの関連性の議論等。今度*#トラしゅ*に組み込もうかな。
+
+※ *山◯君はこっちではボブと呼ばれる*
+
+
+## Day 2 ##
+
+### Keynote ###
+
+* ヘビメタ風のBGM
+* Barry Crist CEOによるDelightful Economyの熱いプレゼン。Uberの紹介
+* [Chef Metal](https://github.com/opscode/chef-metal)の紹介／デモ（DockerやMongoDBで）
+* [ChefDK (Chef Development Kit)](http://www.getchef.com/blog/2014/04/15/chef-development-kit/)の紹介
+
+### Hunting the DevOps Whale in Large Enterprises ###
+
+* 大企業でのDevOpsの話
+* かなり抽象的でメタファー引用多数
+* Scrumfall (Scrum + Waterfall)という悪い冗談のような本当にあった怖い話
+
+### Spice up your recipes with Chef Sugar ###
+
+ChefSpec、Test Kitchen、BerkshelfのコアコミッターであるSeth Vargoによる[**Chef Sugar**](https://github.com/sethvargo/chef-sugar)の紹介。コードをよりrubyっぽく、より美しくする為のsyntax sugar
+
+
+### The Berkshelf Vision ###
+
+* [Berkshelf](http://berkshelf.com/)の原作者であるJamie WinsorによるBerkshelf 3.0の紹介
+* [ChefDK](http://www.getchef.com/blog/2014/04/15/chef-development-kit/)でのインストールを推奨
+* 推奨されるべき新しいワークフロー管理や手法について
+* その補助ツールである[Berkflow](https://github.com/reset/berkflow)の説明
+* このセッションが一番面白かったのでyoutubeに上がったらまた見るべし！
+* [スライド](http://www.slideshare.net/resetexistence/chef-conf2014)
+
+
+###  Implementing Continuous Delivery in Chef ###
+
+継続デリバリーのお話。発表者がつまらなかったので、お仕事してた。
+
+### Chef and Docker ###
+
+* Dockerの紹介やロードマップ
+* 実装方法
+* Chefとの組み合わせ方
+* 2014 2QのDockerConで1.0が発表されるかも
+* 監視に関して突っ込んで質問したら、夏以降に出るであろう監視用コンテナに期待とな
+* ついでにTシャツもらった
+
+### BoF - Chef on AWS ###
+
+* AWS上でのChef利用に関してBoF (Birds of Feather)形式のディスカッション
+* Cloudformation、Autoscaling、Opsworks、Ohai等
+* 特にOpsworksの使い勝手の悪さを熱く議論してきた
+* また、OhaiはIAM roleの情報をキャッシュするのでChef Serverとの組み合わせが悪い
+* [Citadel](https://github.com/balanced-cookbooks/citadel)というので回避してる人も
+
+## Day 3 ###
+
+### Keynote ###
+
+Adam Jacob CTOによるChef社の歴史、思想や方向性やDevOps Cultureについて
+
+### Get Up Again (Over and Over): Learning and Relearning with Chef ###
+
+変化への対応、リファクタリング、実験的コードの組み立て方等
+
+### Foreman and Chef Integration ###
+
+Red HatによるForemanの発表。あんまり聞いてなかった
+
+### DevOps Culture And Practices To Create Flow ###
+
+* ThoughtworksのJez Humbleによる発表
+* 自動化や継続デリバリーによるリーンな開発手法
+* トヨタやHPの事例
+* 社内カルチャーの話
+* Jesse's rule - "Don't fight stupid. Make awesome"
+* なかなか良いスピーカーであった
+
+### その他 ###
+
+* アメリカのクライアントやリモートでの仕事仲間と初顔合わせ
+* ランチで会った人は同じくCassandra構築に苦労してて盛り上がった
+* Chef Zeroの作者と会って中の動きについてお話した
+* mizzy氏を発見。立ち話を少々

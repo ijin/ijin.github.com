@@ -5,11 +5,11 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>AWS SSD (hi1.4xlarge) vs Fusion-IOでのMySQLベンチマーク - @ijin</title>
+  <title>ConsulによるMySQLフェールオーバー - @ijin</title>
   <meta name="author" content="Michael H. Oshita">
 
   
-  <meta name="description" content="（※ 追記しました - 5/19/13） 巷ではMySQL 5.6 GAが出て騒がしいですが、ちょっと前に5.5系でAWSのSSDインスタンス（hi1.4xlarge）に載せ替える案件があったので、その時に取ったベンチマークを公表します。以前Fusion-IO (ioDrive Duo) &hellip;">
+  <meta name="description" content="先日(6/22/14)、6月なのにどういう分けか早めに開催されたJuly Tech Festa 2014でConsulについて発表してきた。そのユースケースの一つとしてMySQL failoverをちょっとだけ紹介したので、ここに詳しく書いておく。 MHA &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -18,7 +18,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://ijin.github.com/blog/2013/02/22/mysql-benchmarks-on-aws-ssd-vs-fusion-io/">
+  <link rel="canonical" href="http://ijin.github.com/blog/2014/07/11/mysql-failover-with-consul/">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <link href="/stylesheets/data-table.css" rel="stylesheet" type="text/css" />
@@ -80,7 +80,7 @@
   
   <header>
     
-      <h1 class="entry-title">AWS SSD (hi1.4xlarge) vs Fusion-IOでのMySQLベンチマーク</h1>
+      <h1 class="entry-title">ConsulによるMySQLフェールオーバー</h1>
     
     
       <p class="meta">
@@ -96,125 +96,71 @@
   
 
 
-<time datetime="2013-02-22T17:32:00+09:00" pubdate data-updated="true">Feb 22<span>nd</span>, 2013</time>
+<time datetime="2014-07-11T10:12:00+09:00" pubdate data-updated="true">Jul 11<span>th</span>, 2014</time>
         
       </p>
     
   </header>
 
 
-<div class="entry-content"><p>（※ <a href="#add">追記</a>しました - 5/19/13）</p>
+<div class="entry-content"><p>先日(6/22/14)、6月なのにどういう分けか早めに開催された<a href="http://2014.techfesta.jp/">July Tech Festa 2014</a>でConsulについて<a href="http://2014.techfesta.jp/p/program.html?m=1#c43">発表</a>してきた。そのユースケースの一つとしてMySQL failoverをちょっとだけ紹介したので、ここに詳しく書いておく。</p>
 
-<p>巷ではMySQL 5.6 GAが出て騒がしいですが、ちょっと前に5.5系でAWSのSSDインスタンス（hi1.4xlarge）に載せ替える案件があったので、その時に取ったベンチマークを公表します。以前Fusion-IO (ioDrive Duo)でも同じようにやったので、比較になれば。</p>
+<h2>MHA</h2>
 
-<h2>経緯</h2>
+<p>MySQLレプリケーションの障害時にフェールオーバーしたい場合、MHAを使うの結構ポピュラー（日本では）だと思います。MHAは最新binlogの適用、Slaveの昇格とレプリケーションの張替えまではやってくれますが、実際のフェールオーバーの部分はユーザに委ねられていて、master_ip_failover_scriptのテンプレートをカスタマイズするか独自実装する必要があり、一般的な実現方法としてはカタログデータベースの更新かVirtual IPの切替等があります。</p>
+
+<p>Virtual IPだと居残りセッションの問題や切替の保証難しかったり、そもそも環境によっては使えなかったりするので、私はあんまり好きじゃありません。また以前、後者的アプローチとしてAWSのVPC内であればrouting tableを変更する事によってこの挙動に似た実現方法を<a href="/blog/2013/05/21/custom-non-rds-multi-az-mysql-replication/">紹介</a>した事がありますが、一番の問題点はAPI backplaneがSPoFになってて、ここが落ちたらそもそも動かない；また、APIのrate limitに達して呼び出しさえ出来ないという結構痛い目に会ったりします。</p>
+
+<p>そこで前者的なアプローチとしてmasterの情報を管理するカタログデータベースの更新部分にConsulを使ってみました。</p>
+
+<h2>CONSUL</h2>
+
+<p>ConsulとはHTTP APIとDNSで操作ができる分散型クラスタで、VagrantやSerf等を開発しているHashicorpの新プロダクトです。Key featureは以下のとおり。</p>
 
 <ul>
-<li>あるウェブサービスのDBサイズが巨大でm2.4xlargeでも辛くなってきている</li>
-<li>アクセスパターンによりパーティショニングが効かない</li>
-<li>シャーディングをするにはアプリ改修が大変</li>
-<li>数週間後に急激なアクセスが予想され、時間的余裕がない！</li>
-<li>データサイズの急激な増加によりbuffer poolから溢れ、ディスクアクセスのさらなる発生が懸念</li>
+<li>Service Discovery</li>
+<li>Failure Detection</li>
+<li>Multi Datacenter</li>
+<li>Key/Value Store</li>
 </ul>
 
 
-<p>というわけで、時間がないのでSSDへの移行を検討し、ベンチマークを取りました。</p>
+<h3>ConsulのConsistencyについて</h3>
 
-<h2>ベンチマーク</h2>
+<p>ConsulはCAP定理でいうCPという特性をもっており、Consistency（一貫性）に重きをおいてあります。Paxosを由来とするRaftをベースにしたconsensus protocolで実現していて、ピアセット内の各サーバノードでlog entryの書き込みがquorumで決定された後にcommitされたと見なされ、FSMに書き込まれます。よって、書き込みに関してはStrongly Consistentな処理となります。読み込みに関しては、パフォーマンス要求に応じてConsistencyレベルをクエリータイプによって調整可能（まるでCassandraのように！）で、Usually Consistent, Strongly Consistent, Staleから選択可能です。DNSベースのクエリーはデフォルトで単一のリーダーノードが返答するのでStrongly Consistentな処理となっています。（Staleにする事も可能）</p>
 
-<p>buffer poolが徐々に足りなくなった場合のディスクアクセスの発生をシミュレート</p>
+<h2>ConsulとMHAの連携概要</h2>
 
 <ul>
-<li>sysbenchのoltpモード</li>
-<li>データサイズは12G（5000万件）</li>
-<li>readonly</li>
-<li>uniform（フルスキャン）</li>
+<li>Consulを内部DNSとして使い、clientはDNSベースでmasterに接続</li>
+<li>MySQL masterはAPIで予めサービス名（alias DNS）を登録しておく</li>
+<li>mysql_failover_scriptで旧情報の削除と新情報の登録をやる
+
+<ul>
+<li>旧master IPを無効化する部分でConsulのCatalog endpointを使ってderegister (/v1/catalog/deregister)</li>
+<li>新master ipを登録する部分でConsulのCatalog endpointを使ってregister (/v1/catalog/register)</li>
+<li>成功しない限り進まない（exit code check）</li>
+</ul>
+</li>
+<li>削除、及び登録はconsulのconsistency modelによって一貫性は保証される</li>
 </ul>
 
 
-<p>主要my.cnfパラメータ</p>
+<h2>DEMO</h2>
 
-<pre><code> sync_binlog = 0
- innodb_buffer_pool_size = XXG
- innodb_flush_method = O_DIRECT
- innodb_flush_log_at_trx_commit = 1
- innodb_file_per_table
- innodb_io_capacity = 2000
-</code></pre>
-
-<p>コマンド</p>
-
-<pre><code> time sysbench --test=oltp --oltp-table-size=50000000 --db-driver=mysql --mysql-user=root prepare                                                                                                         
- time sysbench --test=oltp --oltp-table-size=50000000 --db-driver=mysql --mysql-user=root --num-threads=16 --max-requests=0 --max-time=180 --init-rng=on --oltp-read-only=on --oltp-dist-type=uniform 2&gt;&amp;1 run                                                                                                         
-</code></pre>
-
-<h2>結果</h2>
-
-<p>トランザクション推移</p>
-
-<p><img src="https://docs.google.com/spreadsheet/oimg?key=0Aliw9SoXFJNMdFhhcHJkcDA5MGlackNHTXlPcWt0VWc&oid=2&zx=ii4lryrf8pz8"></p>
-
-<p>レスポンスタイム推移</p>
-
-<p><img src="https://docs.google.com/spreadsheet/oimg?key=0Aliw9SoXFJNMdFhhcHJkcDA5MGlackNHTXlPcWt0VWc&oid=3&zx=c2drap7b5561"></p>
-
-<p>Fusion-IOと比べて半分ぐらい。ioDrvie Duoの公称IOPSが250,000+ IOPSでhi1.4xlargeが120,000 IOPSなので、まあ合致しますね。</p>
-
-<p>まだ整理されてないベンチマーク結果があるので、後ほど追記しようと思います。</p>
-
-<h2>追記 <a name="add">&nbsp;</a></h2>
-
-<p>先日（5/17/13）の<a href="http://www.zusaar.com/event/668006">cloudpack night #6 - Re:Generate -</a>でADSJの荒木さんの発表でMySQLのパフォーマンスの話があったので<a href="https://code.launchpad.net/~percona-dev/perconatools/tpcc-mysql">tpcc-mysql</a>でベンチマークを取った資料を思い出し追記しました。</p>
-
-<ul>
-<li>500 warehouses (50GBぐらい)</li>
-<li>24GB Buffer pool</li>
-<li>16スレッド</li>
-<li>1時間実行</li>
-</ul>
+<div class="embed-video-container"><iframe src="http://www.youtube.com/embed/rA4hyJ-pccU "></iframe></div>
 
 
-<p>コマンド（ロードはかなり時間がかかるので注意）</p>
+<h2>Notes</h2>
 
-<pre><code> tpcc_load localhost tpcc root "" 500
- tpcc_start -d tpcc -u root -p "" -w 500 -c 16 -r 300 -l 3600
-</code></pre>
+<p>DNSは最新のv0.3.0になってからTTLを設定できるようになったので、Amazon RDSっぽい感じのフェールオーバーも可能ですが、v0.2系に比べて格段にパフォーマンスが向上（スライド参照）したので、デフォルトのTTL 0でも問題ない範囲になってる感じです。また、もうちょっと詳しい内容は今度の<a href="http://connpass.com/event/7322/">#hbstudy</a>で話す予定です。</p>
 
-<p><img src="https://docs.google.com/spreadsheet/oimg?key=0Aliw9SoXFJNMdFhhcHJkcDA5MGlackNHTXlPcWt0VWc&oid=4&zx=y6kwyezb1qth"></p>
+<h2>スライド</h2>
 
-<p>hi1.4xlargeの方が安定するまで少し時間がかかってます。<br />
-以下、安定化しだした900sあたりからの数値です。</p>
+<p>以下、July Tech Festa 2014で発表した時のスライドです。</p>
 
-<table>
-<thead>
-<tr>
-<th></th>
-<th>Fusion-IO</th>
-<th>hi1.4xlarge</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>total</td>
-<td>2288758</td>
-<td>1444417</td>
-</tr>
-<tr>
-<td>avg</td>
-<td>8445.6</td>
-<td>5330.0</td>
-</tr>
-<tr>
-<td>stddev</td>
-<td>245.7</td>
-<td>132.8</td>
-</tr>
-</tbody>
-</table>
+<script async="true" class="speakerdeck-embed" data-id="e07317d0dc040131a0982229a5c1e016" src="//speakerdeck.com/assets/embed.js"> </script>
 
-
-<p>Fusion-IOに比べて6割ってところでしょうか。
-今回はSSDのephemeral disk1本で試したので、RAID0にするともうちょっと違ってくると思います。</p>
 </div>
 
 
@@ -237,12 +183,12 @@
   
 
 
-<time datetime="2013-02-22T17:32:00+09:00" pubdate data-updated="true">Feb 22<span>nd</span>, 2013</time>
+<time datetime="2014-07-11T10:12:00+09:00" pubdate data-updated="true">Jul 11<span>th</span>, 2014</time>
       
 
 <span class="categories">
   
-    <a class='category' href='/blog/categories/aws/'>aws</a>, <a class='category' href='/blog/categories/mysql/'>mysql</a>
+    <a class='category' href='/blog/categories/consul/'>consul</a>, <a class='category' href='/blog/categories/events/'>events</a>, <a class='category' href='/blog/categories/mysql/'>mysql</a>
   
 </span>
 
@@ -251,7 +197,7 @@
     
       <div class="sharing">
   
-  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://ijin.github.com/blog/2013/02/22/mysql-benchmarks-on-aws-ssd-vs-fusion-io/" data-via="ijin" data-counturl="http://ijin.github.com/blog/2013/02/22/mysql-benchmarks-on-aws-ssd-vs-fusion-io/" >Tweet</a>
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://ijin.github.com/blog/2014/07/11/mysql-failover-with-consul/" data-via="ijin" data-counturl="http://ijin.github.com/blog/2014/07/11/mysql-failover-with-consul/" >Tweet</a>
   
   
   
@@ -260,10 +206,8 @@
     
     <p class="meta">
       
-        <a class="basic-alignment left" href="/blog/2013/02/08/self-healing-with-non-elb-autoscaling/" title="Previous Post: 非ELBなAutoscalingによる自動復旧">&laquo; 非ELBなAutoscalingによる自動復旧</a>
+        <a class="basic-alignment left" href="/blog/2014/04/21/chefconf-2014/" title="Previous Post: #ChefConf 2014に参加してきた">&laquo; #ChefConf 2014に参加してきた</a>
       
-      
-        <a class="basic-alignment right" href="/blog/2013/04/03/accelerating-cross-region-data-transfer/" title="Next Post: リージョン間高速データ転送">リージョン間高速データ転送 &raquo;</a>
       
     </p>
   </footer>
@@ -366,8 +310,8 @@
       
         
         // var disqus_developer = 1;
-        var disqus_identifier = 'http://ijin.github.com/blog/2013/02/22/mysql-benchmarks-on-aws-ssd-vs-fusion-io/';
-        var disqus_url = 'http://ijin.github.com/blog/2013/02/22/mysql-benchmarks-on-aws-ssd-vs-fusion-io/';
+        var disqus_identifier = 'http://ijin.github.com/blog/2014/07/11/mysql-failover-with-consul/';
+        var disqus_url = 'http://ijin.github.com/blog/2014/07/11/mysql-failover-with-consul/';
         var disqus_script = 'embed.js';
       
     (function () {

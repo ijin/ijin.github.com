@@ -4,7 +4,7 @@
   <title><![CDATA[@ijin]]></title>
   <link href="http://ijin.github.com/atom.xml" rel="self"/>
   <link href="http://ijin.github.com/"/>
-  <updated>2014-04-21T13:06:02+09:00</updated>
+  <updated>2014-07-11T10:47:10+09:00</updated>
   <id>http://ijin.github.com/</id>
   <author>
     <name><![CDATA[Michael H. Oshita]]></name>
@@ -12,6 +12,72 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[ConsulによるMySQLフェールオーバー]]></title>
+    <link href="http://ijin.github.com/blog/2014/07/11/mysql-failover-with-consul/"/>
+    <updated>2014-07-11T10:12:00+09:00</updated>
+    <id>http://ijin.github.com/blog/2014/07/11/mysql-failover-with-consul</id>
+    <content type="html"><![CDATA[<p>先日(6/22/14)、6月なのにどういう分けか早めに開催された<a href="http://2014.techfesta.jp/">July Tech Festa 2014</a>でConsulについて<a href="http://2014.techfesta.jp/p/program.html?m=1#c43">発表</a>してきた。そのユースケースの一つとしてMySQL failoverをちょっとだけ紹介したので、ここに詳しく書いておく。</p>
+
+<h2>MHA</h2>
+
+<p>MySQLレプリケーションの障害時にフェールオーバーしたい場合、MHAを使うの結構ポピュラー（日本では）だと思います。MHAは最新binlogの適用、Slaveの昇格とレプリケーションの張替えまではやってくれますが、実際のフェールオーバーの部分はユーザに委ねられていて、master_ip_failover_scriptのテンプレートをカスタマイズするか独自実装する必要があり、一般的な実現方法としてはカタログデータベースの更新かVirtual IPの切替等があります。</p>
+
+<p>Virtual IPだと居残りセッションの問題や切替の保証難しかったり、そもそも環境によっては使えなかったりするので、私はあんまり好きじゃありません。また以前、後者的アプローチとしてAWSのVPC内であればrouting tableを変更する事によってこの挙動に似た実現方法を<a href="http://ijin.github.com/blog/2013/05/21/custom-non-rds-multi-az-mysql-replication/">紹介</a>した事がありますが、一番の問題点はAPI backplaneがSPoFになってて、ここが落ちたらそもそも動かない；また、APIのrate limitに達して呼び出しさえ出来ないという結構痛い目に会ったりします。</p>
+
+<p>そこで前者的なアプローチとしてmasterの情報を管理するカタログデータベースの更新部分にConsulを使ってみました。</p>
+
+<h2>CONSUL</h2>
+
+<p>ConsulとはHTTP APIとDNSで操作ができる分散型クラスタで、VagrantやSerf等を開発しているHashicorpの新プロダクトです。Key featureは以下のとおり。</p>
+
+<ul>
+<li>Service Discovery</li>
+<li>Failure Detection</li>
+<li>Multi Datacenter</li>
+<li>Key/Value Store</li>
+</ul>
+
+
+<h3>ConsulのConsistencyについて</h3>
+
+<p>ConsulはCAP定理でいうCPという特性をもっており、Consistency（一貫性）に重きをおいてあります。Paxosを由来とするRaftをベースにしたconsensus protocolで実現していて、ピアセット内の各サーバノードでlog entryの書き込みがquorumで決定された後にcommitされたと見なされ、FSMに書き込まれます。よって、書き込みに関してはStrongly Consistentな処理となります。読み込みに関しては、パフォーマンス要求に応じてConsistencyレベルをクエリータイプによって調整可能（まるでCassandraのように！）で、Usually Consistent, Strongly Consistent, Staleから選択可能です。DNSベースのクエリーはデフォルトで単一のリーダーノードが返答するのでStrongly Consistentな処理となっています。（Staleにする事も可能）</p>
+
+<h2>ConsulとMHAの連携概要</h2>
+
+<ul>
+<li>Consulを内部DNSとして使い、clientはDNSベースでmasterに接続</li>
+<li>MySQL masterはAPIで予めサービス名（alias DNS）を登録しておく</li>
+<li>mysql_failover_scriptで旧情報の削除と新情報の登録をやる
+
+<ul>
+<li>旧master IPを無効化する部分でConsulのCatalog endpointを使ってderegister (/v1/catalog/deregister)</li>
+<li>新master ipを登録する部分でConsulのCatalog endpointを使ってregister (/v1/catalog/register)</li>
+<li>成功しない限り進まない（exit code check）</li>
+</ul>
+</li>
+<li>削除、及び登録はconsulのconsistency modelによって一貫性は保証される</li>
+</ul>
+
+
+<h2>DEMO</h2>
+
+<div class="embed-video-container"><iframe src="http://www.youtube.com/embed/rA4hyJ-pccU "></iframe></div>
+
+
+<h2>Notes</h2>
+
+<p>DNSは最新のv0.3.0になってからTTLを設定できるようになったので、Amazon RDSっぽい感じのフェールオーバーも可能ですが、v0.2系に比べて格段にパフォーマンスが向上（スライド参照）したので、デフォルトのTTL 0でも問題ない範囲になってる感じです。また、もうちょっと詳しい内容は今度の<a href="http://connpass.com/event/7322/">#hbstudy</a>で話す予定です。</p>
+
+<h2>スライド</h2>
+
+<p>以下、July Tech Festa 2014で発表した時のスライドです。</p>
+
+<script async="true" class="speakerdeck-embed" data-id="e07317d0dc040131a0982229a5c1e016" src="http://ijin.github.com//speakerdeck.com/assets/embed.js"> </script>
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[#ChefConf 2014に参加してきた]]></title>

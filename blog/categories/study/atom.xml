@@ -4,7 +4,7 @@
   <title><![CDATA[Category: study | @ijin]]></title>
   <link href="http://ijin.github.com/blog/categories/study/atom.xml" rel="self"/>
   <link href="http://ijin.github.com/"/>
-  <updated>2014-07-11T10:47:10+09:00</updated>
+  <updated>2014-10-21T11:47:28+09:00</updated>
   <id>http://ijin.github.com/</id>
   <author>
     <name><![CDATA[Michael H. Oshita]]></name>
@@ -12,6 +12,211 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[ISUCON4の予選を通過したんだった]]></title>
+    <link href="http://ijin.github.com/blog/2014/10/20/isucon4-qualifier/"/>
+    <updated>2014-10-20T15:38:00+09:00</updated>
+    <id>http://ijin.github.com/blog/2014/10/20/isucon4-qualifier</id>
+    <content type="html"><![CDATA[<p>そういえば、3回目の参加となる<a href="http://isucon.net/">ISUCON</a>の第4回目の予選を通過してました。</p>
+
+<p><a href="http://isucon.net/archives/40576269.html">結果</a>は185チーム中、<strong>19位</strong>というなんと微妙な結果で本戦にいける事に。</p>
+
+<h3>事前準備</h3>
+
+<p>今年も<a href="https://twitter.com/cads">@cads</a>と<a href="https://twitter.com/fruwe">@fruwe</a>でお馴染みのメンバーで「Mr. Frank &amp; Co: A New Hope」として登録。</p>
+
+<p>前日までこんな感じの打ち合わせや予習を実地。</p>
+
+<ul>
+<li>選択言語はruby</li>
+<li>効率化・自動化の為にansible playbookを用意
+
+<ul>
+<li>ssh keys</li>
+<li>dotfiles</li>
+<li>rubyの複数バージョン</li>
+<li>各種ミドルウェア</li>
+</ul>
+</li>
+<li>sidekiq等のバックグラウンドワーカーやキャッシュ周りの仮組み</li>
+<li>redisの復習</li>
+<li>去年やったエントリを読む</li>
+<li>当日の流れの確認</li>
+<li>コミュニケーションツールとして最近仕事で活躍してる<strong>Slack</strong>を導入</li>
+</ul>
+
+
+<p>役割としては他の二人がコード実装に集中できるように、私がインフラ周り、コードレビュー、ファシリテーターを務める。</p>
+
+<h3>お題発表</h3>
+
+<p>不正ログイン防止の為にアクセスの失敗回数に応じてログインロックをかけるシステム。実に今風なオンラインバンキングサービス「いすこん銀行」w 最後はjsonのレポートが出力。</p>
+
+<p><img src="https://lh5.googleusercontent.com/-XjuyJ-r62YE/VETj3ySpGkI/AAAAAAAABAo/2Q2yi6YWJUk/w622-h373-no/isucon4q-bank.png"></p>
+
+<h3>前半戦</h3>
+
+<p>まずは今までの経験からいきなりチューニングをせず、じっくりとアプリ挙動を把握し、計測し、コード解析に専念。レギュレーションもしっかり読む。この辺の衝動のコントロールはうまくなって来た感触。</p>
+
+<p>アプリ自体は例年の作りによく似ていて、まあそこそこ高速化はできるだろうけど、その分他のチームも同様だろうと予想。</p>
+
+<p>コードを3人で読みつつ、前日までに用意していたansibleを流したり、git化したり、計測を淡々と実地。</p>
+
+<p>言語をいくつか参考値として計測した初期スコア</p>
+
+<table>
+<thead>
+<tr>
+<th>language </th>
+<th> score </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ruby     </td>
+<td> 1236 </td>
+</tr>
+<tr>
+<td>go       </td>
+<td> 1733 </td>
+</tr>
+<tr>
+<td>perl     </td>
+<td> 1662 </td>
+</tr>
+</tbody>
+</table>
+
+
+<ul>
+<li>Web側は各リスエストの比率やレスポンスタイム等を解析</li>
+<li>DB周りは幸いMySQLだったので全ログ出力してpt-query-digestで解析<br />
+（Postgresだったらどうしたんだろう）</li>
+<li>OS周りはdstatやhtop等でリソースの利用具合を観測</li>
+</ul>
+
+
+<p>計測やコードの理解が出来た時点で新アーキテクチャの設計を3人でディスカッションし、戦略立案。</p>
+
+<p>タイムリミットをいくつか設け、いざ開始！（この時点ではまだ1行も変更してない）</p>
+
+<p>基本戦略としてはMySQLのRedisへの置き換えし、アプリの処理自体を減らしていく方向。チームメイトの2人には実装を担当してもらい、その間に私が既存のMySQLバージョンのチューニングを施し、地味にスコアを上げていく。</p>
+
+<ul>
+<li>INDEX追加</li>
+<li>MySQL parameter tuning</li>
+<li>stylesheetsやjavascriptの直接配信</li>
+<li>TCP tuning</li>
+<li>File Descriptor上限緩和</li>
+<li>unix domain socketの利用</li>
+</ul>
+
+
+<p>合間合間に声をかけ、実装具合や残り時間をチェックし、テンポをとる。</p>
+
+<p>予め決めていた期限である14:00（ソフトリミット）に到達した時点で進捗を確認し、15:00（ハードリミット）までには間に合いそうだったのでそのまま続行を決定。</p>
+
+<p>14:31にredis版が仕上がる！</p>
+
+<p><strong>実装方法</strong></p>
+
+<ul>
+<li>初期化スクリプトでMySQLからRedisへ変換</li>
+<li>失敗ログインはINCRでカウント</li>
+<li>lockとban時にはSADDでSETに追加</li>
+<li>SISMEMBERでlock/banの確認</li>
+<li>ユーザ個別の履歴はHMSET/HMGETでハッシュ化</li>
+<li>/reportはSMEMBERSで出力</li>
+</ul>
+
+
+<h3>後半戦</h3>
+
+<p>Redis版のgit branchに私のコミットをマージし計測。MySQL版よりは多少良いスコア。</p>
+
+<p>mysql version</p>
+
+<pre><code>tag:benchmarker type:score      success:82910   fail:0  score:17910
+</code></pre>
+
+<p>redis version</p>
+
+<pre><code>tag:benchmarker type:score      success:87810   fail:318  score:18969
+</code></pre>
+
+<p>CPU消費がアプリに移っていたので、後はいかにrubyに処理をさせないかの勝負となる。</p>
+
+<p>ここからやったのは</p>
+
+<ul>
+<li>worker loadの最適値模索</li>
+<li>パスワードを初期化スクリプト時にオンメモリで持つように改造</li>
+<li>パスワードのハッシュ計算除外（ハッシュ計算のスキップは結果的にスコアには影響せず）</li>
+<li>トップページのエラーリダイレクトをクエリパラメータ化し、nginxで静的キャッシュ</li>
+<li>ログイン部分のlua実装（間に合わず）</li>
+</ul>
+
+
+<p>最後のlua実装は取り掛かったものの、期限までには時間が足りないと判断し断念。かわりに失格とならないように再起動後の正常動作する事を入念に確認。</p>
+
+<p>結局、ハイスコアは<strong>39243</strong>で終了</p>
+
+<pre><code>tag:benchmarker    type:score    success:181670    fail:0    score:39243
+</code></pre>
+
+<p>後で気づいたのが最高スコアではなく、最終提出スコアが最終結果となるので誤差により若干下がってしまった。。</p>
+
+<p><strong>戦いの軌跡</strong></p>
+
+<p><img src="https://lh6.googleusercontent.com/VDc46K_BClolTXevFw5IH4W9sS5Z6akC6FIpIAcJhTM=w925-h328-no"></p>
+
+<h3>振り返り</h3>
+
+<ul>
+<li>戦略と遂行は概ね正しかったかと</li>
+<li>タイムキープ大事</li>
+<li>実装は段階的に作ったので大きなバグがなかった</li>
+<li>ansible便利（自動化で効率化）</li>
+<li>Slackが非常に良かった（特にgithub連携）</li>
+<li>VarnishのTシャツ着てたのに使わなかった</li>
+<li>access_logを切るのを忘れてた！（offで試した41594だった）</li>
+<li>多くのチームが失格となっていたので最終チェックは大事</li>
+<li>今回は基本実装が余裕で間に合ったので確実に上達していると実感</li>
+</ul>
+
+
+<h3>復習</h3>
+
+<p>予選終了後、最後に断念したlua化を一人で実装してみた。</p>
+
+<p>/login実装でスコアは<strong>5万超</strong>、/mypageまでやって<strong>6万超</strong>でした。</p>
+
+<pre><code>tag:benchmarker type:report     count:banned ips        value:1043
+tag:benchmarker type:report     count:locked users      value:5290
+tag:worker      type:fail       reason:Response code should be 201, got 403     method:POST     uri:/results
+tag:benchmarker type:fail       message: Score sending failed   reason:Response code should be 201, got 403     method:POST     uri:/results
+tag:benchmarker type:score      success:278260  fail:0  score:60108
+</code></pre>
+
+<p>その後に、競技中には思いつなかったimageやcssをUser Agent判定で切って（DOM構造は変えずに）みたら<strong>15万超え</strong></p>
+
+<pre><code>tag:benchmarker type:report     count:banned ips        value:3115
+tag:benchmarker type:report     count:locked users      value:10426
+tag:worker      type:fail       reason:Response code should be 201, got 403     method:POST     uri:/results
+tag:benchmarker type:fail       message: Score sending failed   reason:Response code should be 201, got 403     method:POST     uri:/results
+tag:benchmarker type:score      success:210324  fail:0  score:155272
+</code></pre>
+
+<p>この辺が限界。</p>
+
+<p>うーむ。山形組の<a href="http://nihen.hatenablog.com/entry/2014/10/01/092938">30万超え</a>には程遠いなぁ。恐ろしや。</p>
+
+<h3>最後に</h3>
+
+<p>運営の皆様、ベンチマークツールの<a href="http://isucon.net/archives/40434032.html">不具合</a>やインスタンスガチャの問題等ありましたが、対応方針は非常に納得のいくものでした。引き続き、本戦を楽しみにしています。ありがとうございました！</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[AWS Game Day Japan 2014春を開催してきた]]></title>
@@ -493,103 +698,6 @@ Score:    14694.2
 <h3>おまけ</h3>
 
 <p>後日行われた各チームの反省会で判明したのがworkloadの存在。どうやらベンチマークツールの並列度を上げる事ができるらしく、そこそこ速くなっているシステムだったらスコアが1.5倍ぐらいは伸びたかもとの事。最終スコアを考えると、30000点台のトップを取れたかもしれないのが無念。。アプローチ自体は総合トップの<a href="https://twitter.com/sechiro">@sechiro</a>さんと<a href="http://sechiro.hatenablog.com/entry/2013/10/07/%23isucon_2013_%E4%BA%88%E9%81%B8%E3%82%92%E3%83%88%E3%83%83%E3%83%97%E9%80%9A%E9%81%8E%E3%81%97%E3%81%A6%E3%81%8D%E3%81%9F%EF%BC%88%E3%81%AF%E3%81%9A%EF%BC%89%E3%80%82">似ていた</a>ので方針は間違ってなかったかと。</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[AWS Game Day Tokyo 2013で受賞してきた]]></title>
-    <link href="http://ijin.github.com/blog/2013/06/10/aws-game-day-tokyo-2013/"/>
-    <updated>2013-06-10T23:33:00+09:00</updated>
-    <id>http://ijin.github.com/blog/2013/06/10/aws-game-day-tokyo-2013</id>
-    <content type="html"><![CDATA[<p>大統領選挙でオバマ陣営のシステムを堅牢化する為に用いた手法である仮想対戦シミュレーション「<a href="http://gameday2013.doorkeeper.jp/events/3960">AWS Game Day Tokyo</a>」が日本で初めて（世界2番目に）開催されたので参加してきました。</p>
-
-<p>結果、ベスト・ディフェンス賞こと「<strong>Most Awesome Fix!</strong>」賞を受賞しました。</p>
-
-<h2>経緯</h2>
-
-<p>以前、<a href="http://jaws-ug.jp/jawsdays2013/">JAWS DAYS 2013</a>でMiles Wardが講演した「<a href="http://www.publickey1.jp/blog/13/obama_for_america.html">Behind the Scenes of the Presidential Campaign</a>」でチームを攻撃・防御に分けて対戦させ、そこから学んだ事をフィードバックしてシステムをより堅牢にするという「Game Day」を知り、日本でもやりたいねという話になってました。そこで先日の<a href="http://www.awssummittokyo.com/">AWS Summit Tokyo</a>のスピンオフイベントとして、Milesの再来日に合せてADSJ（アマゾンデータサービスジャパン株式会社）さんによって開催される事になりました。チーム戦の大会は<a href="http://ijin.github.io/blog/2012/07/03/tuningathon4/">チューニンガソン</a>や<a href="http://ijin.github.io/blog/2012/11/05/isucon2/">ISUCON</a>以来なので、わくわくしながら速攻で応募をしました。</p>
-
-<h2>概要</h2>
-
-<p>大体、こんな流れです。</p>
-
-<ul>
-<li>システムの構築・堅牢化</li>
-<li>相手システムの攻撃（この間、自システムも攻撃される）</li>
-<li>自システムの修復</li>
-<li>評価</li>
-</ul>
-
-
-<p>それぞれ、2〜3人のチームに別れ、計18チームにより対戦。私のチーム名は時事ネタとして今流行りの「<a href="http://jp.techcrunch.com/2013/06/07/20130606report-nsa-collects-data-directly-from-servers-of-google-apple-microsoft-facebook-and-more/">PRISM</a>」としました。
-システム概要はnginksさんの<a href="http://d.hatena.ne.jp/nginks/20130608/1370700185">ブログ</a>が非常に分かりやすいです。
-要するに画像変換処理バッチクラスターですね。</p>
-
-<h2>構築</h2>
-
-<p>手順書をざっと見ながら画像処理クラスターを構築。相方はシステムの人間ではなかったので、動作確認を手伝ってもらいつつ実質一人でもくもくと作業。s3作成、sqs作成、アプリのインストール・設定・動作確認、AMI化、Cloudwatch設定、AutoScaling設定等を淡々と。構築しながらシステムを把握して行くけど、結構これだけで時間がとられます。なので、じっくりと防衛策は練れなかったのでひとまず、プロセスの自動復旧をしてくれるmonitをインストール・設定し（upstartでやりかけたけどうまく動かなかった）、主要ファイルのchecksumを取って改善検知してメール通知する仕組みを導入。</p>
-
-<h2>攻撃</h2>
-
-<p>AWSキー（Poweruser権限）を奪取したという仮定の元、相手システムに攻撃をしかけるターン。
-単純に全部消したり、セキュリティグループの権限を変えたりではあまりにもつまらないので、いろいろ考えます。（無論、システムの全消しは誰でもできる最低の攻撃手法）</p>
-
-<p>まず、状況把握する為にいろいろ動作確認。キューに画像を突っ込んで、ちゃんと処理されるとか。あれ、でも動かない。。
-どうやらTokyoで作りかけたけど、結局Virginiaリージョンで仕上げたと運営側から伝えられる。いきなりのタイムロス！</p>
-
-<p>気を取り直して、稼働中のインスタンスに入る方法を思いつく。通常はキー設定されているのでsshでは入れないので仮のインスタンスを起動し旧インスタンスのroot volumeのEBSを強制detachし、仮インスタンスにattachして中身をいじってからre-attachする事に。見た目は同じinstance-idなのに中身だけ違う、一見すると分かりづらいです。そこで旧インスタンスを一旦停止させる為にstopさせると、、terminateされちゃいました。。よくよく調べて見ると、Auto Scalingの設定になっていて、min-sizeの制約によって旧インスタンスが消され、代替インスタンスが自動的に起動するようになってました。</p>
-
-<p>どうやら構築が間に合わなかったチーム用に運営側が用意した自動構築をしてくれる虎の子のCloudformationを使った模様。
-そこで、相手チームのスキルレベルがそれ程高くないと判断し、Auto Scalingの元AMIを置き換える事に。
-新たなlaunch configを作成し、既存のscaling groupと同盟のものを作成。</p>
-
-<p>次にs3への攻撃。bucket名はglobalなnamespaceなので、こいつを削除して同名のを別AWSアカウントで作れば乗っ取りが可能。。
-のはずが、削除してから一定時間経過しないと作成不可だったので1字違いのbucketを作成しておく。</p>
-
-<p>最後にs3のbucket一覧を取得して、常に空のディレクトリと同期し続ける攻撃を思いつき、実装を始める。システムはs3に出力するのでそこを継続的に空にする攻撃です。しかし、実装を初めて動作確認の途中で時間切れになりシステムに埋め込めなくて断念。もうちょっと時間が欲しかったです</p>
-
-<h2>修復</h2>
-
-<p>次は自システムが受けた攻撃を修復するターン。</p>
-
-<p>いろいろ余計なインスタンスが起動していたが、まずやったのがAMI番号の確認。（これが無事であればOSに侵入されていようがAMIをベースに全体の再構築が速やかにできるので）
-幸い、控えていたのと一致していたので他のインスタンスを全て停止。一応monitのアラートメールが飛んでいなかったので、インスタンスに対しての操作は限定されているのだろうとは踏んでましたが。</p>
-
-<p>AMIが無事なら次はAuto Scalingの確認。ざっと見た感じだと、lauch configは操作されておらず、scaling groupのmin-sizeが0に変更されている模様。他の変更点は確認が面倒だったので、一旦全部削除してさくっと再作成。後で聞いた話だと、Auto Scalingのrecurring schedule設定で1分起きに0台にする設定をしていたらしいが、消された時点で攻撃は無効化。</p>
-
-<p>次にSQS。消して再作成すればてっとり早いけど、相手チームがキューに投入した画像を最終的に表示させないといけないルールだと誤解していて、その復旧に務める。新しく作ったSQSと比較するとパラメータ（Default Visibility Timeout, Retention Period, Message Size等）が異常な値に変更されていると分かり、通常の値へ戻す。</p>
-
-<p>この時点でアプリとSQSの通信を確認するも疎通できない事を把握。pingが通らない事からSecurity Group, Routing Table, Network ACLが変更されていないかを確認。どうやらSecurity GroupのIn/Outルールが削除されている単純な攻撃だと判明し、なんなく再設定。</p>
-
-<p>キュー内のメッセージが1コ処理されるのを確認し、SQS周りは対応済みかと思ったけど残り2コのメッセージがいくら待てども処理されず、若干悩む。
-ログを見たり、メッセージの中身を覗くとと「<strong>--max-redirect=99999999</strong> 」が目に留まる。どうやら変換する画像をダウンロードする部分で無限ループさせている模様。メッセージを削除し、そのパラメータを除外したものを流してちゃんとキューが処理される事を確認。</p>
-
-<p>最後にs3周りで怪しい設定がないかを調査して、一通りの動作確認をして復旧完了。</p>
-
-<h2>振り返り</h2>
-
-<p>お互いに対戦したチームと顔合わせをし、攻撃や復旧の手の内を明かします。全チームの行動記録を集約して運営側で審査を行われ各賞が授与される中、我がPRISMはSQS内の無限ループを検知・修復したのが評価されて最も優れた修復を行った「<strong>Most Awesome Fix!賞</strong>」を頂きました。後で他のチームに聞いた所、monitのような検知・通知の仕組みを導入した所はなさそうだったので、それも評価ポイントだったかも知れません。</p>
-
-<p>賞の内容としては、ワンタイムトークンを生成するハードウェアMFAデバイスとAWSのクーポンコードでした。ありがとうございます。</p>
-
-<p>最後にMilesが壊れても戻せるようにあるべき状態の定義と常に比較して自動的に自己治癒するのが最高のシステムと言ってました。AWSの状態を保存するにはCloudformerでCloudformationテンプレート化すれば便利で楽だけど、chefみたいにIdempotency（冪等性）を継続的に保証する仕組みをそのレイヤーで組むのはなかなか大変ですね。（個々のサーバ単位は可能だとしても）</p>
-
-<h2>感想</h2>
-
-<p>「<em>チューニンガソン</em>」や私が他にお手伝いをしている「<em>トラブル☆しゅーたーず</em>」とも一味違って、非常に楽しめました。</p>
-
-<p>以下、思った事をいくつか。</p>
-
-<ul>
-<li>構築に時間が取られたのでなるべく出来合いのシステムがあった方が防衛策に専念できそう</li>
-<li>攻撃可能な時間が思ったより短かったのでもうちょっと長めで</li>
-<li>Default-VPCとEC2-Classicでは挙動が違うのでアカウントタイプは統一した方が良い</li>
-<li>ターン性ではなく、攻撃と修復・防御のリアルタイム性を試すとか</li>
-<li>あるべき正しい状態を把握する為のツールがあると他のタスクに集中できるかも</li>
-</ul>
-
-
-<p>次に開催される時も参加したいですね。もしくは運営側のお手伝いでも！</p>
 ]]></content>
   </entry>
   

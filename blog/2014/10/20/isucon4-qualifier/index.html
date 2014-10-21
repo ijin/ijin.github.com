@@ -1,0 +1,484 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>ISUCON4の予選を通過したんだった - @ijin</title>
+  <meta name="author" content="Michael H. Oshita">
+
+  
+  <meta name="description" content="そういえば、3回目の参加となるISUCONの第4回目の予選を通過してました。 結果は185チーム中、19位というなんと微妙な結果で本戦にいける事に。 事前準備 今年も@cadsと@fruweでお馴染みのメンバーで「Mr. Frank &amp; Co: A New Hope」として登録。 &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://ijin.github.com/blog/2014/10/20/isucon4-qualifier/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/stylesheets/data-table.css" rel="stylesheet" type="text/css" />
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="@ijin" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-33110241-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">@ijin</a></h1>
+  
+    <h2>[Michael H. Oshita]</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:ijin.github.com" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">ISUCON4の予選を通過したんだった</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-10-20T15:38:00+09:00" pubdate data-updated="true">Oct 20<span>th</span>, 2014</time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>そういえば、3回目の参加となる<a href="http://isucon.net/">ISUCON</a>の第4回目の予選を通過してました。</p>
+
+<p><a href="http://isucon.net/archives/40576269.html">結果</a>は185チーム中、<strong>19位</strong>というなんと微妙な結果で本戦にいける事に。</p>
+
+<h3>事前準備</h3>
+
+<p>今年も<a href="https://twitter.com/cads">@cads</a>と<a href="https://twitter.com/fruwe">@fruwe</a>でお馴染みのメンバーで「Mr. Frank &amp; Co: A New Hope」として登録。</p>
+
+<p>前日までこんな感じの打ち合わせや予習を実地。</p>
+
+<ul>
+<li>選択言語はruby</li>
+<li>効率化・自動化の為にansible playbookを用意
+
+<ul>
+<li>ssh keys</li>
+<li>dotfiles</li>
+<li>rubyの複数バージョン</li>
+<li>各種ミドルウェア</li>
+</ul>
+</li>
+<li>sidekiq等のバックグラウンドワーカーやキャッシュ周りの仮組み</li>
+<li>redisの復習</li>
+<li>去年やったエントリを読む</li>
+<li>当日の流れの確認</li>
+<li>コミュニケーションツールとして最近仕事で活躍してる<strong>Slack</strong>を導入</li>
+</ul>
+
+
+<p>役割としては他の二人がコード実装に集中できるように、私がインフラ周り、コードレビュー、ファシリテーターを務める。</p>
+
+<h3>お題発表</h3>
+
+<p>不正ログイン防止の為にアクセスの失敗回数に応じてログインロックをかけるシステム。実に今風なオンラインバンキングサービス「いすこん銀行」w 最後はjsonのレポートが出力。</p>
+
+<p><img src="https://lh5.googleusercontent.com/-XjuyJ-r62YE/VETj3ySpGkI/AAAAAAAABAo/2Q2yi6YWJUk/w622-h373-no/isucon4q-bank.png"></p>
+
+<h3>前半戦</h3>
+
+<p>まずは今までの経験からいきなりチューニングをせず、じっくりとアプリ挙動を把握し、計測し、コード解析に専念。レギュレーションもしっかり読む。この辺の衝動のコントロールはうまくなって来た感触。</p>
+
+<p>アプリ自体は例年の作りによく似ていて、まあそこそこ高速化はできるだろうけど、その分他のチームも同様だろうと予想。</p>
+
+<p>コードを3人で読みつつ、前日までに用意していたansibleを流したり、git化したり、計測を淡々と実地。</p>
+
+<p>言語をいくつか参考値として計測した初期スコア</p>
+
+<table>
+<thead>
+<tr>
+<th>language </th>
+<th> score </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ruby     </td>
+<td> 1236 </td>
+</tr>
+<tr>
+<td>go       </td>
+<td> 1733 </td>
+</tr>
+<tr>
+<td>perl     </td>
+<td> 1662 </td>
+</tr>
+</tbody>
+</table>
+
+
+<ul>
+<li>Web側は各リスエストの比率やレスポンスタイム等を解析</li>
+<li>DB周りは幸いMySQLだったので全ログ出力してpt-query-digestで解析<br />
+（Postgresだったらどうしたんだろう）</li>
+<li>OS周りはdstatやhtop等でリソースの利用具合を観測</li>
+</ul>
+
+
+<p>計測やコードの理解が出来た時点で新アーキテクチャの設計を3人でディスカッションし、戦略立案。</p>
+
+<p>タイムリミットをいくつか設け、いざ開始！（この時点ではまだ1行も変更してない）</p>
+
+<p>基本戦略としてはMySQLのRedisへの置き換えし、アプリの処理自体を減らしていく方向。チームメイトの2人には実装を担当してもらい、その間に私が既存のMySQLバージョンのチューニングを施し、地味にスコアを上げていく。</p>
+
+<ul>
+<li>INDEX追加</li>
+<li>MySQL parameter tuning</li>
+<li>stylesheetsやjavascriptの直接配信</li>
+<li>TCP tuning</li>
+<li>File Descriptor上限緩和</li>
+<li>unix domain socketの利用</li>
+</ul>
+
+
+<p>合間合間に声をかけ、実装具合や残り時間をチェックし、テンポをとる。</p>
+
+<p>予め決めていた期限である14:00（ソフトリミット）に到達した時点で進捗を確認し、15:00（ハードリミット）までには間に合いそうだったのでそのまま続行を決定。</p>
+
+<p>14:31にredis版が仕上がる！</p>
+
+<p><strong>実装方法</strong></p>
+
+<ul>
+<li>初期化スクリプトでMySQLからRedisへ変換</li>
+<li>失敗ログインはINCRでカウント</li>
+<li>lockとban時にはSADDでSETに追加</li>
+<li>SISMEMBERでlock/banの確認</li>
+<li>ユーザ個別の履歴はHMSET/HMGETでハッシュ化</li>
+<li>/reportはSMEMBERSで出力</li>
+</ul>
+
+
+<h3>後半戦</h3>
+
+<p>Redis版のgit branchに私のコミットをマージし計測。MySQL版よりは多少良いスコア。</p>
+
+<p>mysql version</p>
+
+<pre><code>tag:benchmarker type:score      success:82910   fail:0  score:17910
+</code></pre>
+
+<p>redis version</p>
+
+<pre><code>tag:benchmarker type:score      success:87810   fail:318  score:18969
+</code></pre>
+
+<p>CPU消費がアプリに移っていたので、後はいかにrubyに処理をさせないかの勝負となる。</p>
+
+<p>ここからやったのは</p>
+
+<ul>
+<li>worker loadの最適値模索</li>
+<li>パスワードを初期化スクリプト時にオンメモリで持つように改造</li>
+<li>パスワードのハッシュ計算除外（ハッシュ計算のスキップは結果的にスコアには影響せず）</li>
+<li>トップページのエラーリダイレクトをクエリパラメータ化し、nginxで静的キャッシュ</li>
+<li>ログイン部分のlua実装（間に合わず）</li>
+</ul>
+
+
+<p>最後のlua実装は取り掛かったものの、期限までには時間が足りないと判断し断念。かわりに失格とならないように再起動後の正常動作する事を入念に確認。</p>
+
+<p>結局、ハイスコアは<strong>39243</strong>で終了</p>
+
+<pre><code>tag:benchmarker    type:score    success:181670    fail:0    score:39243
+</code></pre>
+
+<p>後で気づいたのが最高スコアではなく、最終提出スコアが最終結果となるので誤差により若干下がってしまった。。</p>
+
+<p><strong>戦いの軌跡</strong></p>
+
+<p><img src="https://lh6.googleusercontent.com/VDc46K_BClolTXevFw5IH4W9sS5Z6akC6FIpIAcJhTM=w925-h328-no"></p>
+
+<h3>振り返り</h3>
+
+<ul>
+<li>戦略と遂行は概ね正しかったかと</li>
+<li>タイムキープ大事</li>
+<li>実装は段階的に作ったので大きなバグがなかった</li>
+<li>ansible便利（自動化で効率化）</li>
+<li>Slackが非常に良かった（特にgithub連携）</li>
+<li>VarnishのTシャツ着てたのに使わなかった</li>
+<li>access_logを切るのを忘れてた！（offで試した41594だった）</li>
+<li>多くのチームが失格となっていたので最終チェックは大事</li>
+<li>今回は基本実装が余裕で間に合ったので確実に上達していると実感</li>
+</ul>
+
+
+<h3>復習</h3>
+
+<p>予選終了後、最後に断念したlua化を一人で実装してみた。</p>
+
+<p>/login実装でスコアは<strong>5万超</strong>、/mypageまでやって<strong>6万超</strong>でした。</p>
+
+<pre><code>tag:benchmarker type:report     count:banned ips        value:1043
+tag:benchmarker type:report     count:locked users      value:5290
+tag:worker      type:fail       reason:Response code should be 201, got 403     method:POST     uri:/results
+tag:benchmarker type:fail       message: Score sending failed   reason:Response code should be 201, got 403     method:POST     uri:/results
+tag:benchmarker type:score      success:278260  fail:0  score:60108
+</code></pre>
+
+<p>その後に、競技中には思いつなかったimageやcssをUser Agent判定で切って（DOM構造は変えずに）みたら<strong>15万超え</strong></p>
+
+<pre><code>tag:benchmarker type:report     count:banned ips        value:3115
+tag:benchmarker type:report     count:locked users      value:10426
+tag:worker      type:fail       reason:Response code should be 201, got 403     method:POST     uri:/results
+tag:benchmarker type:fail       message: Score sending failed   reason:Response code should be 201, got 403     method:POST     uri:/results
+tag:benchmarker type:score      success:210324  fail:0  score:155272
+</code></pre>
+
+<p>この辺が限界。</p>
+
+<p>うーむ。山形組の<a href="http://nihen.hatenablog.com/entry/2014/10/01/092938">30万超え</a>には程遠いなぁ。恐ろしや。</p>
+
+<h3>最後に</h3>
+
+<p>運営の皆様、ベンチマークツールの<a href="http://isucon.net/archives/40434032.html">不具合</a>やインスタンスガチャの問題等ありましたが、対応方針は非常に納得のいくものでした。引き続き、本戦を楽しみにしています。ありがとうございました！</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Michael H. Oshita</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-10-20T15:38:00+09:00" pubdate data-updated="true">Oct 20<span>th</span>, 2014</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/events/'>events</a>, <a class='category' href='/blog/categories/study/'>study</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://ijin.github.com/blog/2014/10/20/isucon4-qualifier/" data-via="ijin" data-counturl="http://ijin.github.com/blog/2014/10/20/isucon4-qualifier/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2014/07/11/mysql-failover-with-consul/" title="Previous Post: ConsulによるMySQLフェールオーバー">&laquo; ConsulによるMySQLフェールオーバー</a>
+      
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2014/10/20/isucon4-qualifier/">ISUCON4の予選を通過したんだった</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/07/11/mysql-failover-with-consul/">ConsulによるMySQLフェールオーバー</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/04/21/chefconf-2014/">#ChefConf 2014に参加してきた</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/03/14/aws-game-day-japan-2014-spring/">AWS Game Day Japan 2014春を開催してきた</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/01/01/mysql-benchmarks-on-aws-i2-instance-ssds/">i2 instanceでMySQLベンチマーク</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/12/14/self-healing-with-non-elb-autoscaling2/">Autoscalingによる自動復旧(Immutable Infrastucture)</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/12/13/serverfesta-2013-autumn/">サバフェス！2013に参加してきた</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/11/11/isucon3-final/">ISUCON3の本戦に参加してきた</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/10/07/isucon3-preliminary/">ISUCON3の予選を通過した（はず）</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/06/10/aws-game-day-tokyo-2013/">AWS Game Day Tokyo 2013で受賞してきた</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+<section>
+  <h1>Latest Tweets</h1>
+  <ul id="tweets">
+    <li class="loading">Status updating...</li>
+  </ul>
+  <script type="text/javascript">
+    $.domReady(function(){
+      getTwitterFeed("ijin", 4, false);
+    });
+  </script>
+  <script src="/javascripts/twitter.js" type="text/javascript"> </script>
+  
+    <a href="http://twitter.com/ijin" class="twitter-follow-button" data-show-count="false">Follow @ijin</a>
+  
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2014 - Michael H. Oshita -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'ijin';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://ijin.github.com/blog/2014/10/20/isucon4-qualifier/';
+        var disqus_url = 'http://ijin.github.com/blog/2014/10/20/isucon4-qualifier/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

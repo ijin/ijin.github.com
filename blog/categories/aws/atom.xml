@@ -4,7 +4,7 @@
   <title><![CDATA[Category: aws | @ijin]]></title>
   <link href="http://ijin.github.com/blog/categories/aws/atom.xml" rel="self"/>
   <link href="http://ijin.github.com/"/>
-  <updated>2014-12-06T06:32:26+09:00</updated>
+  <updated>2014-12-06T06:34:21+09:00</updated>
   <id>http://ijin.github.com/</id>
   <author>
     <name><![CDATA[Michael H. Oshita]]></name>
@@ -14,7 +14,7 @@
 
   
   <entry>
-    <title type="html"><![CDATA[Auto Scalingによる自動復旧（Lambda編）]]></title>
+    <title type="html"><![CDATA[Auto Scalingによる自動復旧（AWS Lambda編）]]></title>
     <link href="http://ijin.github.com/blog/2014/12/05/self-healing-with-non-elb-autoscaling3/"/>
     <updated>2014-12-05T23:14:00+09:00</updated>
     <id>http://ijin.github.com/blog/2014/12/05/self-healing-with-non-elb-autoscaling3</id>

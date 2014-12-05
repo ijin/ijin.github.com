@@ -9,7 +9,7 @@
   <meta name="author" content="Michael H. Oshita">
 
   
-  <meta name="description" content="そういえば、3回目の参加となるISUCONの第4回目の予選を通過してました。 結果は185チーム中、19位というなんと微妙な結果で本戦にいける事に。 事前準備 今年も@cadsと@fruweでお馴染みのメンバーで「Mr. Frank &amp; Co: A New Hope」として登録。 &hellip;">
+  <meta name="description" content="ちょうど1年程前に「非ELBなAutoscalingによる自動復旧」の再検証をしました。前回も復旧までのタイムラグが20分だったので、この1年で変わったかまた検証してみました。 設定 前回とほぼ一種ですが、今回はついでにEC2 Status &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -77,6 +77,427 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/12/05/self-healing-with-non-elb-autoscaling3/">Auto Scalingによる自動復旧（Lambda編）</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-12-05T23:14:00+09:00" pubdate data-updated="true">Dec 5<span>th</span>, 2014</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>ちょうど1年程前に「<a href="/blog/2013/02/08/self-healing-with-non-elb-autoscaling/">非ELBなAutoscalingによる自動復旧</a>」の<a href="/blog/2013/12/14/self-healing-with-non-elb-autoscaling2/">再検証</a>をしました。前回も復旧までのタイムラグが20分だったので、この1年で変わったかまた検証してみました。</p>
+
+<h3>設定</h3>
+
+<p><a href="/blog/2013/12/14/self-healing-with-non-elb-autoscaling2/">前回</a>とほぼ一種ですが、今回はついでにEC2 Status AlarmをCloudwatch経由でSNSでアラートを飛ばします。</p>
+
+<p>SNS作成 &amp; Subscribe（送られてくる確認メールは手動で承認）</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ aws sns create-topic --name instance-alert
+</span><span class='line'>{
+</span><span class='line'>    "TopicArn": "arn:aws:sns:us-west-2:123456789012:instance-alert"
+</span><span class='line'>}
+</span><span class='line'>
+</span><span class='line'>$ aws sns subscribe --topic-arn arn:aws:sns:us-west-2:123456789012:instance-alert --protocol email --notification-endpoint user@example.com                               
+</span><span class='line'>{
+</span><span class='line'>    "SubscriptionArn": "pending confirmation"
+</span><span class='line'>}
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>EC2 Status Alarm登録</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>export INSTANCE=i-xxxxxxxx
+</span><span class='line'>aws cloudwatch put-metric-alarm --alarm-name StatusCheckFailed-Alarm-for-$INSTANCE \
+</span><span class='line'>--alarm-description "Instance $INSTANCE has failed" --metric-name StatusCheckFailed \
+</span><span class='line'>--namespace AWS/EC2 --statistic Maximum --dimensions Name=InstanceId,Value=$INSTANCE \
+</span><span class='line'>--period 60 --unit Count --evaluation-periods 2 --threshold 1 --comparison-operator \
+</span><span class='line'>  GreaterThanOrEqualToThreshold --alarm-actions arn:aws:sns:us-west-2:123456789012:instance-alert</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>自動復旧</h3>
+
+<p>通信を遮断し、Status Check Failを発動させる</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>ubuntu@ip-172-31-19-185:~$ date; sudo ifdown eth0
+</span><span class='line'>Fri Dec  5 13:02:39 UTC 2014</span></code></pre></td></tr></table></div></figure>
+
+
+<p>EC2のStatus Check。前回同様、3分ぐらいでfail検知</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>Fri Dec  5 22:05:22 JST 2014
+</span><span class='line'>ok
+</span><span class='line'>DETAILS reachability    passed
+</span><span class='line'>
+</span><span class='line'>Fri Dec  5 22:05:28 JST 2014
+</span><span class='line'>ok
+</span><span class='line'>DETAILS reachability    passed
+</span><span class='line'>
+</span><span class='line'>Fri Dec  5 22:05:34 JST 2014
+</span><span class='line'>impaired
+</span><span class='line'>DETAILS 2014-12-05T13:05:00.000Z        reachability    failed
+</span><span class='line'>
+</span><span class='line'>Fri Dec  5 22:05:40 JST 2014
+</span><span class='line'>impaired
+</span><span class='line'>DETAILS 2014-12-05T13:05:00.000Z        reachability    failed</span></code></pre></td></tr></table></div></figure>
+
+
+<p>SNS通知。飛ぶまで2分弱</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>Alarm Details:
+</span><span class='line'>- Name:                       StatusCheckFailed-Alarm-for-i-xxxxxxxx
+</span><span class='line'>- Description:                Instance i-xxxxxxxx has failed
+</span><span class='line'>- State Change:               OK -&gt; ALARM
+</span><span class='line'>- Reason for State Change:    Threshold Crossed: 2 datapoints were greater than or equal to the threshold (1.0). The most recent datapoints: [1.0, 1.0].
+</span><span class='line'>- Timestamp:                  Friday 05 December, 2014 13:07:19 UTC
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'>- AWS Account:                123456789012
+</span><span class='line'>
+</span><span class='line'>Threshold:
+</span><span class='line'>- The alarm is in the ALARM state when the metric is GreaterThanOrEqualToThreshold 1.0 for 60 seconds.
+</span><span class='line'>
+</span><span class='line'>Monitored Metric:
+</span><span class='line'>- MetricNamespace:            AWS/EC2
+</span><span class='line'>- MetricName:                 StatusCheckFailed
+</span><span class='line'>- Dimensions:                 [InstanceId = i-xxxxxxxx]
+</span><span class='line'>- Period:                     60 seconds
+</span><span class='line'>- Statistic:                  Maximum
+</span><span class='line'>- Unit:                       Count</span></code></pre></td></tr></table></div></figure>
+
+
+<p>AutoscalingのHealth Status</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>Fri Dec  5 22:11:08 JST 2014
+</span><span class='line'>aws-advent2014-sg       us-west-2a      HEALTHY i-xxxxxxxx      aws-advent2014-lc       InService
+</span><span class='line'>
+</span><span class='line'>Fri Dec  5 22:11:14 JST 2014
+</span><span class='line'>aws-advent2014-sg       us-west-2a      HEALTHY i-xxxxxxxx      aws-advent2014-lc       InService
+</span><span class='line'>
+</span><span class='line'>Fri Dec  5 22:11:20 JST 2014
+</span><span class='line'>aws-advent2014-sg       us-west-2a      UNHEALTHY       i-xxxxxxxx      aws-advent2014-lc       InService
+</span><span class='line'>
+</span><span class='line'>Fri Dec  5 22:11:26 JST 2014
+</span><span class='line'>aws-advent2014-sg       us-west-2a      UNHEALTHY       i-xxxxxxxx      aws-advent2014-lc       InService
+</span><span class='line'>
+</span><span class='line'>Fri Dec  5 22:11:32 JST 2014
+</span><span class='line'>aws-advent2014-sg       us-west-2a      UNHEALTHY       i-xxxxxxxx      aws-advent2014-lc       Terminating
+</span><span class='line'>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>お、4分ぐらいでAuto ScalingがUnhealthyと認識。</p>
+
+<p>何回か繰り返したところ、トータルで障害から復旧までの時間が10分を切りました！</p>
+
+<p>なんと1年前と比べて時間が半分に短縮されてますねぇ。</p>
+
+<h2>Lambda</h2>
+
+<p>さて。改善されたものの、Auto ScalingがEC2 status checkの状態を検知するまでタイムラグがまだあるので、もうちょっと短縮したいですよね。できればSNSが発行されたタイミングで。</p>
+
+<p>そこで、AWSの新サービス「<a href="http://aws.amazon.com/lambda/">Lambda</a>」を使ってイベント通知できたら良いかも！！。。と思ったものの、残念ながらLambdaはまだSNSには対応してません。</p>
+
+<p>なので、ひとまずSQSをSNSにsubscribeして、messageが届いたらLambda functionへ渡してinvokeへしてくれるsqs-to-lambdaを使ってAuto ScalingのHealthStatusを直接API経由でLambdaが叩く仕組みを試しました。
+図にするとこんな感じですね。</p>
+
+<p><img src="https://lh4.googleusercontent.com/-IxSeVgkwfQU/VIIapiet4tI/AAAAAAAABBw/ukic0BIBIT0/w529-h393-no/aws-advent-2014.png"></p>
+
+<p>ELB付けた方が楽な気もするけど、まあ集約できるのと検証も兼ねて。。</p>
+
+<h3>設定</h3>
+
+<p>SQSの作成</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ aws sqs create-queue --queue-name instance-failed
+</span><span class='line'>{
+</span><span class='line'>    "QueueUrl": "https://us-west-2.queue.amazonaws.com/123456789012/instance-failed"
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+
+
+<p>SQSをSNSへsubscribe</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ aws sqs add-permission --queue-url https://us-west-2.queue.amazonaws.com/123456789012/instance-failed \
+</span><span class='line'> --label SQSDefaultPolicy --aws-account-ids  --actions SendMessage
+</span><span class='line'>$ aws sqs set-queue-attributes --queue-url https://us-west-2.queue.amazonaws.com/123456789012/instance-failed  \
+</span><span class='line'> --attributes '{"Policy": "{\"Version\":\"2008-10-17\",\"Id\":\"arn:aws:sqs:us-west-2:123456789012:instance-failed/SQSDefaultPolicy\",\"Statement\":[{\"Sid\":\"Sid1417796380309\",\"Effect\":\"Allow\",\"Principal\":{\"AWS\":\"*\"},\"Action\":\"SQS:SendMessage\",\"Resource\":\"arn:aws:sqs:us-west-2:123456789012:instance-failed\",\"Condition\":{\"ArnEquals\":{\"aws:SourceArn\":\"arn:aws:sns:us-west-2:123456789012:instance-alert\"}}}]}"}'</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Lambda function</p>
+
+<div><script src='https://gist.github.com/7bcba3354814d3ca704d.js'></script>
+<noscript><pre><code>console.log('Loading event');
+var aws = require('aws-sdk');
+var s3 = new aws.S3({apiVersion: '2006-03-01'});
+var autoscaling = new aws.AutoScaling({apiVersion: '2011-01-01'});
+
+exports.handler = function(event, context) {
+   console.log('Received event:');
+   console.log(event);
+   //console.log(typeof event.Subject);
+   if (event.hasOwnProperty('Message')) {
+       var msg = event.Message.replace(/!!/g,'&quot;');
+       var instance_id = JSON.parse(msg).Trigger.Dimensions[0].value;
+       console.log('Changing instance health for: ' + instance_id);
+       var params = {
+           HealthStatus: 'Unhealthy', /* required */
+           InstanceId: instance_id, /* required */
+           ShouldRespectGracePeriod: false
+       };
+    
+        autoscaling.setInstanceHealth(params, function(err, data) {
+            if (err) {
+                console.log(err, err.stack); // an error occurred
+                context.done('error','error: '+err);
+            }
+            else {
+                console.log(data);           // successful response
+                context.done(null,'');
+            }
+        });
+   }
+   else {
+       console.log('No message');
+       context.done(null,'');
+   }
+};</code></pre></noscript></div>
+
+
+<p>node.js製のsqs-to-lambda。long pollingしつつ、messageを取得後にLambda functionをinvokeしてくれる。12/5現在ではEscape characterがAWS/JDKやCLIから送信できないという<a href="https://forums.aws.amazon.com/thread.jspa?threadID=166893&amp;tstart=0">大きな問題</a>がある為、<a href="https://github.com/robinjmurphy/sqs-to-lambda">upstream</a>を少し<a href="https://github.com/ijin/sqs-to-lambda/commit/080f1dcbf5f8bb3f7f4a6e0abdde72dce7ce5553">改修</a></p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>sudo apt-get install nodejs npm
+</span><span class='line'>sudo ln -s /usr/bin/nodejs /usr/local/bin/node
+</span><span class='line'>git@github.com:ijin/sqs-to-lambda.git
+</span><span class='line'>cd sqs-to-lambda
+</span><span class='line'>npm install
+</span><span class='line'>./index.js --queueUrl https://sqs.us-west-2.amazonaws.com/123456789012/instance-failed --functionName myFunction --region us-west-2  </span></code></pre></td></tr></table></div></figure>
+
+
+<h3>Lambdaによる復旧</h3>
+
+<p>通信を遮断し、Status Check Failを発動させる</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>ubuntu@ip-172-31-21-180:~$ date; sudo ifdown eth0
+</span><span class='line'>Fri Dec  5 19:37:32 UTC 2014</span></code></pre></td></tr></table></div></figure>
+
+
+<p>EC2のStatus Check。約3分ぐらいでfail検知</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>Sat Dec  6 04:40:09 JST 2014
+</span><span class='line'>ok
+</span><span class='line'>DETAILS reachability    passed
+</span><span class='line'>
+</span><span class='line'>Sat Dec  6 04:40:16 JST 2014
+</span><span class='line'>impaired
+</span><span class='line'>DETAILS 2014-12-05T19:40:00.000Z        reachability    failed
+</span><span class='line'>
+</span><span class='line'>Sat Dec  6 04:40:22 JST 2014
+</span><span class='line'>impaired
+</span><span class='line'>DETAILS 2014-12-05T19:40:00.000Z        reachability    failed</span></code></pre></td></tr></table></div></figure>
+
+
+<p>SNS通知。飛ぶまで2分弱</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>Alarm Details:
+</span><span class='line'>- Name:                       StatusCheckFailed-Alarm-for-i-yyyyyyyy
+</span><span class='line'>- Description:                Instance i-yyyyyyyy has failed
+</span><span class='line'>- State Change:               OK -&gt; ALARM
+</span><span class='line'>- Reason for State Change:    Threshold Crossed: 2 datapoints were greater than or equal to the threshold (1.0). The most recent datapoints: [1.0, 1.0].
+</span><span class='line'>- Timestamp:                  Friday 05 December, 2014 19:42:33 UTC
+</span><span class='line'>- AWS Account:                123456789012 </span></code></pre></td></tr></table></div></figure>
+
+
+<p>そしてLambda発動！</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>START RequestId: e64849be-7cb6-12e4-9951-11b87edac46e
+</span><span class='line'>2014-12-05T19:42:36.728Z        e64849be-7cb6-12e4-9951-11b87edac46e    Received event:
+</span><span class='line'>2014-12-05T19:42:36.728Z        e64849be-7cb6-12e4-9951-11b87edac46e    { Type: 'Notification', MessageId: '2d85a5d8-c596-5f83-94a9-e924c97fd676', TopicArn: 'arn:aws:sns:us-west-2:123456789012:instance-alert', Subject: 'Status Check Alarm: !!StatusCheckFailed-Alarm-for-i-yyyyyyyy!! in US-West-2', Message: '{!!AlarmName!!:!!StatusCheckFailed-Alarm-for-i-yyyyyyyy!!,!!AlarmDescription!!:!!Instance i-yyyyyyyy has failed!!,!!AWSAccountId!!:!!123456789012!!,!!NewStateValue!!:!!ALARM!!,!!NewStateReason!!:!!Threshold Crossed: 2 datapoints were greater than or equal to the threshold (1.0). The most recent datapoints: [1.0, 1.0].!!,!!StateChangeTime!!:!!2014-12-05T19:42:33.757+0000!!,!!Region!!:!!US-West-2!!,!!OldStateValue!!:!!OK!!,!!Trigger!!:{!!MetricName!!:!!StatusCheckFailed!!,!!Namespace!!:!!AWS/EC2!!,!!Statistic!!:!!MAXIMUM!!,!!Unit!!:!!Count!!,!!Dimensions!!:[{!!name!!:!!InstanceId!!,!!value!!:!!i-yyyyyyyy!!}],!!Period!!:60,!!EvaluationPeriods!!:2,!!ComparisonOperator!!:!!GreaterThanOrEqualToThreshold!!,!!Threshold!!:1.0}}', Timestamp: '2014-12-05T19:42:33.841Z', SignatureVersion: '1', Signature: '1IYhSVfZmNxWWzoc539jBDN2HCo0Y5k/dUhWbaAEZSt/tkISjFkNTb9VsVwNAfZDOaLneO/sE2PwfUc/3aU9eedlAassxHOXAB6h844NVKxJzR5Xwg4dUx0mIb+fk9pMy/elcwk13GbDxLJ1cCTef7Bu7zyJU3TAF626YfAVhI9QdEo4o44g/y2osEXb+CuvFc5ICYpIWAad7gM5YPYxCU6tJ/CEtWGzaPz+O5Vk4NLm2/AizZ6LKA8/zqhQkqwnUwhzQDwuDGbJ2DXtTJwAO2r4M+zU8RwOxwPgEdgxA270xrmB6AlWV0mhsQIqqJVxo5Xm2v7y3iNUjKfov5DCZm==', SigningCertURL: 'https://sns.us-west-2.amazonaws.com/SimpleNotificationService-ad6697a11189d5c6f9eccf214ff9e123.pem', UnsubscribeURL: 'https://sns.us-west-2.amazonaws.com/?Action=Unsubscribe&SubscriptionArn=arn:aws:sns:us-west-2:123456789012:instance-alert:2d85a5d8-faea-5f83-baa1-9fecd7a5e71b' }
+</span><span class='line'>2014-12-05T19:42:36.728Z        e64849be-7cb6-12e4-9951-11b87edac46e    Changing instance health for: i-yyyyyyyy
+</span><span class='line'>014-12-05T19:42:36.831Z e64849be-7cb6-12e4-9951-11b87edac46e    { ResponseMetadata: { RequestId: 'dd605f39-7cb6-12e4-a2c2-d57010899d82' } }
+</span><span class='line'>END RequestId: e64849be-7cb6-12e4-9951-11b87edac46e
+</span><span class='line'>REPORT RequestId: e64849be-7cb6-12e4-9951-11b87edac46e  Duration: 175.86 ms     Billed Duration: 200 ms Memory Size: 128 MB     Max Memory Used: 18 MB</span></code></pre></td></tr></table></div></figure>
+
+
+<p>AutoscalingのHealth Status</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>Sat Dec  6 04:42:18 JST 2014
+</span><span class='line'>aws-advent2014-sg       us-west-2a      HEALTHY i-yyyyyyyy      aws-advent2014-lc       InService
+</span><span class='line'>
+</span><span class='line'>Sat Dec  6 04:42:24 JST 2014
+</span><span class='line'>aws-advent2014-sg       us-west-2a      HEALTHY i-yyyyyyyy      aws-advent2014-lc       InService
+</span><span class='line'>
+</span><span class='line'>Sat Dec  6 04:42:30 JST 2014
+</span><span class='line'>aws-advent2014-sg       us-west-2a      UNHEALTHY       i-yyyyyyyy      aws-advent2014-lc       InService
+</span><span class='line'>
+</span><span class='line'>Sat Dec  6 04:42:35 JST 2014
+</span><span class='line'>aws-advent2014-sg       us-west-2a      UNHEALTHY       i-yyyyyyyy      aws-advent2014-lc       InService
+</span><span class='line'>
+</span><span class='line'>Sat Dec  6 04:42:42 JST 2014
+</span><span class='line'>aws-advent2014-sg       us-west-2a      UNHEALTHY       i-yyyyyyyy      aws-advent2014-lc       InService
+</span><span class='line'>
+</span><span class='line'>jSat Dec  6 04:42:48 JST 2014
+</span><span class='line'>aws-advent2014-sg       us-west-2a      UNHEALTHY       i-yyyyyyyy      aws-advent2014-lc       Terminating</span></code></pre></td></tr></table></div></figure>
+
+
+<p>おお。さらに短く5分ぐらいに短縮！！</p>
+
+<h3>終わりに</h3>
+
+<p>Lambdaと組み合わせる事によってSNS通知によるELBを使わないレスポンシブなAuto Scalingの自動復旧が実現できました。</p>
+
+<p>折角のサーバいらずのLambdaの良さが全く活かされてないけど。。早くSNSにも対応して欲しいものです。</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -1189,25 +1610,25 @@ CDP的には「<a href="http://aws.clouddesignpattern.org/index.php/CDP:Server_S
 
 <p>backend varnish vcl （各backendの設定は微妙に違う）:</p>
 
-<div><script src='https://gist.github.com/7941009.js?file='></script>
+<div><script src='https://gist.github.com/7941009.js'></script>
 <noscript><pre><code>&lt;html&gt;&lt;body&gt;You are being &lt;a href=&quot;https://github.com/gist/7941009&quot;&gt;redirected&lt;/a&gt;.&lt;/body&gt;&lt;/html&gt;</code></pre></noscript></div>
 
 
 <p>backend nginx.conf:</p>
 
-<div><script src='https://gist.github.com/7940999.js?file='></script>
+<div><script src='https://gist.github.com/7940999.js'></script>
 <noscript><pre><code>&lt;html&gt;&lt;body&gt;You are being &lt;a href=&quot;https://github.com/gist/7940999&quot;&gt;redirected&lt;/a&gt;.&lt;/body&gt;&lt;/html&gt;</code></pre></noscript></div>
 
 
 <p>base nginx.conf:</p>
 
-<div><script src='https://gist.github.com/7941214.js?file='></script>
+<div><script src='https://gist.github.com/7941214.js'></script>
 <noscript><pre><code>&lt;html&gt;&lt;body&gt;You are being &lt;a href=&quot;https://github.com/gist/7941214&quot;&gt;redirected&lt;/a&gt;.&lt;/body&gt;&lt;/html&gt;</code></pre></noscript></div>
 
 
 <p>base syncer.rb:</p>
 
-<div><script src='https://gist.github.com/7941042.js?file='></script>
+<div><script src='https://gist.github.com/7941042.js'></script>
 <noscript><pre><code>&lt;html&gt;&lt;body&gt;You are being &lt;a href=&quot;https://github.com/gist/7941042&quot;&gt;redirected&lt;/a&gt;.&lt;/body&gt;&lt;/html&gt;</code></pre></noscript></div>
 
 
@@ -1658,130 +2079,6 @@ Score:    14694.2
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2013/06/10/aws-game-day-tokyo-2013/">AWS Game Day Tokyo 2013で受賞してきた</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-06-10T23:33:00+09:00" pubdate data-updated="true">Jun 10<span>th</span>, 2013</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>大統領選挙でオバマ陣営のシステムを堅牢化する為に用いた手法である仮想対戦シミュレーション「<a href="http://gameday2013.doorkeeper.jp/events/3960">AWS Game Day Tokyo</a>」が日本で初めて（世界2番目に）開催されたので参加してきました。</p>
-
-<p>結果、ベスト・ディフェンス賞こと「<strong>Most Awesome Fix!</strong>」賞を受賞しました。</p>
-
-<h2>経緯</h2>
-
-<p>以前、<a href="http://jaws-ug.jp/jawsdays2013/">JAWS DAYS 2013</a>でMiles Wardが講演した「<a href="http://www.publickey1.jp/blog/13/obama_for_america.html">Behind the Scenes of the Presidential Campaign</a>」でチームを攻撃・防御に分けて対戦させ、そこから学んだ事をフィードバックしてシステムをより堅牢にするという「Game Day」を知り、日本でもやりたいねという話になってました。そこで先日の<a href="http://www.awssummittokyo.com/">AWS Summit Tokyo</a>のスピンオフイベントとして、Milesの再来日に合せてADSJ（アマゾンデータサービスジャパン株式会社）さんによって開催される事になりました。チーム戦の大会は<a href="http://ijin.github.io/blog/2012/07/03/tuningathon4/">チューニンガソン</a>や<a href="http://ijin.github.io/blog/2012/11/05/isucon2/">ISUCON</a>以来なので、わくわくしながら速攻で応募をしました。</p>
-
-<h2>概要</h2>
-
-<p>大体、こんな流れです。</p>
-
-<ul>
-<li>システムの構築・堅牢化</li>
-<li>相手システムの攻撃（この間、自システムも攻撃される）</li>
-<li>自システムの修復</li>
-<li>評価</li>
-</ul>
-
-
-<p>それぞれ、2〜3人のチームに別れ、計18チームにより対戦。私のチーム名は時事ネタとして今流行りの「<a href="http://jp.techcrunch.com/2013/06/07/20130606report-nsa-collects-data-directly-from-servers-of-google-apple-microsoft-facebook-and-more/">PRISM</a>」としました。
-システム概要はnginksさんの<a href="http://d.hatena.ne.jp/nginks/20130608/1370700185">ブログ</a>が非常に分かりやすいです。
-要するに画像変換処理バッチクラスターですね。</p>
-
-<h2>構築</h2>
-
-<p>手順書をざっと見ながら画像処理クラスターを構築。相方はシステムの人間ではなかったので、動作確認を手伝ってもらいつつ実質一人でもくもくと作業。s3作成、sqs作成、アプリのインストール・設定・動作確認、AMI化、Cloudwatch設定、AutoScaling設定等を淡々と。構築しながらシステムを把握して行くけど、結構これだけで時間がとられます。なので、じっくりと防衛策は練れなかったのでひとまず、プロセスの自動復旧をしてくれるmonitをインストール・設定し（upstartでやりかけたけどうまく動かなかった）、主要ファイルのchecksumを取って改善検知してメール通知する仕組みを導入。</p>
-
-<h2>攻撃</h2>
-
-<p>AWSキー（Poweruser権限）を奪取したという仮定の元、相手システムに攻撃をしかけるターン。
-単純に全部消したり、セキュリティグループの権限を変えたりではあまりにもつまらないので、いろいろ考えます。（無論、システムの全消しは誰でもできる最低の攻撃手法）</p>
-
-<p>まず、状況把握する為にいろいろ動作確認。キューに画像を突っ込んで、ちゃんと処理されるとか。あれ、でも動かない。。
-どうやらTokyoで作りかけたけど、結局Virginiaリージョンで仕上げたと運営側から伝えられる。いきなりのタイムロス！</p>
-
-<p>気を取り直して、稼働中のインスタンスに入る方法を思いつく。通常はキー設定されているのでsshでは入れないので仮のインスタンスを起動し旧インスタンスのroot volumeのEBSを強制detachし、仮インスタンスにattachして中身をいじってからre-attachする事に。見た目は同じinstance-idなのに中身だけ違う、一見すると分かりづらいです。そこで旧インスタンスを一旦停止させる為にstopさせると、、terminateされちゃいました。。よくよく調べて見ると、Auto Scalingの設定になっていて、min-sizeの制約によって旧インスタンスが消され、代替インスタンスが自動的に起動するようになってました。</p>
-
-<p>どうやら構築が間に合わなかったチーム用に運営側が用意した自動構築をしてくれる虎の子のCloudformationを使った模様。
-そこで、相手チームのスキルレベルがそれ程高くないと判断し、Auto Scalingの元AMIを置き換える事に。
-新たなlaunch configを作成し、既存のscaling groupと同盟のものを作成。</p>
-
-<p>次にs3への攻撃。bucket名はglobalなnamespaceなので、こいつを削除して同名のを別AWSアカウントで作れば乗っ取りが可能。。
-のはずが、削除してから一定時間経過しないと作成不可だったので1字違いのbucketを作成しておく。</p>
-
-<p>最後にs3のbucket一覧を取得して、常に空のディレクトリと同期し続ける攻撃を思いつき、実装を始める。システムはs3に出力するのでそこを継続的に空にする攻撃です。しかし、実装を初めて動作確認の途中で時間切れになりシステムに埋め込めなくて断念。もうちょっと時間が欲しかったです</p>
-
-<h2>修復</h2>
-
-<p>次は自システムが受けた攻撃を修復するターン。</p>
-
-<p>いろいろ余計なインスタンスが起動していたが、まずやったのがAMI番号の確認。（これが無事であればOSに侵入されていようがAMIをベースに全体の再構築が速やかにできるので）
-幸い、控えていたのと一致していたので他のインスタンスを全て停止。一応monitのアラートメールが飛んでいなかったので、インスタンスに対しての操作は限定されているのだろうとは踏んでましたが。</p>
-
-<p>AMIが無事なら次はAuto Scalingの確認。ざっと見た感じだと、lauch configは操作されておらず、scaling groupのmin-sizeが0に変更されている模様。他の変更点は確認が面倒だったので、一旦全部削除してさくっと再作成。後で聞いた話だと、Auto Scalingのrecurring schedule設定で1分起きに0台にする設定をしていたらしいが、消された時点で攻撃は無効化。</p>
-
-<p>次にSQS。消して再作成すればてっとり早いけど、相手チームがキューに投入した画像を最終的に表示させないといけないルールだと誤解していて、その復旧に務める。新しく作ったSQSと比較するとパラメータ（Default Visibility Timeout, Retention Period, Message Size等）が異常な値に変更されていると分かり、通常の値へ戻す。</p>
-
-<p>この時点でアプリとSQSの通信を確認するも疎通できない事を把握。pingが通らない事からSecurity Group, Routing Table, Network ACLが変更されていないかを確認。どうやらSecurity GroupのIn/Outルールが削除されている単純な攻撃だと判明し、なんなく再設定。</p>
-
-<p>キュー内のメッセージが1コ処理されるのを確認し、SQS周りは対応済みかと思ったけど残り2コのメッセージがいくら待てども処理されず、若干悩む。
-ログを見たり、メッセージの中身を覗くとと「<strong>&#8211;max-redirect=99999999</strong> 」が目に留まる。どうやら変換する画像をダウンロードする部分で無限ループさせている模様。メッセージを削除し、そのパラメータを除外したものを流してちゃんとキューが処理される事を確認。</p>
-
-<p>最後にs3周りで怪しい設定がないかを調査して、一通りの動作確認をして復旧完了。</p>
-
-<h2>振り返り</h2>
-
-<p>お互いに対戦したチームと顔合わせをし、攻撃や復旧の手の内を明かします。全チームの行動記録を集約して運営側で審査を行われ各賞が授与される中、我がPRISMはSQS内の無限ループを検知・修復したのが評価されて最も優れた修復を行った「<strong>Most Awesome Fix!賞</strong>」を頂きました。後で他のチームに聞いた所、monitのような検知・通知の仕組みを導入した所はなさそうだったので、それも評価ポイントだったかも知れません。</p>
-
-<p>賞の内容としては、ワンタイムトークンを生成するハードウェアMFAデバイスとAWSのクーポンコードでした。ありがとうございます。</p>
-
-<p>最後にMilesが壊れても戻せるようにあるべき状態の定義と常に比較して自動的に自己治癒するのが最高のシステムと言ってました。AWSの状態を保存するにはCloudformerでCloudformationテンプレート化すれば便利で楽だけど、chefみたいにIdempotency（冪等性）を継続的に保証する仕組みをそのレイヤーで組むのはなかなか大変ですね。（個々のサーバ単位は可能だとしても）</p>
-
-<h2>感想</h2>
-
-<p>「<em>チューニンガソン</em>」や私が他にお手伝いをしている「<em>トラブル☆しゅーたーず</em>」とも一味違って、非常に楽しめました。</p>
-
-<p>以下、思った事をいくつか。</p>
-
-<ul>
-<li>構築に時間が取られたのでなるべく出来合いのシステムがあった方が防衛策に専念できそう</li>
-<li>攻撃可能な時間が思ったより短かったのでもうちょっと長めで</li>
-<li>Default-VPCとEC2-Classicでは挙動が違うのでアカウントタイプは統一した方が良い</li>
-<li>ターン性ではなく、攻撃と修復・防御のリアルタイム性を試すとか</li>
-<li>あるべき正しい状態を把握する為のツールがあると他のタスクに集中できるかも</li>
-</ul>
-
-
-<p>次に開催される時も参加したいですね。もしくは運営側のお手伝いでも！</p>
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/blog/page/2/">&larr; Older</a>
@@ -1795,6 +2092,10 @@ Score:    14694.2
     <section>
   <h1>Recent Posts</h1>
   <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2014/12/05/self-healing-with-non-elb-autoscaling3/">Auto Scalingによる自動復旧（Lambda編）</a>
+      </li>
     
       <li class="post">
         <a href="/blog/2014/10/20/isucon4-qualifier/">ISUCON4の予選を通過したんだった</a>
@@ -1830,10 +2131,6 @@ Score:    14694.2
     
       <li class="post">
         <a href="/blog/2013/10/07/isucon3-preliminary/">ISUCON3の予選を通過した（はず）</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2013/06/10/aws-game-day-tokyo-2013/">AWS Game Day Tokyo 2013で受賞してきた</a>
       </li>
     
   </ul>

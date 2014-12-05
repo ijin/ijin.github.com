@@ -4,7 +4,7 @@
   <title><![CDATA[Category: study | @ijin]]></title>
   <link href="http://ijin.github.com/blog/categories/study/atom.xml" rel="self"/>
   <link href="http://ijin.github.com/"/>
-  <updated>2014-10-21T11:47:28+09:00</updated>
+  <updated>2014-12-06T06:32:26+09:00</updated>
   <id>http://ijin.github.com/</id>
   <author>
     <name><![CDATA[Michael H. Oshita]]></name>
@@ -352,22 +352,22 @@ tag:benchmarker type:score      success:210324  fail:0  score:155272
 <p>以下、設定ファイルです。いらない所は削ったけど動くはず。。</p>
 
 <p>backend varnish vcl （各backendの設定は微妙に違う）:
-<div><script src='https://gist.github.com/7941009.js?file='></script>
+<div><script src='https://gist.github.com/7941009.js'></script>
 <noscript><pre><code>&lt;html&gt;&lt;body&gt;You are being &lt;a href=&quot;https://github.com/gist/7941009&quot;&gt;redirected&lt;/a&gt;.&lt;/body&gt;&lt;/html&gt;</code></pre></noscript></div>
 </p>
 
 <p>backend nginx.conf:
-<div><script src='https://gist.github.com/7940999.js?file='></script>
+<div><script src='https://gist.github.com/7940999.js'></script>
 <noscript><pre><code>&lt;html&gt;&lt;body&gt;You are being &lt;a href=&quot;https://github.com/gist/7940999&quot;&gt;redirected&lt;/a&gt;.&lt;/body&gt;&lt;/html&gt;</code></pre></noscript></div>
 </p>
 
 <p>base nginx.conf:
-<div><script src='https://gist.github.com/7941214.js?file='></script>
+<div><script src='https://gist.github.com/7941214.js'></script>
 <noscript><pre><code>&lt;html&gt;&lt;body&gt;You are being &lt;a href=&quot;https://github.com/gist/7941214&quot;&gt;redirected&lt;/a&gt;.&lt;/body&gt;&lt;/html&gt;</code></pre></noscript></div>
 </p>
 
 <p>base syncer.rb:
-<div><script src='https://gist.github.com/7941042.js?file='></script>
+<div><script src='https://gist.github.com/7941042.js'></script>
 <noscript><pre><code>&lt;html&gt;&lt;body&gt;You are being &lt;a href=&quot;https://github.com/gist/7941042&quot;&gt;redirected&lt;/a&gt;.&lt;/body&gt;&lt;/html&gt;</code></pre></noscript></div>
 </p>
 

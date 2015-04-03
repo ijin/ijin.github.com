@@ -2,8 +2,6 @@
   table td.code { width: 100%; }
   .line-numbers {
     text-align: right;
-    font-size: 13px;
-    line-height: 1.45em;
     @if $solarized == light {
       background: lighten($base03, 1) $noise-bg !important;
       border-right: 1px solid darken($base02, 2) !important;
@@ -61,7 +59,7 @@ html .gist .gist-file {
       &:hover { color: $base1 !important; }
     }
     a[href*='#file'] {
-      position: absolute; top: 0; left:0; right:-10px;
+      position: absolute; top: 0; left:0; right:0px;
       color: #474747 !important;
       @extend .code-title;
       &:hover { color: $link-color !important; }
@@ -251,3 +249,8 @@ figure.code {
   padding-left: 3em;
 }
 
+//.gist .gist-file .gist-data {
+//.file-data { overflow-x: auto; }
+//.line-numbers .line-number { clear:right; display:block }
+//table { width: 100% }
+//}

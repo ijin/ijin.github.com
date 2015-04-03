@@ -4,7 +4,7 @@
   <title><![CDATA[Category: study | @ijin]]></title>
   <link href="http://ijin.github.com/blog/categories/study/atom.xml" rel="self"/>
   <link href="http://ijin.github.com/"/>
-  <updated>2015-04-03T17:20:38+09:00</updated>
+  <updated>2015-04-03T17:33:41+09:00</updated>
   <id>http://ijin.github.com/</id>
   <author>
     <name><![CDATA[Michael H. Oshita]]></name>
@@ -21,7 +21,9 @@
     <content type="html"><![CDATA[<p><a href="http://connpass.com/event/11571/">サバフェス！2015 Spring</a>に参加してきました。
 やった内容を少々。</p>
 
-<p><a href="/blog/2013/12/13/serverfesta-2013-autumn">前回</a>と同じくチーム@ijinとして1人で参戦して、順位は「<strong>4位</strong>」。スコアは<strong>44988.867 TpmC</strong>でした。</p>
+<p><a href="/blog/2013/12/13/serverfesta-2013-autumn">前回</a>と同じくチーム@ijinとして1人で参戦して、順位は「<strong>4位</strong>」。</p>
+
+<p>スコアは<strong>44988.867 TpmC</strong>でした。</p>
 
 <h2>お題</h2>
 
@@ -29,7 +31,7 @@
 
 <p>第1陣と第2陣に分かれていて、今回は後者での参戦。</p>
 
-<p>--</p>
+<h2>はじめに</h2>
 
 <p>競技期間は5日間あったものの、第1陣で<a href="http://netmark.jp/2015/03/svfes-2.html">結構な地雷があった</a>のと、Fusion-IO（現SanDisk）のioDriveとtpcc-mysqlは2年前に<a href="/blog/2013/02/22/mysql-benchmarks-on-aws-ssd-vs-fusion-io/">触った</a>ので最初はあんまりやる気が起きなくて困ってました。後は前回と違って施せる施策がかなり限定されるというので、正直5日間は長過ぎるのではないかという印象でした。（結果的に第1陣のトラブルとかを鑑みると長さ的には良かったのかも知れないけど）</p>
 
@@ -76,9 +78,8 @@ innodb_flush_log_at_trx_commit = 1
 
 <h2>設定ファイル</h2>
 
-<p><div><script src='https://gist.github.com/.js?file='></script>
-<noscript><pre><code></code></pre></noscript></div>
-</p>
+<script src="https://gist.github.com/ijin/341bab7569e372e1addb.js"></script>
+
 
 <h2>効果があったもの</h2>
 

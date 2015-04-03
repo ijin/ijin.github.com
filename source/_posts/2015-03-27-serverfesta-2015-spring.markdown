@@ -11,7 +11,9 @@ categories:
 [サバフェス！2015 Spring](http://connpass.com/event/11571/)に参加してきました。
 やった内容を少々。
 
-[前回](/blog/2013/12/13/serverfesta-2013-autumn)と同じくチーム@ijinとして1人で参戦して、順位は「**4位**」。スコアは**44988.867 TpmC**でした。
+[前回](/blog/2013/12/13/serverfesta-2013-autumn)と同じくチーム@ijinとして1人で参戦して、順位は「**4位**」。
+
+スコアは**44988.867 TpmC**でした。
 
 ## お題 ##
 
@@ -19,7 +21,7 @@ Mysql on ioDriveでtpcc-mysqlベンチマークのtransaction throughput競争�
 
 第1陣と第2陣に分かれていて、今回は後者での参戦。
 
---
+## はじめに ##
 
 競技期間は5日間あったものの、第1陣で[結構な地雷があった](http://netmark.jp/2015/03/svfes-2.html)のと、Fusion-IO（現SanDisk）のioDriveとtpcc-mysqlは2年前に[触った](/blog/2013/02/22/mysql-benchmarks-on-aws-ssd-vs-fusion-io/)ので最初はあんまりやる気が起きなくて困ってました。後は前回と違って施せる施策がかなり限定されるというので、正直5日間は長過ぎるのではないかという印象でした。（結果的に第1陣のトラブルとかを鑑みると長さ的には良かったのかも知れないけど）
 
@@ -62,7 +64,7 @@ Mysql on ioDriveでtpcc-mysqlベンチマークのtransaction throughput競争�
 
 ## 設定ファイル ##
 
-{% gist 341bab7569e372e1addb %}
+<script src="https://gist.github.com/ijin/341bab7569e372e1addb.js"></script>
 
 ## 効果があったもの ##
 

@@ -4,7 +4,7 @@
   <title><![CDATA[Category: events | @ijin]]></title>
   <link href="http://ijin.github.com/blog/categories/events/atom.xml" rel="self"/>
   <link href="http://ijin.github.com/"/>
-  <updated>2014-12-06T06:34:21+09:00</updated>
+  <updated>2015-04-03T17:20:38+09:00</updated>
   <id>http://ijin.github.com/</id>
   <author>
     <name><![CDATA[Michael H. Oshita]]></name>
@@ -12,6 +12,186 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[サバフェス！2015に参加してきた]]></title>
+    <link href="http://ijin.github.com/blog/2015/03/27/serverfesta-2015-spring/"/>
+    <updated>2015-03-27T12:56:00+09:00</updated>
+    <id>http://ijin.github.com/blog/2015/03/27/serverfesta-2015-spring</id>
+    <content type="html"><![CDATA[<p><a href="http://connpass.com/event/11571/">サバフェス！2015 Spring</a>に参加してきました。
+やった内容を少々。</p>
+
+<p><a href="/blog/2013/12/13/serverfesta-2013-autumn">前回</a>と同じくチーム@ijinとして1人で参戦して、順位は「<strong>4位</strong>」。スコアは<strong>44988.867 TpmC</strong>でした。</p>
+
+<h2>お題</h2>
+
+<p>Mysql on ioDriveでtpcc-mysqlベンチマークのtransaction throughput競争。</p>
+
+<p>第1陣と第2陣に分かれていて、今回は後者での参戦。</p>
+
+<p>--</p>
+
+<p>競技期間は5日間あったものの、第1陣で<a href="http://netmark.jp/2015/03/svfes-2.html">結構な地雷があった</a>のと、Fusion-IO（現SanDisk）のioDriveとtpcc-mysqlは2年前に<a href="/blog/2013/02/22/mysql-benchmarks-on-aws-ssd-vs-fusion-io/">触った</a>ので最初はあんまりやる気が起きなくて困ってました。後は前回と違って施せる施策がかなり限定されるというので、正直5日間は長過ぎるのではないかという印象でした。（結果的に第1陣のトラブルとかを鑑みると長さ的には良かったのかも知れないけど）</p>
+
+<p>という事で初日はログインとベンチで基準値を取るだけして終了。</p>
+
+<p>その後、最近のMySQLやioDrive周りの譲歩収集を軽ーくして数日が経過。。</p>
+
+<p>そして最終日の夜中になって、なんとか本腰を入れてチューニング開始。まあ、やりだしたら楽しいんですけどね。</p>
+
+<h2>マシンスペック</h2>
+
+<ul>
+<li>CentOS 6.4</li>
+<li>Intel(R) Xeon(R) CPU E5-2650 v2 @ 2.60GHz x 32</li>
+<li>32GB RAM</li>
+<li>40G HDD</li>
+<li>320GB ioDrive</li>
+</ul>
+
+
+<h2>制限</h2>
+
+<pre><code>innodb_doublewrite = 1
+innodb_flush_log_at_trx_commit = 1
+</code></pre>
+
+<p>その他レギューレーションは<a href="https://2015spring.serverfesta.info/?page_id=299">こちら</a></p>
+
+<h2>方針</h2>
+
+<p>今までのtwitterの<a href="https://twitter.com/search?q=%23%E3%82%B5%E3%83%90%E3%83%95%E3%82%A7%E3%82%B9">タイムライン</a>からして、どうもベンチをウェブ画面から要求しても並列実行の数とキューイング、及び非常に長い実行時間からして1時間に一回実行できるかどうかも怪しかったのでローカルでこまめに回す方向に。</p>
+
+<p>本番データはtpccの1000 warehouse（70GB+）、16GB Buffer Pool、900sの実行時間だったのでそれを250 warehouse, 4GB Buffer Poolと縮小し120sと短めに設定。こうすることによってローカルでのデータコピー時間やベンチ実行時感が短縮され、時間がない中での細かいパラメータのチューニングに専念できる。Buffer Poolはどうせ一番効くと分かりきってるので、あえて後回し。DBは6年前（MySQL 5.0時代）から手に滲んで愛用しているPercona Serverの5.6版を選択。</p>
+
+<p>スコアの推移はこんな感じ。データセットが小さい分、スコアは大きめ。</p>
+
+<p><img src="https://docs.google.com/spreadsheets/d/1zm6-THRYR_EcLoHgacRScxlhSzeQAkbJ0RXiAI4fiRU/pubchart?oid=1067951178&amp;format=image"></p>
+
+<p>終盤になってやっと本番に近いデータセットや実行時感で細かいチューニング。</p>
+
+<p><img src="https://docs.google.com/spreadsheets/d/1zm6-THRYR_EcLoHgacRScxlhSzeQAkbJ0RXiAI4fiRU/pubchart?oid=2026636320&amp;format=image"></p>
+
+<p>最終的にローカルでのベストスコアは<strong>53420.332 TpmC</strong>でした。</p>
+
+<h2>設定ファイル</h2>
+
+<p><div><script src='https://gist.github.com/.js?file='></script>
+<noscript><pre><code></code></pre></noscript></div>
+</p>
+
+<h2>効果があったもの</h2>
+
+<p>細かいおまじないレベルでのパラメータも他にいくつあったけど、割と効いたのをピックアップ。また、既に設定されていたパラメータは除外（innodb_io_capacity等）</p>
+
+<p>mysql</p>
+
+<pre><code>datadir=/fioa/mysql
+tmpdir=/fioa/tmp
+sync_binlog=0
+innodb_buffer_pool_size = 28150M
+innodb_buffer_pool_instances=16
+innodb_log_file_size=4G
+innodb_log_files_in_group=3
+innodb_log_group_home_dir=/var/log/mysql
+innodb_log_buffer_size=64M
+innodb_data_file_path=ibdata1:76M;../../var/log/mysql/ibdata2:500M:autoextend
+innodb_checksum_algorithm=0
+innodb_max_dirty_pages_pct=90
+innodb_lru_scan_depth=2000
+numa_interleave=1
+flush_caches
+malloc-lib=/usr/lib64/libjemalloc.so.1
+</code></pre>
+
+<p>etc</p>
+
+<pre><code>vm.swappiness=1
+mount option (noatime,nodiratime,  max_batch_time=0,nobarrier,discard)
+cache warmup
+</code></pre>
+
+<p>基本的にはioDriveにIOをなるべく発生させない、もしくは遅延させる関連のパラメータが効いた感じ。この辺は割と正統なチューニング方法。一つ、若干工夫したのは、doublewrite buffer fileの指定方法。シーケンシャルなIOが発生するログ周りの処理はHDDに逃がした方がioDrive/SSD的には負荷低減になるけど、Percona 5.5までは<strong>innodb_doublewrite_file</strong>というパラメータでいつも指定していたのが、5.6ではなんと未実装！なのでベンチマーク前にコピーされるibdata1の予めのサイズを計っておいて、以降の書き込みをHDD側へ逃がすように<strong>innodb_data_file_path</strong>で調整。</p>
+
+<p>他はNUMAによるメモリの偏り調整とmallocライブラリを使う指定。この辺もPerconaやMariaDB専用オプション。</p>
+
+<p>後は一応初動のスコアをちょっとだけ稼ぐためにmysqlのstartup script内にてテーブルをcount(*)してindexをbuffer poolに乗せたぐらい。</p>
+
+<h2>効果が微妙だったもの</h2>
+
+<p>mysql</p>
+
+<pre><code>innodb_flush_method=ALL_O_DIRECT
+innodb_support_xa=0
+innodb_thread_concurrency=N
+innodb_flush_neighbors=0
+query_cache_size=0
+large-pages
+</code></pre>
+
+<p>etc</p>
+
+<pre><code>echo 'noop' &gt; /sys/block/fioa/queue/scheduler
+echo 4096 &gt; /sys/block/fioa/queue/nr_requests
+echo 2 &gt; /sys/block/fioa/queue/rq_affinity
+renice -n19 -p `ps auxf | grep mackerel | grep -v grep | awk ‘{print $2}’`
+</code></pre>
+
+<p>large-pagesでページサイズを大きく設定すればメモリ効率は向上するはずが、少なくともベンチマークにおいては効果なし。また、スケジューラをnoopやdeadlineと変えたり、nr_requestsやrq_affinityを調整してみたけど、デフォルトのOS bypass設定と比べてあまり変化なし。</p>
+
+<h2>試したかったもの</h2>
+
+<ul>
+<li>ioDrvieのblock sizeのリサイズ</li>
+<li>C0 state（CPUのC stateを制御して変動させずにioDriveの処理向上の期待）</li>
+<li>numa_node_forced_local（IO処理をメモリに一番近接しているCPUで行う）</li>
+<li>IRQ pinning（ioDriveのIRQを固定）</li>
+<li>network tuning</li>
+</ul>
+
+
+<p>この中で最後やることリストに乗っけていながらやらなかったネットワーク周りのチューニング。多分、これが敗因。（1位のチームzzz(<a href="https://twitter.com/ttkzw">@ttkzwさん</a>)はローカルベンチマークで51000ぐらいだったので）もっとリモートからベンチが実行される事に意識を向ければ良かったのかもしれないですね。とはいえ、最後はキュー待ちが8チームだったり、結果が不具合で見れなかったりと、バダバタしてたのでそっちに気を取られたのもまた事実。まあ、半日ちょいのチューニングにしてはそこそこ行った感じでしょうか。</p>
+
+<h2>終わりに</h2>
+
+<p>最初は運営側が「目下実装中です！」といいながら<strong>#トラしゅ</strong>をしているような感じでちょっと不安でしたが、最後は（第2陣という事もあり）それなりに楽しめました。ベンチマーク時間の短縮と並列実行数がもうちょっと増やせたらよかったですかね。運営側の皆様、大変お疲れさまでした！</p>
+
+<h2>おまけ</h2>
+
+<p>賞品として3DマッサージピローとSSDを頂きました！</p>
+
+<p><div class='embed tweet'><blockquote class="twitter-tweet"><p>3DマッサージピローとSSDをもらった。 <a href="https://twitter.com/hashtag/%E3%82%B5%E3%83%90%E3%83%95%E3%82%A7%E3%82%B9?src=hash">#サバフェス</a> <a href="http://t.co/mKczn9mflZ">pic.twitter.com/mKczn9mflZ</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/581048257171820544">March 26, 2015</a></blockquote>
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div></p>
+
+<p>個人敵には飛び込みLTした人がもらったDroneの方が良さそうだったけど、ピローは家族に好評でした。</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[ISUCON4の本戦の思い出]]></title>
+    <link href="http://ijin.github.com/blog/2014/12/31/isucon4-final/"/>
+    <updated>2014-12-31T20:52:00+09:00</updated>
+    <id>http://ijin.github.com/blog/2014/12/31/isucon4-final</id>
+    <content type="html"><![CDATA[<p>ISUCON4の本戦の直後にそのままAWS re:Inventへ行ったきりエントリを書いてなかったので思い出だけでも年内に書いておく。</p>
+
+<p>内容の<a href="http://isucon.net/archives/41252218.html">エントリ</a>はたくさんあるので、詳しい内容なそちらに任せます。</p>
+
+<p>結果は予選よりちょい上の<strong>15位</strong>。まあ、中間層は結構団子状態だったので誤差の範囲とも言えますが。。</p>
+
+<h2>Cache-Control</h2>
+
+<p>結局はCache-Controlヘッダーに気づくかどうかという点にかかっていて、達成したのは<a href="http://isucon.net/archives/41634734.html">2チーム</a>のみ。優勝チームのモリスさんが「頭から煙が出る程考えて」やっと直前に答えにたどり着いた事を考えると、ベンチマークツールの挙動が若干不思議な実装になっていたとはいえ、思慮深さが足りなかったと反省。</p>
+
+<h2>冒険しすぎた</h2>
+
+<p>今回はrubyとGoのハイブリッド構成でもろもろチューニング。が、しばらくして帯域が頭打ちに。。
+また、その間にメンバーの一人の<a href="https://twitter.com/fruwe">@fruwe</a>に<a href="http://undertow.io/">Undertow</a>というjavaのフレームワークでチャレンジしてもらうものの（事前の技術検証では結構期待できそうだった）、実装完走にはいたらず。この辺は冒険し過ぎたかな。。振り返ってみれば、結局2位のチームがブレークスルーをしたのを見て、全作業を一旦ストップしてでも皆で考えなおす行動を取れば良かったのかもしれないですね。ただ、当時は予選でのベンチマークツールがいささか不安定だった事と運営側もリアルタイムでバグフィックスをしてたという事情もあり、きっとバグか何かだろうとあまり気にしてなかったのも確か。</p>
+
+<h2>最後に</h2>
+
+<p>とまあ、不完全燃焼だったけど、なんだかんだで面白かったです。運営＆参加者の皆様お疲れ様でした。来年またあるか分からないけど、楽しみにしています。</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[ISUCON4の予選を通過したんだった]]></title>
@@ -446,239 +626,6 @@ tag:benchmarker type:score      success:210324  fail:0  score:155272
 <li>mizzy氏を発見。立ち話を少々</li>
 </ul>
 
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[AWS Game Day Japan 2014春を開催してきた]]></title>
-    <link href="http://ijin.github.com/blog/2014/03/14/aws-game-day-japan-2014-spring/"/>
-    <updated>2014-03-14T23:11:00+09:00</updated>
-    <id>http://ijin.github.com/blog/2014/03/14/aws-game-day-japan-2014-spring</id>
-    <content type="html"><![CDATA[<p>過去に2度参加した事（東京・ラスベガス）がある<a href="/blog/2013/06/10/aws-game-day-tokyo-2013/">Game Day</a>に今回は運営側に周りました。3/15に行われる<a href="http://jawsdays2014.jaws-ug.jp/">JAWS Days 2014</a>の前夜祭という位置づけです。</p>
-
-<p>日本では前回、東京のみだったけど<a href="http://jaws-days.doorkeeper.jp/events/8945">今回</a>は東京・大阪・名古屋・仙台と4都市同時開催。</p>
-
-<h2>お題</h2>
-
-<p>前回と全く一緒。。SQSを使った疎結合でオートスケーリングする画像変換処理システム（ｻｰｾﾝ）。まあ、1年前と比べてAWSの機能やできる事も大分変わったので2回目の人もいろいろ工夫のしようがあったかと。</p>
-
-<h2>チーム</h2>
-
-<p>1チーム3〜4人に別れて計14チームとなりました。</p>
-
-<p><strong>東京</strong></p>
-
-<ul>
-<li>Cookie Devil</li>
-<li>Bluescreens</li>
-<li>沖縄</li>
-<li>Blue Light of Death</li>
-<li>時計じかけのオレンジ</li>
-<li>I am みどり</li>
-</ul>
-
-
-<p><strong>名古屋</strong></p>
-
-<ul>
-<li>Shachihoko</li>
-<li>ななちゃんだがや</li>
-<li>ゴーゴーひつまぶし</li>
-</ul>
-
-
-<p><strong>大阪</strong></p>
-
-<ul>
-<li>大都会</li>
-<li>AWS学坊や</li>
-<li>初心者</li>
-</ul>
-
-
-<p><strong>仙台</strong></p>
-
-<ul>
-<li>Zao</li>
-<li>八重の桜</li>
-</ul>
-
-
-<h2>内容</h2>
-
-<p>当日の迫力ある詳しい内容は参加者の方がきっとブログに書いてくれるはず！その代わり、運営側で評価用に使っていた攻撃・修復内容のまとめを公開して欲しいというツィートを頂いたので下記に表示しておきます。</p>
-
-<p><div class='embed tweet'><blockquote class="twitter-tweet"><p>Gameday楽しめました。運営ありがとうございました。攻撃のサマリシート翻訳は誰?と思ってましたが恐縮です。あのシート何らかの形で公開頂けるとありがたいです。 QT <a href="https://twitter.com/ijin">@ijin</a>: 14チームのGoogleスプレッドシートのリアルタイム翻訳は結構ギリギリだった。</p>&mdash; Ryo Suzuki (@suzryo) <a href="https://twitter.com/suzryo/statuses/444450014627000320">March 14, 2014</a></blockquote>
-<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div></p>
-
-<p>（実は今回もイベントオーナーのMiles Wardが来日していたので、Google Spreadsheetに書き込まれていた内容を運営側で逐一翻訳していました）</p>
-
-<iframe src="https://docs.google.com/spreadsheets/d/16-qSbw_XQGgl_4bYqy9REL-nq15yOVj2f1HBJvMy_qM/pubhtml?widget=true&amp;headers=false" height="500" width="750"></iframe>
-
-
-<p>個人的にはs3の「Requester Payオプション有効化」がお気に入りでしたね。</p>
-
-<h2>結果</h2>
-
-<p>総合優勝はチーム<strong>「AWS学坊や」</strong>の優勝となりました。おめでとうございます！
-（地方賞はすみません、総合結果評議中で聞けてませんでした）</p>
-
-<p>今回、運営側のトラブルで攻撃対象が重複してしまう等いろいろ問題がありましたが、開催する側としても楽しかったです。次回はさらにチャレンジングな内容にしていきたいと思っています。</p>
-
-<h2>JAWS DAYS</h2>
-
-<p>明日の<a href="http://jawsdays2014.jaws-ug.jp/">JAWS DAYS 2014</a>はスタッフとしていろいろ動くので今回は手短に。</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[サバフェス！2013に参加してきた]]></title>
-    <link href="http://ijin.github.com/blog/2013/12/13/serverfesta-2013-autumn/"/>
-    <updated>2013-12-13T15:59:00+09:00</updated>
-    <id>http://ijin.github.com/blog/2013/12/13/serverfesta-2013-autumn</id>
-    <content type="html"><![CDATA[<p>少し前に<a href="http://connpass.com/event/3690/">サバフェス！2013 Autumn</a>に参加してきました。
-内容を忘れないうちにやった事を書いておきます。</p>
-
-<p>スコアはトップレベルだったものの、運営側がサーバを起動した所、自動でサービスが立ち上がらなかったらしいので残念な事に参考値のみに。（提出前に2回ぐらい再起動確認したのにおかしいなぁ。。）
-優勝スコアは90.830 (GET 199,802 : POST 18,106)で、私のは<strong>93.410</strong> (GET 162,923 : POST 29,930)でした。</p>
-
-<h2>お題</h2>
-
-<p>「最速インフラを構築せよ！！！</p>
-
-<p>WordPressに一切手を加えずに、どこまで高速化できるのか！？</p>
-
-<p>OSチューニング、サーバチューニング、負荷分散…最適解を探せ！」</p>
-
-<p>--</p>
-
-<p><a href="http://www.idcf.jp/cloud/service/self.html">IDCFクラウド</a>上で仮想マシン5台（M8タイプまで）を使ってスコアを競うというもの。
-<a href="https://www.facebook.com/tuningathon">チューニンガソン</a>と似てますが、サーバが複数台使えるのが良いですね。</p>
-
-<h2>構成</h2>
-
-<p>表彰式でLTしたけど、LVS (DSR) + php 5.5 + apcu + Varnish + nginx (lua) + memcached</p>
-
-<p>ポイントは</p>
-
-<ul>
-<li>GET時は1台では帯域の限界に達したのでLVS (DSR)による4台での並列応答</li>
-<li>POST時には必ず各Varnishのキャッシュクリア（ban）する</li>
-<li>POST時にnginx->memcachedへ渡すと高速すぎたのであえてsleepを5msして遅延させる</li>
-<li>nginx(lua)はコード量が多いと通らないのでぎりぎりまで削減</li>
-<li>memcachedからmysqlへの非同期処理（5ms間隔）</li>
-<li>mysqlの更新処理はそんなにいらないので基本チューニングとInnoDBにしただけで、5.1のまま</li>
-<li>サーバはM8までいらないのでM4で</li>
-<li>海外から参戦したけど、GUIが重いのでAPI経由での操作</li>
-</ul>
-
-
-<p>でしょうか。特に意識したのはmemcachedからmysqlへの許容範囲内での同期と複数台あるVarnishのキャッシュクリアですね。他のチームはnginxでTTLを設定して逃げたようですが、実運用時にはPOST時にキャッシュクリアを確実にする必要があるのでVarnish moduleをコンパイルして他のsiblingへ並列でban処理を投げてました。まあ、今回のベンチマークツールはそこまで厳格じゃなかったけど、最終チェックは人間が動作させるので。</p>
-
-<p>LT資料。スコア推移と簡単な構成の紹介
-<div class="embed-ss-container"><iframe src="http://www.slideshare.net/slideshow/embed_code/29171459 "></iframe></div></p>
-
-<h2>設定ファイル</h2>
-
-<p>以下、設定ファイルです。いらない所は削ったけど動くはず。。</p>
-
-<p>backend varnish vcl （各backendの設定は微妙に違う）:
-<div><script src='https://gist.github.com/7941009.js'></script>
-<noscript><pre><code>&lt;html&gt;&lt;body&gt;You are being &lt;a href=&quot;https://github.com/gist/7941009&quot;&gt;redirected&lt;/a&gt;.&lt;/body&gt;&lt;/html&gt;</code></pre></noscript></div>
-</p>
-
-<p>backend nginx.conf:
-<div><script src='https://gist.github.com/7940999.js'></script>
-<noscript><pre><code>&lt;html&gt;&lt;body&gt;You are being &lt;a href=&quot;https://github.com/gist/7940999&quot;&gt;redirected&lt;/a&gt;.&lt;/body&gt;&lt;/html&gt;</code></pre></noscript></div>
-</p>
-
-<p>base nginx.conf:
-<div><script src='https://gist.github.com/7941214.js'></script>
-<noscript><pre><code>&lt;html&gt;&lt;body&gt;You are being &lt;a href=&quot;https://github.com/gist/7941214&quot;&gt;redirected&lt;/a&gt;.&lt;/body&gt;&lt;/html&gt;</code></pre></noscript></div>
-</p>
-
-<p>base syncer.rb:
-<div><script src='https://gist.github.com/7941042.js'></script>
-<noscript><pre><code>&lt;html&gt;&lt;body&gt;You are being &lt;a href=&quot;https://github.com/gist/7941042&quot;&gt;redirected&lt;/a&gt;.&lt;/body&gt;&lt;/html&gt;</code></pre></noscript></div>
-</p>
-
-<p>base supervisord.conf:
-<code>
-[program:syncer]
-command=/home/mho/.rvm/bin/ruby /home/mho/syncer/sync.rb 5
-stdout_logfile_maxbytes=1MB
-stderr_logfile_maxbytes=1MB
-stdout_logfile=/tmp/%(program_name)s-stdout.log
-stderr_logfile=/tmp/%(program_name)s-stderr.log
-user=mho
-directory=/home/mho/syncer
-autostart=true
-autorestart=true
-</code></p>
-
-<p>base my.cnf:
-```
-[mysqld]
-datadir=/var/lib/mysql
-socket=/var/lib/mysql/mysql.sock
-user=mysql</p>
-
-<h1>Disabling symbolic-links is recommended to prevent assorted security risks</h1>
-
-<p>symbolic-links=0
-character-set-server = utf8
-max_connections = 1000</p>
-
-<p>key_buffer_size = 32M
-max_allowed_packet = 16M
-thread_stack = 192K
-thread_cache_size  = 200</p>
-
-<h1>slow_query_log=1</h1>
-
-<h1>long_query_time=0</h1>
-
-<p>query_cache_type = 0
-skip-innodb_doublewrite
-innodb_buffer_pool_size = 192M
-innodb_log_buffer_size = 4M
-innodb_flush_log_at_trx_commit = 0
-innodb_support_xa = 0
-```</p>
-
-<p>sysctl.conf:
-```
-fs.file-max = 1048576</p>
-
-<p>net.ipv4.ip_local_port_range = 1024 65535</p>
-
-<p>net.core.wmem_max = 16777216
-net.core.rmem_max = 16777216</p>
-
-<p>net.ipv4.tcp_wmem = 4096 65536 16777216
-net.ipv4.tcp_rmem = 4096 87380 16777216</p>
-
-<p>net.core.somaxconn = 8192</p>
-
-<p>net.core.netdev_max_backlog = 8000</p>
-
-<p>net.ipv4.tcp_max_syn_backlog = 8192</p>
-
-<p>net.ipv4.tcp_synack_retries = 3
-net.ipv4.tcp_retries2 = 5</p>
-
-<p>net.ipv4.tcp_keepalive_time = 900</p>
-
-<p>net.ipv4.tcp_keepalive_probes = 3</p>
-
-<p>net.ipv4.tcp_keepalive_intvl = 15</p>
-
-<p>net.nf_conntrack_max = 1000000
-```</p>
-
-<h2>終わりに</h2>
-
-<p>最初はecho選手権になってたのであんまりやる気がなかったけど、後半はちょっと楽しめました。結果は惜しかったけど、今まで<a href="https://www.facebook.com/tuningathon">チューニンガソン</a>や<a href="http://isucon.net">ISUCON</a>に出場したり、トラブル☆しゅーたーずを主催したり、日々の運用等の経験が生きた感じがします。運営の皆様、ありがとうございました。次があれば楽しみにしています！（レギュレーションの解釈が微妙だったのでそこはブラッシュアップして欲しいですね）</p>
 ]]></content>
   </entry>
   

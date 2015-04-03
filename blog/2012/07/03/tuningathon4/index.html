@@ -30,6 +30,15 @@
   <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
 <link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
 <link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<!--<script type="text/javascript">
+document.base_document_write = document.write;
+document.write = function(html) {
+if (html.match(/^<link rel="stylesheet".+gist\.github\.com\/assets\/embed.*/) == null) {
+document.base_document_write(html);
+}
+}
+</script>
+-->
 
   
   <script type="text/javascript">
@@ -133,7 +142,7 @@ my.cnfも見て全然パラメータ設定されてないけど/var/lib/mysqlの
 <p>ビルドが終えた頃にデフォルト状態のままで動かして、まずベースとなるベンチマーク。
 大体こんな感じでした。</p>
 
-<div><script src='https://gist.github.com/3038461.js'></script>
+<div><script src='https://gist.github.com/3038461.js?file='></script>
 <noscript><pre><code>12 fetches, 9 max parallel, 45576 bytes, in 10 seconds
 3798 mean bytes/connection
 1.2 fetches/sec, 4557.6 bytes/sec
@@ -209,7 +218,7 @@ DBを初期化し、railsを再起動して待ちかまえる。次の計測で�
 <p>ちなみにローカル計測ベスト（3200.23）だとこんな感じだったけど、リモート経由だとネットワーク（？）がボトルネックになって
 そこまで出ませんでした。</p>
 
-<div><script src='https://gist.github.com/3038562.js'></script>
+<div><script src='https://gist.github.com/3038562.js?file='></script>
 <noscript><pre><code>32005 fetches, 9 max parallel, 1.20014e+08 bytes, in 10.0008 seconds  
 3749.86 mean bytes/connection 
 3200.23 fetches/sec, 1.20004e+07 bytes/sec  
@@ -227,7 +236,7 @@ TTLを強制有効にして、POST後にいかにキャッシュクリアさせ�
 
 <p>/etc/sysconfig/varnish</p>
 
-<div><script src='https://gist.github.com/3038946.js'></script>
+<div><script src='https://gist.github.com/3038946.js?file='></script>
 <noscript><pre><code>NFILES=131072
 MEMLOCK=82000
 RELOAD_VCL=1
@@ -250,7 +259,7 @@ DAEMON_OPTS=&quot;-a :3000 \
 
 <p>/etc/varnish/default.vcl</p>
 
-<div><script src='https://gist.github.com/3038775.js'></script>
+<div><script src='https://gist.github.com/3038775.js?file='></script>
 <noscript><pre><code># This is a basic VCL configuration file for varnish.  See the vcl(7)
 # man page for details on VCL syntax and semantics.
 # 
@@ -489,6 +498,14 @@ Varnishの<a href="https://www.varnish-software.com/static/book/_images/vcl.png"
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2015/03/27/serverfesta-2015-spring/">サバフェス！2015に参加してきた</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/12/31/isucon4-final/">ISUCON4の本戦の思い出</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2014/12/05/self-healing-with-non-elb-autoscaling3/">Auto Scalingによる自動復旧（AWS Lambda編）</a>
       </li>
     
@@ -518,14 +535,6 @@ Varnishの<a href="https://www.varnish-software.com/static/book/_images/vcl.png"
     
       <li class="post">
         <a href="/blog/2013/12/13/serverfesta-2013-autumn/">サバフェス！2013に参加してきた</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2013/11/11/isucon3-final/">ISUCON3の本戦に参加してきた</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2013/10/07/isucon3-preliminary/">ISUCON3の予選を通過した（はず）</a>
       </li>
     
   </ul>
@@ -559,7 +568,7 @@ Varnishの<a href="https://www.varnish-software.com/static/book/_images/vcl.png"
     </div>
   </div>
   <footer role="contentinfo"><p>
-  Copyright &copy; 2014 - Michael H. Oshita -
+  Copyright &copy; 2015 - Michael H. Oshita -
   <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
 </p>
 

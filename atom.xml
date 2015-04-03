@@ -4,7 +4,7 @@
   <title><![CDATA[@ijin]]></title>
   <link href="http://ijin.github.com/atom.xml" rel="self"/>
   <link href="http://ijin.github.com/"/>
-  <updated>2014-12-06T06:34:21+09:00</updated>
+  <updated>2015-04-03T17:20:38+09:00</updated>
   <id>http://ijin.github.com/</id>
   <author>
     <name><![CDATA[Michael H. Oshita]]></name>
@@ -14,11 +14,194 @@
 
   
   <entry>
+    <title type="html"><![CDATA[サバフェス！2015に参加してきた]]></title>
+    <link href="http://ijin.github.com/blog/2015/03/27/serverfesta-2015-spring/"/>
+    <updated>2015-03-27T12:56:00+09:00</updated>
+    <id>http://ijin.github.com/blog/2015/03/27/serverfesta-2015-spring</id>
+    <content type="html"><![CDATA[<p><a href="http://connpass.com/event/11571/">サバフェス！2015 Spring</a>に参加してきました。
+やった内容を少々。</p>
+
+<p><a href="http://ijin.github.com/blog/2013/12/13/serverfesta-2013-autumn">前回</a>と同じくチーム@ijinとして1人で参戦して、順位は「<strong>4位</strong>」。スコアは<strong>44988.867 TpmC</strong>でした。</p>
+
+<h2>お題</h2>
+
+<p>Mysql on ioDriveでtpcc-mysqlベンチマークのtransaction throughput競争。</p>
+
+<p>第1陣と第2陣に分かれていて、今回は後者での参戦。</p>
+
+<p>&#8211;</p>
+
+<p>競技期間は5日間あったものの、第1陣で<a href="http://netmark.jp/2015/03/svfes-2.html">結構な地雷があった</a>のと、Fusion-IO（現SanDisk）のioDriveとtpcc-mysqlは2年前に<a href="http://ijin.github.com/blog/2013/02/22/mysql-benchmarks-on-aws-ssd-vs-fusion-io/">触った</a>ので最初はあんまりやる気が起きなくて困ってました。後は前回と違って施せる施策がかなり限定されるというので、正直5日間は長過ぎるのではないかという印象でした。（結果的に第1陣のトラブルとかを鑑みると長さ的には良かったのかも知れないけど）</p>
+
+<p>という事で初日はログインとベンチで基準値を取るだけして終了。</p>
+
+<p>その後、最近のMySQLやioDrive周りの譲歩収集を軽ーくして数日が経過。。</p>
+
+<p>そして最終日の夜中になって、なんとか本腰を入れてチューニング開始。まあ、やりだしたら楽しいんですけどね。</p>
+
+<h2>マシンスペック</h2>
+
+<ul>
+<li>CentOS 6.4</li>
+<li>Intel(R) Xeon(R) CPU E5-2650 v2 @ 2.60GHz x 32</li>
+<li>32GB RAM</li>
+<li>40G HDD</li>
+<li>320GB ioDrive</li>
+</ul>
+
+
+<h2>制限</h2>
+
+<pre><code>innodb_doublewrite = 1
+innodb_flush_log_at_trx_commit = 1
+</code></pre>
+
+<p>その他レギューレーションは<a href="https://2015spring.serverfesta.info/?page_id=299">こちら</a></p>
+
+<h2>方針</h2>
+
+<p>今までのtwitterの<a href="https://twitter.com/search?q=%23%E3%82%B5%E3%83%90%E3%83%95%E3%82%A7%E3%82%B9">タイムライン</a>からして、どうもベンチをウェブ画面から要求しても並列実行の数とキューイング、及び非常に長い実行時間からして1時間に一回実行できるかどうかも怪しかったのでローカルでこまめに回す方向に。</p>
+
+<p>本番データはtpccの1000 warehouse（70GB+）、16GB Buffer Pool、900sの実行時間だったのでそれを250 warehouse, 4GB Buffer Poolと縮小し120sと短めに設定。こうすることによってローカルでのデータコピー時間やベンチ実行時感が短縮され、時間がない中での細かいパラメータのチューニングに専念できる。Buffer Poolはどうせ一番効くと分かりきってるので、あえて後回し。DBは6年前（MySQL 5.0時代）から手に滲んで愛用しているPercona Serverの5.6版を選択。</p>
+
+<p>スコアの推移はこんな感じ。データセットが小さい分、スコアは大きめ。</p>
+
+<p><img src="https://docs.google.com/spreadsheets/d/1zm6-THRYR_EcLoHgacRScxlhSzeQAkbJ0RXiAI4fiRU/pubchart?oid=1067951178&amp;format=image"></p>
+
+<p>終盤になってやっと本番に近いデータセットや実行時感で細かいチューニング。</p>
+
+<p><img src="https://docs.google.com/spreadsheets/d/1zm6-THRYR_EcLoHgacRScxlhSzeQAkbJ0RXiAI4fiRU/pubchart?oid=2026636320&amp;format=image"></p>
+
+<p>最終的にローカルでのベストスコアは<strong>53420.332 TpmC</strong>でした。</p>
+
+<h2>設定ファイル</h2>
+
+<div><script src='https://gist.github.com/.js?file='></script>
+<noscript><pre><code></code></pre></noscript></div>
+
+
+<h2>効果があったもの</h2>
+
+<p>細かいおまじないレベルでのパラメータも他にいくつあったけど、割と効いたのをピックアップ。また、既に設定されていたパラメータは除外（innodb_io_capacity等）</p>
+
+<p>mysql</p>
+
+<pre><code>datadir=/fioa/mysql
+tmpdir=/fioa/tmp
+sync_binlog=0
+innodb_buffer_pool_size = 28150M
+innodb_buffer_pool_instances=16
+innodb_log_file_size=4G
+innodb_log_files_in_group=3
+innodb_log_group_home_dir=/var/log/mysql
+innodb_log_buffer_size=64M
+innodb_data_file_path=ibdata1:76M;../../var/log/mysql/ibdata2:500M:autoextend
+innodb_checksum_algorithm=0
+innodb_max_dirty_pages_pct=90
+innodb_lru_scan_depth=2000
+numa_interleave=1
+flush_caches
+malloc-lib=/usr/lib64/libjemalloc.so.1
+</code></pre>
+
+<p>etc</p>
+
+<pre><code>vm.swappiness=1
+mount option (noatime,nodiratime,  max_batch_time=0,nobarrier,discard)
+cache warmup
+</code></pre>
+
+<p>基本的にはioDriveにIOをなるべく発生させない、もしくは遅延させる関連のパラメータが効いた感じ。この辺は割と正統なチューニング方法。一つ、若干工夫したのは、doublewrite buffer fileの指定方法。シーケンシャルなIOが発生するログ周りの処理はHDDに逃がした方がioDrive/SSD的には負荷低減になるけど、Percona 5.5までは<strong>innodb_doublewrite_file</strong>というパラメータでいつも指定していたのが、5.6ではなんと未実装！なのでベンチマーク前にコピーされるibdata1の予めのサイズを計っておいて、以降の書き込みをHDD側へ逃がすように<strong>innodb_data_file_path</strong>で調整。</p>
+
+<p>他はNUMAによるメモリの偏り調整とmallocライブラリを使う指定。この辺もPerconaやMariaDB専用オプション。</p>
+
+<p>後は一応初動のスコアをちょっとだけ稼ぐためにmysqlのstartup script内にてテーブルをcount(*)してindexをbuffer poolに乗せたぐらい。</p>
+
+<h2>効果が微妙だったもの</h2>
+
+<p>mysql</p>
+
+<pre><code>innodb_flush_method=ALL_O_DIRECT
+innodb_support_xa=0
+innodb_thread_concurrency=N
+innodb_flush_neighbors=0
+query_cache_size=0
+large-pages
+</code></pre>
+
+<p>etc</p>
+
+<pre><code>echo 'noop' &gt; /sys/block/fioa/queue/scheduler
+echo 4096 &gt; /sys/block/fioa/queue/nr_requests
+echo 2 &gt; /sys/block/fioa/queue/rq_affinity
+renice -n19 -p `ps auxf | grep mackerel | grep -v grep | awk ‘{print $2}’`
+</code></pre>
+
+<p>large-pagesでページサイズを大きく設定すればメモリ効率は向上するはずが、少なくともベンチマークにおいては効果なし。また、スケジューラをnoopやdeadlineと変えたり、nr_requestsやrq_affinityを調整してみたけど、デフォルトのOS bypass設定と比べてあまり変化なし。</p>
+
+<h2>試したかったもの</h2>
+
+<ul>
+<li>ioDrvieのblock sizeのリサイズ</li>
+<li>C0 state（CPUのC stateを制御して変動させずにioDriveの処理向上の期待）</li>
+<li>numa_node_forced_local（IO処理をメモリに一番近接しているCPUで行う）</li>
+<li>IRQ pinning（ioDriveのIRQを固定）</li>
+<li>network tuning</li>
+</ul>
+
+
+<p>この中で最後やることリストに乗っけていながらやらなかったネットワーク周りのチューニング。多分、これが敗因。（1位のチームzzz(<a href="https://twitter.com/ttkzw">@ttkzwさん</a>)はローカルベンチマークで51000ぐらいだったので）もっとリモートからベンチが実行される事に意識を向ければ良かったのかもしれないですね。とはいえ、最後はキュー待ちが8チームだったり、結果が不具合で見れなかったりと、バダバタしてたのでそっちに気を取られたのもまた事実。まあ、半日ちょいのチューニングにしてはそこそこ行った感じでしょうか。</p>
+
+<h2>終わりに</h2>
+
+<p>最初は運営側が「目下実装中です！」といいながら<strong>#トラしゅ</strong>をしているような感じでちょっと不安でしたが、最後は（第2陣という事もあり）それなりに楽しめました。ベンチマーク時間の短縮と並列実行数がもうちょっと増やせたらよかったですかね。運営側の皆様、大変お疲れさまでした！</p>
+
+<h2>おまけ</h2>
+
+<p>賞品として3DマッサージピローとSSDを頂きました！</p>
+
+<div class='embed tweet'><blockquote class="twitter-tweet"><p>3DマッサージピローとSSDをもらった。 <a href="https://twitter.com/hashtag/%E3%82%B5%E3%83%90%E3%83%95%E3%82%A7%E3%82%B9?src=hash">#サバフェス</a> <a href="http://t.co/mKczn9mflZ">pic.twitter.com/mKczn9mflZ</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/581048257171820544">March 26, 2015</a></blockquote>
+<script async src="http://ijin.github.com//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
+
+
+<p>個人敵には飛び込みLTした人がもらったDroneの方が良さそうだったけど、ピローは家族に好評でした。</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[ISUCON4の本戦の思い出]]></title>
+    <link href="http://ijin.github.com/blog/2014/12/31/isucon4-final/"/>
+    <updated>2014-12-31T20:52:00+09:00</updated>
+    <id>http://ijin.github.com/blog/2014/12/31/isucon4-final</id>
+    <content type="html"><![CDATA[<p>ISUCON4の本戦の直後にそのままAWS re:Inventへ行ったきりエントリを書いてなかったので思い出だけでも年内に書いておく。</p>
+
+<p>内容の<a href="http://isucon.net/archives/41252218.html">エントリ</a>はたくさんあるので、詳しい内容なそちらに任せます。</p>
+
+<p>結果は予選よりちょい上の<strong>15位</strong>。まあ、中間層は結構団子状態だったので誤差の範囲とも言えますが。。</p>
+
+<h2>Cache-Control</h2>
+
+<p>結局はCache-Controlヘッダーに気づくかどうかという点にかかっていて、達成したのは<a href="http://isucon.net/archives/41634734.html">2チーム</a>のみ。優勝チームのモリスさんが「頭から煙が出る程考えて」やっと直前に答えにたどり着いた事を考えると、ベンチマークツールの挙動が若干不思議な実装になっていたとはいえ、思慮深さが足りなかったと反省。</p>
+
+<h2>冒険しすぎた</h2>
+
+<p>今回はrubyとGoのハイブリッド構成でもろもろチューニング。が、しばらくして帯域が頭打ちに。。
+また、その間にメンバーの一人の<a href="https://twitter.com/fruwe">@fruwe</a>に<a href="http://undertow.io/">Undertow</a>というjavaのフレームワークでチャレンジしてもらうものの（事前の技術検証では結構期待できそうだった）、実装完走にはいたらず。この辺は冒険し過ぎたかな。。振り返ってみれば、結局2位のチームがブレークスルーをしたのを見て、全作業を一旦ストップしてでも皆で考えなおす行動を取れば良かったのかもしれないですね。ただ、当時は予選でのベンチマークツールがいささか不安定だった事と運営側もリアルタイムでバグフィックスをしてたという事情もあり、きっとバグか何かだろうとあまり気にしてなかったのも確か。</p>
+
+<h2>最後に</h2>
+
+<p>とまあ、不完全燃焼だったけど、なんだかんだで面白かったです。運営＆参加者の皆様お疲れ様でした。来年またあるか分からないけど、楽しみにしています。</p>
+]]></content>
+  </entry>
+  
+  <entry>
     <title type="html"><![CDATA[Auto Scalingによる自動復旧（AWS Lambda編）]]></title>
     <link href="http://ijin.github.com/blog/2014/12/05/self-healing-with-non-elb-autoscaling3/"/>
     <updated>2014-12-05T23:14:00+09:00</updated>
     <id>http://ijin.github.com/blog/2014/12/05/self-healing-with-non-elb-autoscaling3</id>
     <content type="html"><![CDATA[<p>ちょうど1年程前に「<a href="http://ijin.github.com/blog/2013/02/08/self-healing-with-non-elb-autoscaling/">非ELBなAutoscalingによる自動復旧</a>」の<a href="http://ijin.github.com/blog/2013/12/14/self-healing-with-non-elb-autoscaling2/">再検証</a>をしました。前回も復旧までのタイムラグが20分だったので、この1年で変わったかまた検証してみました。</p>
+
+<p>(*) このエントリは<a href="http://qiita.com/advent-calendar/2014/aws">AWS Advent Calendar 2014</a>の5日目分です。</p>
 
 <h3>設定</h3>
 
@@ -233,42 +416,8 @@
 
 <p>Lambda function</p>
 
-<div><script src='https://gist.github.com/7bcba3354814d3ca704d.js'></script>
-<noscript><pre><code>console.log('Loading event');
-var aws = require('aws-sdk');
-var s3 = new aws.S3({apiVersion: '2006-03-01'});
-var autoscaling = new aws.AutoScaling({apiVersion: '2011-01-01'});
-
-exports.handler = function(event, context) {
-   console.log('Received event:');
-   console.log(event);
-   //console.log(typeof event.Subject);
-   if (event.hasOwnProperty('Message')) {
-       var msg = event.Message.replace(/!!/g,'&quot;');
-       var instance_id = JSON.parse(msg).Trigger.Dimensions[0].value;
-       console.log('Changing instance health for: ' + instance_id);
-       var params = {
-           HealthStatus: 'Unhealthy', /* required */
-           InstanceId: instance_id, /* required */
-           ShouldRespectGracePeriod: false
-       };
-    
-        autoscaling.setInstanceHealth(params, function(err, data) {
-            if (err) {
-                console.log(err, err.stack); // an error occurred
-                context.done('error','error: '+err);
-            }
-            else {
-                console.log(data);           // successful response
-                context.done(null,'');
-            }
-        });
-   }
-   else {
-       console.log('No message');
-       context.done(null,'');
-   }
-};</code></pre></noscript></div>
+<div><script src='https://gist.github.com/.js?file='></script>
+<noscript><pre><code></code></pre></noscript></div>
 
 
 <p>node.js製のsqs-to-lambda。long pollingしつつ、messageを取得後にLambda functionをinvokeしてくれる。12/5現在ではEscape characterがAWS/JDKやCLIから送信できないという<a href="https://forums.aws.amazon.com/thread.jspa?threadID=166893&amp;tstart=0">大きな問題</a>がある為、<a href="https://github.com/robinjmurphy/sqs-to-lambda">upstream</a>を少し<a href="https://github.com/ijin/sqs-to-lambda/commit/080f1dcbf5f8bb3f7f4a6e0abdde72dce7ce5553">改修</a></p>
@@ -1333,25 +1482,25 @@ CDP的には「<a href="http://aws.clouddesignpattern.org/index.php/CDP:Server_S
 
 <p>backend varnish vcl （各backendの設定は微妙に違う）:</p>
 
-<div><script src='https://gist.github.com/7941009.js'></script>
+<div><script src='https://gist.github.com/7941009.js?file='></script>
 <noscript><pre><code>&lt;html&gt;&lt;body&gt;You are being &lt;a href=&quot;https://github.com/gist/7941009&quot;&gt;redirected&lt;/a&gt;.&lt;/body&gt;&lt;/html&gt;</code></pre></noscript></div>
 
 
 <p>backend nginx.conf:</p>
 
-<div><script src='https://gist.github.com/7940999.js'></script>
+<div><script src='https://gist.github.com/7940999.js?file='></script>
 <noscript><pre><code>&lt;html&gt;&lt;body&gt;You are being &lt;a href=&quot;https://github.com/gist/7940999&quot;&gt;redirected&lt;/a&gt;.&lt;/body&gt;&lt;/html&gt;</code></pre></noscript></div>
 
 
 <p>base nginx.conf:</p>
 
-<div><script src='https://gist.github.com/7941214.js'></script>
+<div><script src='https://gist.github.com/7941214.js?file='></script>
 <noscript><pre><code>&lt;html&gt;&lt;body&gt;You are being &lt;a href=&quot;https://github.com/gist/7941214&quot;&gt;redirected&lt;/a&gt;.&lt;/body&gt;&lt;/html&gt;</code></pre></noscript></div>
 
 
 <p>base syncer.rb:</p>
 
-<div><script src='https://gist.github.com/7941042.js'></script>
+<div><script src='https://gist.github.com/7941042.js?file='></script>
 <noscript><pre><code>&lt;html&gt;&lt;body&gt;You are being &lt;a href=&quot;https://github.com/gist/7941042&quot;&gt;redirected&lt;/a&gt;.&lt;/body&gt;&lt;/html&gt;</code></pre></noscript></div>
 
 
@@ -2440,7 +2589,7 @@ autoscaling:EC2_INSTANCE_LAUNCH_ERROR, autoscaling:EC2_INSTANCE_TERMINATE_ERROR
 
 <p>同期には起動時にupstart経由でrsyncを叩いて管理サーバから最新ソースを取ってきてサービスを再起動します。転送時の圧縮モードはarcfourが一番スループットが出たのでそれに。</p>
 
-<div><script src='https://gist.github.com/4191986.js'></script>
+<div><script src='https://gist.github.com/4191986.js?file='></script>
 <noscript><pre><code># sync source code
 description &quot;Update source code&quot;
 
@@ -2532,7 +2681,7 @@ Tickets:922
 
 <p>ちなみにアクセス分布はこんな感じでした。</p>
 
-<div><script src='https://gist.github.com/4017160.js'></script>
+<div><script src='https://gist.github.com/4017160.js?file='></script>
 <noscript><pre><code>$grep &quot;POST&quot; access_log  | wc -l
 960
 $ grep &quot;GET /js/&quot; access_log  | wc -l
@@ -2575,7 +2724,7 @@ Tickets:457
 <p>再実装はブラウザからの見た目上は前半でほぼ出来上がっていて、後はベンチを通るかを確認して最適化を始めるというシナリオでした。
 ところが、全然通らずここからハマることに。。</p>
 
-<div><script src='https://gist.github.com/4017170.js'></script>
+<div><script src='https://gist.github.com/4017170.js?file='></script>
 <noscript><pre><code>{&quot;No one tickets are rendered in /ticket/x&quot;:25}
 {&quot;No one tickets are rendered in /ticket/x&quot;:20}
 {&quot;No one tickets are rendered in /ticket/x&quot;:24}
@@ -2658,7 +2807,7 @@ my.cnfも見て全然パラメータ設定されてないけど/var/lib/mysqlの
 <p>ビルドが終えた頃にデフォルト状態のままで動かして、まずベースとなるベンチマーク。
 大体こんな感じでした。</p>
 
-<div><script src='https://gist.github.com/3038461.js'></script>
+<div><script src='https://gist.github.com/3038461.js?file='></script>
 <noscript><pre><code>12 fetches, 9 max parallel, 45576 bytes, in 10 seconds
 3798 mean bytes/connection
 1.2 fetches/sec, 4557.6 bytes/sec
@@ -2734,7 +2883,7 @@ DBを初期化し、railsを再起動して待ちかまえる。次の計測で�
 <p>ちなみにローカル計測ベスト（3200.23）だとこんな感じだったけど、リモート経由だとネットワーク（？）がボトルネックになって
 そこまで出ませんでした。</p>
 
-<div><script src='https://gist.github.com/3038562.js'></script>
+<div><script src='https://gist.github.com/3038562.js?file='></script>
 <noscript><pre><code>32005 fetches, 9 max parallel, 1.20014e+08 bytes, in 10.0008 seconds  
 3749.86 mean bytes/connection 
 3200.23 fetches/sec, 1.20004e+07 bytes/sec  
@@ -2752,7 +2901,7 @@ TTLを強制有効にして、POST後にいかにキャッシュクリアさせ�
 
 <p>/etc/sysconfig/varnish</p>
 
-<div><script src='https://gist.github.com/3038946.js'></script>
+<div><script src='https://gist.github.com/3038946.js?file='></script>
 <noscript><pre><code>NFILES=131072
 MEMLOCK=82000
 RELOAD_VCL=1
@@ -2775,7 +2924,7 @@ DAEMON_OPTS=&quot;-a :3000 \
 
 <p>/etc/varnish/default.vcl</p>
 
-<div><script src='https://gist.github.com/3038775.js'></script>
+<div><script src='https://gist.github.com/3038775.js?file='></script>
 <noscript><pre><code># This is a basic VCL configuration file for varnish.  See the vcl(7)
 # man page for details on VCL syntax and semantics.
 # 

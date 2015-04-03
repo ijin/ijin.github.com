@@ -5,11 +5,11 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>ConsulによるMySQLフェールオーバー - @ijin</title>
+  <title>ISUCON4の本戦の思い出 - @ijin</title>
   <meta name="author" content="Michael H. Oshita">
 
   
-  <meta name="description" content="先日(6/22/14)、6月なのにどういう分けか早めに開催されたJuly Tech Festa 2014でConsulについて発表してきた。そのユースケースの一つとしてMySQL failoverをちょっとだけ紹介したので、ここに詳しく書いておく。 MHA &hellip;">
+  <meta name="description" content="ISUCON4の本戦の直後にそのままAWS re:Inventへ行ったきりエントリを書いてなかったので思い出だけでも年内に書いておく。 内容のエントリはたくさんあるので、詳しい内容なそちらに任せます。 結果は予選よりちょい上の15位。まあ、中間層は結構団子状態だったので誤差の範囲とも言えますが &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -18,7 +18,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://ijin.github.com/blog/2014/07/11/mysql-failover-with-consul/">
+  <link rel="canonical" href="http://ijin.github.com/blog/2014/12/31/isucon4-final/">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <link href="/stylesheets/data-table.css" rel="stylesheet" type="text/css" />
@@ -89,7 +89,7 @@ document.base_document_write(html);
   
   <header>
     
-      <h1 class="entry-title">ConsulによるMySQLフェールオーバー</h1>
+      <h1 class="entry-title">ISUCON4の本戦の思い出</h1>
     
     
       <p class="meta">
@@ -105,71 +105,31 @@ document.base_document_write(html);
   
 
 
-<time datetime="2014-07-11T10:12:00+09:00" pubdate data-updated="true">Jul 11<span>th</span>, 2014</time>
+<time datetime="2014-12-31T20:52:00+09:00" pubdate data-updated="true">Dec 31<span>st</span>, 2014</time>
         
       </p>
     
   </header>
 
 
-<div class="entry-content"><p>先日(6/22/14)、6月なのにどういう分けか早めに開催された<a href="http://2014.techfesta.jp/">July Tech Festa 2014</a>でConsulについて<a href="http://2014.techfesta.jp/p/program.html?m=1#c43">発表</a>してきた。そのユースケースの一つとしてMySQL failoverをちょっとだけ紹介したので、ここに詳しく書いておく。</p>
+<div class="entry-content"><p>ISUCON4の本戦の直後にそのままAWS re:Inventへ行ったきりエントリを書いてなかったので思い出だけでも年内に書いておく。</p>
 
-<h2>MHA</h2>
+<p>内容の<a href="http://isucon.net/archives/41252218.html">エントリ</a>はたくさんあるので、詳しい内容なそちらに任せます。</p>
 
-<p>MySQLレプリケーションの障害時にフェールオーバーしたい場合、MHAを使うの結構ポピュラー（日本では）だと思います。MHAは最新binlogの適用、Slaveの昇格とレプリケーションの張替えまではやってくれますが、実際のフェールオーバーの部分はユーザに委ねられていて、master_ip_failover_scriptのテンプレートをカスタマイズするか独自実装する必要があり、一般的な実現方法としてはカタログデータベースの更新かVirtual IPの切替等があります。</p>
+<p>結果は予選よりちょい上の<strong>15位</strong>。まあ、中間層は結構団子状態だったので誤差の範囲とも言えますが。。</p>
 
-<p>Virtual IPだと居残りセッションの問題や切替の保証難しかったり、そもそも環境によっては使えなかったりするので、私はあんまり好きじゃありません。また以前、後者的アプローチとしてAWSのVPC内であればrouting tableを変更する事によってこの挙動に似た実現方法を<a href="/blog/2013/05/21/custom-non-rds-multi-az-mysql-replication/">紹介</a>した事がありますが、一番の問題点はAPI backplaneがSPoFになってて、ここが落ちたらそもそも動かない；また、APIのrate limitに達して呼び出しさえ出来ないという結構痛い目に会ったりします。</p>
+<h2>Cache-Control</h2>
 
-<p>そこで前者的なアプローチとしてmasterの情報を管理するカタログデータベースの更新部分にConsulを使ってみました。</p>
+<p>結局はCache-Controlヘッダーに気づくかどうかという点にかかっていて、達成したのは<a href="http://isucon.net/archives/41634734.html">2チーム</a>のみ。優勝チームのモリスさんが「頭から煙が出る程考えて」やっと直前に答えにたどり着いた事を考えると、ベンチマークツールの挙動が若干不思議な実装になっていたとはいえ、思慮深さが足りなかったと反省。</p>
 
-<h2>CONSUL</h2>
+<h2>冒険しすぎた</h2>
 
-<p>ConsulとはHTTP APIとDNSで操作ができる分散型クラスタで、VagrantやSerf等を開発しているHashicorpの新プロダクトです。Key featureは以下のとおり。</p>
+<p>今回はrubyとGoのハイブリッド構成でもろもろチューニング。が、しばらくして帯域が頭打ちに。。
+また、その間にメンバーの一人の<a href="https://twitter.com/fruwe">@fruwe</a>に<a href="http://undertow.io/">Undertow</a>というjavaのフレームワークでチャレンジしてもらうものの（事前の技術検証では結構期待できそうだった）、実装完走にはいたらず。この辺は冒険し過ぎたかな。。振り返ってみれば、結局2位のチームがブレークスルーをしたのを見て、全作業を一旦ストップしてでも皆で考えなおす行動を取れば良かったのかもしれないですね。ただ、当時は予選でのベンチマークツールがいささか不安定だった事と運営側もリアルタイムでバグフィックスをしてたという事情もあり、きっとバグか何かだろうとあまり気にしてなかったのも確か。</p>
 
-<ul>
-<li>Service Discovery</li>
-<li>Failure Detection</li>
-<li>Multi Datacenter</li>
-<li>Key/Value Store</li>
-</ul>
+<h2>最後に</h2>
 
-
-<h3>ConsulのConsistencyについて</h3>
-
-<p>ConsulはCAP定理でいうCPという特性をもっており、Consistency（一貫性）に重きをおいてあります。Paxosを由来とするRaftをベースにしたconsensus protocolで実現していて、ピアセット内の各サーバノードでlog entryの書き込みがquorumで決定された後にcommitされたと見なされ、FSMに書き込まれます。よって、書き込みに関してはStrongly Consistentな処理となります。読み込みに関しては、パフォーマンス要求に応じてConsistencyレベルをクエリータイプによって調整可能（まるでCassandraのように！）で、Usually Consistent, Strongly Consistent, Staleから選択可能です。DNSベースのクエリーはデフォルトで単一のリーダーノードが返答するのでStrongly Consistentな処理となっています。（Staleにする事も可能）</p>
-
-<h2>ConsulとMHAの連携概要</h2>
-
-<ul>
-<li>Consulを内部DNSとして使い、clientはDNSベースでmasterに接続</li>
-<li>MySQL masterはAPIで予めサービス名（alias DNS）を登録しておく</li>
-<li>mysql_failover_scriptで旧情報の削除と新情報の登録をやる
-
-<ul>
-<li>旧master IPを無効化する部分でConsulのCatalog endpointを使ってderegister (/v1/catalog/deregister)</li>
-<li>新master ipを登録する部分でConsulのCatalog endpointを使ってregister (/v1/catalog/register)</li>
-<li>成功しない限り進まない（exit code check）</li>
-</ul>
-</li>
-<li>削除、及び登録はconsulのconsistency modelによって一貫性は保証される</li>
-</ul>
-
-
-<h2>DEMO</h2>
-
-<div class="embed-video-container"><iframe src="http://www.youtube.com/embed/rA4hyJ-pccU "></iframe></div>
-
-
-<h2>Notes</h2>
-
-<p>DNSは最新のv0.3.0になってからTTLを設定できるようになったので、Amazon RDSっぽい感じのフェールオーバーも可能ですが、v0.2系に比べて格段にパフォーマンスが向上（スライド参照）したので、デフォルトのTTL 0でも問題ない範囲になってる感じです。また、もうちょっと詳しい内容は今度の<a href="http://connpass.com/event/7322/">#hbstudy</a>で話す予定です。</p>
-
-<h2>スライド</h2>
-
-<p>以下、July Tech Festa 2014で発表した時のスライドです。</p>
-
-<script async="true" class="speakerdeck-embed" data-id="e07317d0dc040131a0982229a5c1e016" src="//speakerdeck.com/assets/embed.js"> </script>
-
+<p>とまあ、不完全燃焼だったけど、なんだかんだで面白かったです。運営＆参加者の皆様お疲れ様でした。来年またあるか分からないけど、楽しみにしています。</p>
 </div>
 
 
@@ -192,12 +152,12 @@ document.base_document_write(html);
   
 
 
-<time datetime="2014-07-11T10:12:00+09:00" pubdate data-updated="true">Jul 11<span>th</span>, 2014</time>
+<time datetime="2014-12-31T20:52:00+09:00" pubdate data-updated="true">Dec 31<span>st</span>, 2014</time>
       
 
 <span class="categories">
   
-    <a class='category' href='/blog/categories/consul/'>consul</a>, <a class='category' href='/blog/categories/events/'>events</a>, <a class='category' href='/blog/categories/mysql/'>mysql</a>
+    <a class='category' href='/blog/categories/events/'>events</a>, <a class='category' href='/blog/categories/study/'>study</a>
   
 </span>
 
@@ -206,7 +166,7 @@ document.base_document_write(html);
     
       <div class="sharing">
   
-  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://ijin.github.com/blog/2014/07/11/mysql-failover-with-consul/" data-via="ijin" data-counturl="http://ijin.github.com/blog/2014/07/11/mysql-failover-with-consul/" >Tweet</a>
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://ijin.github.com/blog/2014/12/31/isucon4-final/" data-via="ijin" data-counturl="http://ijin.github.com/blog/2014/12/31/isucon4-final/" >Tweet</a>
   
   
   
@@ -215,10 +175,10 @@ document.base_document_write(html);
     
     <p class="meta">
       
-        <a class="basic-alignment left" href="/blog/2014/04/21/chefconf-2014/" title="Previous Post: #ChefConf 2014に参加してきた">&laquo; #ChefConf 2014に参加してきた</a>
+        <a class="basic-alignment left" href="/blog/2014/12/05/self-healing-with-non-elb-autoscaling3/" title="Previous Post: Auto Scalingによる自動復旧（AWS Lambda編）">&laquo; Auto Scalingによる自動復旧（AWS Lambda編）</a>
       
       
-        <a class="basic-alignment right" href="/blog/2014/10/20/isucon4-qualifier/" title="Next Post: ISUCON4の予選を通過したんだった">ISUCON4の予選を通過したんだった &raquo;</a>
+        <a class="basic-alignment right" href="/blog/2015/03/27/serverfesta-2015-spring/" title="Next Post: サバフェス！2015に参加してきた">サバフェス！2015に参加してきた &raquo;</a>
       
     </p>
   </footer>
@@ -321,8 +281,8 @@ document.base_document_write(html);
       
         
         // var disqus_developer = 1;
-        var disqus_identifier = 'http://ijin.github.com/blog/2014/07/11/mysql-failover-with-consul/';
-        var disqus_url = 'http://ijin.github.com/blog/2014/07/11/mysql-failover-with-consul/';
+        var disqus_identifier = 'http://ijin.github.com/blog/2014/12/31/isucon4-final/';
+        var disqus_url = 'http://ijin.github.com/blog/2014/12/31/isucon4-final/';
         var disqus_script = 'embed.js';
       
     (function () {

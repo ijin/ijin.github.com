@@ -4,7 +4,7 @@
   <title><![CDATA[@ijin]]></title>
   <link href="http://ijin.github.com/atom.xml" rel="self"/>
   <link href="http://ijin.github.com/"/>
-  <updated>2015-04-03T17:33:41+09:00</updated>
+  <updated>2015-04-03T22:38:55+09:00</updated>
   <id>http://ijin.github.com/</id>
   <author>
     <name><![CDATA[Michael H. Oshita]]></name>
@@ -37,7 +37,7 @@
 
 <p>という事で初日はログインとベンチで基準値を取るだけして終了。</p>
 
-<p>その後、最近のMySQLやioDrive周りの譲歩収集を軽ーくして数日が経過。。</p>
+<p>その後、最近のMySQLやioDrive周りの情報収集を軽ーくして数日が経過。。</p>
 
 <p>そして最終日の夜中になって、なんとか本腰を入れてチューニング開始。まあ、やりだしたら楽しいんですけどね。</p>
 

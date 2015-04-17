@@ -2,96 +2,104 @@
 <urlset xmlns='http://www.sitemaps.org/schemas/sitemap/0.9'>
     <url>
         <loc>http://ijin.github.com/blog/2012/07/03/tuningathon4/</loc>
-        <lastmod>2013-05-21T19:27:47+09:00</lastmod>
+        <lastmod>2015-04-17T01:04:50+09:00</lastmod>
     </url>
     <url>
         <loc>http://ijin.github.com/blog/2012/11/05/isucon2/</loc>
-        <lastmod>2012-11-05T22:59:37+09:00</lastmod>
+        <lastmod>2015-04-17T01:04:50+09:00</lastmod>
     </url>
     <url>
         <loc>http://ijin.github.com/blog/2012/12/03/cdp/</loc>
-        <lastmod>2012-12-03T22:04:20+09:00</lastmod>
+        <lastmod>2015-04-17T01:04:50+09:00</lastmod>
     </url>
     <url>
         <loc>http://ijin.github.com/blog/2013/02/08/self-healing-with-non-elb-autoscaling/</loc>
-        <lastmod>2013-05-19T13:37:04+09:00</lastmod>
+        <lastmod>2015-04-17T01:04:50+09:00</lastmod>
     </url>
     <url>
         <loc>
             http://ijin.github.com/blog/2013/02/22/mysql-benchmarks-on-aws-ssd-vs-fusion-io/
         </loc>
-        <lastmod>2013-05-19T13:40:13+09:00</lastmod>
+        <lastmod>2015-04-17T01:04:50+09:00</lastmod>
     </url>
     <url>
         <loc>http://ijin.github.com/blog/2013/04/03/accelerating-cross-region-data-transfer/</loc>
-        <lastmod>2013-04-03T14:37:27+09:00</lastmod>
+        <lastmod>2015-04-17T01:04:50+09:00</lastmod>
     </url>
     <url>
         <loc>
             http://ijin.github.com/blog/2013/05/21/custom-non-rds-multi-az-mysql-replication/
         </loc>
-        <lastmod>2013-05-21T19:15:54+09:00</lastmod>
+        <lastmod>2015-04-17T01:04:50+09:00</lastmod>
     </url>
     <url>
         <loc>http://ijin.github.com/blog/2013/06/10/aws-game-day-tokyo-2013/</loc>
-        <lastmod>2013-06-11T11:52:53+09:00</lastmod>
+        <lastmod>2015-04-17T01:04:50+09:00</lastmod>
     </url>
     <url>
         <loc>http://ijin.github.com/blog/2013/10/07/isucon3-preliminary/</loc>
-        <lastmod>2013-10-07T13:55:53+09:00</lastmod>
+        <lastmod>2015-04-17T01:04:50+09:00</lastmod>
     </url>
     <url>
         <loc>http://ijin.github.com/blog/2013/11/11/isucon3-final/</loc>
-        <lastmod>2013-11-12T15:43:40+09:00</lastmod>
+        <lastmod>2015-04-17T01:04:50+09:00</lastmod>
     </url>
     <url>
         <loc>http://ijin.github.com/blog/2013/12/13/serverfesta-2013-autumn/</loc>
-        <lastmod>2013-12-13T18:55:19+09:00</lastmod>
+        <lastmod>2015-04-17T01:04:50+09:00</lastmod>
     </url>
     <url>
         <loc>http://ijin.github.com/blog/2013/12/14/self-healing-with-non-elb-autoscaling2/</loc>
-        <lastmod>2013-12-15T00:50:17+09:00</lastmod>
+        <lastmod>2015-04-17T01:04:50+09:00</lastmod>
     </url>
     <url>
         <loc>
             http://ijin.github.com/blog/2014/01/01/mysql-benchmarks-on-aws-i2-instance-ssds/
         </loc>
-        <lastmod>2014-01-01T03:08:20+09:00</lastmod>
+        <lastmod>2015-04-17T01:04:50+09:00</lastmod>
     </url>
     <url>
         <loc>http://ijin.github.com/blog/2014/03/14/aws-game-day-japan-2014-spring/</loc>
-        <lastmod>2014-03-15T00:29:16+09:00</lastmod>
+        <lastmod>2015-04-17T01:04:50+09:00</lastmod>
     </url>
     <url>
         <loc>http://ijin.github.com/blog/2014/04/21/chefconf-2014/</loc>
-        <lastmod>2014-04-21T13:05:29+09:00</lastmod>
+        <lastmod>2015-04-17T01:04:50+09:00</lastmod>
     </url>
     <url>
         <loc>http://ijin.github.com/blog/2014/07/11/mysql-failover-with-consul/</loc>
-        <lastmod>2014-07-11T10:47:09+09:00</lastmod>
+        <lastmod>2015-04-17T01:04:50+09:00</lastmod>
     </url>
     <url>
         <loc>http://ijin.github.com/blog/2014/10/20/isucon4-qualifier/</loc>
-        <lastmod>2014-10-21T11:47:28+09:00</lastmod>
+        <lastmod>2015-04-17T01:04:50+09:00</lastmod>
     </url>
     <url>
         <loc>http://ijin.github.com/blog/2014/12/05/self-healing-with-non-elb-autoscaling3/</loc>
-        <lastmod>2014-12-06T06:39:00+09:00</lastmod>
+        <lastmod>2015-04-17T01:04:50+09:00</lastmod>
     </url>
     <url>
         <loc>http://ijin.github.com/blog/2014/12/31/isucon4-final/</loc>
-        <lastmod>2015-04-03T17:08:11+09:00</lastmod>
+        <lastmod>2015-04-17T01:04:50+09:00</lastmod>
     </url>
     <url>
         <loc>http://ijin.github.com/blog/2015/03/27/serverfesta-2015-spring/</loc>
-        <lastmod>2015-04-03T22:38:35+09:00</lastmod>
+        <lastmod>2015-04-17T01:04:50+09:00</lastmod>
+    </url>
+    <url>
+        <loc>http://ijin.github.com/blog/2015/04/17/self-healing-with-non-elb-autoscaling4/</loc>
+        <lastmod>2015-04-17T14:25:35+09:00</lastmod>
     </url>
     <url>
         <loc>http://ijin.github.com/blog/archives/</loc>
-        <lastmod>2015-04-03T22:38:35+09:00</lastmod>
+        <lastmod>2015-04-17T14:25:35+09:00</lastmod>
     </url>
     <url>
         <loc>http://ijin.github.com/</loc>
-        <lastmod>2015-04-03T22:38:35+09:00</lastmod>
+        <lastmod>2015-04-17T14:25:35+09:00</lastmod>
+    </url>
+    <url>
+        <loc>http://ijin.github.com/robots.txt</loc>
+        <lastmod>2015-04-17T00:42:55+09:00</lastmod>
     </url>
 </urlset>

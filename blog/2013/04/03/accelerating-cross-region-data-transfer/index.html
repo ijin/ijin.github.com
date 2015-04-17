@@ -32,11 +32,12 @@
 <!--<script type="text/javascript">
 document.base_document_write = document.write;
 document.write = function(html) {
-if (html.match(/^<link rel="stylesheet".+gist\.github\.com\/assets\/embed.*/) == null) {
-document.base_document_write(html);
-}
+    if (html.match(/^<link rel="stylesheet".+gist-assets\.github\.com\/assets\/embed.*/) == null) {
+        document.base_document_write(html);
+    }
 }
 </script>
+
 -->
 
   
@@ -333,6 +334,10 @@ server2$ sudo cloudconfig peer_add server1 server1_local_ip(10.x.x.x)
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2015/04/17/self-healing-with-non-elb-autoscaling4/">Auto Scalingによる自動復旧（AWS Lambda+SNS編）</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2015/03/27/serverfesta-2015-spring/">サバフェス！2015に参加してきた</a>
       </li>
     
@@ -366,10 +371,6 @@ server2$ sudo cloudconfig peer_add server1 server1_local_ip(10.x.x.x)
     
       <li class="post">
         <a href="/blog/2013/12/14/self-healing-with-non-elb-autoscaling2/">Autoscalingによる自動復旧(Immutable Infrastucture)</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2013/12/13/serverfesta-2013-autumn/">サバフェス！2013に参加してきた</a>
       </li>
     
   </ul>

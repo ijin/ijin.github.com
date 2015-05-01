@@ -130,7 +130,7 @@ document.write = function(html) {
 
 <p>しかし、上記を満たしているのに、特定のAMIをCLI経由で起動するとEC2 Auto Recoveryを設定できなくなります。</p>
 
-<p>（AWSコンソールでラジオボタンが押せなくなる。CLIで設定しても効かない）
+<p>（AWSコンソールでラジオボタンが押せない。CLIで設定しても効かない）
 <img src="https://lh5.googleusercontent.com/-dwWUcfCssA4/VULwrOsgxNI/AAAAAAAABFo/VQy-GnIYQXg/w448-h186-no/Screenshot%2B2015-05-01%2B12.18.16.png"></p>
 
 <p>原因はAMIにephemeral disk等のblock device mappingが設定されていて、T2やC4等のEBS onlyなinstance typeで起動しているにも関わらず、AWS側がephemeral diskが付与されていると認識してしまう所にあります。なお、AWSコンソールからだとこの現象は発生しません。</p>

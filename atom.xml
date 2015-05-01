@@ -4,7 +4,7 @@
   <title><![CDATA[@ijin]]></title>
   <link href="http://ijin.github.io/atom.xml" rel="self"/>
   <link href="http://ijin.github.io/"/>
-  <updated>2015-05-01T12:54:24+09:00</updated>
+  <updated>2015-05-01T12:56:42+09:00</updated>
   <id>http://ijin.github.io/</id>
   <author>
     <name><![CDATA[Michael H. Oshita]]></name>
@@ -58,7 +58,7 @@
 <p>解決方法は現時点（2015/5/1）では3通り</p>
 
 <ul>
-<li>extraなblock device mappingが設定されていないAMIを使う（Amazon Linux等）</li>
+<li>extraなmappingが設定されていないAMIを使う（Amazon Linux等）</li>
 <li>AWSコンソールから起動する</li>
 <li>明示的に<code>--block-device-mappings</code>パラメータで<code>NoDevice</code>と指定
 <code>aws ec2 run-instances --image-id ami-e74b60e6 --instance-type t2.small --subnet-id subnet-xxxxxxxx --block-device-mappings "[{\"DeviceName\": \"/dev/sdb\",  \"NoDevice\": \"\"}, {\"DeviceName\": \"/dev/sdc\",  \"NoDevice\": \"\"}]"</code></li>

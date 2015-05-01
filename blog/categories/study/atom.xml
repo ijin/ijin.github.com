@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[Category: study | @ijin]]></title>
-  <link href="http://ijin.github.com/blog/categories/study/atom.xml" rel="self"/>
-  <link href="http://ijin.github.com/"/>
-  <updated>2015-04-17T14:26:19+09:00</updated>
-  <id>http://ijin.github.com/</id>
+  <link href="http://ijin.github.io/blog/categories/study/atom.xml" rel="self"/>
+  <link href="http://ijin.github.io/"/>
+  <updated>2015-05-01T12:50:54+09:00</updated>
+  <id>http://ijin.github.io/</id>
   <author>
     <name><![CDATA[Michael H. Oshita]]></name>
     
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[サバフェス！2015に参加してきた]]></title>
-    <link href="http://ijin.github.com/blog/2015/03/27/serverfesta-2015-spring/"/>
+    <link href="http://ijin.github.io/blog/2015/03/27/serverfesta-2015-spring/"/>
     <updated>2015-03-27T12:56:00+09:00</updated>
-    <id>http://ijin.github.com/blog/2015/03/27/serverfesta-2015-spring</id>
+    <id>http://ijin.github.io/blog/2015/03/27/serverfesta-2015-spring</id>
     <content type="html"><![CDATA[<p><a href="http://connpass.com/event/11571/">サバフェス！2015 Spring</a>に参加してきました。
 やった内容を少々。</p>
 
@@ -170,9 +170,9 @@ renice -n19 -p `ps auxf | grep mackerel | grep -v grep | awk ‘{print $2}’`
   
   <entry>
     <title type="html"><![CDATA[ISUCON4の本戦の思い出]]></title>
-    <link href="http://ijin.github.com/blog/2014/12/31/isucon4-final/"/>
+    <link href="http://ijin.github.io/blog/2014/12/31/isucon4-final/"/>
     <updated>2014-12-31T20:52:00+09:00</updated>
-    <id>http://ijin.github.com/blog/2014/12/31/isucon4-final</id>
+    <id>http://ijin.github.io/blog/2014/12/31/isucon4-final</id>
     <content type="html"><![CDATA[<p>ISUCON4の本戦の直後にそのままAWS re:Inventへ行ったきりエントリを書いてなかったので思い出だけでも年内に書いておく。</p>
 
 <p>内容の<a href="http://isucon.net/archives/41252218.html">エントリ</a>はたくさんあるので、詳しい内容なそちらに任せます。</p>
@@ -196,9 +196,9 @@ renice -n19 -p `ps auxf | grep mackerel | grep -v grep | awk ‘{print $2}’`
   
   <entry>
     <title type="html"><![CDATA[ISUCON4の予選を通過したんだった]]></title>
-    <link href="http://ijin.github.com/blog/2014/10/20/isucon4-qualifier/"/>
+    <link href="http://ijin.github.io/blog/2014/10/20/isucon4-qualifier/"/>
     <updated>2014-10-20T15:38:00+09:00</updated>
-    <id>http://ijin.github.com/blog/2014/10/20/isucon4-qualifier</id>
+    <id>http://ijin.github.io/blog/2014/10/20/isucon4-qualifier</id>
     <content type="html"><![CDATA[<p>そういえば、3回目の参加となる<a href="http://isucon.net/">ISUCON</a>の第4回目の予選を通過してました。</p>
 
 <p><a href="http://isucon.net/archives/40576269.html">結果</a>は185チーム中、<strong>19位</strong>というなんと微妙な結果で本戦にいける事に。</p>
@@ -401,9 +401,9 @@ tag:benchmarker type:score      success:210324  fail:0  score:155272
   
   <entry>
     <title type="html"><![CDATA[AWS Game Day Japan 2014春を開催してきた]]></title>
-    <link href="http://ijin.github.com/blog/2014/03/14/aws-game-day-japan-2014-spring/"/>
+    <link href="http://ijin.github.io/blog/2014/03/14/aws-game-day-japan-2014-spring/"/>
     <updated>2014-03-14T23:11:00+09:00</updated>
-    <id>http://ijin.github.com/blog/2014/03/14/aws-game-day-japan-2014-spring</id>
+    <id>http://ijin.github.io/blog/2014/03/14/aws-game-day-japan-2014-spring</id>
     <content type="html"><![CDATA[<p>過去に2度参加した事（東京・ラスベガス）がある<a href="/blog/2013/06/10/aws-game-day-tokyo-2013/">Game Day</a>に今回は運営側に周りました。3/15に行われる<a href="http://jawsdays2014.jaws-ug.jp/">JAWS Days 2014</a>の前夜祭という位置づけです。</p>
 
 <p>日本では前回、東京のみだったけど<a href="http://jaws-days.doorkeeper.jp/events/8945">今回</a>は東京・大阪・名古屋・仙台と4都市同時開催。</p>
@@ -483,9 +483,9 @@ tag:benchmarker type:score      success:210324  fail:0  score:155272
   
   <entry>
     <title type="html"><![CDATA[サバフェス！2013に参加してきた]]></title>
-    <link href="http://ijin.github.com/blog/2013/12/13/serverfesta-2013-autumn/"/>
+    <link href="http://ijin.github.io/blog/2013/12/13/serverfesta-2013-autumn/"/>
     <updated>2013-12-13T15:59:00+09:00</updated>
-    <id>http://ijin.github.com/blog/2013/12/13/serverfesta-2013-autumn</id>
+    <id>http://ijin.github.io/blog/2013/12/13/serverfesta-2013-autumn</id>
     <content type="html"><![CDATA[<p>少し前に<a href="http://connpass.com/event/3690/">サバフェス！2013 Autumn</a>に参加してきました。
 内容を忘れないうちにやった事を書いておきます。</p>
 

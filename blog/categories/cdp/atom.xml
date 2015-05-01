@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[Category: cdp | @ijin]]></title>
-  <link href="http://ijin.github.com/blog/categories/cdp/atom.xml" rel="self"/>
-  <link href="http://ijin.github.com/"/>
-  <updated>2015-04-17T14:26:19+09:00</updated>
-  <id>http://ijin.github.com/</id>
+  <link href="http://ijin.github.io/blog/categories/cdp/atom.xml" rel="self"/>
+  <link href="http://ijin.github.io/"/>
+  <updated>2015-05-01T12:50:54+09:00</updated>
+  <id>http://ijin.github.io/</id>
   <author>
     <name><![CDATA[Michael H. Oshita]]></name>
     
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[リージョン間高速データ転送]]></title>
-    <link href="http://ijin.github.com/blog/2013/04/03/accelerating-cross-region-data-transfer/"/>
+    <link href="http://ijin.github.io/blog/2013/04/03/accelerating-cross-region-data-transfer/"/>
     <updated>2013-04-03T09:05:00+09:00</updated>
-    <id>http://ijin.github.com/blog/2013/04/03/accelerating-cross-region-data-transfer</id>
+    <id>http://ijin.github.io/blog/2013/04/03/accelerating-cross-region-data-transfer</id>
     <content type="html"><![CDATA[<p>先日の<a href="http://jaws-ug.jp/jawsdays2013/">JAWS DAYS</a>のセッション<a href="http://www.publickey1.jp/blog/13/obama_for_america.html">「Behind the scenes of Presidential Campaign」</a>でリージョン間のデータ転送を高速化するツールとして<a href="http://tsunami-udp.sourceforge.net">tsunami udp</a>と<a href="http://www.cloudopt.com">cloudopt</a>を使った話が出てたので試してみました。</p>
 
 <p>通常、遠距離のサーバはRTTが大きくなるのでスループットが下がり、巨大なデータ転送には苦労しますが、なんと27TBを9時間で転送したとのこと！実際はマシンを並列にして同時転送したらしいので1台での実験です。</p>
@@ -175,9 +175,9 @@ server2$ sudo cloudconfig peer_add server1 server1_local_ip(10.x.x.x)
   
   <entry>
     <title type="html"><![CDATA[Auto Scalingの設定とデプロイ方法]]></title>
-    <link href="http://ijin.github.com/blog/2012/12/03/cdp/"/>
+    <link href="http://ijin.github.io/blog/2012/12/03/cdp/"/>
     <updated>2012-12-03T01:34:00+09:00</updated>
-    <id>http://ijin.github.com/blog/2012/12/03/cdp</id>
+    <id>http://ijin.github.io/blog/2012/12/03/cdp</id>
     <content type="html"><![CDATA[<p><a href="http://www.zusaar.com/event/451061">CDP Advent Calendar 2012</a>に登録しました。ここ1年ちょいで使い慣れてきたパターンがあり、作った当時はクラウドデザインパターンはなかったのですが、<a href="http://aws.clouddesignpattern.org/index.php/CDP:Clone_Server%E3%83%91%E3%82%BF%E3%83%BC%E3%83%B3">Clone Server</a>と<a href="http://aws.clouddesignpattern.org/index.php/CDP:Scale_Out%E3%83%91%E3%82%BF%E3%83%BC%E3%83%B3">Scale Out</a>パターンの組合せに当てはまると思うので紹介します。ちなみにアプリはRails。</p>
 
 <p>常にデプロイして更新し続けるシステムを手動、あるいは自動スケールアウトする時に便利な手法だったりします。</p>

@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[Category: chef | @ijin]]></title>
-  <link href="http://ijin.github.com/blog/categories/chef/atom.xml" rel="self"/>
-  <link href="http://ijin.github.com/"/>
-  <updated>2015-04-17T14:26:19+09:00</updated>
-  <id>http://ijin.github.com/</id>
+  <link href="http://ijin.github.io/blog/categories/chef/atom.xml" rel="self"/>
+  <link href="http://ijin.github.io/"/>
+  <updated>2015-05-01T12:50:54+09:00</updated>
+  <id>http://ijin.github.io/</id>
   <author>
     <name><![CDATA[Michael H. Oshita]]></name>
     
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[#ChefConf 2014に参加してきた]]></title>
-    <link href="http://ijin.github.com/blog/2014/04/21/chefconf-2014/"/>
+    <link href="http://ijin.github.io/blog/2014/04/21/chefconf-2014/"/>
     <updated>2014-04-21T12:10:00+09:00</updated>
-    <id>http://ijin.github.com/blog/2014/04/21/chefconf-2014</id>
+    <id>http://ijin.github.io/blog/2014/04/21/chefconf-2014</id>
     <content type="html"><![CDATA[<p>San Franciscoで行われた<a href="http://chefconf.opscode.com/chefconf/">#ChefConf</a>に参加してきました。
 忘れないうちに忘備録的に少しメモっておく。</p>
 

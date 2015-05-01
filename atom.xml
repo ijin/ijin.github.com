@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[@ijin]]></title>
-  <link href="http://ijin.github.com/atom.xml" rel="self"/>
-  <link href="http://ijin.github.com/"/>
-  <updated>2015-04-17T14:26:19+09:00</updated>
-  <id>http://ijin.github.com/</id>
+  <link href="http://ijin.github.io/atom.xml" rel="self"/>
+  <link href="http://ijin.github.io/"/>
+  <updated>2015-05-01T12:50:54+09:00</updated>
+  <id>http://ijin.github.io/</id>
   <author>
     <name><![CDATA[Michael H. Oshita]]></name>
     
@@ -14,16 +14,72 @@
 
   
   <entry>
+    <title type="html"><![CDATA[EC2 Auto Recoveryの注意点]]></title>
+    <link href="http://ijin.github.io/blog/2015/05/01/notes-on-ec2-auto-recovery/"/>
+    <updated>2015-05-01T11:45:00+09:00</updated>
+    <id>http://ijin.github.io/blog/2015/05/01/notes-on-ec2-auto-recovery</id>
+    <content type="html"><![CDATA[<p>先日、EC2のAuto Recoveryでちょっとハマったのでメモ。</p>
+
+<p>Cloudwatchの<code>StatusCheckFailed_System</code>アラームを設定すると、インスタンスを自動的に復旧してくれるEC2 Auto Recoveryという機能があり、使うためには条件がいくつかあります。</p>
+
+<ul>
+<li>特定のリージョン</li>
+<li>C3, C4, M3, R3, T2 instances</li>
+<li>VPC</li>
+<li>共有tenancy</li>
+<li>EBSストレージのみのサーバ</li>
+</ul>
+
+
+<p><a href="http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-instance-recover.html">Recover Your Instance</a></p>
+
+<p>しかし、上記を満たしているのに、特定のAMIをCLI経由で起動するとEC2 Auto Recoveryを設定できなくなります。</p>
+
+<p>（AWSコンソールでラジオボタンが押せなくなる。CLIで設定しても効かない）
+<img src="https://lh5.googleusercontent.com/-dwWUcfCssA4/VULwrOsgxNI/AAAAAAAABFo/VQy-GnIYQXg/w448-h186-no/Screenshot%2B2015-05-01%2B12.18.16.png"></p>
+
+<p>原因はAMIにephemeral disk等のblock device mappingが設定されていて、T2やC4等のEBS onlyなinstance typeで起動しているにも関わらず、AWS側がephemeral diskが付与されていると認識してしまう所にあります。なお、AWSコンソールからだとこの現象は発生しません。</p>
+
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+
+
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/gist-embed/2.1/gist-embed.min.js"></script>
+
+
+<p>AMIでblock device mappingが埋め込まれている</p>
+
+<pre><code>aws ec2 describe-images --image-ids ami-e74b60e6 --region ap-northeast-1
+</code></pre>
+
+<p><code data-gist-id="55659515d54593c29618" data-gist-highlight-line="21-28"></code></p>
+
+<p>本来はEBS onlyなinstance typeだとblock device mappingの設定如何に関わらず、付与自体が不可能なので、全く関係ないはずです。</p>
+
+<p>解決方法は現時点（2015/5/1）では3通り</p>
+
+<ul>
+<li>extraなblock device mappingが設定されていないAMIを使う（Amazon Linux等）</li>
+<li>AWSコンソールから起動する</li>
+<li>明示的に<code>--block-device-mappings</code>パラメータで<code>NoDevice</code>と指定
+<code>aws ec2 run-instances --image-id ami-e74b60e6 --instance-type t2.small --subnet-id subnet-xxxxxxxx --block-device-mappings "[{\"DeviceName\": \"/dev/sdb\",  \"NoDevice\": \"\"}, {\"DeviceName\": \"/dev/sdc\",  \"NoDevice\": \"\"}]"</code></li>
+</ul>
+
+
+<p>これは明らかにAWS側のバグなので早く治って欲しいものですね。</p>
+]]></content>
+  </entry>
+  
+  <entry>
     <title type="html"><![CDATA[Auto Scalingによる自動復旧（AWS Lambda+SNS編）]]></title>
-    <link href="http://ijin.github.com/blog/2015/04/17/self-healing-with-non-elb-autoscaling4/"/>
+    <link href="http://ijin.github.io/blog/2015/04/17/self-healing-with-non-elb-autoscaling4/"/>
     <updated>2015-04-17T14:01:00+09:00</updated>
-    <id>http://ijin.github.com/blog/2015/04/17/self-healing-with-non-elb-autoscaling4</id>
+    <id>http://ijin.github.io/blog/2015/04/17/self-healing-with-non-elb-autoscaling4</id>
     <content type="html"><![CDATA[<p>先週の<a href="http://aws.amazon.com/summits/san-francisco/">AWS Summit San Fransisco</a>にて、ついにLambdaがSNSに<a href="http://docs.aws.amazon.com/sns/latest/dg/sns-lambda.html">対応</a>しました。
 様々なサービスが発表された中、個人的にはこれが一番のヒットです！というのも、この機能によってAWS間のサービスがより連携しやすくなり、新しいリアクティブなアーキテクチャをどんどん実現できそうだからです。</p>
 
 <p>というわけで、少し試してみました。</p>
 
-<p>お題は去年12月に試したAutoScaling + Lambda。（当時はLambdaはまだこの機能がなかったのでSNS→SQSにてイベントをプロセスする仕組みを<a href="http://ijin.github.com/blog/2014/12/05/self-healing-with-non-elb-autoscaling3/">作りました</a>。）</p>
+<p>お題は去年12月に試したAutoScaling + Lambda。（当時はLambdaはまだこの機能がなかったのでSNS→SQSにてイベントをプロセスする仕組みを<a href="http://ijin.github.io/blog/2014/12/05/self-healing-with-non-elb-autoscaling3/">作りました</a>。）</p>
 
 <p>SNS連携によって前回のこれが</p>
 
@@ -346,13 +402,13 @@
   
   <entry>
     <title type="html"><![CDATA[サバフェス！2015に参加してきた]]></title>
-    <link href="http://ijin.github.com/blog/2015/03/27/serverfesta-2015-spring/"/>
+    <link href="http://ijin.github.io/blog/2015/03/27/serverfesta-2015-spring/"/>
     <updated>2015-03-27T12:56:00+09:00</updated>
-    <id>http://ijin.github.com/blog/2015/03/27/serverfesta-2015-spring</id>
+    <id>http://ijin.github.io/blog/2015/03/27/serverfesta-2015-spring</id>
     <content type="html"><![CDATA[<p><a href="http://connpass.com/event/11571/">サバフェス！2015 Spring</a>に参加してきました。
 やった内容を少々。</p>
 
-<p><a href="http://ijin.github.com/blog/2013/12/13/serverfesta-2013-autumn">前回</a>と同じくチーム@ijinとして1人で参戦して、順位は「<strong>4位</strong>」。</p>
+<p><a href="http://ijin.github.io/blog/2013/12/13/serverfesta-2013-autumn">前回</a>と同じくチーム@ijinとして1人で参戦して、順位は「<strong>4位</strong>」。</p>
 
 <p>スコアは<strong>44988.867 TpmC</strong>でした。</p>
 
@@ -364,7 +420,7 @@
 
 <h2>はじめに</h2>
 
-<p>競技期間は5日間あったものの、第1陣で<a href="http://netmark.jp/2015/03/svfes-2.html">結構な地雷があった</a>のと、Fusion-IO（現SanDisk）のioDriveとtpcc-mysqlは2年前に<a href="http://ijin.github.com/blog/2013/02/22/mysql-benchmarks-on-aws-ssd-vs-fusion-io/">触った</a>ので最初はあんまりやる気が起きなくて困ってました。後は前回と違って施せる施策がかなり限定されるというので、正直5日間は長過ぎるのではないかという印象でした。（結果的に第1陣のトラブルとかを鑑みると長さ的には良かったのかも知れないけど）</p>
+<p>競技期間は5日間あったものの、第1陣で<a href="http://netmark.jp/2015/03/svfes-2.html">結構な地雷があった</a>のと、Fusion-IO（現SanDisk）のioDriveとtpcc-mysqlは2年前に<a href="http://ijin.github.io/blog/2013/02/22/mysql-benchmarks-on-aws-ssd-vs-fusion-io/">触った</a>ので最初はあんまりやる気が起きなくて困ってました。後は前回と違って施せる施策がかなり限定されるというので、正直5日間は長過ぎるのではないかという印象でした。（結果的に第1陣のトラブルとかを鑑みると長さ的には良かったのかも知れないけど）</p>
 
 <p>という事で初日はログインとベンチで基準値を取るだけして終了。</p>
 
@@ -493,7 +549,7 @@ renice -n19 -p `ps auxf | grep mackerel | grep -v grep | awk ‘{print $2}’`
 <p>賞品として3DマッサージピローとSSDを頂きました！</p>
 
 <div class='embed tweet'><blockquote class="twitter-tweet"><p>3DマッサージピローとSSDをもらった。 <a href="https://twitter.com/hashtag/%E3%82%B5%E3%83%90%E3%83%95%E3%82%A7%E3%82%B9?src=hash">#サバフェス</a> <a href="http://t.co/mKczn9mflZ">pic.twitter.com/mKczn9mflZ</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/581048257171820544">March 26, 2015</a></blockquote>
-<script async src="http://ijin.github.com//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
+<script async src="http://ijin.github.io//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
 
 
 <p>個人敵には飛び込みLTした人がもらったDroneの方が良さそうだったけど、ピローは家族に好評でした。</p>
@@ -502,9 +558,9 @@ renice -n19 -p `ps auxf | grep mackerel | grep -v grep | awk ‘{print $2}’`
   
   <entry>
     <title type="html"><![CDATA[ISUCON4の本戦の思い出]]></title>
-    <link href="http://ijin.github.com/blog/2014/12/31/isucon4-final/"/>
+    <link href="http://ijin.github.io/blog/2014/12/31/isucon4-final/"/>
     <updated>2014-12-31T20:52:00+09:00</updated>
-    <id>http://ijin.github.com/blog/2014/12/31/isucon4-final</id>
+    <id>http://ijin.github.io/blog/2014/12/31/isucon4-final</id>
     <content type="html"><![CDATA[<p>ISUCON4の本戦の直後にそのままAWS re:Inventへ行ったきりエントリを書いてなかったので思い出だけでも年内に書いておく。</p>
 
 <p>内容の<a href="http://isucon.net/archives/41252218.html">エントリ</a>はたくさんあるので、詳しい内容なそちらに任せます。</p>
@@ -528,16 +584,16 @@ renice -n19 -p `ps auxf | grep mackerel | grep -v grep | awk ‘{print $2}’`
   
   <entry>
     <title type="html"><![CDATA[Auto Scalingによる自動復旧（AWS Lambda編）]]></title>
-    <link href="http://ijin.github.com/blog/2014/12/05/self-healing-with-non-elb-autoscaling3/"/>
+    <link href="http://ijin.github.io/blog/2014/12/05/self-healing-with-non-elb-autoscaling3/"/>
     <updated>2014-12-05T23:14:00+09:00</updated>
-    <id>http://ijin.github.com/blog/2014/12/05/self-healing-with-non-elb-autoscaling3</id>
-    <content type="html"><![CDATA[<p>ちょうど1年程前に「<a href="http://ijin.github.com/blog/2013/02/08/self-healing-with-non-elb-autoscaling/">非ELBなAutoscalingによる自動復旧</a>」の<a href="http://ijin.github.com/blog/2013/12/14/self-healing-with-non-elb-autoscaling2/">再検証</a>をしました。前回も復旧までのタイムラグが20分だったので、この1年で変わったかまた検証してみました。</p>
+    <id>http://ijin.github.io/blog/2014/12/05/self-healing-with-non-elb-autoscaling3</id>
+    <content type="html"><![CDATA[<p>ちょうど1年程前に「<a href="http://ijin.github.io/blog/2013/02/08/self-healing-with-non-elb-autoscaling/">非ELBなAutoscalingによる自動復旧</a>」の<a href="http://ijin.github.io/blog/2013/12/14/self-healing-with-non-elb-autoscaling2/">再検証</a>をしました。前回も復旧までのタイムラグが20分だったので、この1年で変わったかまた検証してみました。</p>
 
 <p>(*) このエントリは<a href="http://qiita.com/advent-calendar/2014/aws">AWS Advent Calendar 2014</a>の5日目分です。</p>
 
 <h3>設定</h3>
 
-<p><a href="http://ijin.github.com/blog/2013/12/14/self-healing-with-non-elb-autoscaling2/">前回</a>とほぼ一種ですが、今回はついでにEC2 Status AlarmをCloudwatch経由でSNSでアラートを飛ばします。</p>
+<p><a href="http://ijin.github.io/blog/2013/12/14/self-healing-with-non-elb-autoscaling2/">前回</a>とほぼ一種ですが、今回はついでにEC2 Status AlarmをCloudwatch経由でSNSでアラートを飛ばします。</p>
 
 <p>SNS作成 &amp; Subscribe（送られてくる確認メールは手動で承認）</p>
 
@@ -924,9 +980,9 @@ exports.handler = function(event, context) {
   
   <entry>
     <title type="html"><![CDATA[ISUCON4の予選を通過したんだった]]></title>
-    <link href="http://ijin.github.com/blog/2014/10/20/isucon4-qualifier/"/>
+    <link href="http://ijin.github.io/blog/2014/10/20/isucon4-qualifier/"/>
     <updated>2014-10-20T15:38:00+09:00</updated>
-    <id>http://ijin.github.com/blog/2014/10/20/isucon4-qualifier</id>
+    <id>http://ijin.github.io/blog/2014/10/20/isucon4-qualifier</id>
     <content type="html"><![CDATA[<p>そういえば、3回目の参加となる<a href="http://isucon.net/">ISUCON</a>の第4回目の予選を通過してました。</p>
 
 <p><a href="http://isucon.net/archives/40576269.html">結果</a>は185チーム中、<strong>19位</strong>というなんと微妙な結果で本戦にいける事に。</p>
@@ -1129,16 +1185,16 @@ tag:benchmarker type:score      success:210324  fail:0  score:155272
   
   <entry>
     <title type="html"><![CDATA[ConsulによるMySQLフェールオーバー]]></title>
-    <link href="http://ijin.github.com/blog/2014/07/11/mysql-failover-with-consul/"/>
+    <link href="http://ijin.github.io/blog/2014/07/11/mysql-failover-with-consul/"/>
     <updated>2014-07-11T10:12:00+09:00</updated>
-    <id>http://ijin.github.com/blog/2014/07/11/mysql-failover-with-consul</id>
+    <id>http://ijin.github.io/blog/2014/07/11/mysql-failover-with-consul</id>
     <content type="html"><![CDATA[<p>先日(6/22/14)、6月なのにどういう分けか早めに開催された<a href="http://2014.techfesta.jp/">July Tech Festa 2014</a>でConsulについて<a href="http://2014.techfesta.jp/p/program.html?m=1#c43">発表</a>してきた。そのユースケースの一つとしてMySQL failoverをちょっとだけ紹介したので、ここに詳しく書いておく。</p>
 
 <h2>MHA</h2>
 
 <p>MySQLレプリケーションの障害時にフェールオーバーしたい場合、MHAを使うの結構ポピュラー（日本では）だと思います。MHAは最新binlogの適用、Slaveの昇格とレプリケーションの張替えまではやってくれますが、実際のフェールオーバーの部分はユーザに委ねられていて、master_ip_failover_scriptのテンプレートをカスタマイズするか独自実装する必要があり、一般的な実現方法としてはカタログデータベースの更新かVirtual IPの切替等があります。</p>
 
-<p>Virtual IPだと居残りセッションの問題や切替の保証難しかったり、そもそも環境によっては使えなかったりするので、私はあんまり好きじゃありません。また以前、後者的アプローチとしてAWSのVPC内であればrouting tableを変更する事によってこの挙動に似た実現方法を<a href="http://ijin.github.com/blog/2013/05/21/custom-non-rds-multi-az-mysql-replication/">紹介</a>した事がありますが、一番の問題点はAPI backplaneがSPoFになってて、ここが落ちたらそもそも動かない；また、APIのrate limitに達して呼び出しさえ出来ないという結構痛い目に会ったりします。</p>
+<p>Virtual IPだと居残りセッションの問題や切替の保証難しかったり、そもそも環境によっては使えなかったりするので、私はあんまり好きじゃありません。また以前、後者的アプローチとしてAWSのVPC内であればrouting tableを変更する事によってこの挙動に似た実現方法を<a href="http://ijin.github.io/blog/2013/05/21/custom-non-rds-multi-az-mysql-replication/">紹介</a>した事がありますが、一番の問題点はAPI backplaneがSPoFになってて、ここが落ちたらそもそも動かない；また、APIのrate limitに達して呼び出しさえ出来ないという結構痛い目に会ったりします。</p>
 
 <p>そこで前者的なアプローチとしてmasterの情報を管理するカタログデータベースの更新部分にConsulを使ってみました。</p>
 
@@ -1188,16 +1244,16 @@ tag:benchmarker type:score      success:210324  fail:0  score:155272
 
 <p>以下、July Tech Festa 2014で発表した時のスライドです。</p>
 
-<script async="true" class="speakerdeck-embed" data-id="e07317d0dc040131a0982229a5c1e016" src="http://ijin.github.com//speakerdeck.com/assets/embed.js"> </script>
+<script async="true" class="speakerdeck-embed" data-id="e07317d0dc040131a0982229a5c1e016" src="http://ijin.github.io//speakerdeck.com/assets/embed.js"> </script>
 
 ]]></content>
   </entry>
   
   <entry>
     <title type="html"><![CDATA[#ChefConf 2014に参加してきた]]></title>
-    <link href="http://ijin.github.com/blog/2014/04/21/chefconf-2014/"/>
+    <link href="http://ijin.github.io/blog/2014/04/21/chefconf-2014/"/>
     <updated>2014-04-21T12:10:00+09:00</updated>
-    <id>http://ijin.github.com/blog/2014/04/21/chefconf-2014</id>
+    <id>http://ijin.github.io/blog/2014/04/21/chefconf-2014</id>
     <content type="html"><![CDATA[<p>San Franciscoで行われた<a href="http://chefconf.opscode.com/chefconf/">#ChefConf</a>に参加してきました。
 忘れないうちに忘備録的に少しメモっておく。</p>
 
@@ -1362,10 +1418,10 @@ tag:benchmarker type:score      success:210324  fail:0  score:155272
   
   <entry>
     <title type="html"><![CDATA[AWS Game Day Japan 2014春を開催してきた]]></title>
-    <link href="http://ijin.github.com/blog/2014/03/14/aws-game-day-japan-2014-spring/"/>
+    <link href="http://ijin.github.io/blog/2014/03/14/aws-game-day-japan-2014-spring/"/>
     <updated>2014-03-14T23:11:00+09:00</updated>
-    <id>http://ijin.github.com/blog/2014/03/14/aws-game-day-japan-2014-spring</id>
-    <content type="html"><![CDATA[<p>過去に2度参加した事（東京・ラスベガス）がある<a href="http://ijin.github.com/blog/2013/06/10/aws-game-day-tokyo-2013/">Game Day</a>に今回は運営側に周りました。3/15に行われる<a href="http://jawsdays2014.jaws-ug.jp/">JAWS Days 2014</a>の前夜祭という位置づけです。</p>
+    <id>http://ijin.github.io/blog/2014/03/14/aws-game-day-japan-2014-spring</id>
+    <content type="html"><![CDATA[<p>過去に2度参加した事（東京・ラスベガス）がある<a href="http://ijin.github.io/blog/2013/06/10/aws-game-day-tokyo-2013/">Game Day</a>に今回は運営側に周りました。3/15に行われる<a href="http://jawsdays2014.jaws-ug.jp/">JAWS Days 2014</a>の前夜祭という位置づけです。</p>
 
 <p>日本では前回、東京のみだったけど<a href="http://jaws-days.doorkeeper.jp/events/8945">今回</a>は東京・大阪・名古屋・仙台と4都市同時開催。</p>
 
@@ -1420,7 +1476,7 @@ tag:benchmarker type:score      success:210324  fail:0  score:155272
 <p>当日の迫力ある詳しい内容は参加者の方がきっとブログに書いてくれるはず！その代わり、運営側で評価用に使っていた攻撃・修復内容のまとめを公開して欲しいというツィートを頂いたので下記に表示しておきます。</p>
 
 <div class='embed tweet'><blockquote class="twitter-tweet"><p>Gameday楽しめました。運営ありがとうございました。攻撃のサマリシート翻訳は誰?と思ってましたが恐縮です。あのシート何らかの形で公開頂けるとありがたいです。 QT <a href="https://twitter.com/ijin">@ijin</a>: 14チームのGoogleスプレッドシートのリアルタイム翻訳は結構ギリギリだった。</p>&mdash; Ryo Suzuki (@suzryo) <a href="https://twitter.com/suzryo/statuses/444450014627000320">March 14, 2014</a></blockquote>
-<script async src="http://ijin.github.com//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
+<script async src="http://ijin.github.io//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
 
 
 <p></p>
@@ -1447,9 +1503,9 @@ tag:benchmarker type:score      success:210324  fail:0  score:155272
   
   <entry>
     <title type="html"><![CDATA[i2 instanceでMySQLベンチマーク]]></title>
-    <link href="http://ijin.github.com/blog/2014/01/01/mysql-benchmarks-on-aws-i2-instance-ssds/"/>
+    <link href="http://ijin.github.io/blog/2014/01/01/mysql-benchmarks-on-aws-i2-instance-ssds/"/>
     <updated>2014-01-01T00:00:00+09:00</updated>
-    <id>http://ijin.github.com/blog/2014/01/01/mysql-benchmarks-on-aws-i2-instance-ssds</id>
+    <id>http://ijin.github.io/blog/2014/01/01/mysql-benchmarks-on-aws-i2-instance-ssds</id>
     <content type="html"><![CDATA[<p>新年明けました。おめでとうございます。</p>
 
 <p>すっかり12月の<a href="http://www.zusaar.com/event/1117005">aws</a>/<a href="http://www.zusaar.com/event/1847003">mysql</a> advent calendarに乗り遅れたので、AWSのi2 instanceでのMySQLのベンチマークを勝手におまけとして公表します。
@@ -1468,7 +1524,7 @@ sudo mount -t xfs -o noatime,logbufs=8 /dev/md0 /data
 
 <h2>sysbench</h2>
 
-<p>やり方やパラメータは<a href="http://ijin.github.com/blog/2013/02/22/mysql-benchmarks-on-aws-ssd-vs-fusion-io/">前回</a>の計測方法と同じ。i2.8xlaregは32coreですが、今回はhi1.4xlargeの時と比較する為に敢えて16スレッドで計測しました。</p>
+<p>やり方やパラメータは<a href="http://ijin.github.io/blog/2013/02/22/mysql-benchmarks-on-aws-ssd-vs-fusion-io/">前回</a>の計測方法と同じ。i2.8xlaregは32coreですが、今回はhi1.4xlargeの時と比較する為に敢えて16スレッドで計測しました。</p>
 
 <ul>
 <li>sysbenchのoltpモード</li>
@@ -1495,7 +1551,7 @@ sudo mount -t xfs -o noatime,logbufs=8 /dev/md0 /data
 
 <h2>tpcc-mysql</h2>
 
-<p>こちらも<a href="http://ijin.github.com/blog/2013/02/22/mysql-benchmarks-on-aws-ssd-vs-fusion-io/">前回</a>)の計測方法と同じ。</p>
+<p>こちらも<a href="http://ijin.github.io/blog/2013/02/22/mysql-benchmarks-on-aws-ssd-vs-fusion-io/">前回</a>)の計測方法と同じ。</p>
 
 <ul>
 <li>500 warehouses (50GBぐらい)</li>
@@ -1531,10 +1587,10 @@ sudo mount -t xfs -o noatime,logbufs=8 /dev/md0 /data
   
   <entry>
     <title type="html"><![CDATA[Autoscalingによる自動復旧(Immutable Infrastucture)]]></title>
-    <link href="http://ijin.github.com/blog/2013/12/14/self-healing-with-non-elb-autoscaling2/"/>
+    <link href="http://ijin.github.io/blog/2013/12/14/self-healing-with-non-elb-autoscaling2/"/>
     <updated>2013-12-14T23:40:00+09:00</updated>
-    <id>http://ijin.github.com/blog/2013/12/14/self-healing-with-non-elb-autoscaling2</id>
-    <content type="html"><![CDATA[<p>以前、「<a href="http://ijin.github.com/blog/2013/02/08/self-healing-with-non-elb-autoscaling/">非ELBなAutoscalingによる自動復旧</a>」でインスタンスの自動復旧の挙動をテストしました。
+    <id>http://ijin.github.io/blog/2013/12/14/self-healing-with-non-elb-autoscaling2</id>
+    <content type="html"><![CDATA[<p>以前、「<a href="http://ijin.github.io/blog/2013/02/08/self-healing-with-non-elb-autoscaling/">非ELBなAutoscalingによる自動復旧</a>」でインスタンスの自動復旧の挙動をテストしました。
 障害が発生したサーバをterminateし、新サーバをstartしてリプレースする仕組みはまさに最近話題のImmutable Infrastructureですね。
 CDP的には「<a href="http://aws.clouddesignpattern.org/index.php/CDP:Server_Swapping%E3%83%91%E3%82%BF%E3%83%BC%E3%83%B3">Server Swappingパターン</a>」が一番近いですが、今後はImmutable分類もあっても良いような気がします。</p>
 
@@ -1795,9 +1851,9 @@ CDP的には「<a href="http://aws.clouddesignpattern.org/index.php/CDP:Server_S
   
   <entry>
     <title type="html"><![CDATA[サバフェス！2013に参加してきた]]></title>
-    <link href="http://ijin.github.com/blog/2013/12/13/serverfesta-2013-autumn/"/>
+    <link href="http://ijin.github.io/blog/2013/12/13/serverfesta-2013-autumn/"/>
     <updated>2013-12-13T15:59:00+09:00</updated>
-    <id>http://ijin.github.com/blog/2013/12/13/serverfesta-2013-autumn</id>
+    <id>http://ijin.github.io/blog/2013/12/13/serverfesta-2013-autumn</id>
     <content type="html"><![CDATA[<p>少し前に<a href="http://connpass.com/event/3690/">サバフェス！2013 Autumn</a>に参加してきました。
 内容を忘れないうちにやった事を書いておきます。</p>
 
@@ -2006,9 +2062,9 @@ CDP的には「<a href="http://aws.clouddesignpattern.org/index.php/CDP:Server_S
   
   <entry>
     <title type="html"><![CDATA[ISUCON3の本戦に参加してきた]]></title>
-    <link href="http://ijin.github.com/blog/2013/11/11/isucon3-final/"/>
+    <link href="http://ijin.github.io/blog/2013/11/11/isucon3-final/"/>
     <updated>2013-11-11T11:27:00+09:00</updated>
-    <id>http://ijin.github.com/blog/2013/11/11/isucon3-final</id>
+    <id>http://ijin.github.io/blog/2013/11/11/isucon3-final</id>
     <content type="html"><![CDATA[<p>先月の<a href="http://ijin.github.io/blog/2013/10/07/isucon3-preliminary/">予選に通過したの</a>で、<a href="http://isucon.net/">ISUCON3</a>の本戦に参加してきました。</p>
 
 <p>完敗。</p>
@@ -2084,9 +2140,9 @@ CDP的には「<a href="http://aws.clouddesignpattern.org/index.php/CDP:Server_S
   
   <entry>
     <title type="html"><![CDATA[ISUCON3の予選を通過した（はず）]]></title>
-    <link href="http://ijin.github.com/blog/2013/10/07/isucon3-preliminary/"/>
+    <link href="http://ijin.github.io/blog/2013/10/07/isucon3-preliminary/"/>
     <updated>2013-10-07T12:12:00+09:00</updated>
-    <id>http://ijin.github.com/blog/2013/10/07/isucon3-preliminary</id>
+    <id>http://ijin.github.io/blog/2013/10/07/isucon3-preliminary</id>
     <content type="html"><![CDATA[<p><a href="http://ijin.github.io/blog/2012/11/05/isucon2/">去年</a>に引き続き参加した<a href="http://isucon.net/">ISUCON</a>第3回目の予選を通過しました。</p>
 
 <p><a href="http://isucon.net/archives/32848462.html">結果</a>は参戦1日目の方で<strong>4位</strong>。
@@ -2204,11 +2260,11 @@ Score:    14694.2
 <p>この辺で暫定一位。</p>
 
 <div class='embed tweet'><blockquote class="twitter-tweet"><p><a href="https://twitter.com/search?q=%23isucon&amp;src=hash">#isucon</a> オンライン予選一日目 中間発表二回目です。残り2時間となった16時時点での順位は以下の通り&#10;1. The Revenge of Mr. Frank &amp; Co.&#10;2. hidekiy&#10;3. ( (0) / (0)) ☆祝☆&#10;4. パイの実g&#10;5. 白金動物園&#10;続く</p>&mdash; 941 (@941) <a href="https://twitter.com/941/statuses/386386593696604161">October 5, 2013</a></blockquote>
-<script async src="http://ijin.github.com//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
+<script async src="http://ijin.github.io//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
 
 
 <div class='embed tweet'><blockquote class="twitter-tweet"><p>isuconは外国県人会が暴れてるのかな？</p>&mdash; ばば としあき (@netmarkjp) <a href="https://twitter.com/netmarkjp/statuses/386393051230261248">October 5, 2013</a></blockquote>
-<script async src="http://ijin.github.com//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
+<script async src="http://ijin.github.io//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
 
 
 
@@ -2261,9 +2317,9 @@ Score:    14694.2
   
   <entry>
     <title type="html"><![CDATA[AWS Game Day Tokyo 2013で受賞してきた]]></title>
-    <link href="http://ijin.github.com/blog/2013/06/10/aws-game-day-tokyo-2013/"/>
+    <link href="http://ijin.github.io/blog/2013/06/10/aws-game-day-tokyo-2013/"/>
     <updated>2013-06-10T23:33:00+09:00</updated>
-    <id>http://ijin.github.com/blog/2013/06/10/aws-game-day-tokyo-2013</id>
+    <id>http://ijin.github.io/blog/2013/06/10/aws-game-day-tokyo-2013</id>
     <content type="html"><![CDATA[<p>大統領選挙でオバマ陣営のシステムを堅牢化する為に用いた手法である仮想対戦シミュレーション「<a href="http://gameday2013.doorkeeper.jp/events/3960">AWS Game Day Tokyo</a>」が日本で初めて（世界2番目に）開催されたので参加してきました。</p>
 
 <p>結果、ベスト・ディフェンス賞こと「<strong>Most Awesome Fix!</strong>」賞を受賞しました。</p>
@@ -2358,9 +2414,9 @@ Score:    14694.2
   
   <entry>
     <title type="html"><![CDATA[Non-RDSなオレオレMulti-AZ MySQL Replication]]></title>
-    <link href="http://ijin.github.com/blog/2013/05/21/custom-non-rds-multi-az-mysql-replication/"/>
+    <link href="http://ijin.github.io/blog/2013/05/21/custom-non-rds-multi-az-mysql-replication/"/>
     <updated>2013-05-21T18:03:00+09:00</updated>
-    <id>http://ijin.github.com/blog/2013/05/21/custom-non-rds-multi-az-mysql-replication</id>
+    <id>http://ijin.github.io/blog/2013/05/21/custom-non-rds-multi-az-mysql-replication</id>
     <content type="html"><![CDATA[<p>先日（5/17/13）<a href="http://www.zusaar.com/event/668006">cloudpack night #6 - Re:Generate -</a>に参加してきました。</p>
 
 <p>当日の様子はcloudpack<a href="https://twitter.com/yoshidashingo">吉田</a>さんの以下のレポートで。<br />
@@ -2455,9 +2511,9 @@ Score:    14694.2
   
   <entry>
     <title type="html"><![CDATA[リージョン間高速データ転送]]></title>
-    <link href="http://ijin.github.com/blog/2013/04/03/accelerating-cross-region-data-transfer/"/>
+    <link href="http://ijin.github.io/blog/2013/04/03/accelerating-cross-region-data-transfer/"/>
     <updated>2013-04-03T09:05:00+09:00</updated>
-    <id>http://ijin.github.com/blog/2013/04/03/accelerating-cross-region-data-transfer</id>
+    <id>http://ijin.github.io/blog/2013/04/03/accelerating-cross-region-data-transfer</id>
     <content type="html"><![CDATA[<p>先日の<a href="http://jaws-ug.jp/jawsdays2013/">JAWS DAYS</a>のセッション<a href="http://www.publickey1.jp/blog/13/obama_for_america.html">「Behind the scenes of Presidential Campaign」</a>でリージョン間のデータ転送を高速化するツールとして<a href="http://tsunami-udp.sourceforge.net">tsunami udp</a>と<a href="http://www.cloudopt.com">cloudopt</a>を使った話が出てたので試してみました。</p>
 
 <p>通常、遠距離のサーバはRTTが大きくなるのでスループットが下がり、巨大なデータ転送には苦労しますが、なんと27TBを9時間で転送したとのこと！実際はマシンを並列にして同時転送したらしいので1台での実験です。</p>
@@ -2615,9 +2671,9 @@ server2$ sudo cloudconfig peer_add server1 server1_local_ip(10.x.x.x)
   
   <entry>
     <title type="html"><![CDATA[AWS SSD (hi1.4xlarge) vs Fusion-IOでのMySQLベンチマーク]]></title>
-    <link href="http://ijin.github.com/blog/2013/02/22/mysql-benchmarks-on-aws-ssd-vs-fusion-io/"/>
+    <link href="http://ijin.github.io/blog/2013/02/22/mysql-benchmarks-on-aws-ssd-vs-fusion-io/"/>
     <updated>2013-02-22T17:32:00+09:00</updated>
-    <id>http://ijin.github.com/blog/2013/02/22/mysql-benchmarks-on-aws-ssd-vs-fusion-io</id>
+    <id>http://ijin.github.io/blog/2013/02/22/mysql-benchmarks-on-aws-ssd-vs-fusion-io</id>
     <content type="html"><![CDATA[<p>（※ <a href="#add">追記</a>しました - 5/19/13）</p>
 
 <p>巷ではMySQL 5.6 GAが出て騒がしいですが、ちょっと前に5.5系でAWSのSSDインスタンス（hi1.4xlarge）に載せ替える案件があったので、その時に取ったベンチマークを公表します。以前Fusion-IO (ioDrive Duo)でも同じようにやったので、比較になれば。</p>
@@ -2735,9 +2791,9 @@ server2$ sudo cloudconfig peer_add server1 server1_local_ip(10.x.x.x)
   
   <entry>
     <title type="html"><![CDATA[非ELBなAutoscalingによる自動復旧]]></title>
-    <link href="http://ijin.github.com/blog/2013/02/08/self-healing-with-non-elb-autoscaling/"/>
+    <link href="http://ijin.github.io/blog/2013/02/08/self-healing-with-non-elb-autoscaling/"/>
     <updated>2013-02-08T09:29:00+09:00</updated>
-    <id>http://ijin.github.com/blog/2013/02/08/self-healing-with-non-elb-autoscaling</id>
+    <id>http://ijin.github.io/blog/2013/02/08/self-healing-with-non-elb-autoscaling</id>
     <content type="html"><![CDATA[<p>バッチ処理等、サーバの冗長化が難しく仕方なく1台で動かさざるを得ない場合があります。でも可用性は確保したい。また、Pacemakerやkeepalived等できなくはないが、お金もあんまりかけられない場合もあります。
 そんな時にAWS上でよく使うのがAutoscalingによる1台構成です。最低台数・最大台数共に「1」に設定しておけばEC2インスタンスが壊れても自動的に新しいのにリプレースされて復旧されます。</p>
 
@@ -2869,9 +2925,9 @@ autoscaling:EC2_INSTANCE_LAUNCH_ERROR autoscaling:EC2_INSTANCE_TERMINATE_ERROR
   
   <entry>
     <title type="html"><![CDATA[Auto Scalingの設定とデプロイ方法]]></title>
-    <link href="http://ijin.github.com/blog/2012/12/03/cdp/"/>
+    <link href="http://ijin.github.io/blog/2012/12/03/cdp/"/>
     <updated>2012-12-03T01:34:00+09:00</updated>
-    <id>http://ijin.github.com/blog/2012/12/03/cdp</id>
+    <id>http://ijin.github.io/blog/2012/12/03/cdp</id>
     <content type="html"><![CDATA[<p><a href="http://www.zusaar.com/event/451061">CDP Advent Calendar 2012</a>に登録しました。ここ1年ちょいで使い慣れてきたパターンがあり、作った当時はクラウドデザインパターンはなかったのですが、<a href="http://aws.clouddesignpattern.org/index.php/CDP:Clone_Server%E3%83%91%E3%82%BF%E3%83%BC%E3%83%B3">Clone Server</a>と<a href="http://aws.clouddesignpattern.org/index.php/CDP:Scale_Out%E3%83%91%E3%82%BF%E3%83%BC%E3%83%B3">Scale Out</a>パターンの組合せに当てはまると思うので紹介します。ちなみにアプリはRails。</p>
 
 <p>常にデプロイして更新し続けるシステムを手動、あるいは自動スケールアウトする時に便利な手法だったりします。</p>
@@ -2999,143 +3055,6 @@ end script
 <li>急激なトラフィック増ではELB自体のスケールが追いつかない場合も。</li>
 </ul>
 
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[ISUCON2に参加してきた]]></title>
-    <link href="http://ijin.github.com/blog/2012/11/05/isucon2/"/>
-    <updated>2012-11-05T21:58:00+09:00</updated>
-    <id>http://ijin.github.com/blog/2012/11/05/isucon2</id>
-    <content type="html"><![CDATA[<p>開催2年目となる<a href="http://blog.livedoor.jp/techblog/archives/67700199.html">ISUCON (Iikanjini Speed Up CONTEST)</a>に参加してきました。</p>
-
-<p>結果は3位。</p>
-
-<h3>事前準備</h3>
-
-<p><a href="https://twitter.com/cads">@cads</a>と<a href="https://twitter.com/fruwe">@fruwe</a>に声をかけ、「Mr. Frank &amp; Co.」という米西独チームを編成。
-去年のお題を見ると、簡単なブログサイト。実装はphp, python, perl, ruby, node.jsのいずれか。</p>
-
-<ul>
-<li>キャッシュ機構入れるんだったら、慣れてるrubyで実装できるようにrailsでスケルトンプロジェクトをgithubに作っておいてみんなで共有。</li>
-<li>VarnishやResque/Sidekiq, Redisの復習をしてコード追加</li>
-<li>試しに他のrubyバージョンのインストール</li>
-<li>後はテスト用のec2インスタンスの用意。</li>
-</ul>
-
-
-<h3>お題発表</h3>
-
-<p>「NHN48」と「はだいろクローバーZ」のチケット販売システムw。
-お、似たようなシステム前作った事あるからいけるかな？セッション対応でもESI使えるからアドバンテージがあるかもと思ってみる。</p>
-
-<h3>前半戦</h3>
-
-<p>まずは、いつものようにバックアップして戻れるように、gitプロジェクトにも追加。</p>
-
-<p>チームメイト2人にはソースコードを解析をしてもらいつつ、自分は現在の環境の把握とベンチマークを動かすところに集中。どうやら公開されている去年の構成と似た感じでsupervisorによって指定言語のwebアプリが動いている模様。</p>
-
-<p>ひとまず指標となるベースが必要なので、デフォルトで動いているperl版で計ったら大体こんな感じでした。（Scoreが低い方が良い）</p>
-
-<pre><code>Score:533093
-Tickets:922
-</code></pre>
-
-<p>webとdbの負荷が両方高い事を確認。</p>
-
-<p>SQLを見たらCOUNTしてるので、slot分割したcounterテーブルかredisを使えば速くなるよね、と指摘。フロントにキャッシュ入れたいので普段使っているVarnishサポートのlacquer gemがあるので、二人はRailsでの再実装を開始。</p>
-
-<p>ちなみにアクセス分布はこんな感じでした。</p>
-
-<div><script src='https://gist.github.com/4017160.js?file='></script>
-<noscript><pre><code>$grep &quot;POST&quot; access_log  | wc -l
-960
-$ grep &quot;GET /js/&quot; access_log  | wc -l
-1663
-$ grep &quot;GET /css/&quot; access_log  | wc -l
-1113
-$ grep &quot;GET /images/&quot; access_log  | wc -l
-539
-$ grep &quot;GET /ticket/&quot; access_log  | wc -l
-1561
-$ grep &quot;GET /artist/&quot; access_log  | wc -l
-1534
-$ grep &quot;GET / &quot; access_log  | wc -l
-1624</code></pre></noscript></div>
-
-
-<p>perl版のスコアは分かったので、sinatraフレームワークを使ったruby版に変えてベンチマークを取ってみると、</p>
-
-<pre><code>Score:10755528
-Tickets:457
-</code></pre>
-
-<p>性能は約半分。遅いのは分かっていたけど、ジョブワーカーとキャッシュを使えば、対応コードの入ったRailsでもなんとかなるという思いで特に意に介さず。</p>
-
-<p>ただ、unicornが50プロセスもあったので、さすがにこれは多いのでベンチをしつつ、いろいろ調整。
-結局スコアが一番高かった10プロセスに落ち着く。ついでにrubyのGCを切ったりしたけど、目立った効果はなし。
-まだ再実装中で時間もあり、そういえば速いという<a href="http://rubini.us/">rubinius</a>にしたらどうなんだろうと思い、<a href="http://puma.io/">puma</a>も入れてみたけどmysql2 gemが動かず断念。</p>
-
-<p>DBのmy.cnfも見たけど、データ量の割には十分なパラメータだったので、commit毎のflushを変えたぐらい。</p>
-
-<pre><code>innodb_flush_log_at_trx_commit = 0
-</code></pre>
-
-<p>また、いつでも使えるようにと、VarnishとRedisもインストールしておく。</p>
-
-<p>次にデプロイ用のテストができるようにテスト用サーバに環境を用意しつつ、capistrano対応。</p>
-
-<h3>後半戦</h3>
-
-<p>再実装はブラウザからの見た目上は前半でほぼ出来上がっていて、後はベンチを通るかを確認して最適化を始めるというシナリオでした。
-ところが、全然通らずここからハマることに。。</p>
-
-<div><script src='https://gist.github.com/4017170.js?file='></script>
-<noscript><pre><code>{&quot;No one tickets are rendered in /ticket/x&quot;:25}
-{&quot;No one tickets are rendered in /ticket/x&quot;:20}
-{&quot;No one tickets are rendered in /ticket/x&quot;:24}
-{&quot;No one tickets are rendered in /ticket/x&quot;:21}
-Main Bench:agent bench command execute error, code:1
-GET failure response too many, success response: 87%</code></pre></noscript></div>
-
-
-<p>表示エラーなのか遅いからなのか、原因が掴めず四苦八苦。
-ベンチマークアプリは未公開なのでエラー内容を運営側に聞きつつ、アプリを修正。</p>
-
-<p>その間、リバースプロクシをapacheからnginxに変えてimages/css/js等のstatic contentを直接配信するようにしたけど、あまり効果がなかったので元に戻す。
-アプリ修正の度にベンチを走らせるので、別の作業で最適化の確認をとるのが大変でした。チーム内でcontext switchingの問題が発生！</p>
-
-<p>そうこうしていると時間がどんどん流れ、残り1時間を切ったところでRailsを捨てる決断をする。
-せめてキャッシュ入れて最適化しよういう事でVarnishを設定し始める。
-そうするとスコアはぐんぐん伸びて行き、上位に食い込む。</p>
-
-<pre><code>Score:180724
-</code></pre>
-
-<p>さらにESIを使えばもう一段跳ね上がるかもという思いでsinatraにコードを追加してテスト。
-しかし、圧倒的に時間が足りず最後の1分半まで粘ったが断念。
-最後に再起同時のアプリ起動ができる確認をして終了。</p>
-
-<p>最終スコアは以下の通りでした。</p>
-
-<pre><code>Score:216868
-</code></pre>
-
-<p>正直ダメかなと思っていたけど、3位という結果に驚きました。
-チューニングが実質1時間未満の割にはまずまずかも知れないけど、残念感の方が強かったですね。</p>
-
-<h3>反省点</h3>
-
-<p>方向性の転換をもっと早く見極めるべきでした。後ちょっと、後ちょっとの思いでずるずる再実装にこだわったのが良くなくて、捨てる勇気を持てたらと。ジョブワーカーやRedis対応の案（とコード）はあったので後半戦直後にやっていたら優勝の可能性はあったかも。。。後の祭りですが。</p>
-
-<p>ともあれ、非常に楽しかったのでまた来年参加してみたいと思います。
-運営したNHNの方々、ありがとうございます＆お疲れ様でした！</p>
-
-<h3>おまけ</h3>
-
-<p>帰ってから<a href="https://twitter.com/netmarkjp">@netmarkjp</a>さんと平行して#soloconやってました。
-直後に<a href="https://github.com/tagomoris/isucon2">公開</a>されたnode.jsで書かれたベンチマークが動かなくてもいろいろ修正したけど、良い勉強になりました。（今は対応版が再アップ済み）
-chckerがrails版に対して失敗していたような箇所を見つけたので後日検証してみようと思います。</p>
 ]]></content>
   </entry>
   

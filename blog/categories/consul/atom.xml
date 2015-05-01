@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[Category: consul | @ijin]]></title>
-  <link href="http://ijin.github.com/blog/categories/consul/atom.xml" rel="self"/>
-  <link href="http://ijin.github.com/"/>
-  <updated>2015-04-17T14:26:19+09:00</updated>
-  <id>http://ijin.github.com/</id>
+  <link href="http://ijin.github.io/blog/categories/consul/atom.xml" rel="self"/>
+  <link href="http://ijin.github.io/"/>
+  <updated>2015-05-01T12:50:54+09:00</updated>
+  <id>http://ijin.github.io/</id>
   <author>
     <name><![CDATA[Michael H. Oshita]]></name>
     
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[ConsulによるMySQLフェールオーバー]]></title>
-    <link href="http://ijin.github.com/blog/2014/07/11/mysql-failover-with-consul/"/>
+    <link href="http://ijin.github.io/blog/2014/07/11/mysql-failover-with-consul/"/>
     <updated>2014-07-11T10:12:00+09:00</updated>
-    <id>http://ijin.github.com/blog/2014/07/11/mysql-failover-with-consul</id>
+    <id>http://ijin.github.io/blog/2014/07/11/mysql-failover-with-consul</id>
     <content type="html"><![CDATA[<p>先日(6/22/14)、6月なのにどういう分けか早めに開催された<a href="http://2014.techfesta.jp/">July Tech Festa 2014</a>でConsulについて<a href="http://2014.techfesta.jp/p/program.html?m=1#c43">発表</a>してきた。そのユースケースの一つとしてMySQL failoverをちょっとだけ紹介したので、ここに詳しく書いておく。</p>
 
 <h2>MHA</h2>

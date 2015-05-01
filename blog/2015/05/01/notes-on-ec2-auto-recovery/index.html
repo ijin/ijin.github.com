@@ -5,11 +5,11 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Category: chef - @ijin</title>
+  <title>EC2 Auto Recoveryの注意点 - @ijin</title>
   <meta name="author" content="Michael H. Oshita">
 
   
-  <meta name="description" content="Category: chef">
+  <meta name="description" content="先日、EC2のAuto Recoveryでちょっとハマったのでメモ。 CloudwatchのStatusCheckFailed_Systemアラームを設定すると、インスタンスを自動的に復旧してくれるEC2 Auto Recoveryという機能があり、使うためには条件がいくつかあります。 &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -18,7 +18,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://ijin.github.ioblog/categories/chef/">
+  <link rel="canonical" href="http://ijin.github.io/blog/2015/05/01/notes-on-ec2-auto-recovery/">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <link href="/stylesheets/data-table.css" rel="stylesheet" type="text/css" />
@@ -86,36 +86,138 @@ document.write = function(html) {
   <div id="main">
     <div id="content">
       <div>
-<article role="article">
+<article class="hentry" role="article">
   
   <header>
-    <h1 class="entry-title">Category: Chef</h1>
+    
+      <h1 class="entry-title">EC2 Auto Recoveryの注意点</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2015-05-01T11:45:00+09:00" pubdate data-updated="true">May 1<span>st</span>, 2015</time>
+        
+      </p>
     
   </header>
-  
-  <div id="blog-archives" class="category">
 
 
+<div class="entry-content"><p>先日、EC2のAuto Recoveryでちょっとハマったのでメモ。</p>
 
-  
-  <h2>2014</h2>
+<p>Cloudwatchの<code>StatusCheckFailed_System</code>アラームを設定すると、インスタンスを自動的に復旧してくれるEC2 Auto Recoveryという機能があり、使うためには条件がいくつかあります。</p>
 
-<article>
-  
-<h1><a href="/blog/2014/04/21/chefconf-2014/">#ChefConf 2014に参加してきた</a></h1>
-<time datetime="2014-04-21T12:10:00+09:00" pubdate><span class='month'>Apr</span> <span class='day'>21</span> <span class='year'>2014</span></time>
-
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/chef/'>chef</a>, <a class='category' href='/blog/categories/events/'>events</a></span>
-</footer>
+<ul>
+<li>特定のリージョン</li>
+<li>C3, C4, M3, R3, T2 instances</li>
+<li>VPC</li>
+<li>共有tenancy</li>
+<li>EBSストレージのみのサーバ</li>
+</ul>
 
 
-</article>
+<p><a href="http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-instance-recover.html">Recover Your Instance</a></p>
 
+<p>しかし、上記を満たしているのに、特定のAMIをCLI経由で起動するとEC2 Auto Recoveryを設定できなくなります。</p>
+
+<p>（AWSコンソールでラジオボタンが押せなくなる。CLIで設定しても効かない）
+<img src="https://lh5.googleusercontent.com/-dwWUcfCssA4/VULwrOsgxNI/AAAAAAAABFo/VQy-GnIYQXg/w448-h186-no/Screenshot%2B2015-05-01%2B12.18.16.png"></p>
+
+<p>原因はAMIにephemeral disk等のblock device mappingが設定されていて、T2やC4等のEBS onlyなinstance typeで起動しているにも関わらず、AWS側がephemeral diskが付与されていると認識してしまう所にあります。なお、AWSコンソールからだとこの現象は発生しません。</p>
+
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+
+
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/gist-embed/2.1/gist-embed.min.js"></script>
+
+
+<p>AMIでblock device mappingが埋め込まれている</p>
+
+<pre><code>aws ec2 describe-images --image-ids ami-e74b60e6 --region ap-northeast-1
+</code></pre>
+
+<p><code data-gist-id="55659515d54593c29618" data-gist-highlight-line="21-28"></code></p>
+
+<p>本来はEBS onlyなinstance typeだとblock device mappingの設定如何に関わらず、付与自体が不可能なので、全く関係ないはずです。</p>
+
+<p>解決方法は現時点（2015/5/1）では3通り</p>
+
+<ul>
+<li>extraなblock device mappingが設定されていないAMIを使う（Amazon Linux等）</li>
+<li>AWSコンソールから起動する</li>
+<li>明示的に<code>--block-device-mappings</code>パラメータで<code>NoDevice</code>と指定
+<code>aws ec2 run-instances --image-id ami-e74b60e6 --instance-type t2.small --subnet-id subnet-xxxxxxxx --block-device-mappings "[{\"DeviceName\": \"/dev/sdb\",  \"NoDevice\": \"\"}, {\"DeviceName\": \"/dev/sdc\",  \"NoDevice\": \"\"}]"</code></li>
+</ul>
+
+
+<p>これは明らかにAWS側のバグなので早く治って欲しいものですね。</p>
 </div>
 
+
+  <footer>
+    <p class="meta">
+      
   
+
+<span class="byline author vcard">Posted by <span class="fn">Michael H. Oshita</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2015-05-01T11:45:00+09:00" pubdate data-updated="true">May 1<span>st</span>, 2015</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/aws/'>aws</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://ijin.github.io/blog/2015/05/01/notes-on-ec2-auto-recovery/" data-via="ijin" data-counturl="http://ijin.github.io/blog/2015/05/01/notes-on-ec2-auto-recovery/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2015/04/17/self-healing-with-non-elb-autoscaling4/" title="Previous Post: Auto Scalingによる自動復旧（AWS Lambda+SNS編）">&laquo; Auto Scalingによる自動復旧（AWS Lambda+SNS編）</a>
+      
+      
+    </p>
+  </footer>
 </article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
 
 </div>
 
@@ -207,7 +309,10 @@ document.write = function(html) {
       var disqus_shortname = 'ijin';
       
         
-        var disqus_script = 'count.js';
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://ijin.github.io/blog/2015/05/01/notes-on-ec2-auto-recovery/';
+        var disqus_url = 'http://ijin.github.io/blog/2015/05/01/notes-on-ec2-auto-recovery/';
+        var disqus_script = 'embed.js';
       
     (function () {
       var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;

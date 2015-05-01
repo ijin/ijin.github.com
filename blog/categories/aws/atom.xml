@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[Category: aws | @ijin]]></title>
-  <link href="http://ijin.github.com/blog/categories/aws/atom.xml" rel="self"/>
-  <link href="http://ijin.github.com/"/>
-  <updated>2015-04-17T14:26:19+09:00</updated>
-  <id>http://ijin.github.com/</id>
+  <link href="http://ijin.github.io/blog/categories/aws/atom.xml" rel="self"/>
+  <link href="http://ijin.github.io/"/>
+  <updated>2015-05-01T12:50:54+09:00</updated>
+  <id>http://ijin.github.io/</id>
   <author>
     <name><![CDATA[Michael H. Oshita]]></name>
     
@@ -14,10 +14,66 @@
 
   
   <entry>
+    <title type="html"><![CDATA[EC2 Auto Recoveryの注意点]]></title>
+    <link href="http://ijin.github.io/blog/2015/05/01/notes-on-ec2-auto-recovery/"/>
+    <updated>2015-05-01T11:45:00+09:00</updated>
+    <id>http://ijin.github.io/blog/2015/05/01/notes-on-ec2-auto-recovery</id>
+    <content type="html"><![CDATA[<p>先日、EC2のAuto Recoveryでちょっとハマったのでメモ。</p>
+
+<p>Cloudwatchの<code>StatusCheckFailed_System</code>アラームを設定すると、インスタンスを自動的に復旧してくれるEC2 Auto Recoveryという機能があり、使うためには条件がいくつかあります。</p>
+
+<ul>
+<li>特定のリージョン</li>
+<li>C3, C4, M3, R3, T2 instances</li>
+<li>VPC</li>
+<li>共有tenancy</li>
+<li>EBSストレージのみのサーバ</li>
+</ul>
+
+
+<p><a href="http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-instance-recover.html">Recover Your Instance</a></p>
+
+<p>しかし、上記を満たしているのに、特定のAMIをCLI経由で起動するとEC2 Auto Recoveryを設定できなくなります。</p>
+
+<p>（AWSコンソールでラジオボタンが押せなくなる。CLIで設定しても効かない）
+<img src="https://lh5.googleusercontent.com/-dwWUcfCssA4/VULwrOsgxNI/AAAAAAAABFo/VQy-GnIYQXg/w448-h186-no/Screenshot%2B2015-05-01%2B12.18.16.png"></p>
+
+<p>原因はAMIにephemeral disk等のblock device mappingが設定されていて、T2やC4等のEBS onlyなinstance typeで起動しているにも関わらず、AWS側がephemeral diskが付与されていると認識してしまう所にあります。なお、AWSコンソールからだとこの現象は発生しません。</p>
+
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+
+
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/gist-embed/2.1/gist-embed.min.js"></script>
+
+
+<p>AMIでblock device mappingが埋め込まれている</p>
+
+<pre><code>aws ec2 describe-images --image-ids ami-e74b60e6 --region ap-northeast-1
+</code></pre>
+
+<p><code data-gist-id="55659515d54593c29618" data-gist-highlight-line="21-28"></code></p>
+
+<p>本来はEBS onlyなinstance typeだとblock device mappingの設定如何に関わらず、付与自体が不可能なので、全く関係ないはずです。</p>
+
+<p>解決方法は現時点（2015/5/1）では3通り</p>
+
+<ul>
+<li>extraなblock device mappingが設定されていないAMIを使う（Amazon Linux等）</li>
+<li>AWSコンソールから起動する</li>
+<li>明示的に<code>--block-device-mappings</code>パラメータで<code>NoDevice</code>と指定
+<code>aws ec2 run-instances --image-id ami-e74b60e6 --instance-type t2.small --subnet-id subnet-xxxxxxxx --block-device-mappings "[{\"DeviceName\": \"/dev/sdb\",  \"NoDevice\": \"\"}, {\"DeviceName\": \"/dev/sdc\",  \"NoDevice\": \"\"}]"</code></li>
+</ul>
+
+
+<p>これは明らかにAWS側のバグなので早く治って欲しいものですね。</p>
+]]></content>
+  </entry>
+  
+  <entry>
     <title type="html"><![CDATA[Auto Scalingによる自動復旧（AWS Lambda+SNS編）]]></title>
-    <link href="http://ijin.github.com/blog/2015/04/17/self-healing-with-non-elb-autoscaling4/"/>
+    <link href="http://ijin.github.io/blog/2015/04/17/self-healing-with-non-elb-autoscaling4/"/>
     <updated>2015-04-17T14:01:00+09:00</updated>
-    <id>http://ijin.github.com/blog/2015/04/17/self-healing-with-non-elb-autoscaling4</id>
+    <id>http://ijin.github.io/blog/2015/04/17/self-healing-with-non-elb-autoscaling4</id>
     <content type="html"><![CDATA[<p>先週の<a href="http://aws.amazon.com/summits/san-francisco/">AWS Summit San Fransisco</a>にて、ついにLambdaがSNSに<a href="http://docs.aws.amazon.com/sns/latest/dg/sns-lambda.html">対応</a>しました。
 様々なサービスが発表された中、個人的にはこれが一番のヒットです！というのも、この機能によってAWS間のサービスがより連携しやすくなり、新しいリアクティブなアーキテクチャをどんどん実現できそうだからです。</p>
 
@@ -233,9 +289,9 @@ Details: {"Availability Zone":"ap-northeast-1a","Subnet ID":"subnet-bbbbbbbb"}
   
   <entry>
     <title type="html"><![CDATA[Auto Scalingによる自動復旧（AWS Lambda編）]]></title>
-    <link href="http://ijin.github.com/blog/2014/12/05/self-healing-with-non-elb-autoscaling3/"/>
+    <link href="http://ijin.github.io/blog/2014/12/05/self-healing-with-non-elb-autoscaling3/"/>
     <updated>2014-12-05T23:14:00+09:00</updated>
-    <id>http://ijin.github.com/blog/2014/12/05/self-healing-with-non-elb-autoscaling3</id>
+    <id>http://ijin.github.io/blog/2014/12/05/self-healing-with-non-elb-autoscaling3</id>
     <content type="html"><![CDATA[<p>ちょうど1年程前に「<a href="/blog/2013/02/08/self-healing-with-non-elb-autoscaling/">非ELBなAutoscalingによる自動復旧</a>」の<a href="/blog/2013/12/14/self-healing-with-non-elb-autoscaling2/">再検証</a>をしました。前回も復旧までのタイムラグが20分だったので、この1年で変わったかまた検証してみました。</p>
 
 <p>(*) このエントリは<a href="http://qiita.com/advent-calendar/2014/aws">AWS Advent Calendar 2014</a>の5日目分です。</p>
@@ -513,9 +569,9 @@ aws-advent2014-sg       us-west-2a      UNHEALTHY       i-yyyyyyyy      aws-adve
   
   <entry>
     <title type="html"><![CDATA[AWS Game Day Japan 2014春を開催してきた]]></title>
-    <link href="http://ijin.github.com/blog/2014/03/14/aws-game-day-japan-2014-spring/"/>
+    <link href="http://ijin.github.io/blog/2014/03/14/aws-game-day-japan-2014-spring/"/>
     <updated>2014-03-14T23:11:00+09:00</updated>
-    <id>http://ijin.github.com/blog/2014/03/14/aws-game-day-japan-2014-spring</id>
+    <id>http://ijin.github.io/blog/2014/03/14/aws-game-day-japan-2014-spring</id>
     <content type="html"><![CDATA[<p>過去に2度参加した事（東京・ラスベガス）がある<a href="/blog/2013/06/10/aws-game-day-tokyo-2013/">Game Day</a>に今回は運営側に周りました。3/15に行われる<a href="http://jawsdays2014.jaws-ug.jp/">JAWS Days 2014</a>の前夜祭という位置づけです。</p>
 
 <p>日本では前回、東京のみだったけど<a href="http://jaws-days.doorkeeper.jp/events/8945">今回</a>は東京・大阪・名古屋・仙台と4都市同時開催。</p>
@@ -595,9 +651,9 @@ aws-advent2014-sg       us-west-2a      UNHEALTHY       i-yyyyyyyy      aws-adve
   
   <entry>
     <title type="html"><![CDATA[i2 instanceでMySQLベンチマーク]]></title>
-    <link href="http://ijin.github.com/blog/2014/01/01/mysql-benchmarks-on-aws-i2-instance-ssds/"/>
+    <link href="http://ijin.github.io/blog/2014/01/01/mysql-benchmarks-on-aws-i2-instance-ssds/"/>
     <updated>2014-01-01T00:00:00+09:00</updated>
-    <id>http://ijin.github.com/blog/2014/01/01/mysql-benchmarks-on-aws-i2-instance-ssds</id>
+    <id>http://ijin.github.io/blog/2014/01/01/mysql-benchmarks-on-aws-i2-instance-ssds</id>
     <content type="html"><![CDATA[<p>新年明けました。おめでとうございます。</p>
 
 <p>すっかり12月の<a href="http://www.zusaar.com/event/1117005">aws</a>/<a href="http://www.zusaar.com/event/1847003">mysql</a> advent calendarに乗り遅れたので、AWSのi2 instanceでのMySQLのベンチマークを勝手におまけとして公表します。
@@ -674,190 +730,6 @@ sudo mount -t xfs -o noatime,logbufs=8 /dev/md0 /data
 <p>いやー。spot instanceがないので計測だけで結構かかってしまった。</p>
 
 <p>しかし、なんでhi1世代の次はhi2ではなく、i2なんだろう。</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Autoscalingによる自動復旧(Immutable Infrastucture)]]></title>
-    <link href="http://ijin.github.com/blog/2013/12/14/self-healing-with-non-elb-autoscaling2/"/>
-    <updated>2013-12-14T23:40:00+09:00</updated>
-    <id>http://ijin.github.com/blog/2013/12/14/self-healing-with-non-elb-autoscaling2</id>
-    <content type="html"><![CDATA[<p>以前、「<a href="/blog/2013/02/08/self-healing-with-non-elb-autoscaling/">非ELBなAutoscalingによる自動復旧</a>」でインスタンスの自動復旧の挙動をテストしました。
-障害が発生したサーバをterminateし、新サーバをstartしてリプレースする仕組みはまさに最近話題のImmutable Infrastructureですね。
-CDP的には「<a href="http://aws.clouddesignpattern.org/index.php/CDP:Server_Swapping%E3%83%91%E3%82%BF%E3%83%BC%E3%83%B3">Server Swappingパターン</a>」が一番近いですが、今後はImmutable分類もあっても良いような気がします。</p>
-
-<p>前回はAuto Scalingがインスタンス障害を検知してリプレースするまでのタイムラグが約20分だと分かりました。
-本日、インスタンスの状態をチェックするEC2 Status Checkが1分間隔になった（以前は5分間隔）と<a href="https://forums.aws.amazon.com/ann.jspa?annID=2266">発表</a>されたので、
-これによってタイムラグが短縮されたかを検証してみます。</p>
-
-<h3>設定</h3>
-
-<p>手順は前回と一緒なので省略</p>
-
-<h3>自動復旧</h3>
-
-<p>通信を遮断し、Status Check Failを発動させる
-<code>
-ubuntu@ip-10-123-32-180:~$ date; sudo ifdown eth0
-Sat Dec 14 14:19:19 UTC 2013
-Write failed: Broken pipe
-</code></p>
-
-<p>EC2のStatus Checkを流す</p>
-
-<pre><code>while true; do date; aws ec2 describe-instance-status --instance-ids i-b03788b5 --query 'InstanceStatuses[*].InstanceStatus' --output text ; echo ; sleep 10; done
-</code></pre>
-
-<p>```
-Sat Dec 14 23:22:05 JST 2013
-ok
-DETAILS reachability    passed</p>
-
-<p>Sat Dec 14 23:22:16 JST 2013
-ok
-DETAILS reachability    passed</p>
-
-<p>Sat Dec 14 23:22:27 JST 2013
-impaired
-DETAILS 2013-12-14T14:22:00.000Z        reachability    failed</p>
-
-<p>Sat Dec 14 23:22:37 JST 2013
-impaired
-DETAILS 2013-12-14T14:22:00.000Z        reachability    failed
-```</p>
-
-<p>約3分でStatus異常が検知されました。</p>
-
-<p><img src="https://lh5.googleusercontent.com/-pabfvBU5fW0/Uqx4SEmBYLI/AAAAAAAAA2E/abCLUwoESds/w734-h154-no/Instance_status_check_2013-12-14+at+11.34.27+PM.png"></p>
-
-<p>Auto ScalingのHealthStatusを流す</p>
-
-<pre><code>while true; do date; aws autoscaling describe-auto-scaling-instances --query 'AutoScalingInstances[*].HealthStatus' --output text; echo; sleep 10; done
-</code></pre>
-
-<p>```
-Sat Dec 14 23:38:06 JST 2013
-[</p>
-
-<pre><code>{
-    "State": "InService", 
-    "Health": "HEALTHY", 
-    "ID": "i-b03788b5"
-}
-</code></pre>
-
-<p>]</p>
-
-<p>Sat Dec 14 23:38:17 JST 2013
-[</p>
-
-<pre><code>{
-    "State": "InService", 
-    "Health": "UNHEALTHY", 
-    "ID": "i-b03788b5"
-}
-</code></pre>
-
-<p>]</p>
-
-<p>Sat Dec 14 23:38:28 JST 2013
-[</p>
-
-<pre><code>{
-    "State": "InService", 
-    "Health": "UNHEALTHY", 
-    "ID": "i-b03788b5"
-}
-</code></pre>
-
-<p>]</p>
-
-<p>Sat Dec 14 23:38:38 JST 2013
-[</p>
-
-<pre><code>{
-    "State": "Terminating", 
-    "Health": "UNHEALTHY", 
-    "ID": "i-b03788b5"
-}
-</code></pre>
-
-<p>]</p>
-
-<p>Sat Dec 14 23:38:49 JST 2013
-[</p>
-
-<pre><code>{
-    "State": "Terminating", 
-    "Health": "UNHEALTHY", 
-    "ID": "i-b03788b5"
-}
-</code></pre>
-
-<p>]</p>
-
-<p>Sat Dec 14 23:38:59 JST 2013
-[</p>
-
-<pre><code>{
-    "State": "Terminating", 
-    "Health": "UNHEALTHY", 
-    "ID": "i-b03788b5"
-}
-</code></pre>
-
-<p>]</p>
-
-<p>Sat Dec 14 23:39:10 JST 2013
-[</p>
-
-<pre><code>{
-    "State": "Pending", 
-    "Health": "HEALTHY", 
-    "ID": "i-4cc7a849"
-}, 
-{
-    "State": "Terminating", 
-    "Health": "UNHEALTHY", 
-    "ID": "i-b03788b5"
-}
-</code></pre>
-
-<p>]</p>
-
-<p>```
-やっとAuto Scalingの方でも異常検知。</p>
-
-<p><img src="https://lh4.googleusercontent.com/-8Dj_s0mm9I8/Uqx4R1-Wl9I/AAAAAAAAA2I/laUZmwhUw8o/w873-h151-no/Autoscaling_health_2013-12-14+at+11.57.42+PM.png"></p>
-
-<p>SNS通知</p>
-
-<p><code>
-Service: AWS Auto Scaling
-Time: 2013-12-14T14:39:41.271Z
-RequestId: f622c6d2-8c77-4fef-8b38-ece463574712
-Event: autoscaling:EC2_INSTANCE_TERMINATE
-AccountId: 111155559999
-AutoScalingGroupName: test-sg
-AutoScalingGroupARN: arn:aws:autoscaling:ap-northeast-1:11115559999:autoScalingGroup:0e771015-f979-4afe-b065-595abafdbf9b:autoScalingGroupName/test-sg
-ActivityId: f622c6d2-8c77-4fef-8b38-ece463574712
-Description: Terminating EC2 instance: i-b03788b5
-Cause: At 2013-12-14T14:38:38Z an instance was taken out of service in response to a system health-check.
-StartTime: 2013-12-14T14:38:38.257Z
-EndTime: 2013-12-14T14:39:41.271Z
-StatusCode: InProgress
-StatusMessage:
-Progress: 50
-EC2InstanceId: i-b03788b5
-</code></p>
-
-<p>やはり20分のタイムラグ変わらずですね。。</p>
-
-<h3>結論</h3>
-
-<p>というわけで、EC2 Status Checkが1分間隔になっても、EC2のみ（ELBを使わい場合）のAuto Scalingによる不調インスタンスの自動復旧時間は変わらずでした。</p>
-
-<p>ちなみにAWS ConsoleでAuto Scalingの設定ができるようになったけど、まだscaling groupにtagが付けられないのがちょっと微妙ですね。。GUIで状態を見る分には楽だけど。</p>
 ]]></content>
   </entry>
   

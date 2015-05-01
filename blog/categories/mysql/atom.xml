@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[Category: mysql | @ijin]]></title>
-  <link href="http://ijin.github.com/blog/categories/mysql/atom.xml" rel="self"/>
-  <link href="http://ijin.github.com/"/>
-  <updated>2015-04-17T14:26:19+09:00</updated>
-  <id>http://ijin.github.com/</id>
+  <link href="http://ijin.github.io/blog/categories/mysql/atom.xml" rel="self"/>
+  <link href="http://ijin.github.io/"/>
+  <updated>2015-05-01T12:50:54+09:00</updated>
+  <id>http://ijin.github.io/</id>
   <author>
     <name><![CDATA[Michael H. Oshita]]></name>
     
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[ConsulによるMySQLフェールオーバー]]></title>
-    <link href="http://ijin.github.com/blog/2014/07/11/mysql-failover-with-consul/"/>
+    <link href="http://ijin.github.io/blog/2014/07/11/mysql-failover-with-consul/"/>
     <updated>2014-07-11T10:12:00+09:00</updated>
-    <id>http://ijin.github.com/blog/2014/07/11/mysql-failover-with-consul</id>
+    <id>http://ijin.github.io/blog/2014/07/11/mysql-failover-with-consul</id>
     <content type="html"><![CDATA[<p>先日(6/22/14)、6月なのにどういう分けか早めに開催された<a href="http://2014.techfesta.jp/">July Tech Festa 2014</a>でConsulについて<a href="http://2014.techfesta.jp/p/program.html?m=1#c43">発表</a>してきた。そのユースケースの一つとしてMySQL failoverをちょっとだけ紹介したので、ここに詳しく書いておく。</p>
 
 <h2>MHA</h2>
@@ -79,9 +79,9 @@
   
   <entry>
     <title type="html"><![CDATA[i2 instanceでMySQLベンチマーク]]></title>
-    <link href="http://ijin.github.com/blog/2014/01/01/mysql-benchmarks-on-aws-i2-instance-ssds/"/>
+    <link href="http://ijin.github.io/blog/2014/01/01/mysql-benchmarks-on-aws-i2-instance-ssds/"/>
     <updated>2014-01-01T00:00:00+09:00</updated>
-    <id>http://ijin.github.com/blog/2014/01/01/mysql-benchmarks-on-aws-i2-instance-ssds</id>
+    <id>http://ijin.github.io/blog/2014/01/01/mysql-benchmarks-on-aws-i2-instance-ssds</id>
     <content type="html"><![CDATA[<p>新年明けました。おめでとうございます。</p>
 
 <p>すっかり12月の<a href="http://www.zusaar.com/event/1117005">aws</a>/<a href="http://www.zusaar.com/event/1847003">mysql</a> advent calendarに乗り遅れたので、AWSのi2 instanceでのMySQLのベンチマークを勝手におまけとして公表します。
@@ -163,9 +163,9 @@ sudo mount -t xfs -o noatime,logbufs=8 /dev/md0 /data
   
   <entry>
     <title type="html"><![CDATA[Non-RDSなオレオレMulti-AZ MySQL Replication]]></title>
-    <link href="http://ijin.github.com/blog/2013/05/21/custom-non-rds-multi-az-mysql-replication/"/>
+    <link href="http://ijin.github.io/blog/2013/05/21/custom-non-rds-multi-az-mysql-replication/"/>
     <updated>2013-05-21T18:03:00+09:00</updated>
-    <id>http://ijin.github.com/blog/2013/05/21/custom-non-rds-multi-az-mysql-replication</id>
+    <id>http://ijin.github.io/blog/2013/05/21/custom-non-rds-multi-az-mysql-replication</id>
     <content type="html"><![CDATA[<p>先日（5/17/13）<a href="http://www.zusaar.com/event/668006">cloudpack night #6 - Re:Generate -</a>に参加してきました。</p>
 
 <p>当日の様子はcloudpack<a href="https://twitter.com/yoshidashingo">吉田</a>さんの以下のレポートで。<br />
@@ -256,9 +256,9 @@ sudo mount -t xfs -o noatime,logbufs=8 /dev/md0 /data
   
   <entry>
     <title type="html"><![CDATA[AWS SSD (hi1.4xlarge) vs Fusion-IOでのMySQLベンチマーク]]></title>
-    <link href="http://ijin.github.com/blog/2013/02/22/mysql-benchmarks-on-aws-ssd-vs-fusion-io/"/>
+    <link href="http://ijin.github.io/blog/2013/02/22/mysql-benchmarks-on-aws-ssd-vs-fusion-io/"/>
     <updated>2013-02-22T17:32:00+09:00</updated>
-    <id>http://ijin.github.com/blog/2013/02/22/mysql-benchmarks-on-aws-ssd-vs-fusion-io</id>
+    <id>http://ijin.github.io/blog/2013/02/22/mysql-benchmarks-on-aws-ssd-vs-fusion-io</id>
     <content type="html"><![CDATA[<p>（※ <a href="#add">追記</a>しました - 5/19/13）</p>
 
 <p>巷ではMySQL 5.6 GAが出て騒がしいですが、ちょっと前に5.5系でAWSのSSDインスタンス（hi1.4xlarge）に載せ替える案件があったので、その時に取ったベンチマークを公表します。以前Fusion-IO (ioDrive Duo)でも同じようにやったので、比較になれば。</p>

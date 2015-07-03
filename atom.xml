@@ -4,7 +4,7 @@
   <title><![CDATA[@ijin]]></title>
   <link href="http://ijin.github.io/atom.xml" rel="self"/>
   <link href="http://ijin.github.io/"/>
-  <updated>2015-07-03T09:16:21+09:00</updated>
+  <updated>2015-07-03T09:18:10+09:00</updated>
   <id>http://ijin.github.io/</id>
   <author>
     <name><![CDATA[Michael H. Oshita]]></name>
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[Data PipelineによるDynamoDBのexport]]></title>
-    <link href="http://ijin.github.io/blog/2015/07/03/dynamodb-export-with-datapipeline/"/>
-    <updated>2015-07-03T08:28:00+09:00</updated>
-    <id>http://ijin.github.io/blog/2015/07/03/dynamodb-export-with-datapipeline</id>
+    <link href="http://ijin.github.io/blog/2015/07/02/dynamodb-export-with-datapipeline/"/>
+    <updated>2015-07-02T20:28:00+09:00</updated>
+    <id>http://ijin.github.io/blog/2015/07/02/dynamodb-export-with-datapipeline</id>
     <content type="html"><![CDATA[<p>ちょっとハマったのでメモ。</p>
 
 <p>DynamoDBにはRDSみたいなスナップショットによるバックアップ機能がなく、データを一括でexportするにはフルスキャンしかありません。

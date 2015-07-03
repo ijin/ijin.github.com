@@ -331,21 +331,21 @@ document.write = function(html) {
 <p>Lambda function</p>
 
 <div><script src='https://gist.github.com/7bcba3354814d3ca704d.js?file='></script>
-<noscript><pre><code>console.log('Loading event');
-var aws = require('aws-sdk');
-var s3 = new aws.S3({apiVersion: '2006-03-01'});
-var autoscaling = new aws.AutoScaling({apiVersion: '2011-01-01'});
+<noscript><pre><code>console.log(&#39;Loading event&#39;);
+var aws = require(&#39;aws-sdk&#39;);
+var s3 = new aws.S3({apiVersion: &#39;2006-03-01&#39;});
+var autoscaling = new aws.AutoScaling({apiVersion: &#39;2011-01-01&#39;});
 
 exports.handler = function(event, context) {
-   console.log('Received event:');
+   console.log(&#39;Received event:&#39;);
    console.log(event);
    //console.log(typeof event.Subject);
-   if (event.hasOwnProperty('Message')) {
-       var msg = event.Message.replace(/!!/g,'&quot;');
+   if (event.hasOwnProperty(&#39;Message&#39;)) {
+       var msg = event.Message.replace(/!!/g,&#39;&quot;&#39;);
        var instance_id = JSON.parse(msg).Trigger.Dimensions[0].value;
-       console.log('Changing instance health for: ' + instance_id);
+       console.log(&#39;Changing instance health for: &#39; + instance_id);
        var params = {
-           HealthStatus: 'Unhealthy', /* required */
+           HealthStatus: &#39;Unhealthy&#39;, /* required */
            InstanceId: instance_id, /* required */
            ShouldRespectGracePeriod: false
        };
@@ -353,17 +353,17 @@ exports.handler = function(event, context) {
         autoscaling.setInstanceHealth(params, function(err, data) {
             if (err) {
                 console.log(err, err.stack); // an error occurred
-                context.done('error','error: '+err);
+                context.done(&#39;error&#39;,&#39;error: &#39;+err);
             }
             else {
                 console.log(data);           // successful response
-                context.done(null,'');
+                context.done(null,&#39;&#39;);
             }
         });
    }
    else {
-       console.log('No message');
-       context.done(null,'');
+       console.log(&#39;No message&#39;);
+       context.done(null,&#39;&#39;);
    }
 };</code></pre></noscript></div>
 
@@ -570,6 +570,10 @@ exports.handler = function(event, context) {
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2015/07/03/dynamodb-export-with-datapipeline/">Data PipelineによるDynamoDBのexport</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2015/05/01/notes-on-ec2-auto-recovery/">EC2 Auto Recoveryの注意点</a>
       </li>
     
@@ -603,10 +607,6 @@ exports.handler = function(event, context) {
     
       <li class="post">
         <a href="/blog/2014/03/14/aws-game-day-japan-2014-spring/">AWS Game Day Japan 2014春を開催してきた</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2014/01/01/mysql-benchmarks-on-aws-i2-instance-ssds/">i2 instanceでMySQLベンチマーク</a>
       </li>
     
   </ul>

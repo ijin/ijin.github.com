@@ -4,7 +4,7 @@
   <title><![CDATA[@ijin]]></title>
   <link href="http://ijin.github.io/atom.xml" rel="self"/>
   <link href="http://ijin.github.io/"/>
-  <updated>2015-05-01T12:56:42+09:00</updated>
+  <updated>2015-07-03T09:16:21+09:00</updated>
   <id>http://ijin.github.io/</id>
   <author>
     <name><![CDATA[Michael H. Oshita]]></name>
@@ -12,6 +12,230 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Data PipelineによるDynamoDBのexport]]></title>
+    <link href="http://ijin.github.io/blog/2015/07/03/dynamodb-export-with-datapipeline/"/>
+    <updated>2015-07-03T08:28:00+09:00</updated>
+    <id>http://ijin.github.io/blog/2015/07/03/dynamodb-export-with-datapipeline</id>
+    <content type="html"><![CDATA[<p>ちょっとハマったのでメモ。</p>
+
+<p>DynamoDBにはRDSみたいなスナップショットによるバックアップ機能がなく、データを一括でexportするにはフルスキャンしかありません。
+AWSではData Pipelineによるs3へのexportテンプレートがあって、それを使うとEMRクラスタが立ち上がりHive経由で大量の処理をして、s3へ書き出してくれます。</p>
+
+<p>1000万件程度の小さな件数だとデフォルトのテンプレートがそのまま使えるけど、1億件近くになると失敗したりタイムアウトしたりするので、パラメータの調整が必要になってきます。</p>
+
+<h3>前提</h3>
+
+<ul>
+<li>約1億件</li>
+<li>20GB</li>
+<li>Provisioned Throughput (reads): 1000</li>
+<li>Read Throughput Percent: 1.0</li>
+<li>2時間以内のexport</li>
+</ul>
+
+
+<h3>エラー</h3>
+
+<p>具体的には以下のようなエラーに遭遇しました。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>Caused by: org.apache.hadoop.hive.ql.metadata.HiveException: Hive Runtime Error
+</span><span class='line'> while processing row {"item":{"id_list":"{\"l\":[{\"n\":\"958\"},
+</span><span class='line'>{\"n\":\"704\"},{\"n\":\"847\"},{\"n\":\"232\"},{\"n\":\"72\"}]}",
+</span><span class='line'>"code":"{\"s\":\"adarea9\"}","user_area":"{\"s\":\"91657-adarea9\"}",
+</span><span class='line'>"user":"{\"s\":\"91657\"}","app_code":"{\"s\":\"xxx\"}","last_seen_at":
+</span><span class='line'>"{\"s\":\"2010-06-23 22:57:49 +0000\"}","target_id":"{\"n\":\"395\"}",
+</span><span class='line'>"count":"{\"n\":\"44\"}","promo_id":"{\"n\":\"125\"}"}} at 
+</span><span class='line'>org.apache.hadoop.hive.ql.exec.MapOperator.process(MapOperator.java:550) at 
+</span><span class='line'>org.apache.hadoop.hive.ql.exec.mr.ExecMapper.map(ExecMapper.java:177) 
+</span><span class='line'>... 8 more Caused by: org.apache.hadoop.hive.ql.metadata.HiveException: 
+</span><span class='line'>java.io.IOException: All datanodes 10.160.102.191:9200 are bad. Aborting... at 
+</span><span class='line'>org.apache.hadoop.hive.ql.exec.FileSinkOperator.processOp(FileSinkOperator.java:651) at 
+</span><span class='line'>org.apache.hadoop.hive.ql.exec.Operator.forward(Operator.java:793) at org.apach</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>2015-06-29 13:33:31,610 Stage-1 map = 100%, reduce = 0% MapReduce Total cumulative 
+</span><span class='line'>CPU time: 14 minutes 19 seconds 0 msec Ended Job = job_1435578726935_0002 with 
+</span><span class='line'>errors Error during job, obtaining debugging information... 
+</span><span class='line'>Examining task ID: task_1435578726935_0002_m_000008 (and more) from job job_1435578726935_0002 
+</span><span class='line'>Examining task ID: task_1435578726935_0002_m_000000 (and more) from job job_1435578726935_0002 
+</span><span class='line'>Examining task ID: task_1435578726935_0002_m_000000 (and more) from job job_1435578726935_0002 
+</span><span class='line'>Task with the most failures(4): 
+</span><span class='line'>----- Task ID: task_1435578726935_0002_m_000003 URL: http://ip-10-160-25-23.ap-northeast-1.compute.
+</span><span class='line'>internal:9026/taskdetails.jsp?jobid=job_1435578726935_0002&tipid=task_1435578726935_0002_m_000003
+</span><span class='line'>----- Diagnostic Messages for this Task: Error: GC overhead limit exceeded FAILED: 
+</span><span class='line'>Execution Error, return code 2 from org.apache.hadoop.hive.ql.exec.mr.MapRedTask 
+</span><span class='line'>MapReduce Jobs Launched: Job 0: Map: 10 Cumulative CPU: 859.0 sec HDFS Read: 0 HDFS Write: 0 FAIL Total MapRed</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>2015-06-30 02:32:17,929 Stage-1 map = 100%, reduce = 0%, Cumulative CPU 1605.94 sec 
+</span><span class='line'>MapReduce Total cumulative CPU time: 26 minutes 45 seconds 940 msec Ended Job = 
+</span><span class='line'>job_1435627213542_0001 with errors Error during job, obtaining debugging information... 
+</span><span class='line'>Examining task ID: task_1435627213542_0001_m_000004 (and more) from job job_1435627213542_0001 
+</span><span class='line'>Examining task ID: task_1435627213542_0001_m_000004 (and more) from job job_1435627213542_0001 
+</span><span class='line'>Examining task ID: task_1435627213542_0001_m_000004 (and more) from job job_1435627213542_0001 
+</span><span class='line'>Task with the most failures(4): ----- Task ID: task_1435627213542_0001_m_000000 URL: 
+</span><span class='line'>http://ip-10-150-205-59.ap-northeast-1.compute.internal:9026/taskdetails.jsp?
+</span><span class='line'>jobid=job_1435627213542_0001&tipid=task_1435627213542_0001_m_000000 ----- 
+</span><span class='line'>Diagnostic Messages for this Task: AttemptID:attempt_1435627213542_0001_m_000000_3 
+</span><span class='line'>Timed out after 600 secs FAILED: Execution Error, return code 2 from 
+</span><span class='line'>org.apache.hadoop.hive.ql.exec.mr.MapRedTask MapReduce Jobs Launched: Job 0: Map: 10 Cu</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>Error: java.lang.RuntimeException: Hive Runtime Error while closing operators at 
+</span><span class='line'>org.apache.hadoop.hive.ql.exec.mr.ExecMapper.close(ExecMapper.java:260) at 
+</span><span class='line'>org.apache.hadoop.mapred.MapRunner.run(MapRunner.java:81) at 
+</span><span class='line'>org.apache.hadoop.mapred.MapTask.runOldMapper(MapTask.java:432) at 
+</span><span class='line'>org.apache.hadoop.mapred.MapTask.run(MapTask.java:343) at 
+</span><span class='line'>org.apache.hadoop.mapred.YarnChild$2.run(YarnChild.java:175) at 
+</span><span class='line'>java.security.AccessController.doPrivileged(Native Method) at 
+</span><span class='line'>javax.security.auth.Subject.doAs(Subject.java:415) at 
+</span><span class='line'>org.apache.hadoop.security.UserGroupInformation.doAs(UserGroupInformation.java:1548) at 
+</span><span class='line'>org.apache.hadoop.mapred.YarnChild.main(YarnChild.java:170) 
+</span><span class='line'>Caused by: org.apache.hadoop.hive.ql.metadata.HiveException: 
+</span><span class='line'>java.io.IOException: All datanodes 10.186.28.181:9200 are bad. 
+</span><span class='line'>Aborting... at org.apache.hadoop.hive.ql.exec.FileSinkOperator$FSPaths.closeWriters(FileSinkOperator.java:168) at 
+</span><span class='line'>org.apache.hadoop.hive.ql.exec.FileSinkOperator.closeOp(FileSinkOperator.java:882) at org.apache.hadoop.</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Hive Runtime ErrorやGCエラー等が出てますね。</p>
+
+<h3>原因</h3>
+
+<p>通常のexportテンプレートではEMRはなんと<strong>m1.medium</strong>のcore taskが一台のみ起動して処理が走ります。
+各種ヒープサイズの設定（<code>YARN_RESOURCEMANAGER_HEAPSIZE</code> 等）は<a href="https://docs.aws.amazon.com/ElasticMapReduce/latest/DeveloperGuide/HadoopMemoryDefault_H2.html">instance typeによって決まって</a>おり、この件数とデータサイズではHEAPSIZEが不足し、GCエラー等が発生してOut of Memory状態になって処理が落ちるようです。
+そこで、メモリをもっと搭載している大きめのインスタンスでHEAPSIZEを確保してあげる必要があります。</p>
+
+<h3>解決策</h3>
+
+<p>こんな感じ。</p>
+
+<p><img src="https://lh3.googleusercontent.com/ghExdELQB1cIE9K-d97gDqz7a634413GOTxAHhvJsBg"></p>
+
+<table>
+<thead>
+<tr>
+<th></th>
+<th>parameter</th>
+<th>default value</th>
+<th>new value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td></td>
+<td>core &amp; master instance type</td>
+<td>m1.medium</td>
+<td>m3.xlarge</td>
+</tr>
+<tr>
+<td></td>
+<td>core instance count</td>
+<td>1</td>
+<td>2</td>
+</tr>
+<tr>
+<td></td>
+<td>AMI version</td>
+<td>3.3.2</td>
+<td>3.8.0</td>
+</tr>
+</tbody>
+</table>
+
+
+<p>m3.xlargeにした事で処理が落ちる事なくスムーズに実行されるようになりました。core countを増やしたのは、exportテンプレートのデフォルト設定だとcountが1なので、mapperが不足し、DynamoDBで設定したthroughput (1000)をフルに使い切る事ができなく、デフォルトのタイムアウト時間（2時間）に達して処理自体がキャンセルされてしまうからです。EMR側のスループットも上げる為に必要な変更でした。また、Hadoopの<a href="http://docs.aws.amazon.com/ElasticMapReduce/latest/DeveloperGuide/ami-versions-supported.html">AMI version</a>も古い3.3.2から最新の3.8.0にしてあります。</p>
+
+<p>これらによって、export処理がだいたい1時間ちょいで完了します。</p>
+
+<p>その時の試行錯誤がこれ。</p>
+
+<p><img src="https://lh3.googleusercontent.com/xatqR0hx1M6PhroKFNAksOplqgqYgqsaCJgonanQyzA=w437-h197-no"></p>
+
+<h3>計算</h3>
+
+<p>provisioned throughputに対するバックアップ時間の目安を計算するには以下の通り。</p>
+
+<p>20GBのデータ、1億件のレコード、1000 throughputとして、</p>
+
+<p><code>平均item size = 20*1024*1024*1024/100000000 =~  215 byte</code></p>
+
+<p>4KB以下なので4KB blockのreadとなります。
+Hive Queryのread処理は<a href="http://hipsterdevblog.com/blog/2015/05/30/analysing-dynamodb-index-usage-in-hive-queries/">eventually consistentになる</a>ので、1 IOPSに対して8KBのデータが読み込めます。
+そうすると</p>
+
+<p><code>DynamoDB scan時間 = (20*1024*1024*1024)/(1000*8*1024*60) = 43.7分</code></p>
+
+<p>実際にはEMRクラスタのオーバーヘッドが20分弱程度あるので、これに若干加算します。</p>
+
+<p>図にするとこんな風になります。</p>
+
+<iframe width="670" height="412" seamless frameborder="0" scrolling="no" src="https://docs.google.com/spreadsheets/d/14oyOry-bnrqIgYxdN36Qdwv3VC1lhdku4QffzFh8iIc/pubchart?oid=1201814511&amp;format=interactive"></iframe>
+
+
+<p>バックアップのタイミングでDynamoDBのthroughputをガツンと上げれば、件数によっては短時間で済む場合もあるので、参考にでも！</p>
+
+<p>（※ Production Trafficに影響がないように、Read Throughput Percentは適切に設定する必要があります）</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[EC2 Auto Recoveryの注意点]]></title>
@@ -805,21 +1029,21 @@ renice -n19 -p `ps auxf | grep mackerel | grep -v grep | awk ‘{print $2}’`
 <p>Lambda function</p>
 
 <div><script src='https://gist.github.com/7bcba3354814d3ca704d.js?file='></script>
-<noscript><pre><code>console.log('Loading event');
-var aws = require('aws-sdk');
-var s3 = new aws.S3({apiVersion: '2006-03-01'});
-var autoscaling = new aws.AutoScaling({apiVersion: '2011-01-01'});
+<noscript><pre><code>console.log(&#39;Loading event&#39;);
+var aws = require(&#39;aws-sdk&#39;);
+var s3 = new aws.S3({apiVersion: &#39;2006-03-01&#39;});
+var autoscaling = new aws.AutoScaling({apiVersion: &#39;2011-01-01&#39;});
 
 exports.handler = function(event, context) {
-   console.log('Received event:');
+   console.log(&#39;Received event:&#39;);
    console.log(event);
    //console.log(typeof event.Subject);
-   if (event.hasOwnProperty('Message')) {
-       var msg = event.Message.replace(/!!/g,'&quot;');
+   if (event.hasOwnProperty(&#39;Message&#39;)) {
+       var msg = event.Message.replace(/!!/g,&#39;&quot;&#39;);
        var instance_id = JSON.parse(msg).Trigger.Dimensions[0].value;
-       console.log('Changing instance health for: ' + instance_id);
+       console.log(&#39;Changing instance health for: &#39; + instance_id);
        var params = {
-           HealthStatus: 'Unhealthy', /* required */
+           HealthStatus: &#39;Unhealthy&#39;, /* required */
            InstanceId: instance_id, /* required */
            ShouldRespectGracePeriod: false
        };
@@ -827,17 +1051,17 @@ exports.handler = function(event, context) {
         autoscaling.setInstanceHealth(params, function(err, data) {
             if (err) {
                 console.log(err, err.stack); // an error occurred
-                context.done('error','error: '+err);
+                context.done(&#39;error&#39;,&#39;error: &#39;+err);
             }
             else {
                 console.log(data);           // successful response
-                context.done(null,'');
+                context.done(null,&#39;&#39;);
             }
         });
    }
    else {
-       console.log('No message');
-       context.done(null,'');
+       console.log(&#39;No message&#39;);
+       context.done(null,&#39;&#39;);
    }
 };</code></pre></noscript></div>
 
@@ -2920,141 +3144,6 @@ autoscaling:EC2_INSTANCE_LAUNCH_ERROR autoscaling:EC2_INSTANCE_TERMINATE_ERROR
 <h3>結論</h3>
 
 <p>20分程サーバダウンが許容できるようなゆるめの条件に限定した場合には非ELBでも使えるかな。まあ、それでも適用する場面は多々あるとは思いますが。（早める方法あるのかなー。）</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Auto Scalingの設定とデプロイ方法]]></title>
-    <link href="http://ijin.github.io/blog/2012/12/03/cdp/"/>
-    <updated>2012-12-03T01:34:00+09:00</updated>
-    <id>http://ijin.github.io/blog/2012/12/03/cdp</id>
-    <content type="html"><![CDATA[<p><a href="http://www.zusaar.com/event/451061">CDP Advent Calendar 2012</a>に登録しました。ここ1年ちょいで使い慣れてきたパターンがあり、作った当時はクラウドデザインパターンはなかったのですが、<a href="http://aws.clouddesignpattern.org/index.php/CDP:Clone_Server%E3%83%91%E3%82%BF%E3%83%BC%E3%83%B3">Clone Server</a>と<a href="http://aws.clouddesignpattern.org/index.php/CDP:Scale_Out%E3%83%91%E3%82%BF%E3%83%BC%E3%83%B3">Scale Out</a>パターンの組合せに当てはまると思うので紹介します。ちなみにアプリはRails。</p>
-
-<p>常にデプロイして更新し続けるシステムを手動、あるいは自動スケールアウトする時に便利な手法だったりします。</p>
-
-<p>図にするとこんな感じですかね。</p>
-
-<p><img src="https://lh4.googleusercontent.com/-eDSfSiz0XhU/ULyOlKj_JKI/AAAAAAAAArw/QzSfVJeeUfw/w727-h490-p-k/CDP_Clone%252BScale_Out.png"></p>
-
-<h2>Auto Scaling設定</h2>
-
-<h3>Launch Config</h3>
-
-<p>まず、ベースとなるAMIの起動インスタンスサイズやセキュリティーグループを定義したLaunch Configを設定。</p>
-
-<pre><code>as-create-launch-config cdp-lc --image-id ami-22a51d23 --instance-type m1.small \
---group cdp_web, cdp_admin
-</code></pre>
-
-<h3>Scaling Group</h3>
-
-<p>次に、Scaling Groupで適用するAvailability Zone、インスタンス数の最小・最大閾値設定、紐尽くELB、死活監視方法・開始待ち時間、タグ等を定義。（ec2addtagではスペース入りのキーを設定できるのにas-create-auto-scaling-groupではできないので注意。早く直して。。）</p>
-
-<pre><code>as-create-auto-scaling-group cdp-sg --launch-configuration cdp-lc \
---availability-zones ap-northeast-1a  --min-size 1 --max-size 9 --load-balancers cdp \
---health-check-type ELB --grace-period 300 --tag "k=Name, v=web.cdp" --tag "k=Use_Case, v=Test"
-</code></pre>
-
-<h3>Scaling Out Policy</h3>
-
-<p>Scaling Outのポリシー設定。以下の例ではインスタンス1台を追加し、次のスケールアクションまでは5分間待機。ポリシーのARN (Amazon Resource Name)が出力されるので控えます。</p>
-
-<pre><code>as-put-scaling-policy CDPOut --auto-scaling-group cdp-sg --adjustment 1 --type ChangeInCapacity \
---cooldown 300
-
-&gt; arn:aws:autoscaling:ap-northeast-1:494850320039:scalingPolicy:d0d4dcf1-fb44-428a-a19c-38946633acf5:autoScalingGroupName/cdp-sg:policyName/CDPOut
-</code></pre>
-
-<h3>Cloudwatchトリガー（Scaling Out）</h3>
-
-<p>Cloudwatchで閾値を超えたらスケールアウトするように設定。以下の例では対象Scaling Group配下のインスタンス達のCPUが1分間で平均75%以上で推移した場合、先ほど設定したScaling OutポリシーがARN経由で実行されます。また、閾値を超過あるいは下回った場合にSNS経由でアラートメールを飛ばします。</p>
-
-<pre><code>mon-put-metric-alarm  CDPHighCPUAlarm --comparison-operator GreaterThanThreshold \
---evaluation-periods 1 --metric-name CPUUtilization --namespace "AWS/EC2" --period 60 \
---statistic Average --threshold 75 --dimensions "AutoScalingGroupName=cdp-sg" \
---ok-actions arn:aws:sns:ap-northeast-1:494850320039:cdp-alert --alarm-actions \
-arn:aws:sns:ap-northeast-1:494850320039:cdp-alert, arn:aws:autoscaling:ap-northeast-1:494850320039:scalingPolicy:d0d4dcf1-fb44-428a-a19c-38946633acf5:autoScalingGroupName/cdp-sg:policyName/CDPOut
-</code></pre>
-
-<h3>Scaling Down Policy</h3>
-
-<p>同じくScaling Downのポリシー設定。インスタンスが起動すると最低1時間は課金されるので頻繁に伸縮するともったいないのでスケールダウンアクションはゆっくりやるのがポイントです。</p>
-
-<pre><code>as-put-scaling-policy CDPDown --auto-scaling-group cdp-sg --adjustment=-1 \
---type ChangeInCapacity --cooldown 1500
-
-&gt; arn:aws:autoscaling:ap-northeast-1:494850320039:scalingPolicy:de53fbd5-130c-46a8-bf47-25e29f7d358e:autoScalingGroupName/cdp-sg:policyName/CDPDown
-</code></pre>
-
-<h3>Cloudwatchトリガー（Scaling Down）</h3>
-
-<p>スケールダウンのトリガーは平均CPUが35%を25分間下回った場合に実行されます。この閾値周辺のアラートメールはいらないので設定してません。</p>
-
-<pre><code>mon-put-metric-alarm CDPLowCPUAlarm --comparison-operator LessThanThreshold \
---evaluation-periods 1 --metric-name CPUUtilization --namespace "AWS/EC2" --period 1500 \
---statistic Average --threshold 35 --dimensions "AutoScalingGroupName=cdp-sg" --alarm-actions \
-arn:aws:autoscaling:ap-northeast-1:494850320039:scalingPolicy:de53fbd5-130c-46a8-bf47-25e29f7d358e:autoScalingGroupName/cdp-sg:policyName/CDPDown
-</code></pre>
-
-<h3>通知</h3>
-
-<p>最後にスケールアクション時に通知が飛ぶように設定。例えば、あるインスタンスが不調により反応がなく、ポリシーによってリプレースされる場合に飛んだりします。</p>
-
-<pre><code>as-put-notification-configuration cdp-sg -t arn:aws:sns:ap-northeast-1:494850320039:cdp-alert \
--n autoscaling:EC2_INSTANCE_LAUNCH, autoscaling:EC2_INSTANCE_TERMINATE, \
-autoscaling:EC2_INSTANCE_LAUNCH_ERROR, autoscaling:EC2_INSTANCE_TERMINATE_ERROR
-</code></pre>
-
-<h2>APP側の設定</h2>
-
-<h3>ソースコード同期</h3>
-
-<p>同期には起動時にupstart経由でrsyncを叩いて管理サーバから最新ソースを取ってきてサービスを再起動します。転送時の圧縮モードはarcfourが一番スループットが出たのでそれに。</p>
-
-<div><script src='https://gist.github.com/4191986.js?file='></script>
-<noscript><pre><code># sync source code
-description &quot;Update source code&quot;
-
-start on filesystem
-stop on shutdown
-
-task
-console output
-
-script
-time sudo -u deploy rsync -av --delete -e 'ssh -c arcfour -i /home/deploy/.ssh/id_dsa -o StrictHostKeyChecking=no' deploy@admin.cdp:/usr/local/apps/project/ /usr/local/rails_apps/project &gt;&gt; /mnt/update.log 2&gt;&amp;1
-/etc/init.d/unicorn upgrade &gt;&gt; /mnt/update.log 2&gt;&amp;1
-/etc/init.d/nginx restart &gt;&gt; /mnt/update.log 2&gt;&amp;1
-end script
-</code></pre></noscript></div>
-
-
-<h2>Capistrano</h2>
-
-<p>デプロイはマスターサーバ（管理兼）上でCapistranoを実行し、ELB配下の生きているインスタンスに対して更新をかけます。deploy.rbに追加する記述は以下の通り。昔はec2 api toolsを直接呼んでパースしたりしてコードが長かったのですが、今は<a href="http://aws.amazon.com/sdkforruby/">AWS SDK for Ruby</a>があり、<a href="http://aws.amazon.com/iam/">IAM role</a>でinstance profileを設定すればわずか数行でできてしまいます！</p>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="nb">require</span> <span class="s1">&#39;aws-sdk&#39;</span>
-</span><span class='line'><span class="no">AWS</span><span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="ss">:ec2_endpoint</span> <span class="o">=&gt;</span> <span class="s1">&#39;ec2.ap-northeast-1.amazonaws.com&#39;</span><span class="p">,</span> <span class="ss">:elb_endpoint</span> <span class="o">=&gt;</span> <span class="s1">&#39;elasticloadbalancing.ap-northeast-1.amazonaws.com&#39;</span><span class="p">)</span>
-</span><span class='line'><span class="n">instances</span> <span class="o">=</span> <span class="no">AWS</span><span class="o">::</span><span class="no">ELB</span><span class="o">.</span><span class="n">new</span><span class="o">.</span><span class="n">load_balancers</span><span class="o">[</span><span class="s1">&#39;cdp&#39;</span><span class="o">].</span><span class="n">instances</span><span class="o">.</span><span class="n">select</span><span class="p">{</span><span class="o">|</span><span class="n">i</span><span class="o">|</span> <span class="n">i</span><span class="o">.</span><span class="n">exists?</span> <span class="o">&amp;&amp;</span> <span class="n">i</span><span class="o">.</span><span class="n">elb_health</span><span class="o">[</span><span class="ss">:state</span><span class="o">]</span> <span class="o">==</span> <span class="s2">&quot;InService&quot;</span><span class="p">}</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="o">&amp;</span><span class="ss">:public_dns_name</span><span class="p">)</span>
-</span><span class='line'><span class="n">servers</span> <span class="o">=</span> <span class="n">instances</span> <span class="o">&lt;&lt;</span> <span class="s2">&quot;localhost&quot;</span>
-</span><span class='line'><span class="n">role</span> <span class="ss">:app</span> <span class="k">do</span> <span class="n">servers</span> <span class="k">end</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h2>注意点</h2>
-
-<ul>
-<li>同期するファイル数が多すぎる（数十万個）と、チェックサム比較で時間がかかってしまい同期が終了する前にAuto Scalingの死活監視によってインスタンスがterminateされ、またlaunchされterminateされるという恐怖のスケールループ地獄に陥る。。。（これ、制限できないのかな）</li>
-<li>あらかじめトラフィック増の時間帯が分かっていたら<a href="http://docs.amazonwebservices.com/AutoScaling/latest/DeveloperGuide/scaling_plan.html#schedule_time">Scheduled Action</a>で多めに設定しておいて自動スケールダウンさせた方が吉。</li>
-<li>マスタサーバがSPOFとなりうるので冗長化する、もしくはrsyncよりs3経由にした方が良い。</li>
-<li>急激なトラフィック増ではELB自体のスケールが追いつかない場合も。</li>
-</ul>
-
 ]]></content>
   </entry>
   

@@ -207,7 +207,7 @@ task
 console output
 
 script
-time sudo -u deploy rsync -av --delete -e 'ssh -c arcfour -i /home/deploy/.ssh/id_dsa -o StrictHostKeyChecking=no' deploy@admin.cdp:/usr/local/apps/project/ /usr/local/rails_apps/project &gt;&gt; /mnt/update.log 2&gt;&amp;1
+time sudo -u deploy rsync -av --delete -e &#39;ssh -c arcfour -i /home/deploy/.ssh/id_dsa -o StrictHostKeyChecking=no&#39; deploy@admin.cdp:/usr/local/apps/project/ /usr/local/rails_apps/project &gt;&gt; /mnt/update.log 2&gt;&amp;1
 /etc/init.d/unicorn upgrade &gt;&gt; /mnt/update.log 2&gt;&amp;1
 /etc/init.d/nginx restart &gt;&gt; /mnt/update.log 2&gt;&amp;1
 end script
@@ -309,6 +309,10 @@ end script
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2015/07/03/dynamodb-export-with-datapipeline/">Data PipelineによるDynamoDBのexport</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2015/05/01/notes-on-ec2-auto-recovery/">EC2 Auto Recoveryの注意点</a>
       </li>
     
@@ -342,10 +346,6 @@ end script
     
       <li class="post">
         <a href="/blog/2014/03/14/aws-game-day-japan-2014-spring/">AWS Game Day Japan 2014春を開催してきた</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2014/01/01/mysql-benchmarks-on-aws-i2-instance-ssds/">i2 instanceでMySQLベンチマーク</a>
       </li>
     
   </ul>

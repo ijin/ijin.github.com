@@ -4,7 +4,7 @@
   <title><![CDATA[@ijin]]></title>
   <link href="http://ijin.github.io/atom.xml" rel="self"/>
   <link href="http://ijin.github.io/"/>
-  <updated>2015-07-03T09:18:10+09:00</updated>
+  <updated>2015-08-12T11:53:47+09:00</updated>
   <id>http://ijin.github.io/</id>
   <author>
     <name><![CDATA[Michael H. Oshita]]></name>
@@ -12,6 +12,302 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[GitHubのeventをLambdaで処理してSlackへ通知]]></title>
+    <link href="http://ijin.github.io/blog/2015/08/06/github-to-lambda-to-slack/"/>
+    <updated>2015-08-06T01:46:00+09:00</updated>
+    <id>http://ijin.github.io/blog/2015/08/06/github-to-lambda-to-slack</id>
+    <content type="html"><![CDATA[<p>ちょっと前にGitHubのeventを<a href="https://aws.amazon.com/lambda/">AWS Lambda</a>で処理して、GitHubやSlackのAPIを叩く仕組みを作ったので、メモ。</p>
+
+<p>材料</p>
+
+<ul>
+<li>Github</li>
+<li>SNS</li>
+<li>KMS</li>
+<li>Lambda</li>
+<li>Slack</li>
+</ul>
+
+
+<p>やりたいことはこんな感じ。</p>
+
+<p><img src="https://lh3.googleusercontent.com/CZE1yk0yqzlizL0aK5xNBVTupVovIZCPhwp3CWwxOyc=w548-h334-no"></p>
+
+<p>あるGitHubリポジトリのissuesに特定のコメントが書き込まれると、そのユーザはプロジェクトのteamに自動で追加されて、Slackへ通知が流れるというモノです。</p>
+
+<h2>SNS</h2>
+
+<p>まずは媒介となるSNSの作成。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ aws sns create-topic --name github --region ap-northeast-1
+</span><span class='line'>{
+</span><span class='line'>    "TopicArn": "arn:aws:sns:ap-northeast-1:123456789012:github"
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+
+
+<p>次にSNSに対してpublishできるIAM userを作成</p>
+
+<p>IAM Policy</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>{
+</span><span class='line'>  "Version": "2012-10-17",
+</span><span class='line'>  "Statement": [
+</span><span class='line'>    {
+</span><span class='line'>      "Action": [
+</span><span class='line'>        "sns:Publish"
+</span><span class='line'>      ],
+</span><span class='line'>      "Sid": "Stmt0000000000000",
+</span><span class='line'>      "Resource": [
+</span><span class='line'>        "arn:aws:sns:ap-northeast-1:123456789012:github"
+</span><span class='line'>      ],
+</span><span class='line'>      "Effect": "Allow"
+</span><span class='line'>    }
+</span><span class='line'>  ]
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>GitHub</h2>
+
+<ul>
+<li>organization: <code>my_org</code></li>
+<li>repository: <code>test</code></li>
+<li>team: <code>reader</code></li>
+</ul>
+
+
+<h3>SNS連携</h3>
+
+<p><em>Webhooks &amp; Services</em> からAmazonSNSと連携</p>
+
+<p><img src="https://lh3.googleusercontent.com/u4I9Z_Ing9YzhmVCQhMACwYDVIJxJM7C-aDmyMsNL3o=w328-h190-no"></p>
+
+<p>AWS KEYには先ほど作成したIAMユーザのを利用。SNS topicのarnにはregionが書かれているにも関わらず、GitHubの方では明示的に指定が必要。</p>
+
+<p><img src="https://lh3.googleusercontent.com/kppZQx_RdhyC11LB7a0cPtppDUiKgfZBm6laYvRG3zA=w382-h289-no"></p>
+
+<h3>通知するeventの有効化</h3>
+
+<p>さて、GitHubではSNSの場合、<a href="https://api.github.com/hooks">hooksのjson</a>にある通り、<code>push</code>時のeventにしか対応していないので、</p>
+
+<figure class='code'><figcaption><span>hooks </span><a href='https://api.github.com/hooks'>link</a></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='json'><span class='line'><span class="s2">&quot;name&quot;</span><span class="err">:</span> <span class="s2">&quot;amazonsns&quot;</span><span class="err">,</span>
+</span><span class='line'><span class="s2">&quot;events&quot;</span><span class="err">:</span> <span class="p">[</span>
+</span><span class='line'>  <span class="s2">&quot;push&quot;</span>
+</span><span class='line'><span class="p">]</span><span class="err">,</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>GitHubの<a href="https://developer.github.com/v3/orgs/hooks/">Webhook API</a>に従って<code>issue_comment</code>を追加してやります。</p>
+
+<p>先ほどのSNS連携のhook idを取得するには<code>GET /orgs/:org/hooks</code></p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nb">export </span><span class="nv">HOOK_ID</span><span class="o">=</span><span class="k">$(</span>curl -H <span class="s1">&#39;Uer-Agent: ijin&#39;</span> -X GET -s -H <span class="s2">&quot;Authorization: token xxxxxxxxxx&quot;</span> <span class="se">\</span>
+</span><span class='line'>https://api.github.com/repos/my_org/test/hooks | jq <span class="s1">&#39;.[].id&#39;</span><span class="k">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>編集するには<code>PATCH /orgs/:org/hooks/:id</code></p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>curl -H <span class="s1">&#39;Uer-Agent: ijin&#39;</span> -X PATCH -s -H <span class="s2">&quot;Authorization: token xxxxxxxxxx&quot;</span> <span class="se">\</span>
+</span><span class='line'>https://api.github.com/repos/my_org/test/hooks/<span class="nv">$HOOK_ID</span> -d <span class="s1">&#39;{&quot;add_events&quot;: [&quot;issue_comment&quot;]}&#39;</span> | jq .
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Web UIからは分からないので、ついでに<code>reader</code> teamのIDも取得しておく</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>curl -H <span class="s1">&#39;Uer-Agent: ijin&#39;</span> -X GET -s -H <span class="s2">&quot;Authorization: token xxxxxxxxxx&quot;</span> <span class="se">\</span>
+</span><span class='line'>https://api.github.com/orgs/my_org/teams | jq <span class="s1">&#39;.[] | select(.name==&quot;reader&quot;)&#39;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>（※）User-Agentは<a href="https://developer.github.com/v3/#user-agent-required">必須</a></p>
+
+<p>これで、誰かがコメントをした時にもSNSが飛びます。</p>
+
+<h2>KMS</h2>
+
+<p>lambdaでは以下の認証情報を使うので、予めKMSで暗号化しておく。</p>
+
+<ul>
+<li>GitHub token</li>
+<li>Slack webhook</li>
+</ul>
+
+
+<p>rubyで暗号化する場合</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="nb">require</span> <span class="s1">&#39;aws-sdk&#39;</span>
+</span><span class='line'><span class="nb">require</span> <span class="s1">&#39;base64&#39;</span>
+</span><span class='line'><span class="n">kms</span> <span class="o">=</span> <span class="ss">Aws</span><span class="p">:</span><span class="ss">:KMS</span><span class="o">::</span><span class="no">Client</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="ss">region</span><span class="p">:</span> <span class="s1">&#39;us-east-1&#39;</span><span class="p">)</span>
+</span><span class='line'><span class="no">Base64</span><span class="o">.</span><span class="n">encode64</span> <span class="n">kms</span><span class="o">.</span><span class="n">encrypt</span><span class="p">(</span><span class="n">key_id</span><span class="p">:</span> <span class="s2">&quot;alias/ijin&quot;</span><span class="p">,</span> <span class="ss">plaintext</span><span class="p">:</span> <span class="s1">&#39;my plain text code&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">ciphertext_blob</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>javascriptの場合</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">var</span> <span class="nx">aws</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;aws-sdk&#39;</span><span class="p">);</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">kms</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">aws</span><span class="p">.</span><span class="nx">KMS</span><span class="p">({</span> <span class="nx">region</span><span class="o">:</span> <span class="s1">&#39;us-east-1&#39;</span> <span class="p">});</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">text</span> <span class="o">=</span> <span class="s1">&#39;my plain text code&#39;</span><span class="p">;</span>
+</span><span class='line'><span class="nx">kms</span><span class="p">.</span><span class="nx">encrypt</span><span class="p">({</span><span class="nx">KeyId</span><span class="o">:</span> <span class="s1">&#39;alias/ijin&#39;</span><span class="p">,</span> <span class="nx">Plaintext</span><span class="o">:</span> <span class="nx">text</span><span class="p">},</span> <span class="kd">function</span><span class="p">(</span><span class="nx">err</span><span class="p">,</span> <span class="nx">data</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>  <span class="k">if</span> <span class="p">(</span><span class="nx">err</span><span class="p">)</span> <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">err</span><span class="p">,</span> <span class="nx">err</span><span class="p">.</span><span class="nx">stack</span><span class="p">);</span>
+</span><span class='line'>  <span class="k">else</span> <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">data</span><span class="p">.</span><span class="nx">CiphertextBlob</span><span class="p">.</span><span class="nx">toString</span><span class="p">(</span><span class="s1">&#39;base64&#39;</span><span class="p">));</span>
+</span><span class='line'><span class="p">});</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>こうしておくと、SCMに入れても安心。</p>
+
+<p>また、KMSキーの実行権限もlambdaのroleに紐づけておく。</p>
+
+<p><img src="https://lh3.googleusercontent.com/oMHQ76XC7RQUCR_fEo9JyaMhPKSbnIdhCzjIWurEJ9c=w542-h358-no"></p>
+
+<h2>Lambda</h2>
+
+<p>Lambda function作成時にはSNSをevent sourceとして指定。</p>
+
+<p><img src="https://lh3.googleusercontent.com/uDXkEVLrXT1BdUSbiMu3v5lnwTqCoXOkv_nu07XVxkk=w555-h235-no"></p>
+
+<p>(※) KMSは現在us-eastにしかないので、そこ以外のregionでlambdaを実行する場合は、<code>timeout</code>は若干長めに指定して置くと良さげ</p>
+
+<p>コードはこんな感じ。</p>
+
+<ol>
+<li>GitHubからSNS hookを受け取って</li>
+<li>コメントした内容が<code>join</code>の場合</li>
+<li>KMSによってGitHubのtokenを復号化し</li>
+<li>そのユーザをteamへ追加する</li>
+<li>その後、別lambda functionでslackへ通知する</li>
+</ol>
+
+
+<div><script src='https://gist.github.com/ef105e192a030571d83f.js?file='></script>
+<noscript><pre><code></code></pre></noscript></div>
+
+
+
+
+<div><script src='https://gist.github.com/f83e33a6ae0acd83902a.js?file='></script>
+<noscript><pre><code></code></pre></noscript></div>
+
+
+<p>nodeのlibraryを使うともっとスッキリ書けたけど、1 function 1 fileで纏めたかったのでやや冗長なコードになっちゃいました。。</p>
+
+<h2>実行</h2>
+
+<p>GitHubでコメント</p>
+
+<p><img src="https://lh3.googleusercontent.com/KY7fwR-laXAJBQhJFv9VKzo_ydWFzeKep0G-3kgS0mM=w388-h128-no"></p>
+
+<p>Lambda発動</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="mi">2015</span><span class="o">-</span><span class="mi">08</span><span class="o">-</span><span class="mi">11</span><span class="nx">T15</span><span class="o">:</span><span class="mi">42</span><span class="o">:</span><span class="mf">53.108</span><span class="nx">Z</span>   <span class="nx">a09e3c80</span><span class="o">-</span><span class="mi">403</span><span class="nx">f</span><span class="o">-</span><span class="mi">1</span><span class="nx">e15</span><span class="o">-</span><span class="nx">bbb5</span><span class="o">-</span><span class="mi">55</span><span class="nx">b693433c0e</span>    <span class="nx">user</span><span class="o">:</span> <span class="nx">ijin2</span>
+</span><span class='line'><span class="mi">2015</span><span class="o">-</span><span class="mi">08</span><span class="o">-</span><span class="mi">11</span><span class="nx">T15</span><span class="o">:</span><span class="mi">42</span><span class="o">:</span><span class="mf">53.108</span><span class="nx">Z</span>  <span class="nx">a09e3c80</span><span class="o">-</span><span class="mi">403</span><span class="nx">f</span><span class="o">-</span><span class="mi">1</span><span class="nx">e15</span><span class="o">-</span><span class="nx">bbb5</span><span class="o">-</span><span class="mi">55</span><span class="nx">b693433c0e</span>    <span class="nx">comment</span><span class="o">:</span> <span class="nx">join</span>
+</span><span class='line'><span class="mi">2015</span><span class="o">-</span><span class="mi">08</span><span class="o">-</span><span class="mi">11</span><span class="nx">T15</span><span class="o">:</span><span class="mi">42</span><span class="o">:</span><span class="mf">55.417</span><span class="nx">Z</span>  <span class="nx">a09e3c80</span><span class="o">-</span><span class="mi">403</span><span class="nx">f</span><span class="o">-</span><span class="mi">1</span><span class="nx">e15</span><span class="o">-</span><span class="nx">bbb5</span><span class="o">-</span><span class="mi">55</span><span class="nx">b693433c0e</span>    <span class="nx">status</span> <span class="nx">code</span><span class="o">:</span> <span class="mi">200</span>
+</span><span class='line'><span class="mi">2015</span><span class="o">-</span><span class="mi">08</span><span class="o">-</span><span class="mi">11</span><span class="nx">T15</span><span class="o">:</span><span class="mi">42</span><span class="o">:</span><span class="mf">55.418</span><span class="nx">Z</span>  <span class="nx">a09e3c80</span><span class="o">-</span><span class="mi">403</span><span class="nx">f</span><span class="o">-</span><span class="mi">1</span><span class="nx">e15</span><span class="o">-</span><span class="nx">bbb5</span><span class="o">-</span><span class="mi">55</span><span class="nx">b693433c0e</span>    <span class="nx">response</span><span class="o">:</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="s2">&quot;state&quot;</span><span class="o">:</span> <span class="s2">&quot;pending&quot;</span><span class="p">,</span>
+</span><span class='line'>    <span class="s2">&quot;url&quot;</span><span class="o">:</span> <span class="s2">&quot;https://api.github.com/teams/1234567/memberships/ijin2&quot;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="mi">2015</span><span class="o">-</span><span class="mi">08</span><span class="o">-</span><span class="mi">11</span><span class="nx">T15</span><span class="o">:</span><span class="mi">42</span><span class="o">:</span><span class="mf">55.418</span><span class="nx">Z</span>  <span class="nx">a09e3c80</span><span class="o">-</span><span class="mi">403</span><span class="nx">f</span><span class="o">-</span><span class="mi">1</span><span class="nx">e15</span><span class="o">-</span><span class="nx">bbb5</span><span class="o">-</span><span class="mi">55</span><span class="nx">b693433c0e</span>    <span class="nx">Added</span> <span class="nx">to</span> <span class="nx">the</span> <span class="nx">team</span>
+</span><span class='line'><span class="nx">END</span> <span class="nx">RequestId</span><span class="o">:</span> <span class="nx">a09e3c80</span><span class="o">-</span><span class="mi">403</span><span class="nx">f</span><span class="o">-</span><span class="mi">1</span><span class="nx">e15</span><span class="o">-</span><span class="nx">bbb5</span><span class="o">-</span><span class="mi">55</span><span class="nx">b693433c0e</span>
+</span><span class='line'><span class="nx">REPORT</span> <span class="nx">RequestId</span><span class="o">:</span> <span class="nx">a09e3c80</span><span class="o">-</span><span class="mi">403</span><span class="nx">f</span><span class="o">-</span><span class="mi">1</span><span class="nx">e15</span><span class="o">-</span><span class="nx">bbb5</span><span class="o">-</span><span class="mi">55</span><span class="nx">b693433c0e</span> <span class="nx">Duration</span><span class="o">:</span> <span class="mf">5211.48</span> <span class="nx">ms</span> <span class="nx">Billed</span> <span class="nx">Duration</span><span class="o">:</span> <span class="mi">5300</span> <span class="nx">ms</span> <span class="nx">Memory</span> <span class="nx">Size</span><span class="o">:</span> <span class="mi">128</span> <span class="nx">MB</span>  <span class="nx">Max</span> <span class="nx">Memory</span> <span class="nx">Used</span><span class="o">:</span> <span class="mi">14</span> <span class="nx">MB</span>   
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="mi">2015</span><span class="o">-</span><span class="mi">08</span><span class="o">-</span><span class="mi">11</span><span class="nx">T15</span><span class="o">:</span><span class="mi">42</span><span class="o">:</span><span class="mf">56.058</span><span class="nx">Z</span>   <span class="nx">a25c66fc</span><span class="o">-</span><span class="mi">403</span><span class="nx">f</span><span class="o">-</span><span class="mi">11</span><span class="nx">e5</span><span class="o">-</span><span class="nx">b291</span><span class="o">-</span><span class="mi">25</span><span class="nx">d4ee441689</span>    <span class="nx">Received</span> <span class="nx">event</span><span class="o">:</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="s2">&quot;username&quot;</span><span class="o">:</span> <span class="s2">&quot;ijin2&quot;</span><span class="p">,</span>
+</span><span class='line'>    <span class="s2">&quot;icon_url&quot;</span><span class="o">:</span> <span class="s2">&quot;https://avatars.githubusercontent.com/u/12809425?v=3&quot;</span><span class="p">,</span>
+</span><span class='line'>    <span class="s2">&quot;text&quot;</span><span class="o">:</span> <span class="s2">&quot;Added to the team&quot;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="mi">2015</span><span class="o">-</span><span class="mi">08</span><span class="o">-</span><span class="mi">11</span><span class="nx">T15</span><span class="o">:</span><span class="mi">42</span><span class="o">:</span><span class="mf">58.310</span><span class="nx">Z</span>  <span class="nx">a25c66fc</span><span class="o">-</span><span class="mi">403</span><span class="nx">f</span><span class="o">-</span><span class="mi">1</span><span class="nx">e15</span><span class="o">-</span><span class="nx">b291</span><span class="o">-</span><span class="mi">25</span><span class="nx">d4ee441689</span>    <span class="mi">200</span>
+</span><span class='line'><span class="mi">2015</span><span class="o">-</span><span class="mi">08</span><span class="o">-</span><span class="mi">11</span><span class="nx">T15</span><span class="o">:</span><span class="mi">42</span><span class="o">:</span><span class="mf">58.311</span><span class="nx">Z</span>  <span class="nx">a25c66fc</span><span class="o">-</span><span class="mi">403</span><span class="nx">f</span><span class="o">-</span><span class="mi">1</span><span class="nx">e15</span><span class="o">-</span><span class="nx">b291</span><span class="o">-</span><span class="mi">25</span><span class="nx">d4ee441689</span>    <span class="nx">ok</span>
+</span><span class='line'><span class="mi">2015</span><span class="o">-</span><span class="mi">08</span><span class="o">-</span><span class="mi">11</span><span class="nx">T15</span><span class="o">:</span><span class="mi">42</span><span class="o">:</span><span class="mf">58.311</span><span class="nx">Z</span>  <span class="nx">a25c66fc</span><span class="o">-</span><span class="mi">403</span><span class="nx">f</span><span class="o">-</span><span class="mi">1</span><span class="nx">e15</span><span class="o">-</span><span class="nx">b291</span><span class="o">-</span><span class="mi">25</span><span class="nx">d4ee441689</span>    <span class="nx">Successfully</span> <span class="nx">posted</span> <span class="nx">to</span> <span class="nx">Slack</span><span class="o">!</span>
+</span><span class='line'><span class="nx">END</span> <span class="nx">RequestId</span><span class="o">:</span> <span class="nx">a25c66fc</span><span class="o">-</span><span class="mi">403</span><span class="nx">f</span><span class="o">-</span><span class="mi">11</span><span class="nx">e5</span><span class="o">-</span><span class="nx">b291</span><span class="o">-</span><span class="mi">25</span><span class="nx">d4ee441689</span>
+</span><span class='line'><span class="nx">REPORT</span> <span class="nx">RequestId</span><span class="o">:</span> <span class="nx">a25c66fc</span><span class="o">-</span><span class="mi">403</span><span class="nx">f</span><span class="o">-</span><span class="mi">1</span><span class="nx">e15</span><span class="o">-</span><span class="nx">b291</span><span class="o">-</span><span class="mi">25</span><span class="nx">d4ee441689</span> <span class="nx">Duration</span><span class="o">:</span> <span class="mf">2268.06</span> <span class="nx">ms</span> <span class="nx">Billed</span> <span class="nx">Duration</span><span class="o">:</span> <span class="mi">2300</span> <span class="nx">ms</span> <span class="nx">Memory</span> <span class="nx">Size</span><span class="o">:</span> <span class="mi">128</span> <span class="nx">MB</span>  <span class="nx">Max</span> <span class="nx">Memory</span> <span class="nx">Used</span><span class="o">:</span> <span class="mi">14</span> <span class="nx">MB</span>   
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>teamへの追加（招待）</p>
+
+<p><img src="https://lh3.googleusercontent.com/lzamiiNraeHYD7FI6rrb8-403hxjzVRrAqGG6k3sBcc=w474-h191-no"></p>
+
+<p>Slackへ通知</p>
+
+<p><img src="https://lh3.googleusercontent.com/EeEiHydBDc29YhVI6MBUcdj1WUzMXnf_Sis3U-URqhw=w388-h147-no"></p>
+
+<h2>結論</h2>
+
+<p>簡単にできますね。実はこんな風に作っちゃった2週間後ぐらいにAWSの人も似たような<a href="https://aws.amazon.com/blogs/compute/dynamic-github-actions-with-aws-lambda/">ブログ</a>を書いていた事を発見しましたが。まあ、こっちはKMSとSlack使ってるので。。</p>
+
+<p>後、KMSのアイコンが欲しい！</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Data PipelineによるDynamoDBのexport]]></title>
@@ -3010,140 +3306,6 @@ server2$ sudo cloudconfig peer_add server1 server1_local_ip(10.x.x.x)
 
 <p>Fusion-IOに比べて6割ってところでしょうか。
 今回はSSDのephemeral disk1本で試したので、RAID0にするともうちょっと違ってくると思います。</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[非ELBなAutoscalingによる自動復旧]]></title>
-    <link href="http://ijin.github.io/blog/2013/02/08/self-healing-with-non-elb-autoscaling/"/>
-    <updated>2013-02-08T09:29:00+09:00</updated>
-    <id>http://ijin.github.io/blog/2013/02/08/self-healing-with-non-elb-autoscaling</id>
-    <content type="html"><![CDATA[<p>バッチ処理等、サーバの冗長化が難しく仕方なく1台で動かさざるを得ない場合があります。でも可用性は確保したい。また、Pacemakerやkeepalived等できなくはないが、お金もあんまりかけられない場合もあります。
-そんな時にAWS上でよく使うのがAutoscalingによる1台構成です。最低台数・最大台数共に「1」に設定しておけばEC2インスタンスが壊れても自動的に新しいのにリプレースされて復旧されます。</p>
-
-<p>しかし、Autoscalingのhealth-check-typeを「EC2」にした場合、インスタンスの起動状態（running, stopped）しか見てくれないので、今までこの構成を実現するのにELBによる死活監視が必要でした。インスタンスがHTTPサーバじゃない場合、ちょっとムダです。</p>
-
-<p>ところが、ちょっと前にAutoscalingがインスタンスの健康状態をチェックするEC2 status checkに<a href="http://aws.amazon.com/about-aws/whats-new/2012/12/14/auto-scaling-now-uses-amazon-ec2-status-checks/">対応</a>し、ELBが不要になったはずなので試してみました。</p>
-
-<p>今回は各種AWSサービスに対応した統合されたPython版の<a href="http://aws.amazon.com/cli/">AWS CLI</a>ツールを使います。</p>
-
-<h3>セットアップ</h3>
-
-<p>まずは、ツールのインストール</p>
-
-<pre><code>sudo apt-get install python-pip
-sudo pip install awscli
-complete -C aws_completer aws
-</code></pre>
-
-<h3>Autoscaling設定</h3>
-
-<p>Launch Configの設定</p>
-
-<pre><code>aws autoscaling create-launch-configuration --image-id ami-4a12aa4b \
---launch-configuration-name test-lc --instance-type t1.micro --key-name ijin-tokyo \
---security-groups test --iam-instance-profile test_iam
-
-{
-    "ResponseMetadata": {
-        "RequestId": "c0e66974-7103-11e2-9780-a53199bac60e"
-    }
-}
-</code></pre>
-
-<p>Scaling Groupの設定</p>
-
-<pre><code>aws autoscaling create-auto-scaling-group --auto-scaling-group-name test-sg \
---launch-configuration-name test-lc --min-size 1 --max-size 1 \
---health-check-grace-period 180 --tags '{"key":"Name", "value":"as-test"}' \
-'{"key":"Use Case", "value":"test"}' --availability-zones ap-northeast-1a --health-check-type "EC2"
-
-{
-    "ResponseMetadata": {
-        "RequestId": "e3808ef3-7103-11e2-9780-a53199bac60e"
-    }
-}
-</code></pre>
-
-<p>通知</p>
-
-<pre><code>aws autoscaling put-notification-configuration --auto-scaling-group-name test-sg \
---topic-arn arn:aws:sns:ap-northeast-1:521026608000:test \
---notification-types autoscaling:EC2_INSTANCE_LAUNCH autoscaling:EC2_INSTANCE_TERMINATE \
-autoscaling:EC2_INSTANCE_LAUNCH_ERROR autoscaling:EC2_INSTANCE_TERMINATE_ERROR
-
-{
-    "ResponseMetadata": {
-        "RequestId": "f68359be-7103-11e2-9a1a-5f77b12b596e"
-    }
-}
-</code></pre>
-
-<p>レスポンスがjsonなのが良いですね。
-また、<a href="http://aws.amazon.com/developertools/2535">Auto Scaling Command Line Tool</a>と違って、tagでスペースが使えるようになったのが素晴らしい！</p>
-
-<p>以上の設定でAutoscalingによってインスタンスが1台立ち上がります。</p>
-
-<h3>自動復旧</h3>
-
-<p>最後にインスタンス不調（status check failure）をシミュレートする為にインスタンス内からネットワークを落とします。</p>
-
-<pre><code>ubuntu@ip-10-128-25-25:~$ sudo ifdown eth0
-</code></pre>
-
-<p>これでstatus checkがfailし、Autoscalingが自動的に新しいインスタンスと取り替えてくれるはず！</p>
-
-<p><img src="https://lh6.googleusercontent.com/-9FpM6ywjg84/URN6q29FD-I/AAAAAAAAAsw/paP8HBnisPE/s161/aws_status_check_2013-02-07+18.06.20.png"></p>
-
-<p><img src="https://lh5.googleusercontent.com/-5avxLvp5RH8/URN6n-ihwiI/AAAAAAAAAso/zOHxli4vM8o/s702/aws_instance_check_2013-02-07+18.09.19.png"></p>
-
-<p>と、期待して待っていたらなかなかアラートメールが来ません。。</p>
-
-<p>設定間違ったかなーっていろいろ見直していたら20分経った頃にやっと到着。</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>Service: AWS Auto Scaling
-</span><span class='line'>Time: 2013-02-07T09:17:42.304Z
-</span><span class='line'>RequestId: f395660b-4847-4415-ad33-f8cc5091bdb3
-</span><span class='line'>Event: autoscaling:EC2_INSTANCE_TERMINATE
-</span><span class='line'>AccountId: 521026608000
-</span><span class='line'>AutoScalingGroupName: test-sg
-</span><span class='line'>AutoScalingGroupARN: arn:aws:autoscaling:ap-northeast-1:521026608000:autoScalingGroup:a036877b-dab7-4e5d-a6e1-1d3424b20d14:autoScalingGroupName/test-sg
-</span><span class='line'>ActivityId: f395660b-4837-4415-ad33-f8cc5071bdb3
-</span><span class='line'>Description: Terminating EC2 instance: i-15fadd17
-</span><span class='line'>Cause: At 2013-02-07T09:16:57Z an instance was taken out of service in response to a system health-check.
-</span><span class='line'>StartTime: 2013-02-07T09:16:57.389Z
-</span><span class='line'>EndTime: 2013-02-07T09:17:42.304Z
-</span><span class='line'>StatusCode: InProgress
-</span><span class='line'>StatusMessage:
-</span><span class='line'>Progress: 50
-</span><span class='line'>EC2InstanceId: i-15fadd17
-</span><span class='line'>Details: {}</span></code></pre></td></tr></table></div></figure>
-
-
-<p>うーん。動く事は動いたけど、ちょっと時間がかかるなぁ。</p>
-
-<p>この後何回か試してみたけど、Autoscaling発動までどれも20分ぐらいかかりました。</p>
-
-<h3>結論</h3>
-
-<p>20分程サーバダウンが許容できるようなゆるめの条件に限定した場合には非ELBでも使えるかな。まあ、それでも適用する場面は多々あるとは思いますが。（早める方法あるのかなー。）</p>
 ]]></content>
   </entry>
   

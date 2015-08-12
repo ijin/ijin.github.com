@@ -9,8 +9,7 @@
   <meta name="author" content="Michael H. Oshita">
 
   
-  <meta name="description" content="新年明けました。おめでとうございます。 すっかり12月のaws/mysql advent calendarに乗り遅れたので、AWSのi2 instanceでのMySQLのベンチマークを勝手におまけとして公表します。
-以前取ったhi1.4xlargeとの比較になります。 構築 &hellip;">
+  <meta name="description" content="過去に2度参加した事（東京・ラスベガス）があるGame Dayに今回は運営側に周りました。3/15に行われるJAWS Days 2014の前夜祭という位置づけです。 日本では前回、東京のみだったけど今回は東京・大阪・名古屋・仙台と4都市同時開催。 お題 前回と全く一緒。。 &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -88,6 +87,118 @@ document.write = function(html) {
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/03/14/aws-game-day-japan-2014-spring/">AWS Game Day Japan 2014春を開催してきた</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-03-14T23:11:00+09:00" pubdate data-updated="true">Mar 14<span>th</span>, 2014</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>過去に2度参加した事（東京・ラスベガス）がある<a href="/blog/2013/06/10/aws-game-day-tokyo-2013/">Game Day</a>に今回は運営側に周りました。3/15に行われる<a href="http://jawsdays2014.jaws-ug.jp/">JAWS Days 2014</a>の前夜祭という位置づけです。</p>
+
+<p>日本では前回、東京のみだったけど<a href="http://jaws-days.doorkeeper.jp/events/8945">今回</a>は東京・大阪・名古屋・仙台と4都市同時開催。</p>
+
+<h2>お題</h2>
+
+<p>前回と全く一緒。。SQSを使った疎結合でオートスケーリングする画像変換処理システム（ｻｰｾﾝ）。まあ、1年前と比べてAWSの機能やできる事も大分変わったので2回目の人もいろいろ工夫のしようがあったかと。</p>
+
+<h2>チーム</h2>
+
+<p>1チーム3〜4人に別れて計14チームとなりました。</p>
+
+<p><strong>東京</strong></p>
+
+<ul>
+<li>Cookie Devil</li>
+<li>Bluescreens</li>
+<li>沖縄</li>
+<li>Blue Light of Death</li>
+<li>時計じかけのオレンジ</li>
+<li>I am みどり</li>
+</ul>
+
+
+<p><strong>名古屋</strong></p>
+
+<ul>
+<li>Shachihoko</li>
+<li>ななちゃんだがや</li>
+<li>ゴーゴーひつまぶし</li>
+</ul>
+
+
+<p><strong>大阪</strong></p>
+
+<ul>
+<li>大都会</li>
+<li>AWS学坊や</li>
+<li>初心者</li>
+</ul>
+
+
+<p><strong>仙台</strong></p>
+
+<ul>
+<li>Zao</li>
+<li>八重の桜</li>
+</ul>
+
+
+<h2>内容</h2>
+
+<p>当日の迫力ある詳しい内容は参加者の方がきっとブログに書いてくれるはず！その代わり、運営側で評価用に使っていた攻撃・修復内容のまとめを公開して欲しいというツィートを頂いたので下記に表示しておきます。</p>
+
+<div class='embed tweet'><blockquote class="twitter-tweet"><p>Gameday楽しめました。運営ありがとうございました。攻撃のサマリシート翻訳は誰?と思ってましたが恐縮です。あのシート何らかの形で公開頂けるとありがたいです。 QT <a href="https://twitter.com/ijin">@ijin</a>: 14チームのGoogleスプレッドシートのリアルタイム翻訳は結構ギリギリだった。</p>&mdash; Ryo Suzuki (@suzryo) <a href="https://twitter.com/suzryo/statuses/444450014627000320">March 14, 2014</a></blockquote>
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
+
+
+<p></p>
+
+<p>（実は今回もイベントオーナーのMiles Wardが来日していたので、Google Spreadsheetに書き込まれていた内容を運営側で逐一翻訳していました）</p>
+
+<iframe src="https://docs.google.com/spreadsheets/d/16-qSbw_XQGgl_4bYqy9REL-nq15yOVj2f1HBJvMy_qM/pubhtml?widget=true&amp;headers=false" height="500" width="750"></iframe>
+
+
+<p>個人的にはs3の「Requester Payオプション有効化」がお気に入りでしたね。</p>
+
+<h2>結果</h2>
+
+<p>総合優勝はチーム<strong>「AWS学坊や」</strong>の優勝となりました。おめでとうございます！
+（地方賞はすみません、総合結果評議中で聞けてませんでした）</p>
+
+<p>今回、運営側のトラブルで攻撃対象が重複してしまう等いろいろ問題がありましたが、開催する側としても楽しかったです。次回はさらにチャレンジングな内容にしていきたいと思っています。</p>
+
+<h2>JAWS DAYS</h2>
+
+<p>明日の<a href="http://jawsdays2014.jaws-ug.jp/">JAWS DAYS 2014</a>はスタッフとしていろいろ動くので今回は手短に。</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -1620,167 +1731,6 @@ server2$ sudo cloudconfig peer_add server1 server1_local_ip(10.x.x.x)
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2013/02/08/self-healing-with-non-elb-autoscaling/">非ELBなAutoscalingによる自動復旧</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-02-08T09:29:00+09:00" pubdate data-updated="true">Feb 8<span>th</span>, 2013</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>バッチ処理等、サーバの冗長化が難しく仕方なく1台で動かさざるを得ない場合があります。でも可用性は確保したい。また、Pacemakerやkeepalived等できなくはないが、お金もあんまりかけられない場合もあります。
-そんな時にAWS上でよく使うのがAutoscalingによる1台構成です。最低台数・最大台数共に「1」に設定しておけばEC2インスタンスが壊れても自動的に新しいのにリプレースされて復旧されます。</p>
-
-<p>しかし、Autoscalingのhealth-check-typeを「EC2」にした場合、インスタンスの起動状態（running, stopped）しか見てくれないので、今までこの構成を実現するのにELBによる死活監視が必要でした。インスタンスがHTTPサーバじゃない場合、ちょっとムダです。</p>
-
-<p>ところが、ちょっと前にAutoscalingがインスタンスの健康状態をチェックするEC2 status checkに<a href="http://aws.amazon.com/about-aws/whats-new/2012/12/14/auto-scaling-now-uses-amazon-ec2-status-checks/">対応</a>し、ELBが不要になったはずなので試してみました。</p>
-
-<p>今回は各種AWSサービスに対応した統合されたPython版の<a href="http://aws.amazon.com/cli/">AWS CLI</a>ツールを使います。</p>
-
-<h3>セットアップ</h3>
-
-<p>まずは、ツールのインストール</p>
-
-<pre><code>sudo apt-get install python-pip
-sudo pip install awscli
-complete -C aws_completer aws
-</code></pre>
-
-<h3>Autoscaling設定</h3>
-
-<p>Launch Configの設定</p>
-
-<pre><code>aws autoscaling create-launch-configuration --image-id ami-4a12aa4b \
---launch-configuration-name test-lc --instance-type t1.micro --key-name ijin-tokyo \
---security-groups test --iam-instance-profile test_iam
-
-{
-    "ResponseMetadata": {
-        "RequestId": "c0e66974-7103-11e2-9780-a53199bac60e"
-    }
-}
-</code></pre>
-
-<p>Scaling Groupの設定</p>
-
-<pre><code>aws autoscaling create-auto-scaling-group --auto-scaling-group-name test-sg \
---launch-configuration-name test-lc --min-size 1 --max-size 1 \
---health-check-grace-period 180 --tags '{"key":"Name", "value":"as-test"}' \
-'{"key":"Use Case", "value":"test"}' --availability-zones ap-northeast-1a --health-check-type "EC2"
-
-{
-    "ResponseMetadata": {
-        "RequestId": "e3808ef3-7103-11e2-9780-a53199bac60e"
-    }
-}
-</code></pre>
-
-<p>通知</p>
-
-<pre><code>aws autoscaling put-notification-configuration --auto-scaling-group-name test-sg \
---topic-arn arn:aws:sns:ap-northeast-1:521026608000:test \
---notification-types autoscaling:EC2_INSTANCE_LAUNCH autoscaling:EC2_INSTANCE_TERMINATE \
-autoscaling:EC2_INSTANCE_LAUNCH_ERROR autoscaling:EC2_INSTANCE_TERMINATE_ERROR
-
-{
-    "ResponseMetadata": {
-        "RequestId": "f68359be-7103-11e2-9a1a-5f77b12b596e"
-    }
-}
-</code></pre>
-
-<p>レスポンスがjsonなのが良いですね。
-また、<a href="http://aws.amazon.com/developertools/2535">Auto Scaling Command Line Tool</a>と違って、tagでスペースが使えるようになったのが素晴らしい！</p>
-
-<p>以上の設定でAutoscalingによってインスタンスが1台立ち上がります。</p>
-
-<h3>自動復旧</h3>
-
-<p>最後にインスタンス不調（status check failure）をシミュレートする為にインスタンス内からネットワークを落とします。</p>
-
-<pre><code>ubuntu@ip-10-128-25-25:~$ sudo ifdown eth0
-</code></pre>
-
-<p>これでstatus checkがfailし、Autoscalingが自動的に新しいインスタンスと取り替えてくれるはず！</p>
-
-<p><img src="https://lh6.googleusercontent.com/-9FpM6ywjg84/URN6q29FD-I/AAAAAAAAAsw/paP8HBnisPE/s161/aws_status_check_2013-02-07+18.06.20.png"></p>
-
-<p><img src="https://lh5.googleusercontent.com/-5avxLvp5RH8/URN6n-ihwiI/AAAAAAAAAso/zOHxli4vM8o/s702/aws_instance_check_2013-02-07+18.09.19.png"></p>
-
-<p>と、期待して待っていたらなかなかアラートメールが来ません。。</p>
-
-<p>設定間違ったかなーっていろいろ見直していたら20分経った頃にやっと到着。</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>Service: AWS Auto Scaling
-</span><span class='line'>Time: 2013-02-07T09:17:42.304Z
-</span><span class='line'>RequestId: f395660b-4847-4415-ad33-f8cc5091bdb3
-</span><span class='line'>Event: autoscaling:EC2_INSTANCE_TERMINATE
-</span><span class='line'>AccountId: 521026608000
-</span><span class='line'>AutoScalingGroupName: test-sg
-</span><span class='line'>AutoScalingGroupARN: arn:aws:autoscaling:ap-northeast-1:521026608000:autoScalingGroup:a036877b-dab7-4e5d-a6e1-1d3424b20d14:autoScalingGroupName/test-sg
-</span><span class='line'>ActivityId: f395660b-4837-4415-ad33-f8cc5071bdb3
-</span><span class='line'>Description: Terminating EC2 instance: i-15fadd17
-</span><span class='line'>Cause: At 2013-02-07T09:16:57Z an instance was taken out of service in response to a system health-check.
-</span><span class='line'>StartTime: 2013-02-07T09:16:57.389Z
-</span><span class='line'>EndTime: 2013-02-07T09:17:42.304Z
-</span><span class='line'>StatusCode: InProgress
-</span><span class='line'>StatusMessage:
-</span><span class='line'>Progress: 50
-</span><span class='line'>EC2InstanceId: i-15fadd17
-</span><span class='line'>Details: {}</span></code></pre></td></tr></table></div></figure>
-
-
-<p>うーん。動く事は動いたけど、ちょっと時間がかかるなぁ。</p>
-
-<p>この後何回か試してみたけど、Autoscaling発動までどれも20分ぐらいかかりました。</p>
-
-<h3>結論</h3>
-
-<p>20分程サーバダウンが許容できるようなゆるめの条件に限定した場合には非ELBでも使えるかな。まあ、それでも適用する場面は多々あるとは思いますが。（早める方法あるのかなー。）</p>
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/blog/page/3/">&larr; Older</a>
@@ -1796,6 +1746,10 @@ autoscaling:EC2_INSTANCE_LAUNCH_ERROR autoscaling:EC2_INSTANCE_TERMINATE_ERROR
     <section>
   <h1>Recent Posts</h1>
   <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2015/08/06/github-to-lambda-to-slack/">GitHubのeventをLambdaで処理してSlackへ通知</a>
+      </li>
     
       <li class="post">
         <a href="/blog/2015/07/02/dynamodb-export-with-datapipeline/">Data PipelineによるDynamoDBのexport</a>
@@ -1831,10 +1785,6 @@ autoscaling:EC2_INSTANCE_LAUNCH_ERROR autoscaling:EC2_INSTANCE_TERMINATE_ERROR
     
       <li class="post">
         <a href="/blog/2014/04/21/chefconf-2014/">#ChefConf 2014に参加してきた</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2014/03/14/aws-game-day-japan-2014-spring/">AWS Game Day Japan 2014春を開催してきた</a>
       </li>
     
   </ul>

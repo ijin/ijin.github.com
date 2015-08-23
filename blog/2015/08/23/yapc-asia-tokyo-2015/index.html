@@ -5,12 +5,11 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>i2 instanceでMySQLベンチマーク - @ijin</title>
+  <title>YAPC::Asia Tokyo 2015に参加してきた - @ijin</title>
   <meta name="author" content="Michael H. Oshita">
 
   
-  <meta name="description" content="新年明けました。おめでとうございます。 すっかり12月のaws/mysql advent calendarに乗り遅れたので、AWSのi2 instanceでのMySQLのベンチマークを勝手におまけとして公表します。
-以前取ったhi1.4xlargeとの比較になります。 構築 &hellip;">
+  <meta name="description" content="例年この時期は海外にいるので、なかなか行けなかったYAPC::Asia Tokyo 2015にやっと参加してきた。 スケジュール上、今年は参加できるぞって意気込んでいたら、まさかのSold Out&#8230; それをtwitter上で嘆いていたら、@kenjiskywalkerさんから救いの手が &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -19,7 +18,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://ijin.github.io/blog/2014/01/01/mysql-benchmarks-on-aws-i2-instance-ssds/">
+  <link rel="canonical" href="http://ijin.github.io/blog/2015/08/23/yapc-asia-tokyo-2015/">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <link href="/stylesheets/data-table.css" rel="stylesheet" type="text/css" />
@@ -91,7 +90,7 @@ document.write = function(html) {
   
   <header>
     
-      <h1 class="entry-title">I2 instanceでMySQLベンチマーク</h1>
+      <h1 class="entry-title">YAPC::Asia Tokyo 2015に参加してきた</h1>
     
     
       <p class="meta">
@@ -107,89 +106,70 @@ document.write = function(html) {
   
 
 
-<time datetime="2014-01-01T00:00:00+09:00" pubdate data-updated="true">Jan 1<span>st</span>, 2014</time>
+<time datetime="2015-08-23T15:27:00+09:00" pubdate data-updated="true">Aug 23<span>rd</span>, 2015</time>
         
       </p>
     
   </header>
 
 
-<div class="entry-content"><p>新年明けました。おめでとうございます。</p>
+<div class="entry-content"><p>例年この時期は海外にいるので、なかなか行けなかったYAPC::Asia Tokyo 2015にやっと参加してきた。</p>
 
-<p>すっかり12月の<a href="http://www.zusaar.com/event/1117005">aws</a>/<a href="http://www.zusaar.com/event/1847003">mysql</a> advent calendarに乗り遅れたので、AWSのi2 instanceでのMySQLのベンチマークを勝手におまけとして公表します。
-以前取ったhi1.4xlargeとの比較になります。</p>
+<p>スケジュール上、今年は参加できるぞって意気込んでいたら、まさかのSold Out&#8230;</p>
 
-<h2>構築</h2>
+<p>それをtwitter上で嘆いていたら、<a href="https://twitter.com/kenjiskywalker">@kenjiskywalker</a>さんから救いの手が！</p>
 
-<p>SSDディスクはAWSが<a href="http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/i2-instances.html#i2-instances-diskperf">推奨する</a>over-provisioningを有効にする為に10%を非partitionし、それぞれ720Gでパーティション作成。</p>
-
-<pre><code>sudo mdadm --create /dev/md0 --level 0 --raid-devices 8 /dev/xvdb1 /dev/xvdc1  /dev/xvdd1 /dev/xvde1 /dev/xvdf1 /dev/xvdg1 /dev/xvdh1 /dev/xvdi1
-sudo mkfs.xfs -f -b size=4096 -i size=512 -l size=64m /dev/md0
-sudo mount -t xfs -o noatime,logbufs=8 /dev/md0 /data
-</code></pre>
-
-<p>OSはkernel versionが3.8以上が<a href="http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/i2-instances.html#i2-instances-diskperf">望ましい</a>のでいつものLTSではなく、Ubuntu Server 13.10のHVMタイプ (ami-b93264d0)</p>
-
-<h2>sysbench</h2>
-
-<p>やり方やパラメータは<a href="/blog/2013/02/22/mysql-benchmarks-on-aws-ssd-vs-fusion-io/">前回</a>の計測方法と同じ。i2.8xlaregは32coreですが、今回はhi1.4xlargeの時と比較する為に敢えて16スレッドで計測しました。</p>
-
-<ul>
-<li>sysbenchのoltpモード</li>
-<li>データサイズは12G（5000万件）</li>
-<li>readonly</li>
-<li>uniform（フルスキャン）</li>
-</ul>
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr"><a href="https://twitter.com/ijin">@ijin</a> Tシャツ付きの前売り券購入したのですが、スピーカー枠で参加できそうなのでお譲りしましょうか？</p>&mdash; kenjiskywalker (@kenjiskywalker) <a href="https://twitter.com/kenjiskywalker/status/619079064880463872">July 9, 2015</a></blockquote>
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
 
 
-<p>コマンド</p>
+<p>感謝！</p>
 
-<pre><code>time sysbench --test=oltp --oltp-table-size=50000000 --db-driver=mysql --mysql-user=root --num-threads=16 --max-requests=0 --max-time=180 --init-rng=on --oltp-read-only=on --oltp-dist-type=uniform 2&gt;&amp;1 run
-</code></pre>
+<p>さて、一口コメント</p>
 
-<p>トランザクション推移</p>
+<p><strong>Consulと自作OSSを活用した100台規模のWebサービス運用</strong>] - <a href="https://twitter.com/fujiwara">@fujiwara</a></p>
 
-<p><img src="https://docs.google.com/spreadsheet/oimg?key=0Aliw9SoXFJNMdFhhcHJkcDA5MGlackNHTXlPcWt0VWc&oid=5&zx=jwv2ytp6xwx3"></p>
+<p><a href="https://github.com/sorah/mamiya">mamiya</a>や<a href="http://aws.amazon.com/codedeploy/">AWS CodeDeploy</a>にインスパイアされた<a href="https://github.com/fujiwara/stretcher">stretcher</a>を使ったイベントベースのdeploy周りが面白かった。s3からの取得失敗時の処理は考えてないといけない。</p>
 
-<p>レスポンスタイム推移</p>
+<p><strong>Conway&#8217;s Law of Distributed Work</strong> - Casey West</p>
 
-<p><img src="https://docs.google.com/spreadsheet/oimg?key=0Aliw9SoXFJNMdFhhcHJkcDA5MGlackNHTXlPcWt0VWc&oid=6&zx=sfl6ocblw5ob"></p>
+<p>最近はリモートワークが殆どなので、なかなか共感できる部分が多かった。コミュニケーション大事。</p>
 
-<p>速いですね。</p>
+<p><strong>大規模でも小中規模サービスでも捗る microservices な Web サービスのつくりかた</strong> - <a href="https://twitter.com/yappo">@Yappo</a></p>
 
-<h2>tpcc-mysql</h2>
+<p>どのタイミングでコンポーネントの分割をするか。ちゃんと設計しようねって話</p>
 
-<p>こちらも<a href="/blog/2013/02/22/mysql-benchmarks-on-aws-ssd-vs-fusion-io/">前回</a>)の計測方法と同じ。</p>
+<p><strong>ISUCONの勝ち方</strong> - <a href="https://twitter.com/kazeburo">@kazeburo</a></p>
 
-<ul>
-<li>500 warehouses (50GBぐらい)</li>
-<li>24GB Buffer pool</li>
-<li>16スレッド</li>
-<li>1時間実行</li>
-</ul>
+<p>ポイントがよく纏められていて、うちらのチームでも多くを実践していた。まだ勝ててないけど。
+CPUやB+ Treeの気持ちになって考える事が大事。</p>
+
+<p><strong>我々はどのように冗長化を失敗したのか</strong> - <a href="https://twitter.com/kenjiskywalker">@kenjiskywalker</a></p>
+
+<p>Networkが不安定だと、様々な冗長化に仕組みがうまく作動しない。検証はProductionと同じ環境でやりましょう。</p>
+
+<p><strong>Profiling &amp; Optimizing in Go</strong> - Brad Fitzpatrick</p>
+
+<p>Bradさんのライブコーディング。奥が深かった。</p>
+
+<p><strong>LT</strong></p>
+
+<p>どれもこれもハイレベル！</p>
+
+<p>特に素晴らしかったのが、テンポの良い<a href="https://twitter.com/yoku0825">@yoku0825</a>さんの<strong>MySQL 5.7の罠があなたを狙っている</strong> と超早業を披露した<a href="http://conbu.net">CONBU</a>さんの<strong>CONBUの道具箱</strong></p>
+
+<iframe allowfullscreen="" frameborder="0" height="355" marginheight="0" marginwidth="0" scrolling="no" src="//www.slideshare.net/slideshow/embed_code/key/dJ6c2p0tc7QM3B" style="border-width: 1px; border: 1px solid #CCC; margin-bottom: 5px; max-width: 100%;" width="425"> </iframe>
 
 
-<p>コマンド</p>
+<p> <br /></p>
 
-<pre><code> tpcc_load localhost tpcc root "" 500
- tpcc_start -d tpcc -u root -p "" -w 500 -c 16 -r 300 -l 3600
-</code></pre>
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">突然目の前に無線APが生えてきた <a href="https://twitter.com/hashtag/yapcasia?src=hash">#yapcasia</a> <a href="http://t.co/UWcSzvRv08">pic.twitter.com/UWcSzvRv08</a></p>&mdash; ぷりんたいは求職中です、 (@spacepro_be) <a href="https://twitter.com/spacepro_be/status/635004222291902464">August 22, 2015</a></blockquote>
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
 
-<p><img src="https://docs.google.com/spreadsheet/oimg?key=0Aliw9SoXFJNMdFhhcHJkcDA5MGlackNHTXlPcWt0VWc&oid=7&zx=fc6nz8iel3ez"></p>
 
-<p>hi1.4xlargeはSSD1台で計測した事を考えると、同価格帯のi2.4xlarge（SSD4台）の半分（SSD2台）のパフォーマンスが出るのは妥当ですね。</p>
+<p>いやー、非常に楽しめました。運営の皆様、ありがとうございました！！</p>
 
-<h2>fio</h2>
-
-<p>ついでにfioでそれぞれRAID0した場合のベンチマークも取ってみたけど、<a href="http://d.hatena.ne.jp/rx7/20131224/p1">並河さん</a>と結果が違ってwriteがスケールしてます。OSとmkfs.xfsのオプションしか違わないはずだけど。。</p>
-
-<p><img src="https://docs.google.com/spreadsheet/oimg?key=0Aliw9SoXFJNMdFhhcHJkcDA5MGlackNHTXlPcWt0VWc&oid=9&zx=v7nbywda04bp"></p>
-
-<h2>その他</h2>
-
-<p>いやー。spot instanceがないので計測だけで結構かかってしまった。</p>
-
-<p>しかし、なんでhi1世代の次はhi2ではなく、i2なんだろう。</p>
+<p>さて、これから出国ー。</p>
 </div>
 
 
@@ -212,12 +192,12 @@ sudo mount -t xfs -o noatime,logbufs=8 /dev/md0 /data
   
 
 
-<time datetime="2014-01-01T00:00:00+09:00" pubdate data-updated="true">Jan 1<span>st</span>, 2014</time>
+<time datetime="2015-08-23T15:27:00+09:00" pubdate data-updated="true">Aug 23<span>rd</span>, 2015</time>
       
 
 <span class="categories">
   
-    <a class='category' href='/blog/categories/aws/'>aws</a>, <a class='category' href='/blog/categories/mysql/'>mysql</a>
+    <a class='category' href='/blog/categories/event/'>event</a>, <a class='category' href='/blog/categories/study/'>study</a>
   
 </span>
 
@@ -226,7 +206,7 @@ sudo mount -t xfs -o noatime,logbufs=8 /dev/md0 /data
     
       <div class="sharing">
   
-  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://ijin.github.io/blog/2014/01/01/mysql-benchmarks-on-aws-i2-instance-ssds/" data-via="ijin" data-counturl="http://ijin.github.io/blog/2014/01/01/mysql-benchmarks-on-aws-i2-instance-ssds/" >Tweet</a>
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://ijin.github.io/blog/2015/08/23/yapc-asia-tokyo-2015/" data-via="ijin" data-counturl="http://ijin.github.io/blog/2015/08/23/yapc-asia-tokyo-2015/" >Tweet</a>
   
   
   
@@ -235,10 +215,8 @@ sudo mount -t xfs -o noatime,logbufs=8 /dev/md0 /data
     
     <p class="meta">
       
-        <a class="basic-alignment left" href="/blog/2013/12/14/self-healing-with-non-elb-autoscaling2/" title="Previous Post: Autoscalingによる自動復旧(Immutable Infrastucture)">&laquo; Autoscalingによる自動復旧(Immutable Infrastucture)</a>
+        <a class="basic-alignment left" href="/blog/2015/08/06/github-to-lambda-to-slack/" title="Previous Post: GitHubのeventをLambdaで処理してSlackへ通知">&laquo; GitHubのeventをLambdaで処理してSlackへ通知</a>
       
-      
-        <a class="basic-alignment right" href="/blog/2014/03/14/aws-game-day-japan-2014-spring/" title="Next Post: AWS Game Day Japan 2014春を開催してきた">AWS Game Day Japan 2014春を開催してきた &raquo;</a>
       
     </p>
   </footer>
@@ -341,8 +319,8 @@ sudo mount -t xfs -o noatime,logbufs=8 /dev/md0 /data
       
         
         // var disqus_developer = 1;
-        var disqus_identifier = 'http://ijin.github.io/blog/2014/01/01/mysql-benchmarks-on-aws-i2-instance-ssds/';
-        var disqus_url = 'http://ijin.github.io/blog/2014/01/01/mysql-benchmarks-on-aws-i2-instance-ssds/';
+        var disqus_identifier = 'http://ijin.github.io/blog/2015/08/23/yapc-asia-tokyo-2015/';
+        var disqus_url = 'http://ijin.github.io/blog/2015/08/23/yapc-asia-tokyo-2015/';
         var disqus_script = 'embed.js';
       
     (function () {

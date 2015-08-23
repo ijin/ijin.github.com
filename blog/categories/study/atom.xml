@@ -4,7 +4,7 @@
   <title><![CDATA[Category: study | @ijin]]></title>
   <link href="http://ijin.github.io/blog/categories/study/atom.xml" rel="self"/>
   <link href="http://ijin.github.io/"/>
-  <updated>2015-08-12T11:53:47+09:00</updated>
+  <updated>2015-08-23T16:37:18+09:00</updated>
   <id>http://ijin.github.io/</id>
   <author>
     <name><![CDATA[Michael H. Oshita]]></name>
@@ -12,6 +12,69 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[YAPC::Asia Tokyo 2015に参加してきた]]></title>
+    <link href="http://ijin.github.io/blog/2015/08/23/yapc-asia-tokyo-2015/"/>
+    <updated>2015-08-23T15:27:00+09:00</updated>
+    <id>http://ijin.github.io/blog/2015/08/23/yapc-asia-tokyo-2015</id>
+    <content type="html"><![CDATA[<p>例年この時期は海外にいるので、なかなか行けなかったYAPC::Asia Tokyo 2015にやっと参加してきた。</p>
+
+<p>スケジュール上、今年は参加できるぞって意気込んでいたら、まさかのSold Out...</p>
+
+<p>それをtwitter上で嘆いていたら、<a href="https://twitter.com/kenjiskywalker">@kenjiskywalker</a>さんから救いの手が！</p>
+
+<p><div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr"><a href="https://twitter.com/ijin">@ijin</a> Tシャツ付きの前売り券購入したのですが、スピーカー枠で参加できそうなのでお譲りしましょうか？</p>&mdash; kenjiskywalker (@kenjiskywalker) <a href="https://twitter.com/kenjiskywalker/status/619079064880463872">July 9, 2015</a></blockquote>
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div></p>
+
+<p>感謝！</p>
+
+<p>さて、一口コメント</p>
+
+<p><strong>Consulと自作OSSを活用した100台規模のWebサービス運用</strong>] - <a href="https://twitter.com/fujiwara">@fujiwara</a></p>
+
+<p><a href="https://github.com/sorah/mamiya">mamiya</a>や<a href="http://aws.amazon.com/codedeploy/">AWS CodeDeploy</a>にインスパイアされた<a href="https://github.com/fujiwara/stretcher">stretcher</a>を使ったイベントベースのdeploy周りが面白かった。s3からの取得失敗時の処理は考えてないといけない。</p>
+
+<p><strong>Conway's Law of Distributed Work</strong> - Casey West</p>
+
+<p>最近はリモートワークが殆どなので、なかなか共感できる部分が多かった。コミュニケーション大事。</p>
+
+<p><strong>大規模でも小中規模サービスでも捗る microservices な Web サービスのつくりかた</strong> - <a href="https://twitter.com/yappo">@Yappo</a></p>
+
+<p>どのタイミングでコンポーネントの分割をするか。ちゃんと設計しようねって話</p>
+
+<p><strong>ISUCONの勝ち方</strong> - <a href="https://twitter.com/kazeburo">@kazeburo</a></p>
+
+<p>ポイントがよく纏められていて、うちらのチームでも多くを実践していた。まだ勝ててないけど。
+CPUやB+ Treeの気持ちになって考える事が大事。</p>
+
+<p><strong>我々はどのように冗長化を失敗したのか</strong> - <a href="https://twitter.com/kenjiskywalker">@kenjiskywalker</a></p>
+
+<p>Networkが不安定だと、様々な冗長化に仕組みがうまく作動しない。検証はProductionと同じ環境でやりましょう。</p>
+
+<p><strong>Profiling &amp; Optimizing in Go</strong> - Brad Fitzpatrick</p>
+
+<p>Bradさんのライブコーディング。奥が深かった。</p>
+
+<p><strong>LT</strong></p>
+
+<p>どれもこれもハイレベル！</p>
+
+<p>特に素晴らしかったのが、テンポの良い<a href="https://twitter.com/yoku0825">@yoku0825</a>さんの<strong>MySQL 5.7の罠があなたを狙っている</strong> と超早業を披露した<a href="http://conbu.net">CONBU</a>さんの<strong>CONBUの道具箱</strong></p>
+
+<iframe allowfullscreen="" frameborder="0" height="355" marginheight="0" marginwidth="0" scrolling="no" src="http://ijin.github.io//www.slideshare.net/slideshow/embed_code/key/dJ6c2p0tc7QM3B" style="border-width: 1px; border: 1px solid #CCC; margin-bottom: 5px; max-width: 100%;" width="425"> </iframe>
+
+
+<p> <br /></p>
+
+<p><div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">突然目の前に無線APが生えてきた <a href="https://twitter.com/hashtag/yapcasia?src=hash">#yapcasia</a> <a href="http://t.co/UWcSzvRv08">pic.twitter.com/UWcSzvRv08</a></p>&mdash; ぷりんたいは求職中です、 (@spacepro_be) <a href="https://twitter.com/spacepro_be/status/635004222291902464">August 22, 2015</a></blockquote>
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div></p>
+
+<p>いやー、非常に楽しめました。運営の皆様、ありがとうございました！！</p>
+
+<p>さて、これから出国ー。</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[サバフェス！2015に参加してきた]]></title>
@@ -478,157 +541,6 @@ tag:benchmarker type:score      success:210324  fail:0  score:155272
 <h2>JAWS DAYS</h2>
 
 <p>明日の<a href="http://jawsdays2014.jaws-ug.jp/">JAWS DAYS 2014</a>はスタッフとしていろいろ動くので今回は手短に。</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[サバフェス！2013に参加してきた]]></title>
-    <link href="http://ijin.github.io/blog/2013/12/13/serverfesta-2013-autumn/"/>
-    <updated>2013-12-13T15:59:00+09:00</updated>
-    <id>http://ijin.github.io/blog/2013/12/13/serverfesta-2013-autumn</id>
-    <content type="html"><![CDATA[<p>少し前に<a href="http://connpass.com/event/3690/">サバフェス！2013 Autumn</a>に参加してきました。
-内容を忘れないうちにやった事を書いておきます。</p>
-
-<p>スコアはトップレベルだったものの、運営側がサーバを起動した所、自動でサービスが立ち上がらなかったらしいので残念な事に参考値のみに。（提出前に2回ぐらい再起動確認したのにおかしいなぁ。。）
-優勝スコアは90.830 (GET 199,802 : POST 18,106)で、私のは<strong>93.410</strong> (GET 162,923 : POST 29,930)でした。</p>
-
-<h2>お題</h2>
-
-<p>「最速インフラを構築せよ！！！</p>
-
-<p>WordPressに一切手を加えずに、どこまで高速化できるのか！？</p>
-
-<p>OSチューニング、サーバチューニング、負荷分散…最適解を探せ！」</p>
-
-<p>--</p>
-
-<p><a href="http://www.idcf.jp/cloud/service/self.html">IDCFクラウド</a>上で仮想マシン5台（M8タイプまで）を使ってスコアを競うというもの。
-<a href="https://www.facebook.com/tuningathon">チューニンガソン</a>と似てますが、サーバが複数台使えるのが良いですね。</p>
-
-<h2>構成</h2>
-
-<p>表彰式でLTしたけど、LVS (DSR) + php 5.5 + apcu + Varnish + nginx (lua) + memcached</p>
-
-<p>ポイントは</p>
-
-<ul>
-<li>GET時は1台では帯域の限界に達したのでLVS (DSR)による4台での並列応答</li>
-<li>POST時には必ず各Varnishのキャッシュクリア（ban）する</li>
-<li>POST時にnginx->memcachedへ渡すと高速すぎたのであえてsleepを5msして遅延させる</li>
-<li>nginx(lua)はコード量が多いと通らないのでぎりぎりまで削減</li>
-<li>memcachedからmysqlへの非同期処理（5ms間隔）</li>
-<li>mysqlの更新処理はそんなにいらないので基本チューニングとInnoDBにしただけで、5.1のまま</li>
-<li>サーバはM8までいらないのでM4で</li>
-<li>海外から参戦したけど、GUIが重いのでAPI経由での操作</li>
-</ul>
-
-
-<p>でしょうか。特に意識したのはmemcachedからmysqlへの許容範囲内での同期と複数台あるVarnishのキャッシュクリアですね。他のチームはnginxでTTLを設定して逃げたようですが、実運用時にはPOST時にキャッシュクリアを確実にする必要があるのでVarnish moduleをコンパイルして他のsiblingへ並列でban処理を投げてました。まあ、今回のベンチマークツールはそこまで厳格じゃなかったけど、最終チェックは人間が動作させるので。</p>
-
-<p>LT資料。スコア推移と簡単な構成の紹介
-<div class="embed-ss-container"><iframe src="http://www.slideshare.net/slideshow/embed_code/29171459 "></iframe></div></p>
-
-<h2>設定ファイル</h2>
-
-<p>以下、設定ファイルです。いらない所は削ったけど動くはず。。</p>
-
-<p>backend varnish vcl （各backendの設定は微妙に違う）:
-<div><script src='https://gist.github.com/7941009.js?file='></script>
-<noscript><pre><code>&lt;html&gt;&lt;body&gt;You are being &lt;a href=&quot;https://github.com/gist/7941009&quot;&gt;redirected&lt;/a&gt;.&lt;/body&gt;&lt;/html&gt;</code></pre></noscript></div>
-</p>
-
-<p>backend nginx.conf:
-<div><script src='https://gist.github.com/7940999.js?file='></script>
-<noscript><pre><code>&lt;html&gt;&lt;body&gt;You are being &lt;a href=&quot;https://github.com/gist/7940999&quot;&gt;redirected&lt;/a&gt;.&lt;/body&gt;&lt;/html&gt;</code></pre></noscript></div>
-</p>
-
-<p>base nginx.conf:
-<div><script src='https://gist.github.com/7941214.js?file='></script>
-<noscript><pre><code>&lt;html&gt;&lt;body&gt;You are being &lt;a href=&quot;https://github.com/gist/7941214&quot;&gt;redirected&lt;/a&gt;.&lt;/body&gt;&lt;/html&gt;</code></pre></noscript></div>
-</p>
-
-<p>base syncer.rb:
-<div><script src='https://gist.github.com/7941042.js?file='></script>
-<noscript><pre><code>&lt;html&gt;&lt;body&gt;You are being &lt;a href=&quot;https://github.com/gist/7941042&quot;&gt;redirected&lt;/a&gt;.&lt;/body&gt;&lt;/html&gt;</code></pre></noscript></div>
-</p>
-
-<p>base supervisord.conf:
-<code>
-[program:syncer]
-command=/home/mho/.rvm/bin/ruby /home/mho/syncer/sync.rb 5
-stdout_logfile_maxbytes=1MB
-stderr_logfile_maxbytes=1MB
-stdout_logfile=/tmp/%(program_name)s-stdout.log
-stderr_logfile=/tmp/%(program_name)s-stderr.log
-user=mho
-directory=/home/mho/syncer
-autostart=true
-autorestart=true
-</code></p>
-
-<p>base my.cnf:
-```
-[mysqld]
-datadir=/var/lib/mysql
-socket=/var/lib/mysql/mysql.sock
-user=mysql</p>
-
-<h1>Disabling symbolic-links is recommended to prevent assorted security risks</h1>
-
-<p>symbolic-links=0
-character-set-server = utf8
-max_connections = 1000</p>
-
-<p>key_buffer_size = 32M
-max_allowed_packet = 16M
-thread_stack = 192K
-thread_cache_size  = 200</p>
-
-<h1>slow_query_log=1</h1>
-
-<h1>long_query_time=0</h1>
-
-<p>query_cache_type = 0
-skip-innodb_doublewrite
-innodb_buffer_pool_size = 192M
-innodb_log_buffer_size = 4M
-innodb_flush_log_at_trx_commit = 0
-innodb_support_xa = 0
-```</p>
-
-<p>sysctl.conf:
-```
-fs.file-max = 1048576</p>
-
-<p>net.ipv4.ip_local_port_range = 1024 65535</p>
-
-<p>net.core.wmem_max = 16777216
-net.core.rmem_max = 16777216</p>
-
-<p>net.ipv4.tcp_wmem = 4096 65536 16777216
-net.ipv4.tcp_rmem = 4096 87380 16777216</p>
-
-<p>net.core.somaxconn = 8192</p>
-
-<p>net.core.netdev_max_backlog = 8000</p>
-
-<p>net.ipv4.tcp_max_syn_backlog = 8192</p>
-
-<p>net.ipv4.tcp_synack_retries = 3
-net.ipv4.tcp_retries2 = 5</p>
-
-<p>net.ipv4.tcp_keepalive_time = 900</p>
-
-<p>net.ipv4.tcp_keepalive_probes = 3</p>
-
-<p>net.ipv4.tcp_keepalive_intvl = 15</p>
-
-<p>net.nf_conntrack_max = 1000000
-```</p>
-
-<h2>終わりに</h2>
-
-<p>最初はecho選手権になってたのであんまりやる気がなかったけど、後半はちょっと楽しめました。結果は惜しかったけど、今まで<a href="https://www.facebook.com/tuningathon">チューニンガソン</a>や<a href="http://isucon.net">ISUCON</a>に出場したり、トラブル☆しゅーたーずを主催したり、日々の運用等の経験が生きた感じがします。運営の皆様、ありがとうございました。次があれば楽しみにしています！（レギュレーションの解釈が微妙だったのでそこはブラッシュアップして欲しいですね）</p>
 ]]></content>
   </entry>
   

@@ -9,8 +9,7 @@
   <meta name="author" content="Michael H. Oshita">
 
   
-  <meta name="description" content="バッチ処理等、サーバの冗長化が難しく仕方なく1台で動かさざるを得ない場合があります。でも可用性は確保したい。また、Pacemakerやkeepalived等できなくはないが、お金もあんまりかけられない場合もあります。
-そんな時にAWS上でよく使うのがAutoscalingによる1台構成です。 &hellip;">
+  <meta name="description" content="（※ 追記しました - 5/19/13） 巷ではMySQL 5.6 GAが出て騒がしいですが、ちょっと前に5.5系でAWSのSSDインスタンス（hi1.4xlarge）に載せ替える案件があったので、その時に取ったベンチマークを公表します。以前Fusion-IO (ioDrive Duo) &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -88,6 +87,153 @@ document.write = function(html) {
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2013/02/22/mysql-benchmarks-on-aws-ssd-vs-fusion-io/">AWS SSD (hi1.4xlarge) vs Fusion-IOでのMySQLベンチマーク</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-02-22T17:32:00+09:00" pubdate data-updated="true">Feb 22<span>nd</span>, 2013</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>（※ <a href="#add">追記</a>しました - 5/19/13）</p>
+
+<p>巷ではMySQL 5.6 GAが出て騒がしいですが、ちょっと前に5.5系でAWSのSSDインスタンス（hi1.4xlarge）に載せ替える案件があったので、その時に取ったベンチマークを公表します。以前Fusion-IO (ioDrive Duo)でも同じようにやったので、比較になれば。</p>
+
+<h2>経緯</h2>
+
+<ul>
+<li>あるウェブサービスのDBサイズが巨大でm2.4xlargeでも辛くなってきている</li>
+<li>アクセスパターンによりパーティショニングが効かない</li>
+<li>シャーディングをするにはアプリ改修が大変</li>
+<li>数週間後に急激なアクセスが予想され、時間的余裕がない！</li>
+<li>データサイズの急激な増加によりbuffer poolから溢れ、ディスクアクセスのさらなる発生が懸念</li>
+</ul>
+
+
+<p>というわけで、時間がないのでSSDへの移行を検討し、ベンチマークを取りました。</p>
+
+<h2>ベンチマーク</h2>
+
+<p>buffer poolが徐々に足りなくなった場合のディスクアクセスの発生をシミュレート</p>
+
+<ul>
+<li>sysbenchのoltpモード</li>
+<li>データサイズは12G（5000万件）</li>
+<li>readonly</li>
+<li>uniform（フルスキャン）</li>
+</ul>
+
+
+<p>主要my.cnfパラメータ</p>
+
+<pre><code> sync_binlog = 0
+ innodb_buffer_pool_size = XXG
+ innodb_flush_method = O_DIRECT
+ innodb_flush_log_at_trx_commit = 1
+ innodb_file_per_table
+ innodb_io_capacity = 2000
+</code></pre>
+
+<p>コマンド</p>
+
+<pre><code> time sysbench --test=oltp --oltp-table-size=50000000 --db-driver=mysql --mysql-user=root prepare                                                                                                         
+ time sysbench --test=oltp --oltp-table-size=50000000 --db-driver=mysql --mysql-user=root --num-threads=16 --max-requests=0 --max-time=180 --init-rng=on --oltp-read-only=on --oltp-dist-type=uniform 2&gt;&amp;1 run                                                                                                         
+</code></pre>
+
+<h2>結果</h2>
+
+<p>トランザクション推移</p>
+
+<p><img src="https://docs.google.com/spreadsheet/oimg?key=0Aliw9SoXFJNMdFhhcHJkcDA5MGlackNHTXlPcWt0VWc&oid=2&zx=ii4lryrf8pz8"></p>
+
+<p>レスポンスタイム推移</p>
+
+<p><img src="https://docs.google.com/spreadsheet/oimg?key=0Aliw9SoXFJNMdFhhcHJkcDA5MGlackNHTXlPcWt0VWc&oid=3&zx=c2drap7b5561"></p>
+
+<p>Fusion-IOと比べて半分ぐらい。ioDrvie Duoの公称IOPSが250,000+ IOPSでhi1.4xlargeが120,000 IOPSなので、まあ合致しますね。</p>
+
+<p>まだ整理されてないベンチマーク結果があるので、後ほど追記しようと思います。</p>
+
+<h2>追記 <a name="add">&nbsp;</a></h2>
+
+<p>先日（5/17/13）の<a href="http://www.zusaar.com/event/668006">cloudpack night #6 - Re:Generate -</a>でADSJの荒木さんの発表でMySQLのパフォーマンスの話があったので<a href="https://code.launchpad.net/~percona-dev/perconatools/tpcc-mysql">tpcc-mysql</a>でベンチマークを取った資料を思い出し追記しました。</p>
+
+<ul>
+<li>500 warehouses (50GBぐらい)</li>
+<li>24GB Buffer pool</li>
+<li>16スレッド</li>
+<li>1時間実行</li>
+</ul>
+
+
+<p>コマンド（ロードはかなり時間がかかるので注意）</p>
+
+<pre><code> tpcc_load localhost tpcc root "" 500
+ tpcc_start -d tpcc -u root -p "" -w 500 -c 16 -r 300 -l 3600
+</code></pre>
+
+<p><img src="https://docs.google.com/spreadsheet/oimg?key=0Aliw9SoXFJNMdFhhcHJkcDA5MGlackNHTXlPcWt0VWc&oid=4&zx=y6kwyezb1qth"></p>
+
+<p>hi1.4xlargeの方が安定するまで少し時間がかかってます。<br />
+以下、安定化しだした900sあたりからの数値です。</p>
+
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Fusion-IO</th>
+<th>hi1.4xlarge</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>total</td>
+<td>2288758</td>
+<td>1444417</td>
+</tr>
+<tr>
+<td>avg</td>
+<td>8445.6</td>
+<td>5330.0</td>
+</tr>
+<tr>
+<td>stddev</td>
+<td>245.7</td>
+<td>132.8</td>
+</tr>
+</tbody>
+</table>
+
+
+<p>Fusion-IOに比べて6割ってところでしょうか。
+今回はSSDのephemeral disk1本で試したので、RAID0にするともうちょっと違ってくると思います。</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -944,6 +1090,10 @@ Varnishの<a href="https://www.varnish-software.com/static/book/_images/vcl.png"
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2015/08/23/yapc-asia-tokyo-2015/">YAPC::Asia Tokyo 2015に参加してきた</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2015/08/06/github-to-lambda-to-slack/">GitHubのeventをLambdaで処理してSlackへ通知</a>
       </li>
     
@@ -977,10 +1127,6 @@ Varnishの<a href="https://www.varnish-software.com/static/book/_images/vcl.png"
     
       <li class="post">
         <a href="/blog/2014/07/11/mysql-failover-with-consul/">ConsulによるMySQLフェールオーバー</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2014/04/21/chefconf-2014/">#ChefConf 2014に参加してきた</a>
       </li>
     
   </ul>

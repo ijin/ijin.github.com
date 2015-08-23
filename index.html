@@ -9,11 +9,7 @@
   <meta name="author" content="Michael H. Oshita">
 
   
-  <meta name="description" content="ちょっと前にGitHubのeventをAWS Lambdaで処理して、GitHubやSlackのAPIを叩く仕組みを作ったので、メモ。 材料 Github
-SNS
-KMS
-Lambda
-Slack やりたいことはこんな感じ。 あるGitHubリポジトリのissuesに特定のコメントが書き込まれると &hellip;">
+  <meta name="description" content="例年この時期は海外にいるので、なかなか行けなかったYAPC::Asia Tokyo 2015にやっと参加してきた。 スケジュール上、今年は参加できるぞって意気込んでいたら、まさかのSold Out&#8230; それをtwitter上で嘆いていたら、@kenjiskywalkerさんから救いの手が &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -91,6 +87,98 @@ document.write = function(html) {
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2015/08/23/yapc-asia-tokyo-2015/">YAPC::Asia Tokyo 2015に参加してきた</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2015-08-23T15:27:00+09:00" pubdate data-updated="true">Aug 23<span>rd</span>, 2015</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>例年この時期は海外にいるので、なかなか行けなかったYAPC::Asia Tokyo 2015にやっと参加してきた。</p>
+
+<p>スケジュール上、今年は参加できるぞって意気込んでいたら、まさかのSold Out&#8230;</p>
+
+<p>それをtwitter上で嘆いていたら、<a href="https://twitter.com/kenjiskywalker">@kenjiskywalker</a>さんから救いの手が！</p>
+
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr"><a href="https://twitter.com/ijin">@ijin</a> Tシャツ付きの前売り券購入したのですが、スピーカー枠で参加できそうなのでお譲りしましょうか？</p>&mdash; kenjiskywalker (@kenjiskywalker) <a href="https://twitter.com/kenjiskywalker/status/619079064880463872">July 9, 2015</a></blockquote>
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
+
+
+<p>感謝！</p>
+
+<p>さて、一口コメント</p>
+
+<p><strong>Consulと自作OSSを活用した100台規模のWebサービス運用</strong>] - <a href="https://twitter.com/fujiwara">@fujiwara</a></p>
+
+<p><a href="https://github.com/sorah/mamiya">mamiya</a>や<a href="http://aws.amazon.com/codedeploy/">AWS CodeDeploy</a>にインスパイアされた<a href="https://github.com/fujiwara/stretcher">stretcher</a>を使ったイベントベースのdeploy周りが面白かった。s3からの取得失敗時の処理は考えてないといけない。</p>
+
+<p><strong>Conway&#8217;s Law of Distributed Work</strong> - Casey West</p>
+
+<p>最近はリモートワークが殆どなので、なかなか共感できる部分が多かった。コミュニケーション大事。</p>
+
+<p><strong>大規模でも小中規模サービスでも捗る microservices な Web サービスのつくりかた</strong> - <a href="https://twitter.com/yappo">@Yappo</a></p>
+
+<p>どのタイミングでコンポーネントの分割をするか。ちゃんと設計しようねって話</p>
+
+<p><strong>ISUCONの勝ち方</strong> - <a href="https://twitter.com/kazeburo">@kazeburo</a></p>
+
+<p>ポイントがよく纏められていて、うちらのチームでも多くを実践していた。まだ勝ててないけど。
+CPUやB+ Treeの気持ちになって考える事が大事。</p>
+
+<p><strong>我々はどのように冗長化を失敗したのか</strong> - <a href="https://twitter.com/kenjiskywalker">@kenjiskywalker</a></p>
+
+<p>Networkが不安定だと、様々な冗長化に仕組みがうまく作動しない。検証はProductionと同じ環境でやりましょう。</p>
+
+<p><strong>Profiling &amp; Optimizing in Go</strong> - Brad Fitzpatrick</p>
+
+<p>Bradさんのライブコーディング。奥が深かった。</p>
+
+<p><strong>LT</strong></p>
+
+<p>どれもこれもハイレベル！</p>
+
+<p>特に素晴らしかったのが、テンポの良い<a href="https://twitter.com/yoku0825">@yoku0825</a>さんの<strong>MySQL 5.7の罠があなたを狙っている</strong> と超早業を披露した<a href="http://conbu.net">CONBU</a>さんの<strong>CONBUの道具箱</strong></p>
+
+<iframe allowfullscreen="" frameborder="0" height="355" marginheight="0" marginwidth="0" scrolling="no" src="//www.slideshare.net/slideshow/embed_code/key/dJ6c2p0tc7QM3B" style="border-width: 1px; border: 1px solid #CCC; margin-bottom: 5px; max-width: 100%;" width="425"> </iframe>
+
+
+<p> <br /></p>
+
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">突然目の前に無線APが生えてきた <a href="https://twitter.com/hashtag/yapcasia?src=hash">#yapcasia</a> <a href="http://t.co/UWcSzvRv08">pic.twitter.com/UWcSzvRv08</a></p>&mdash; ぷりんたいは求職中です、 (@spacepro_be) <a href="https://twitter.com/spacepro_be/status/635004222291902464">August 22, 2015</a></blockquote>
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
+
+
+<p>いやー、非常に楽しめました。運営の皆様、ありがとうございました！！</p>
+
+<p>さて、これから出国ー。</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -2091,200 +2179,6 @@ tag:benchmarker type:score      success:210324  fail:0  score:155272
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2014/04/21/chefconf-2014/">#ChefConf 2014に参加してきた</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2014-04-21T12:10:00+09:00" pubdate data-updated="true">Apr 21<span>st</span>, 2014</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>San Franciscoで行われた<a href="http://chefconf.opscode.com/chefconf/">#ChefConf</a>に参加してきました。
-忘れないうちに忘備録的に少しメモっておく。</p>
-
-<h2>Day 1</h2>
-
-<h3>Awesome Postmortems by Dave Zwieback</h3>
-
-<p>システム障害に対して素晴らしいPost Mortem（振り返り／報告書）の書き方に関する丸一日のワークショップ</p>
-
-<h4>前半</h4>
-
-<p>まずはチームに分かれて断片的且つ関連性の不明な情報を渡される。
-例えば、</p>
-
-<ul>
-<li>Tomは紫色の家の住人より短い</li>
-<li>Jimは両隣の住人より高い</li>
-<li>赤色の家の隣人は子供が5人いる</li>
-</ul>
-
-
-<p>各メンバーは情報を全部開示できないまま、ある不明確なタスクを時間内に完了させる必要がある。しかし、紙やモノを使って情報の整理をしてはならず、口頭による連絡のみなので当然情報は錯綜しタスクは未完のまま終了。</p>
-
-<p>障害時の情報不足・体制不足のシミュレーション。Nosey Neighborsと言うゲームらしい。</p>
-
-<p>その後、お怒りのCEOからDarth Vader風のオーディオ・メッセージで以下を解答せよとのお達しが。。</p>
-
-<ul>
-<li>根本原因は何か</li>
-<li>何をすれば良かったか</li>
-<li>誰の責任か</li>
-</ul>
-
-
-<p>メンバー間で議論して各グループとの比較・プレゼンする</p>
-
-<h4>後半</h4>
-
-<p>パラダイム・シフトとディスカッション形式</p>
-
-<p>以下、メモ</p>
-
-<ul>
-<li>たった一つの根本原因は存在しない。システムはimpermanence（非恒久・無常）である。コレに対して誰かが「なんてZenなんだ！」w</li>
-<li>そもそもHuman Error（人的エラー）は原因ではなくもっと大きな問題を示すサインであり、症状であり個人やグループのせいにしてはいけない。そうすると簡単で気持ち良いが解決にはならない。80年代の航空会社の事故分析のパラダイム・シフトを引き合いに</li>
-<li>Accountability vs Responsibility（個人・グループに責任は負わせないけど説明・報告はさせるべき）</li>
-<li>その為にもBlameless（誰かを責める事のないように）でNonpunitive（非罰則）にするべき。火災の消防活動に対する消防隊員の扱いの例が面白かった</li>
-<li>Hindsight/Outcome Bias（事後だと情報が多くより物事がより鮮明になるけどそれは偏見である）</li>
-<li>Counterfactual（事実に反する。タラレバ）な事を書いてはならない。起こった事は事象は変えられない</li>
-<li>3 Rs (Regret, Reason, Remedy)　遺憾を示し、事象のリニアなタイムラインを記載し、解決案の列挙</li>
-<li>5 Whys 日本では「なぜなぜ分析」というらしい。要因追求のイテレーティブ・プロセス。</li>
-<li>Sharp End vs Blunt End（顕在的エラー vs 潜在的エラー）</li>
-<li><a href="https://github.com/etsy/morgue">Morgue</a> - Postmortem用の便利なツール</li>
-</ul>
-
-
-<p>主に組織論やカルチャーの話やDevOpsとの関連性の議論等。今度<em>#トラしゅ</em>に組み込もうかな。</p>
-
-<p>※ <em>山◯君はこっちではボブと呼ばれる</em></p>
-
-<h2>Day 2</h2>
-
-<h3>Keynote</h3>
-
-<ul>
-<li>ヘビメタ風のBGM</li>
-<li>Barry Crist CEOによるDelightful Economyの熱いプレゼン。Uberの紹介</li>
-<li><a href="https://github.com/opscode/chef-metal">Chef Metal</a>の紹介／デモ（DockerやMongoDBで）</li>
-<li><a href="http://www.getchef.com/blog/2014/04/15/chef-development-kit/">ChefDK (Chef Development Kit)</a>の紹介</li>
-</ul>
-
-
-<h3>Hunting the DevOps Whale in Large Enterprises</h3>
-
-<ul>
-<li>大企業でのDevOpsの話</li>
-<li>かなり抽象的でメタファー引用多数</li>
-<li>Scrumfall (Scrum + Waterfall)という悪い冗談のような本当にあった怖い話</li>
-</ul>
-
-
-<h3>Spice up your recipes with Chef Sugar</h3>
-
-<p>ChefSpec、Test Kitchen、BerkshelfのコアコミッターであるSeth Vargoによる<a href="https://github.com/sethvargo/chef-sugar"><strong>Chef Sugar</strong></a>の紹介。コードをよりrubyっぽく、より美しくする為のsyntax sugar</p>
-
-<h3>The Berkshelf Vision</h3>
-
-<ul>
-<li><a href="http://berkshelf.com/">Berkshelf</a>の原作者であるJamie WinsorによるBerkshelf 3.0の紹介</li>
-<li><a href="http://www.getchef.com/blog/2014/04/15/chef-development-kit/">ChefDK</a>でのインストールを推奨</li>
-<li>推奨されるべき新しいワークフロー管理や手法について</li>
-<li>その補助ツールである<a href="https://github.com/reset/berkflow">Berkflow</a>の説明</li>
-<li>このセッションが一番面白かったのでyoutubeに上がったらまた見るべし！</li>
-<li><a href="http://www.slideshare.net/resetexistence/chef-conf2014">スライド</a></li>
-</ul>
-
-
-<h3>Implementing Continuous Delivery in Chef</h3>
-
-<p>継続デリバリーのお話。発表者がつまらなかったので、お仕事してた。</p>
-
-<h3>Chef and Docker</h3>
-
-<ul>
-<li>Dockerの紹介やロードマップ</li>
-<li>実装方法</li>
-<li>Chefとの組み合わせ方</li>
-<li>2014 2QのDockerConで1.0が発表されるかも</li>
-<li>監視に関して突っ込んで質問したら、夏以降に出るであろう監視用コンテナに期待とな</li>
-<li>ついでにTシャツもらった</li>
-</ul>
-
-
-<h3>BoF - Chef on AWS</h3>
-
-<ul>
-<li>AWS上でのChef利用に関してBoF (Birds of Feather)形式のディスカッション</li>
-<li>Cloudformation、Autoscaling、Opsworks、Ohai等</li>
-<li>特にOpsworksの使い勝手の悪さを熱く議論してきた</li>
-<li>また、OhaiはIAM roleの情報をキャッシュするのでChef Serverとの組み合わせが悪い</li>
-<li><a href="https://github.com/balanced-cookbooks/citadel">Citadel</a>というので回避してる人も</li>
-</ul>
-
-
-<h2>Day 3</h2>
-
-<h3>Keynote</h3>
-
-<p>Adam Jacob CTOによるChef社の歴史、思想や方向性やDevOps Cultureについて</p>
-
-<h3>Get Up Again (Over and Over): Learning and Relearning with Chef</h3>
-
-<p>変化への対応、リファクタリング、実験的コードの組み立て方等</p>
-
-<h3>Foreman and Chef Integration</h3>
-
-<p>Red HatによるForemanの発表。あんまり聞いてなかった</p>
-
-<h3>DevOps Culture And Practices To Create Flow</h3>
-
-<ul>
-<li>ThoughtworksのJez Humbleによる発表</li>
-<li>自動化や継続デリバリーによるリーンな開発手法</li>
-<li>トヨタやHPの事例</li>
-<li>社内カルチャーの話</li>
-<li>Jesse&#8217;s rule - &#8220;Don&#8217;t fight stupid. Make awesome&#8221;</li>
-<li>なかなか良いスピーカーであった</li>
-</ul>
-
-
-<h3>その他</h3>
-
-<ul>
-<li>アメリカのクライアントやリモートでの仕事仲間と初顔合わせ</li>
-<li>ランチで会った人は同じくCassandra構築に苦労してて盛り上がった</li>
-<li>Chef Zeroの作者と会って中の動きについてお話した</li>
-<li>mizzy氏を発見。立ち話を少々</li>
-</ul>
-
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/blog/page/2/">&larr; Older</a>
@@ -2298,6 +2192,10 @@ tag:benchmarker type:score      success:210324  fail:0  score:155272
     <section>
   <h1>Recent Posts</h1>
   <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2015/08/23/yapc-asia-tokyo-2015/">YAPC::Asia Tokyo 2015に参加してきた</a>
+      </li>
     
       <li class="post">
         <a href="/blog/2015/08/06/github-to-lambda-to-slack/">GitHubのeventをLambdaで処理してSlackへ通知</a>
@@ -2333,10 +2231,6 @@ tag:benchmarker type:score      success:210324  fail:0  score:155272
     
       <li class="post">
         <a href="/blog/2014/07/11/mysql-failover-with-consul/">ConsulによるMySQLフェールオーバー</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2014/04/21/chefconf-2014/">#ChefConf 2014に参加してきた</a>
       </li>
     
   </ul>

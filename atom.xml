@@ -4,7 +4,7 @@
   <title><![CDATA[@ijin]]></title>
   <link href="http://ijin.github.io/atom.xml" rel="self"/>
   <link href="http://ijin.github.io/"/>
-  <updated>2015-08-12T11:53:47+09:00</updated>
+  <updated>2015-08-23T16:37:18+09:00</updated>
   <id>http://ijin.github.io/</id>
   <author>
     <name><![CDATA[Michael H. Oshita]]></name>
@@ -12,6 +12,71 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[YAPC::Asia Tokyo 2015に参加してきた]]></title>
+    <link href="http://ijin.github.io/blog/2015/08/23/yapc-asia-tokyo-2015/"/>
+    <updated>2015-08-23T15:27:00+09:00</updated>
+    <id>http://ijin.github.io/blog/2015/08/23/yapc-asia-tokyo-2015</id>
+    <content type="html"><![CDATA[<p>例年この時期は海外にいるので、なかなか行けなかったYAPC::Asia Tokyo 2015にやっと参加してきた。</p>
+
+<p>スケジュール上、今年は参加できるぞって意気込んでいたら、まさかのSold Out&#8230;</p>
+
+<p>それをtwitter上で嘆いていたら、<a href="https://twitter.com/kenjiskywalker">@kenjiskywalker</a>さんから救いの手が！</p>
+
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr"><a href="https://twitter.com/ijin">@ijin</a> Tシャツ付きの前売り券購入したのですが、スピーカー枠で参加できそうなのでお譲りしましょうか？</p>&mdash; kenjiskywalker (@kenjiskywalker) <a href="https://twitter.com/kenjiskywalker/status/619079064880463872">July 9, 2015</a></blockquote>
+<script async src="http://ijin.github.io//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
+
+
+<p>感謝！</p>
+
+<p>さて、一口コメント</p>
+
+<p><strong>Consulと自作OSSを活用した100台規模のWebサービス運用</strong>] - <a href="https://twitter.com/fujiwara">@fujiwara</a></p>
+
+<p><a href="https://github.com/sorah/mamiya">mamiya</a>や<a href="http://aws.amazon.com/codedeploy/">AWS CodeDeploy</a>にインスパイアされた<a href="https://github.com/fujiwara/stretcher">stretcher</a>を使ったイベントベースのdeploy周りが面白かった。s3からの取得失敗時の処理は考えてないといけない。</p>
+
+<p><strong>Conway&#8217;s Law of Distributed Work</strong> - Casey West</p>
+
+<p>最近はリモートワークが殆どなので、なかなか共感できる部分が多かった。コミュニケーション大事。</p>
+
+<p><strong>大規模でも小中規模サービスでも捗る microservices な Web サービスのつくりかた</strong> - <a href="https://twitter.com/yappo">@Yappo</a></p>
+
+<p>どのタイミングでコンポーネントの分割をするか。ちゃんと設計しようねって話</p>
+
+<p><strong>ISUCONの勝ち方</strong> - <a href="https://twitter.com/kazeburo">@kazeburo</a></p>
+
+<p>ポイントがよく纏められていて、うちらのチームでも多くを実践していた。まだ勝ててないけど。
+CPUやB+ Treeの気持ちになって考える事が大事。</p>
+
+<p><strong>我々はどのように冗長化を失敗したのか</strong> - <a href="https://twitter.com/kenjiskywalker">@kenjiskywalker</a></p>
+
+<p>Networkが不安定だと、様々な冗長化に仕組みがうまく作動しない。検証はProductionと同じ環境でやりましょう。</p>
+
+<p><strong>Profiling &amp; Optimizing in Go</strong> - Brad Fitzpatrick</p>
+
+<p>Bradさんのライブコーディング。奥が深かった。</p>
+
+<p><strong>LT</strong></p>
+
+<p>どれもこれもハイレベル！</p>
+
+<p>特に素晴らしかったのが、テンポの良い<a href="https://twitter.com/yoku0825">@yoku0825</a>さんの<strong>MySQL 5.7の罠があなたを狙っている</strong> と超早業を披露した<a href="http://conbu.net">CONBU</a>さんの<strong>CONBUの道具箱</strong></p>
+
+<iframe allowfullscreen="" frameborder="0" height="355" marginheight="0" marginwidth="0" scrolling="no" src="http://ijin.github.io//www.slideshare.net/slideshow/embed_code/key/dJ6c2p0tc7QM3B" style="border-width: 1px; border: 1px solid #CCC; margin-bottom: 5px; max-width: 100%;" width="425"> </iframe>
+
+
+<p> <br /></p>
+
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">突然目の前に無線APが生えてきた <a href="https://twitter.com/hashtag/yapcasia?src=hash">#yapcasia</a> <a href="http://t.co/UWcSzvRv08">pic.twitter.com/UWcSzvRv08</a></p>&mdash; ぷりんたいは求職中です、 (@spacepro_be) <a href="https://twitter.com/spacepro_be/status/635004222291902464">August 22, 2015</a></blockquote>
+<script async src="http://ijin.github.io//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
+
+
+<p>いやー、非常に楽しめました。運営の皆様、ありがとうございました！！</p>
+
+<p>さて、これから出国ー。</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[GitHubのeventをLambdaで処理してSlackへ通知]]></title>
@@ -3186,126 +3251,6 @@ server2$ sudo cloudconfig peer_add server1 server1_local_ip(10.x.x.x)
 <li>s3へのアップロード高速化も対応しているのでいずれ試してみたい</li>
 </ul>
 
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[AWS SSD (hi1.4xlarge) vs Fusion-IOでのMySQLベンチマーク]]></title>
-    <link href="http://ijin.github.io/blog/2013/02/22/mysql-benchmarks-on-aws-ssd-vs-fusion-io/"/>
-    <updated>2013-02-22T17:32:00+09:00</updated>
-    <id>http://ijin.github.io/blog/2013/02/22/mysql-benchmarks-on-aws-ssd-vs-fusion-io</id>
-    <content type="html"><![CDATA[<p>（※ <a href="#add">追記</a>しました - 5/19/13）</p>
-
-<p>巷ではMySQL 5.6 GAが出て騒がしいですが、ちょっと前に5.5系でAWSのSSDインスタンス（hi1.4xlarge）に載せ替える案件があったので、その時に取ったベンチマークを公表します。以前Fusion-IO (ioDrive Duo)でも同じようにやったので、比較になれば。</p>
-
-<h2>経緯</h2>
-
-<ul>
-<li>あるウェブサービスのDBサイズが巨大でm2.4xlargeでも辛くなってきている</li>
-<li>アクセスパターンによりパーティショニングが効かない</li>
-<li>シャーディングをするにはアプリ改修が大変</li>
-<li>数週間後に急激なアクセスが予想され、時間的余裕がない！</li>
-<li>データサイズの急激な増加によりbuffer poolから溢れ、ディスクアクセスのさらなる発生が懸念</li>
-</ul>
-
-
-<p>というわけで、時間がないのでSSDへの移行を検討し、ベンチマークを取りました。</p>
-
-<h2>ベンチマーク</h2>
-
-<p>buffer poolが徐々に足りなくなった場合のディスクアクセスの発生をシミュレート</p>
-
-<ul>
-<li>sysbenchのoltpモード</li>
-<li>データサイズは12G（5000万件）</li>
-<li>readonly</li>
-<li>uniform（フルスキャン）</li>
-</ul>
-
-
-<p>主要my.cnfパラメータ</p>
-
-<pre><code> sync_binlog = 0
- innodb_buffer_pool_size = XXG
- innodb_flush_method = O_DIRECT
- innodb_flush_log_at_trx_commit = 1
- innodb_file_per_table
- innodb_io_capacity = 2000
-</code></pre>
-
-<p>コマンド</p>
-
-<pre><code> time sysbench --test=oltp --oltp-table-size=50000000 --db-driver=mysql --mysql-user=root prepare                                                                                                         
- time sysbench --test=oltp --oltp-table-size=50000000 --db-driver=mysql --mysql-user=root --num-threads=16 --max-requests=0 --max-time=180 --init-rng=on --oltp-read-only=on --oltp-dist-type=uniform 2&gt;&amp;1 run                                                                                                         
-</code></pre>
-
-<h2>結果</h2>
-
-<p>トランザクション推移</p>
-
-<p><img src="https://docs.google.com/spreadsheet/oimg?key=0Aliw9SoXFJNMdFhhcHJkcDA5MGlackNHTXlPcWt0VWc&oid=2&zx=ii4lryrf8pz8"></p>
-
-<p>レスポンスタイム推移</p>
-
-<p><img src="https://docs.google.com/spreadsheet/oimg?key=0Aliw9SoXFJNMdFhhcHJkcDA5MGlackNHTXlPcWt0VWc&oid=3&zx=c2drap7b5561"></p>
-
-<p>Fusion-IOと比べて半分ぐらい。ioDrvie Duoの公称IOPSが250,000+ IOPSでhi1.4xlargeが120,000 IOPSなので、まあ合致しますね。</p>
-
-<p>まだ整理されてないベンチマーク結果があるので、後ほど追記しようと思います。</p>
-
-<h2>追記 <a name="add">&nbsp;</a></h2>
-
-<p>先日（5/17/13）の<a href="http://www.zusaar.com/event/668006">cloudpack night #6 - Re:Generate -</a>でADSJの荒木さんの発表でMySQLのパフォーマンスの話があったので<a href="https://code.launchpad.net/~percona-dev/perconatools/tpcc-mysql">tpcc-mysql</a>でベンチマークを取った資料を思い出し追記しました。</p>
-
-<ul>
-<li>500 warehouses (50GBぐらい)</li>
-<li>24GB Buffer pool</li>
-<li>16スレッド</li>
-<li>1時間実行</li>
-</ul>
-
-
-<p>コマンド（ロードはかなり時間がかかるので注意）</p>
-
-<pre><code> tpcc_load localhost tpcc root "" 500
- tpcc_start -d tpcc -u root -p "" -w 500 -c 16 -r 300 -l 3600
-</code></pre>
-
-<p><img src="https://docs.google.com/spreadsheet/oimg?key=0Aliw9SoXFJNMdFhhcHJkcDA5MGlackNHTXlPcWt0VWc&oid=4&zx=y6kwyezb1qth"></p>
-
-<p>hi1.4xlargeの方が安定するまで少し時間がかかってます。<br />
-以下、安定化しだした900sあたりからの数値です。</p>
-
-<table>
-<thead>
-<tr>
-<th></th>
-<th>Fusion-IO</th>
-<th>hi1.4xlarge</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>total</td>
-<td>2288758</td>
-<td>1444417</td>
-</tr>
-<tr>
-<td>avg</td>
-<td>8445.6</td>
-<td>5330.0</td>
-</tr>
-<tr>
-<td>stddev</td>
-<td>245.7</td>
-<td>132.8</td>
-</tr>
-</tbody>
-</table>
-
-
-<p>Fusion-IOに比べて6割ってところでしょうか。
-今回はSSDのephemeral disk1本で試したので、RAID0にするともうちょっと違ってくると思います。</p>
 ]]></content>
   </entry>
   

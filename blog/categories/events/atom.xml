@@ -4,7 +4,7 @@
   <title><![CDATA[Category: events | @ijin]]></title>
   <link href="http://ijin.github.io/blog/categories/events/atom.xml" rel="self"/>
   <link href="http://ijin.github.io/"/>
-  <updated>2015-08-12T11:53:53+09:00</updated>
+  <updated>2015-08-23T16:37:18+09:00</updated>
   <id>http://ijin.github.io/</id>
   <author>
     <name><![CDATA[Michael H. Oshita]]></name>
@@ -68,11 +68,11 @@ innodb_flush_log_at_trx_commit = 1
 
 <p>スコアの推移はこんな感じ。データセットが小さい分、スコアは大きめ。</p>
 
-<p>{% img https://docs.google.com/spreadsheets/d/1zm6-THRYR_EcLoHgacRScxlhSzeQAkbJ0RXiAI4fiRU/pubchart?oid=1067951178&amp;format=image %}</p>
+<p><img src="https://docs.google.com/spreadsheets/d/1zm6-THRYR_EcLoHgacRScxlhSzeQAkbJ0RXiAI4fiRU/pubchart?oid=1067951178&amp;format=image"></p>
 
 <p>終盤になってやっと本番に近いデータセットや実行時感で細かいチューニング。</p>
 
-<p>{% img https://docs.google.com/spreadsheets/d/1zm6-THRYR_EcLoHgacRScxlhSzeQAkbJ0RXiAI4fiRU/pubchart?oid=2026636320&amp;format=image %}</p>
+<p><img src="https://docs.google.com/spreadsheets/d/1zm6-THRYR_EcLoHgacRScxlhSzeQAkbJ0RXiAI4fiRU/pubchart?oid=2026636320&amp;format=image"></p>
 
 <p>最終的にローカルでのベストスコアは<strong>53420.332 TpmC</strong>でした。</p>
 
@@ -161,7 +161,8 @@ renice -n19 -p `ps auxf | grep mackerel | grep -v grep | awk ‘{print $2}’`
 
 <p>賞品として3DマッサージピローとSSDを頂きました！</p>
 
-<p>{% tweet https://twitter.com/ijin/status/581048257171820544 %}</p>
+<p><div class='embed tweet'><blockquote class="twitter-tweet"><p>3DマッサージピローとSSDをもらった。 <a href="https://twitter.com/hashtag/%E3%82%B5%E3%83%90%E3%83%95%E3%82%A7%E3%82%B9?src=hash">#サバフェス</a> <a href="http://t.co/mKczn9mflZ">pic.twitter.com/mKczn9mflZ</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/581048257171820544">March 26, 2015</a></blockquote>
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div></p>
 
 <p>個人敵には飛び込みLTした人がもらったDroneの方が良さそうだったけど、ピローは家族に好評でした。</p>
 ]]></content>
@@ -233,7 +234,7 @@ renice -n19 -p `ps auxf | grep mackerel | grep -v grep | awk ‘{print $2}’`
 
 <p>不正ログイン防止の為にアクセスの失敗回数に応じてログインロックをかけるシステム。実に今風なオンラインバンキングサービス「いすこん銀行」w 最後はjsonのレポートが出力。</p>
 
-<p>{% img https://lh5.googleusercontent.com/-XjuyJ-r62YE/VETj3ySpGkI/AAAAAAAABAo/2Q2yi6YWJUk/w622-h373-no/isucon4q-bank.png %}</p>
+<p><img src="https://lh5.googleusercontent.com/-XjuyJ-r62YE/VETj3ySpGkI/AAAAAAAABAo/2Q2yi6YWJUk/w622-h373-no/isucon4q-bank.png"></p>
 
 <h3>前半戦</h3>
 
@@ -349,7 +350,7 @@ renice -n19 -p `ps auxf | grep mackerel | grep -v grep | awk ‘{print $2}’`
 
 <p><strong>戦いの軌跡</strong></p>
 
-<p>{% img https://lh6.googleusercontent.com/VDc46K_BClolTXevFw5IH4W9sS5Z6akC6FIpIAcJhTM=w925-h328-no %}</p>
+<p><img src="https://lh6.googleusercontent.com/VDc46K_BClolTXevFw5IH4W9sS5Z6akC6FIpIAcJhTM=w925-h328-no"></p>
 
 <h3>振り返り</h3>
 
@@ -448,7 +449,7 @@ tag:benchmarker type:score      success:210324  fail:0  score:155272
 
 <h2>DEMO</h2>
 
-<p>{% youtube rA4hyJ-pccU %}</p>
+<p><div class="embed-video-container"><iframe src="http://www.youtube.com/embed/rA4hyJ-pccU "></iframe></div></p>
 
 <h2>Notes</h2>
 
@@ -458,7 +459,7 @@ tag:benchmarker type:score      success:210324  fail:0  score:155272
 
 <p>以下、July Tech Festa 2014で発表した時のスライドです。</p>
 
-<p>{% speakerdeck e07317d0dc040131a0982229a5c1e016  %}</p>
+<p><script async="true" class="speakerdeck-embed" data-id="e07317d0dc040131a0982229a5c1e016" src="//speakerdeck.com/assets/embed.js"> </script></p>
 ]]></content>
   </entry>
   

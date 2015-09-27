@@ -4,7 +4,7 @@
   <title><![CDATA[Category: study | @ijin]]></title>
   <link href="http://ijin.github.io/blog/categories/study/atom.xml" rel="self"/>
   <link href="http://ijin.github.io/"/>
-  <updated>2015-08-23T16:37:18+09:00</updated>
+  <updated>2015-09-27T18:31:14+09:00</updated>
   <id>http://ijin.github.io/</id>
   <author>
     <name><![CDATA[Michael H. Oshita]]></name>
@@ -12,6 +12,76 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[ISUCON5の予選に記念参加してきた]]></title>
+    <link href="http://ijin.github.io/blog/2015/09/27/isucon5-qualifier/"/>
+    <updated>2015-09-27T17:01:00+09:00</updated>
+    <id>http://ijin.github.io/blog/2015/09/27/isucon5-qualifier</id>
+    <content type="html"><![CDATA[<p>とあるエンジニアが言い放ちました。</p>
+
+<p><strong>「上位に届かないチームはただの記念参加だよねー。」</strong></p>
+
+<p>というわけで、今年のISUCONは見事に予選落ちしました。</p>
+
+<h3>お題</h3>
+
+<p>「<strong>ISUx</strong>i」というどこか懐かしい響きの「高負荷に耐えられるSNSコミュニティサイト」</p>
+
+<p>記事、コメント、足あと機能が揃っており、以前より複雑度が増したなかなかの凝った作り。</p>
+
+<h3>起こったこと</h3>
+
+<p>これはESIによるpartial cachingが出来るので、Varnishでやってみよう！</p>
+
+<p>と意気込んだものの、結局は間に合わずに終了ーーっ。</p>
+
+<h3>やりたかったこと</h3>
+
+<ul>
+<li>Varnish + ESI + Redis &amp; MySQL</li>
+</ul>
+
+
+<h3>やれたこと</h3>
+
+<p>具体的な作業内容は今手元にないので、ぼんやりと。</p>
+
+<ul>
+<li>MySQLのクエリー修正、パラメータ、Index追加</li>
+<li>nginxのパラメータ追加</li>
+<li>kernelのパラメータ追加</li>
+<li>一部 redis化</li>
+<li>rubyプロセスの調整</li>
+<li>sidekiqのワーカーで遅延書き込み</li>
+</ul>
+
+
+<h3>はまったとこ</h3>
+
+<p>今回はいろいろ初めてがあったので無駄に時間を潰した感じ。</p>
+
+<ul>
+<li><code>systemd</code> -
+最新のUbuntu 15.04はsystemdなんですね。ずっと14.04 LTSのupstartに慣れていたので、こっちは初めて触わった。</li>
+<li><code>apparmor</code> -
+設定ファイルをsymlinkでやろうとすると読み込まれず。。こいつのせいだと気づくのにちょっと手間取った。いらない子には怒りの<code>apt-get purge</code>を。</li>
+<li><code>mysql</code> -
+なんか設定ファイルが/etc/mysql/my.cnf単体じゃなくて、symlinkされたりいろんなディレクトリに散らばってたりで若干戸惑った。後、上記のapparmor関連で設定ファイルがしばらく全然反映されずに。。</li>
+<li><code>varnish</code> -
+こちらもvclやパラメータ指定が本来<code>/etc/default/varnish</code>で出来るはずが、なかなか反映されずに苦労した。Varnish 4.0のパッケージはapt-getですんなり入るんだけど、起動スクリプトが<code>/etc/init.d/varnish</code>に設置されるのに、そちらは無視され、systemdの方が優先される模様。カスタマイズするには<code>/lib/systemd/system/varnish.service</code>をコピって編集して<code>daemon-reload</code>が必要。詳しくは<a href="http://deshack.net/how-to-varnish-listen-port-80-systemd/">こちら</a></li>
+</ul>
+
+
+<h3>終わりに</h3>
+
+<p>競技内容が確実に進化していて、非常ーーに楽しめました！その分、出題者の苦労が計り知れず。。こんどビールでも奢ります。今年の本戦は残念ながら行けないけど、外野として楽しくポップコーンでも食べながら観戦したい所ですね。</p>
+
+<h3>おまけ</h3>
+
+<p>さて、現在はHashiConfに向けての飛行機の中だけど、悔しいので機内で復習しておきます。</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[YAPC::Asia Tokyo 2015に参加してきた]]></title>
@@ -24,8 +94,7 @@
 
 <p>それをtwitter上で嘆いていたら、<a href="https://twitter.com/kenjiskywalker">@kenjiskywalker</a>さんから救いの手が！</p>
 
-<p><div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr"><a href="https://twitter.com/ijin">@ijin</a> Tシャツ付きの前売り券購入したのですが、スピーカー枠で参加できそうなのでお譲りしましょうか？</p>&mdash; kenjiskywalker (@kenjiskywalker) <a href="https://twitter.com/kenjiskywalker/status/619079064880463872">July 9, 2015</a></blockquote>
-<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div></p>
+<p>{% tweet https://twitter.com/kenjiskywalker/status/619079064880463872 %}</p>
 
 <p>感謝！</p>
 
@@ -67,8 +136,7 @@ CPUやB+ Treeの気持ちになって考える事が大事。</p>
 
 <p> <br /></p>
 
-<p><div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">突然目の前に無線APが生えてきた <a href="https://twitter.com/hashtag/yapcasia?src=hash">#yapcasia</a> <a href="http://t.co/UWcSzvRv08">pic.twitter.com/UWcSzvRv08</a></p>&mdash; ぷりんたいは求職中です、 (@spacepro_be) <a href="https://twitter.com/spacepro_be/status/635004222291902464">August 22, 2015</a></blockquote>
-<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div></p>
+<p>{% tweet https://twitter.com/spacepro_be/status/635004222291902464 %}</p>
 
 <p>いやー、非常に楽しめました。運営の皆様、ありがとうございました！！</p>
 
@@ -131,11 +199,11 @@ innodb_flush_log_at_trx_commit = 1
 
 <p>スコアの推移はこんな感じ。データセットが小さい分、スコアは大きめ。</p>
 
-<p><img src="https://docs.google.com/spreadsheets/d/1zm6-THRYR_EcLoHgacRScxlhSzeQAkbJ0RXiAI4fiRU/pubchart?oid=1067951178&amp;format=image"></p>
+<p>{% img https://docs.google.com/spreadsheets/d/1zm6-THRYR_EcLoHgacRScxlhSzeQAkbJ0RXiAI4fiRU/pubchart?oid=1067951178&amp;format=image %}</p>
 
 <p>終盤になってやっと本番に近いデータセットや実行時感で細かいチューニング。</p>
 
-<p><img src="https://docs.google.com/spreadsheets/d/1zm6-THRYR_EcLoHgacRScxlhSzeQAkbJ0RXiAI4fiRU/pubchart?oid=2026636320&amp;format=image"></p>
+<p>{% img https://docs.google.com/spreadsheets/d/1zm6-THRYR_EcLoHgacRScxlhSzeQAkbJ0RXiAI4fiRU/pubchart?oid=2026636320&amp;format=image %}</p>
 
 <p>最終的にローカルでのベストスコアは<strong>53420.332 TpmC</strong>でした。</p>
 
@@ -224,8 +292,7 @@ renice -n19 -p `ps auxf | grep mackerel | grep -v grep | awk ‘{print $2}’`
 
 <p>賞品として3DマッサージピローとSSDを頂きました！</p>
 
-<p><div class='embed tweet'><blockquote class="twitter-tweet"><p>3DマッサージピローとSSDをもらった。 <a href="https://twitter.com/hashtag/%E3%82%B5%E3%83%90%E3%83%95%E3%82%A7%E3%82%B9?src=hash">#サバフェス</a> <a href="http://t.co/mKczn9mflZ">pic.twitter.com/mKczn9mflZ</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/581048257171820544">March 26, 2015</a></blockquote>
-<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div></p>
+<p>{% tweet https://twitter.com/ijin/status/581048257171820544 %}</p>
 
 <p>個人敵には飛び込みLTした人がもらったDroneの方が良さそうだったけど、ピローは家族に好評でした。</p>
 ]]></content>
@@ -297,7 +364,7 @@ renice -n19 -p `ps auxf | grep mackerel | grep -v grep | awk ‘{print $2}’`
 
 <p>不正ログイン防止の為にアクセスの失敗回数に応じてログインロックをかけるシステム。実に今風なオンラインバンキングサービス「いすこん銀行」w 最後はjsonのレポートが出力。</p>
 
-<p><img src="https://lh5.googleusercontent.com/-XjuyJ-r62YE/VETj3ySpGkI/AAAAAAAABAo/2Q2yi6YWJUk/w622-h373-no/isucon4q-bank.png"></p>
+<p>{% img https://lh5.googleusercontent.com/-XjuyJ-r62YE/VETj3ySpGkI/AAAAAAAABAo/2Q2yi6YWJUk/w622-h373-no/isucon4q-bank.png %}</p>
 
 <h3>前半戦</h3>
 
@@ -413,7 +480,7 @@ renice -n19 -p `ps auxf | grep mackerel | grep -v grep | awk ‘{print $2}’`
 
 <p><strong>戦いの軌跡</strong></p>
 
-<p><img src="https://lh6.googleusercontent.com/VDc46K_BClolTXevFw5IH4W9sS5Z6akC6FIpIAcJhTM=w925-h328-no"></p>
+<p>{% img https://lh6.googleusercontent.com/VDc46K_BClolTXevFw5IH4W9sS5Z6akC6FIpIAcJhTM=w925-h328-no %}</p>
 
 <h3>振り返り</h3>
 
@@ -459,88 +526,6 @@ tag:benchmarker type:score      success:210324  fail:0  score:155272
 <h3>最後に</h3>
 
 <p>運営の皆様、ベンチマークツールの<a href="http://isucon.net/archives/40434032.html">不具合</a>やインスタンスガチャの問題等ありましたが、対応方針は非常に納得のいくものでした。引き続き、本戦を楽しみにしています。ありがとうございました！</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[AWS Game Day Japan 2014春を開催してきた]]></title>
-    <link href="http://ijin.github.io/blog/2014/03/14/aws-game-day-japan-2014-spring/"/>
-    <updated>2014-03-14T23:11:00+09:00</updated>
-    <id>http://ijin.github.io/blog/2014/03/14/aws-game-day-japan-2014-spring</id>
-    <content type="html"><![CDATA[<p>過去に2度参加した事（東京・ラスベガス）がある<a href="/blog/2013/06/10/aws-game-day-tokyo-2013/">Game Day</a>に今回は運営側に周りました。3/15に行われる<a href="http://jawsdays2014.jaws-ug.jp/">JAWS Days 2014</a>の前夜祭という位置づけです。</p>
-
-<p>日本では前回、東京のみだったけど<a href="http://jaws-days.doorkeeper.jp/events/8945">今回</a>は東京・大阪・名古屋・仙台と4都市同時開催。</p>
-
-<h2>お題</h2>
-
-<p>前回と全く一緒。。SQSを使った疎結合でオートスケーリングする画像変換処理システム（ｻｰｾﾝ）。まあ、1年前と比べてAWSの機能やできる事も大分変わったので2回目の人もいろいろ工夫のしようがあったかと。</p>
-
-<h2>チーム</h2>
-
-<p>1チーム3〜4人に別れて計14チームとなりました。</p>
-
-<p><strong>東京</strong></p>
-
-<ul>
-<li>Cookie Devil</li>
-<li>Bluescreens</li>
-<li>沖縄</li>
-<li>Blue Light of Death</li>
-<li>時計じかけのオレンジ</li>
-<li>I am みどり</li>
-</ul>
-
-
-<p><strong>名古屋</strong></p>
-
-<ul>
-<li>Shachihoko</li>
-<li>ななちゃんだがや</li>
-<li>ゴーゴーひつまぶし</li>
-</ul>
-
-
-<p><strong>大阪</strong></p>
-
-<ul>
-<li>大都会</li>
-<li>AWS学坊や</li>
-<li>初心者</li>
-</ul>
-
-
-<p><strong>仙台</strong></p>
-
-<ul>
-<li>Zao</li>
-<li>八重の桜</li>
-</ul>
-
-
-<h2>内容</h2>
-
-<p>当日の迫力ある詳しい内容は参加者の方がきっとブログに書いてくれるはず！その代わり、運営側で評価用に使っていた攻撃・修復内容のまとめを公開して欲しいというツィートを頂いたので下記に表示しておきます。</p>
-
-<p><div class='embed tweet'><blockquote class="twitter-tweet"><p>Gameday楽しめました。運営ありがとうございました。攻撃のサマリシート翻訳は誰?と思ってましたが恐縮です。あのシート何らかの形で公開頂けるとありがたいです。 QT <a href="https://twitter.com/ijin">@ijin</a>: 14チームのGoogleスプレッドシートのリアルタイム翻訳は結構ギリギリだった。</p>&mdash; Ryo Suzuki (@suzryo) <a href="https://twitter.com/suzryo/statuses/444450014627000320">March 14, 2014</a></blockquote>
-<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div></p>
-
-<p>（実は今回もイベントオーナーのMiles Wardが来日していたので、Google Spreadsheetに書き込まれていた内容を運営側で逐一翻訳していました）</p>
-
-<iframe src="https://docs.google.com/spreadsheets/d/16-qSbw_XQGgl_4bYqy9REL-nq15yOVj2f1HBJvMy_qM/pubhtml?widget=true&amp;headers=false" height="500" width="750"></iframe>
-
-
-<p>個人的にはs3の「Requester Payオプション有効化」がお気に入りでしたね。</p>
-
-<h2>結果</h2>
-
-<p>総合優勝はチーム<strong>「AWS学坊や」</strong>の優勝となりました。おめでとうございます！
-（地方賞はすみません、総合結果評議中で聞けてませんでした）</p>
-
-<p>今回、運営側のトラブルで攻撃対象が重複してしまう等いろいろ問題がありましたが、開催する側としても楽しかったです。次回はさらにチャレンジングな内容にしていきたいと思っています。</p>
-
-<h2>JAWS DAYS</h2>
-
-<p>明日の<a href="http://jawsdays2014.jaws-ug.jp/">JAWS DAYS 2014</a>はスタッフとしていろいろ動くので今回は手短に。</p>
 ]]></content>
   </entry>
   

@@ -4,7 +4,7 @@
   <title><![CDATA[Category: aws | @ijin]]></title>
   <link href="http://ijin.github.io/blog/categories/aws/atom.xml" rel="self"/>
   <link href="http://ijin.github.io/"/>
-  <updated>2015-08-23T16:37:18+09:00</updated>
+  <updated>2015-09-27T18:31:14+09:00</updated>
   <id>http://ijin.github.io/</id>
   <author>
     <name><![CDATA[Michael H. Oshita]]></name>
@@ -33,7 +33,7 @@
 
 <p>やりたいことはこんな感じ。</p>
 
-<p><img src="https://lh3.googleusercontent.com/CZE1yk0yqzlizL0aK5xNBVTupVovIZCPhwp3CWwxOyc=w548-h334-no"></p>
+<p>{%img https://lh3.googleusercontent.com/CZE1yk0yqzlizL0aK5xNBVTupVovIZCPhwp3CWwxOyc=w548-h334-no %}</p>
 
 <p>あるGitHubリポジトリのissuesに特定のコメントが書き込まれると、そのユーザはプロジェクトのteamに自動で追加されて、Slackへ通知が流れるというモノです。</p>
 
@@ -87,11 +87,11 @@ $ aws sns create-topic --name github --region ap-northeast-1
 
 <p><em>Webhooks &amp; Services</em> からAmazonSNSと連携</p>
 
-<p><img src="https://lh3.googleusercontent.com/u4I9Z_Ing9YzhmVCQhMACwYDVIJxJM7C-aDmyMsNL3o=w328-h190-no"></p>
+<p>{%img https://lh3.googleusercontent.com/u4I9Z_Ing9YzhmVCQhMACwYDVIJxJM7C-aDmyMsNL3o=w328-h190-no %}</p>
 
 <p>AWS KEYには先ほど作成したIAMユーザのを利用。SNS topicのarnにはregionが書かれているにも関わらず、GitHubの方では明示的に指定が必要。</p>
 
-<p><img src="https://lh3.googleusercontent.com/kppZQx_RdhyC11LB7a0cPtppDUiKgfZBm6laYvRG3zA=w382-h289-no"></p>
+<p>{%img https://lh3.googleusercontent.com/kppZQx_RdhyC11LB7a0cPtppDUiKgfZBm6laYvRG3zA=w382-h289-no %}</p>
 
 <h3>通知するeventの有効化</h3>
 
@@ -164,13 +164,13 @@ kms.encrypt({KeyId: 'alias/ijin', Plaintext: text}, function(err, data) {
 
 <p>また、KMSキーの実行権限もlambdaのroleに紐づけておく。</p>
 
-<p><img src="https://lh3.googleusercontent.com/oMHQ76XC7RQUCR_fEo9JyaMhPKSbnIdhCzjIWurEJ9c=w542-h358-no"></p>
+<p>{%img https://lh3.googleusercontent.com/oMHQ76XC7RQUCR_fEo9JyaMhPKSbnIdhCzjIWurEJ9c=w542-h358-no %}</p>
 
 <h2>Lambda</h2>
 
 <p>Lambda function作成時にはSNSをevent sourceとして指定。</p>
 
-<p><img src="https://lh3.googleusercontent.com/uDXkEVLrXT1BdUSbiMu3v5lnwTqCoXOkv_nu07XVxkk=w555-h235-no"></p>
+<p>{%img https://lh3.googleusercontent.com/uDXkEVLrXT1BdUSbiMu3v5lnwTqCoXOkv_nu07XVxkk=w555-h235-no %}</p>
 
 <p>(※) KMSは現在us-eastにしかないので、そこ以外のregionでlambdaを実行する場合は、<code>timeout</code>は若干長めに指定して置くと良さげ</p>
 
@@ -185,13 +185,9 @@ kms.encrypt({KeyId: 'alias/ijin', Plaintext: text}, function(err, data) {
 </ol>
 
 
-<p><div><script src='https://gist.github.com/ef105e192a030571d83f.js?file='></script>
-<noscript><pre><code></code></pre></noscript></div>
-</p>
+<p>{% gist ef105e192a030571d83f %}</p>
 
-<p><div><script src='https://gist.github.com/f83e33a6ae0acd83902a.js?file='></script>
-<noscript><pre><code></code></pre></noscript></div>
-</p>
+<p>{% gist f83e33a6ae0acd83902a %}</p>
 
 <p>nodeのlibraryを使うともっとスッキリ書けたけど、1 function 1 fileで纏めたかったのでやや冗長なコードになっちゃいました。。</p>
 
@@ -199,7 +195,7 @@ kms.encrypt({KeyId: 'alias/ijin', Plaintext: text}, function(err, data) {
 
 <p>GitHubでコメント</p>
 
-<p><img src="https://lh3.googleusercontent.com/KY7fwR-laXAJBQhJFv9VKzo_ydWFzeKep0G-3kgS0mM=w388-h128-no"></p>
+<p>{%img https://lh3.googleusercontent.com/KY7fwR-laXAJBQhJFv9VKzo_ydWFzeKep0G-3kgS0mM=w388-h128-no %}</p>
 
 <p>Lambda発動</p>
 
@@ -239,11 +235,11 @@ REPORT RequestId: a25c66fc-403f-1e15-b291-25d4ee441689  Duration: 2268.06 ms    
 
 <p>teamへの追加（招待）</p>
 
-<p><img src="https://lh3.googleusercontent.com/lzamiiNraeHYD7FI6rrb8-403hxjzVRrAqGG6k3sBcc=w474-h191-no"></p>
+<p>{%img https://lh3.googleusercontent.com/lzamiiNraeHYD7FI6rrb8-403hxjzVRrAqGG6k3sBcc=w474-h191-no %}</p>
 
 <p>Slackへ通知</p>
 
-<p><img src="https://lh3.googleusercontent.com/EeEiHydBDc29YhVI6MBUcdj1WUzMXnf_Sis3U-URqhw=w388-h147-no"></p>
+<p>{%img https://lh3.googleusercontent.com/EeEiHydBDc29YhVI6MBUcdj1WUzMXnf_Sis3U-URqhw=w388-h147-no %}</p>
 
 <h2>結論</h2>
 
@@ -355,7 +351,7 @@ org.apache.hadoop.hive.ql.exec.FileSinkOperator.closeOp(FileSinkOperator.java:88
 
 <p>こんな感じ。</p>
 
-<p><img src="https://lh3.googleusercontent.com/ghExdELQB1cIE9K-d97gDqz7a634413GOTxAHhvJsBg"></p>
+<p>{% img https://lh3.googleusercontent.com/ghExdELQB1cIE9K-d97gDqz7a634413GOTxAHhvJsBg %}</p>
 
 <table>
 <thead>
@@ -395,7 +391,7 @@ org.apache.hadoop.hive.ql.exec.FileSinkOperator.closeOp(FileSinkOperator.java:88
 
 <p>その時の試行錯誤がこれ。</p>
 
-<p><img src="https://lh3.googleusercontent.com/xatqR0hx1M6PhroKFNAksOplqgqYgqsaCJgonanQyzA=w437-h197-no"></p>
+<p>{%img https://lh3.googleusercontent.com/xatqR0hx1M6PhroKFNAksOplqgqYgqsaCJgonanQyzA=w437-h197-no %}</p>
 
 <h3>計算</h3>
 
@@ -447,7 +443,7 @@ Hive Queryのread処理は<a href="http://hipsterdevblog.com/blog/2015/05/30/ana
 <p>しかし、上記を満たしているのに、特定のAMIをCLI経由で起動するとEC2 Auto Recoveryを設定できなくなります。</p>
 
 <p>（AWSコンソールでラジオボタンが押せない。CLIで設定しても効かない）
-<img src="https://lh5.googleusercontent.com/-dwWUcfCssA4/VULwrOsgxNI/AAAAAAAABFo/VQy-GnIYQXg/w448-h186-no/Screenshot%2B2015-05-01%2B12.18.16.png"></p>
+{% img https://lh5.googleusercontent.com/-dwWUcfCssA4/VULwrOsgxNI/AAAAAAAABFo/VQy-GnIYQXg/w448-h186-no/Screenshot%2B2015-05-01%2B12.18.16.png %}</p>
 
 <p>原因はAMIにephemeral disk等のblock device mappingが設定されていて、T2やC4等のEBS onlyなinstance typeで起動しているにも関わらず、AWS側がephemeral diskが付与されていると認識してしまう所にあります。なお、AWSコンソールからの起動だとこの現象は発生しません。</p>
 
@@ -494,11 +490,11 @@ Hive Queryのread処理は<a href="http://hipsterdevblog.com/blog/2015/05/30/ana
 
 <p>SNS連携によって前回のこれが</p>
 
-<p><img src="https://lh4.googleusercontent.com/-IxSeVgkwfQU/VIIapiet4tI/AAAAAAAABBw/ukic0BIBIT0/w529-h393-no/aws-advent-2014.png"></p>
+<p>{% img https://lh4.googleusercontent.com/-IxSeVgkwfQU/VIIapiet4tI/AAAAAAAABBw/ukic0BIBIT0/w529-h393-no/aws-advent-2014.png %}</p>
 
 <p>こうなります。（Lambdaのアイコンが出たので差し替えてます）</p>
 
-<p><img src="https://lh3.googleusercontent.com/-ejPyB1qrZyQ/VTCEjbhe2cI/AAAAAAAABFI/VCYVIo5hFao/w404-h393-no/as-sns-lambda2.png"></p>
+<p>{% img https://lh3.googleusercontent.com/-ejPyB1qrZyQ/VTCEjbhe2cI/AAAAAAAABFI/VCYVIo5hFao/w404-h393-no/as-sns-lambda2.png %}</p>
 
 <p>うーん、シンプル！</p>
 
@@ -555,9 +551,7 @@ $ aws cloudwatch put-metric-alarm --alarm-name StatusCheckFailed-Alarm-for-$INST
 </code></p>
 
 <p>Lambda Function
-<div><script src='https://gist.github.com/52033eb3b9b02c1fe975.js?file='></script>
-<noscript><pre><code></code></pre></noscript></div>
-</p>
+{% gist 52033eb3b9b02c1fe975 %}</p>
 
 <h3>自動復旧</h3>
 
@@ -827,7 +821,7 @@ aws-advent2014-sg       us-west-2a      UNHEALTHY       i-xxxxxxxx      aws-adve
 <p>なので、ひとまずSQSをSNSにsubscribeして、messageが届いたらLambda functionへ渡してinvokeへしてくれるsqs-to-lambdaを使ってAuto ScalingのHealthStatusを直接API経由でLambdaが叩く仕組みを試しました。
 図にするとこんな感じですね。</p>
 
-<p><img src="https://lh4.googleusercontent.com/-IxSeVgkwfQU/VIIapiet4tI/AAAAAAAABBw/ukic0BIBIT0/w529-h393-no/aws-advent-2014.png"></p>
+<p>{% img https://lh4.googleusercontent.com/-IxSeVgkwfQU/VIIapiet4tI/AAAAAAAABBw/ukic0BIBIT0/w529-h393-no/aws-advent-2014.png %}</p>
 
 <p>ELB付けた方が楽な気もするけど、まあ集約できるのと検証も兼ねて。。</p>
 
@@ -854,43 +848,7 @@ $ aws sqs set-queue-attributes --queue-url https://us-west-2.queue.amazonaws.com
 
 <p>Lambda function</p>
 
-<p><div><script src='https://gist.github.com/7bcba3354814d3ca704d.js?file='></script>
-<noscript><pre><code>console.log(&#39;Loading event&#39;);
-var aws = require(&#39;aws-sdk&#39;);
-var s3 = new aws.S3({apiVersion: &#39;2006-03-01&#39;});
-var autoscaling = new aws.AutoScaling({apiVersion: &#39;2011-01-01&#39;});
-
-exports.handler = function(event, context) {
-   console.log(&#39;Received event:&#39;);
-   console.log(event);
-   //console.log(typeof event.Subject);
-   if (event.hasOwnProperty(&#39;Message&#39;)) {
-       var msg = event.Message.replace(/!!/g,&#39;&quot;&#39;);
-       var instance_id = JSON.parse(msg).Trigger.Dimensions[0].value;
-       console.log(&#39;Changing instance health for: &#39; + instance_id);
-       var params = {
-           HealthStatus: &#39;Unhealthy&#39;, /* required */
-           InstanceId: instance_id, /* required */
-           ShouldRespectGracePeriod: false
-       };
-    
-        autoscaling.setInstanceHealth(params, function(err, data) {
-            if (err) {
-                console.log(err, err.stack); // an error occurred
-                context.done(&#39;error&#39;,&#39;error: &#39;+err);
-            }
-            else {
-                console.log(data);           // successful response
-                context.done(null,&#39;&#39;);
-            }
-        });
-   }
-   else {
-       console.log(&#39;No message&#39;);
-       context.done(null,&#39;&#39;);
-   }
-};</code></pre></noscript></div>
-</p>
+<p>{% gist 7bcba3354814d3ca704d %}</p>
 
 <p>node.js製のsqs-to-lambda。long pollingしつつ、messageを取得後にLambda functionをinvokeしてくれる。12/5現在ではEscape characterがAWS/JDKやCLIから送信できないという<a href="https://forums.aws.amazon.com/thread.jspa?threadID=166893&amp;tstart=0">大きな問題</a>がある為、<a href="https://github.com/robinjmurphy/sqs-to-lambda">upstream</a>を少し<a href="https://github.com/ijin/sqs-to-lambda/commit/080f1dcbf5f8bb3f7f4a6e0abdde72dce7ce5553">改修</a>
 <code>

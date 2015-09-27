@@ -5,11 +5,11 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>ConsulによるMySQLフェールオーバー - @ijin</title>
+  <title>ISUCON5の予選に記念参加してきた - @ijin</title>
   <meta name="author" content="Michael H. Oshita">
 
   
-  <meta name="description" content="先日(6/22/14)、6月なのにどういう分けか早めに開催されたJuly Tech Festa 2014でConsulについて発表してきた。そのユースケースの一つとしてMySQL failoverをちょっとだけ紹介したので、ここに詳しく書いておく。 MHA &hellip;">
+  <meta name="description" content="とあるエンジニアが言い放ちました。 「上位に届かないチームはただの記念参加だよねー。」 というわけで、今年のISUCONは見事に予選落ちしました。 お題 「ISUxi」というどこか懐かしい響きの「高負荷に耐えられるSNSコミュニティサイト」 記事、コメント、足あと機能が揃っており、 &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -18,7 +18,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://ijin.github.io/blog/2014/07/11/mysql-failover-with-consul/">
+  <link rel="canonical" href="http://ijin.github.io/blog/2015/09/27/isucon5-qualifier/">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <link href="/stylesheets/data-table.css" rel="stylesheet" type="text/css" />
@@ -90,7 +90,7 @@ document.write = function(html) {
   
   <header>
     
-      <h1 class="entry-title">ConsulによるMySQLフェールオーバー</h1>
+      <h1 class="entry-title">ISUCON5の予選に記念参加してきた</h1>
     
     
       <p class="meta">
@@ -106,71 +106,75 @@ document.write = function(html) {
   
 
 
-<time datetime="2014-07-11T10:12:00+09:00" pubdate data-updated="true">Jul 11<span>th</span>, 2014</time>
+<time datetime="2015-09-27T17:01:00+09:00" pubdate data-updated="true">Sep 27<span>th</span>, 2015</time>
         
       </p>
     
   </header>
 
 
-<div class="entry-content"><p>先日(6/22/14)、6月なのにどういう分けか早めに開催された<a href="http://2014.techfesta.jp/">July Tech Festa 2014</a>でConsulについて<a href="http://2014.techfesta.jp/p/program.html?m=1#c43">発表</a>してきた。そのユースケースの一つとしてMySQL failoverをちょっとだけ紹介したので、ここに詳しく書いておく。</p>
+<div class="entry-content"><p>とあるエンジニアが言い放ちました。</p>
 
-<h2>MHA</h2>
+<p><strong>「上位に届かないチームはただの記念参加だよねー。」</strong></p>
 
-<p>MySQLレプリケーションの障害時にフェールオーバーしたい場合、MHAを使うの結構ポピュラー（日本では）だと思います。MHAは最新binlogの適用、Slaveの昇格とレプリケーションの張替えまではやってくれますが、実際のフェールオーバーの部分はユーザに委ねられていて、master_ip_failover_scriptのテンプレートをカスタマイズするか独自実装する必要があり、一般的な実現方法としてはカタログデータベースの更新かVirtual IPの切替等があります。</p>
+<p>というわけで、今年のISUCONは見事に予選落ちしました。</p>
 
-<p>Virtual IPだと居残りセッションの問題や切替の保証難しかったり、そもそも環境によっては使えなかったりするので、私はあんまり好きじゃありません。また以前、後者的アプローチとしてAWSのVPC内であればrouting tableを変更する事によってこの挙動に似た実現方法を<a href="/blog/2013/05/21/custom-non-rds-multi-az-mysql-replication/">紹介</a>した事がありますが、一番の問題点はAPI backplaneがSPoFになってて、ここが落ちたらそもそも動かない；また、APIのrate limitに達して呼び出しさえ出来ないという結構痛い目に会ったりします。</p>
+<h3>お題</h3>
 
-<p>そこで前者的なアプローチとしてmasterの情報を管理するカタログデータベースの更新部分にConsulを使ってみました。</p>
+<p>「<strong>ISUx</strong>i」というどこか懐かしい響きの「高負荷に耐えられるSNSコミュニティサイト」</p>
 
-<h2>CONSUL</h2>
+<p>記事、コメント、足あと機能が揃っており、以前より複雑度が増したなかなかの凝った作り。</p>
 
-<p>ConsulとはHTTP APIとDNSで操作ができる分散型クラスタで、VagrantやSerf等を開発しているHashicorpの新プロダクトです。Key featureは以下のとおり。</p>
+<h3>起こったこと</h3>
+
+<p>これはESIによるpartial cachingが出来るので、Varnishでやってみよう！</p>
+
+<p>と意気込んだものの、結局は間に合わずに終了ーーっ。</p>
+
+<h3>やりたかったこと</h3>
 
 <ul>
-<li>Service Discovery</li>
-<li>Failure Detection</li>
-<li>Multi Datacenter</li>
-<li>Key/Value Store</li>
+<li>Varnish + ESI + Redis &amp; MySQL</li>
 </ul>
 
 
-<h3>ConsulのConsistencyについて</h3>
+<h3>やれたこと</h3>
 
-<p>ConsulはCAP定理でいうCPという特性をもっており、Consistency（一貫性）に重きをおいてあります。Paxosを由来とするRaftをベースにしたconsensus protocolで実現していて、ピアセット内の各サーバノードでlog entryの書き込みがquorumで決定された後にcommitされたと見なされ、FSMに書き込まれます。よって、書き込みに関してはStrongly Consistentな処理となります。読み込みに関しては、パフォーマンス要求に応じてConsistencyレベルをクエリータイプによって調整可能（まるでCassandraのように！）で、Usually Consistent, Strongly Consistent, Staleから選択可能です。DNSベースのクエリーはデフォルトで単一のリーダーノードが返答するのでStrongly Consistentな処理となっています。（Staleにする事も可能）</p>
-
-<h2>ConsulとMHAの連携概要</h2>
+<p>具体的な作業内容は今手元にないので、ぼんやりと。</p>
 
 <ul>
-<li>Consulを内部DNSとして使い、clientはDNSベースでmasterに接続</li>
-<li>MySQL masterはAPIで予めサービス名（alias DNS）を登録しておく</li>
-<li>mysql_failover_scriptで旧情報の削除と新情報の登録をやる
-
-<ul>
-<li>旧master IPを無効化する部分でConsulのCatalog endpointを使ってderegister (/v1/catalog/deregister)</li>
-<li>新master ipを登録する部分でConsulのCatalog endpointを使ってregister (/v1/catalog/register)</li>
-<li>成功しない限り進まない（exit code check）</li>
-</ul>
-</li>
-<li>削除、及び登録はconsulのconsistency modelによって一貫性は保証される</li>
+<li>MySQLのクエリー修正、パラメータ、Index追加</li>
+<li>nginxのパラメータ追加</li>
+<li>kernelのパラメータ追加</li>
+<li>一部 redis化</li>
+<li>rubyプロセスの調整</li>
+<li>sidekiqのワーカーで遅延書き込み</li>
 </ul>
 
 
-<h2>DEMO</h2>
+<h3>はまったとこ</h3>
 
-<div class="embed-video-container"><iframe src="http://www.youtube.com/embed/rA4hyJ-pccU "></iframe></div>
+<p>今回はいろいろ初めてがあったので無駄に時間を潰した感じ。</p>
+
+<ul>
+<li><code>systemd</code> -
+最新のUbuntu 15.04はsystemdなんですね。ずっと14.04 LTSのupstartに慣れていたので、こっちは初めて触わった。</li>
+<li><code>apparmor</code> -
+設定ファイルをsymlinkでやろうとすると読み込まれず。。こいつのせいだと気づくのにちょっと手間取った。いらない子には怒りの<code>apt-get purge</code>を。</li>
+<li><code>mysql</code> -
+なんか設定ファイルが/etc/mysql/my.cnf単体じゃなくて、symlinkされたりいろんなディレクトリに散らばってたりで若干戸惑った。後、上記のapparmor関連で設定ファイルがしばらく全然反映されずに。。</li>
+<li><code>varnish</code> -
+こちらもvclやパラメータ指定が本来<code>/etc/default/varnish</code>で出来るはずが、なかなか反映されずに苦労した。Varnish 4.0のパッケージはapt-getですんなり入るんだけど、起動スクリプトが<code>/etc/init.d/varnish</code>に設置されるのに、そちらは無視され、systemdの方が優先される模様。カスタマイズするには<code>/lib/systemd/system/varnish.service</code>をコピって編集して<code>daemon-reload</code>が必要。詳しくは<a href="http://deshack.net/how-to-varnish-listen-port-80-systemd/">こちら</a></li>
+</ul>
 
 
-<h2>Notes</h2>
+<h3>終わりに</h3>
 
-<p>DNSは最新のv0.3.0になってからTTLを設定できるようになったので、Amazon RDSっぽい感じのフェールオーバーも可能ですが、v0.2系に比べて格段にパフォーマンスが向上（スライド参照）したので、デフォルトのTTL 0でも問題ない範囲になってる感じです。また、もうちょっと詳しい内容は今度の<a href="http://connpass.com/event/7322/">#hbstudy</a>で話す予定です。</p>
+<p>競技内容が確実に進化していて、非常ーーに楽しめました！その分、出題者の苦労が計り知れず。。こんどビールでも奢ります。今年の本戦は残念ながら行けないけど、外野として楽しくポップコーンでも食べながら観戦したい所ですね。</p>
 
-<h2>スライド</h2>
+<h3>おまけ</h3>
 
-<p>以下、July Tech Festa 2014で発表した時のスライドです。</p>
-
-<script async="true" class="speakerdeck-embed" data-id="e07317d0dc040131a0982229a5c1e016" src="//speakerdeck.com/assets/embed.js"> </script>
-
+<p>さて、現在はHashiConfに向けての飛行機の中だけど、悔しいので機内で復習しておきます。</p>
 </div>
 
 
@@ -193,12 +197,12 @@ document.write = function(html) {
   
 
 
-<time datetime="2014-07-11T10:12:00+09:00" pubdate data-updated="true">Jul 11<span>th</span>, 2014</time>
+<time datetime="2015-09-27T17:01:00+09:00" pubdate data-updated="true">Sep 27<span>th</span>, 2015</time>
       
 
 <span class="categories">
   
-    <a class='category' href='/blog/categories/consul/'>consul</a>, <a class='category' href='/blog/categories/events/'>events</a>, <a class='category' href='/blog/categories/mysql/'>mysql</a>
+    <a class='category' href='/blog/categories/events/'>events</a>, <a class='category' href='/blog/categories/study/'>study</a>
   
 </span>
 
@@ -207,7 +211,7 @@ document.write = function(html) {
     
       <div class="sharing">
   
-  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://ijin.github.io/blog/2014/07/11/mysql-failover-with-consul/" data-via="ijin" data-counturl="http://ijin.github.io/blog/2014/07/11/mysql-failover-with-consul/" >Tweet</a>
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://ijin.github.io/blog/2015/09/27/isucon5-qualifier/" data-via="ijin" data-counturl="http://ijin.github.io/blog/2015/09/27/isucon5-qualifier/" >Tweet</a>
   
   
   
@@ -216,10 +220,8 @@ document.write = function(html) {
     
     <p class="meta">
       
-        <a class="basic-alignment left" href="/blog/2014/04/21/chefconf-2014/" title="Previous Post: #ChefConf 2014に参加してきた">&laquo; #ChefConf 2014に参加してきた</a>
+        <a class="basic-alignment left" href="/blog/2015/08/23/yapc-asia-tokyo-2015/" title="Previous Post: YAPC::Asia Tokyo 2015に参加してきた">&laquo; YAPC::Asia Tokyo 2015に参加してきた</a>
       
-      
-        <a class="basic-alignment right" href="/blog/2014/10/20/isucon4-qualifier/" title="Next Post: ISUCON4の予選を通過したんだった">ISUCON4の予選を通過したんだった &raquo;</a>
       
     </p>
   </footer>
@@ -322,8 +324,8 @@ document.write = function(html) {
       
         
         // var disqus_developer = 1;
-        var disqus_identifier = 'http://ijin.github.io/blog/2014/07/11/mysql-failover-with-consul/';
-        var disqus_url = 'http://ijin.github.io/blog/2014/07/11/mysql-failover-with-consul/';
+        var disqus_identifier = 'http://ijin.github.io/blog/2015/09/27/isucon5-qualifier/';
+        var disqus_url = 'http://ijin.github.io/blog/2015/09/27/isucon5-qualifier/';
         var disqus_script = 'embed.js';
       
     (function () {

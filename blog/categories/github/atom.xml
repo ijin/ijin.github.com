@@ -4,7 +4,7 @@
   <title><![CDATA[Category: github | @ijin]]></title>
   <link href="http://ijin.github.io/blog/categories/github/atom.xml" rel="self"/>
   <link href="http://ijin.github.io/"/>
-  <updated>2015-09-27T18:31:14+09:00</updated>
+  <updated>2015-09-27T18:53:48+09:00</updated>
   <id>http://ijin.github.io/</id>
   <author>
     <name><![CDATA[Michael H. Oshita]]></name>
@@ -33,7 +33,7 @@
 
 <p>やりたいことはこんな感じ。</p>
 
-<p>{%img https://lh3.googleusercontent.com/CZE1yk0yqzlizL0aK5xNBVTupVovIZCPhwp3CWwxOyc=w548-h334-no %}</p>
+<p><img src="https://lh3.googleusercontent.com/CZE1yk0yqzlizL0aK5xNBVTupVovIZCPhwp3CWwxOyc=w548-h334-no"></p>
 
 <p>あるGitHubリポジトリのissuesに特定のコメントが書き込まれると、そのユーザはプロジェクトのteamに自動で追加されて、Slackへ通知が流れるというモノです。</p>
 
@@ -87,11 +87,11 @@ $ aws sns create-topic --name github --region ap-northeast-1
 
 <p><em>Webhooks &amp; Services</em> からAmazonSNSと連携</p>
 
-<p>{%img https://lh3.googleusercontent.com/u4I9Z_Ing9YzhmVCQhMACwYDVIJxJM7C-aDmyMsNL3o=w328-h190-no %}</p>
+<p><img src="https://lh3.googleusercontent.com/u4I9Z_Ing9YzhmVCQhMACwYDVIJxJM7C-aDmyMsNL3o=w328-h190-no"></p>
 
 <p>AWS KEYには先ほど作成したIAMユーザのを利用。SNS topicのarnにはregionが書かれているにも関わらず、GitHubの方では明示的に指定が必要。</p>
 
-<p>{%img https://lh3.googleusercontent.com/kppZQx_RdhyC11LB7a0cPtppDUiKgfZBm6laYvRG3zA=w382-h289-no %}</p>
+<p><img src="https://lh3.googleusercontent.com/kppZQx_RdhyC11LB7a0cPtppDUiKgfZBm6laYvRG3zA=w382-h289-no"></p>
 
 <h3>通知するeventの有効化</h3>
 
@@ -164,13 +164,13 @@ kms.encrypt({KeyId: 'alias/ijin', Plaintext: text}, function(err, data) {
 
 <p>また、KMSキーの実行権限もlambdaのroleに紐づけておく。</p>
 
-<p>{%img https://lh3.googleusercontent.com/oMHQ76XC7RQUCR_fEo9JyaMhPKSbnIdhCzjIWurEJ9c=w542-h358-no %}</p>
+<p><img src="https://lh3.googleusercontent.com/oMHQ76XC7RQUCR_fEo9JyaMhPKSbnIdhCzjIWurEJ9c=w542-h358-no"></p>
 
 <h2>Lambda</h2>
 
 <p>Lambda function作成時にはSNSをevent sourceとして指定。</p>
 
-<p>{%img https://lh3.googleusercontent.com/uDXkEVLrXT1BdUSbiMu3v5lnwTqCoXOkv_nu07XVxkk=w555-h235-no %}</p>
+<p><img src="https://lh3.googleusercontent.com/uDXkEVLrXT1BdUSbiMu3v5lnwTqCoXOkv_nu07XVxkk=w555-h235-no"></p>
 
 <p>(※) KMSは現在us-eastにしかないので、そこ以外のregionでlambdaを実行する場合は、<code>timeout</code>は若干長めに指定して置くと良さげ</p>
 
@@ -185,9 +185,13 @@ kms.encrypt({KeyId: 'alias/ijin', Plaintext: text}, function(err, data) {
 </ol>
 
 
-<p>{% gist ef105e192a030571d83f %}</p>
+<p><div><script src='https://gist.github.com/ef105e192a030571d83f.js?file='></script>
+<noscript><pre><code></code></pre></noscript></div>
+</p>
 
-<p>{% gist f83e33a6ae0acd83902a %}</p>
+<p><div><script src='https://gist.github.com/f83e33a6ae0acd83902a.js?file='></script>
+<noscript><pre><code></code></pre></noscript></div>
+</p>
 
 <p>nodeのlibraryを使うともっとスッキリ書けたけど、1 function 1 fileで纏めたかったのでやや冗長なコードになっちゃいました。。</p>
 
@@ -195,7 +199,7 @@ kms.encrypt({KeyId: 'alias/ijin', Plaintext: text}, function(err, data) {
 
 <p>GitHubでコメント</p>
 
-<p>{%img https://lh3.googleusercontent.com/KY7fwR-laXAJBQhJFv9VKzo_ydWFzeKep0G-3kgS0mM=w388-h128-no %}</p>
+<p><img src="https://lh3.googleusercontent.com/KY7fwR-laXAJBQhJFv9VKzo_ydWFzeKep0G-3kgS0mM=w388-h128-no"></p>
 
 <p>Lambda発動</p>
 
@@ -235,11 +239,11 @@ REPORT RequestId: a25c66fc-403f-1e15-b291-25d4ee441689  Duration: 2268.06 ms    
 
 <p>teamへの追加（招待）</p>
 
-<p>{%img https://lh3.googleusercontent.com/lzamiiNraeHYD7FI6rrb8-403hxjzVRrAqGG6k3sBcc=w474-h191-no %}</p>
+<p><img src="https://lh3.googleusercontent.com/lzamiiNraeHYD7FI6rrb8-403hxjzVRrAqGG6k3sBcc=w474-h191-no"></p>
 
 <p>Slackへ通知</p>
 
-<p>{%img https://lh3.googleusercontent.com/EeEiHydBDc29YhVI6MBUcdj1WUzMXnf_Sis3U-URqhw=w388-h147-no %}</p>
+<p><img src="https://lh3.googleusercontent.com/EeEiHydBDc29YhVI6MBUcdj1WUzMXnf_Sis3U-URqhw=w388-h147-no"></p>
 
 <h2>結論</h2>
 

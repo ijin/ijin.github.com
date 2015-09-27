@@ -4,7 +4,7 @@
   <title><![CDATA[Category: mysql | @ijin]]></title>
   <link href="http://ijin.github.io/blog/categories/mysql/atom.xml" rel="self"/>
   <link href="http://ijin.github.io/"/>
-  <updated>2015-09-27T18:31:14+09:00</updated>
+  <updated>2015-09-27T18:53:48+09:00</updated>
   <id>http://ijin.github.io/</id>
   <author>
     <name><![CDATA[Michael H. Oshita]]></name>
@@ -63,7 +63,7 @@
 
 <h2>DEMO</h2>
 
-<p>{% youtube rA4hyJ-pccU %}</p>
+<p><div class="embed-video-container"><iframe src="http://www.youtube.com/embed/rA4hyJ-pccU "></iframe></div></p>
 
 <h2>Notes</h2>
 
@@ -73,7 +73,7 @@
 
 <p>以下、July Tech Festa 2014で発表した時のスライドです。</p>
 
-<p>{% speakerdeck e07317d0dc040131a0982229a5c1e016  %}</p>
+<p><script async="true" class="speakerdeck-embed" data-id="e07317d0dc040131a0982229a5c1e016" src="//speakerdeck.com/assets/embed.js"> </script></p>
 ]]></content>
   </entry>
   
@@ -117,11 +117,11 @@ sudo mount -t xfs -o noatime,logbufs=8 /dev/md0 /data
 
 <p>トランザクション推移</p>
 
-<p>{% img https://docs.google.com/spreadsheet/oimg?key=0Aliw9SoXFJNMdFhhcHJkcDA5MGlackNHTXlPcWt0VWc&amp;oid=5&amp;zx=jwv2ytp6xwx3 %}</p>
+<p><img src="https://docs.google.com/spreadsheet/oimg?key=0Aliw9SoXFJNMdFhhcHJkcDA5MGlackNHTXlPcWt0VWc&amp;oid=5&amp;zx=jwv2ytp6xwx3"></p>
 
 <p>レスポンスタイム推移</p>
 
-<p>{% img https://docs.google.com/spreadsheet/oimg?key=0Aliw9SoXFJNMdFhhcHJkcDA5MGlackNHTXlPcWt0VWc&amp;oid=6&amp;zx=sfl6ocblw5ob %}</p>
+<p><img src="https://docs.google.com/spreadsheet/oimg?key=0Aliw9SoXFJNMdFhhcHJkcDA5MGlackNHTXlPcWt0VWc&amp;oid=6&amp;zx=sfl6ocblw5ob"></p>
 
 <p>速いですね。</p>
 
@@ -143,7 +143,7 @@ sudo mount -t xfs -o noatime,logbufs=8 /dev/md0 /data
  tpcc_start -d tpcc -u root -p "" -w 500 -c 16 -r 300 -l 3600
 </code></pre>
 
-<p>{% img https://docs.google.com/spreadsheet/oimg?key=0Aliw9SoXFJNMdFhhcHJkcDA5MGlackNHTXlPcWt0VWc&amp;oid=7&amp;zx=fc6nz8iel3ez %}</p>
+<p><img src="https://docs.google.com/spreadsheet/oimg?key=0Aliw9SoXFJNMdFhhcHJkcDA5MGlackNHTXlPcWt0VWc&amp;oid=7&amp;zx=fc6nz8iel3ez"></p>
 
 <p>hi1.4xlargeはSSD1台で計測した事を考えると、同価格帯のi2.4xlarge（SSD4台）の半分（SSD2台）のパフォーマンスが出るのは妥当ですね。</p>
 
@@ -151,7 +151,7 @@ sudo mount -t xfs -o noatime,logbufs=8 /dev/md0 /data
 
 <p>ついでにfioでそれぞれRAID0した場合のベンチマークも取ってみたけど、<a href="http://d.hatena.ne.jp/rx7/20131224/p1">並河さん</a>と結果が違ってwriteがスケールしてます。OSとmkfs.xfsのオプションしか違わないはずだけど。。</p>
 
-<p>{% img https://docs.google.com/spreadsheet/oimg?key=0Aliw9SoXFJNMdFhhcHJkcDA5MGlackNHTXlPcWt0VWc&amp;oid=9&amp;zx=v7nbywda04bp %}</p>
+<p><img src="https://docs.google.com/spreadsheet/oimg?key=0Aliw9SoXFJNMdFhhcHJkcDA5MGlackNHTXlPcWt0VWc&amp;oid=9&amp;zx=v7nbywda04bp"></p>
 
 <h2>その他</h2>
 
@@ -195,7 +195,7 @@ sudo mount -t xfs -o noatime,logbufs=8 /dev/md0 /data
 
 <p>以下、LT時に見せたデモ動画</p>
 
-<p>{% youtube tovb29K6ddc %}</p>
+<p><div class="embed-video-container"><iframe src="http://www.youtube.com/embed/tovb29K6ddc "></iframe></div></p>
 
 <p>擬似Virtual IPに対してそれぞれread/writeを行いつつMasterのプロセスをkillすると、通信できなくエラーが出続けるが20秒以内に自動フェールオーバーが完了しread/write共に再開します。pingも平均0.5msから2.0msに変わった事からAZが移った事が確認できます。</p>
 
@@ -246,11 +246,11 @@ sudo mount -t xfs -o noatime,logbufs=8 /dev/md0 /data
 
 <p>あ、ついでにその日はcpniteの資料作成やDJの選曲であんまり寝てなかったにもかかわらず、無事AWSソリューションアーキテクト（Associate）の認定試験に受かりました！</p>
 
-<p>{% img https://lh5.googleusercontent.com/-d_HVsb6DgBc/UZs39XB1KGI/AAAAAAAAAuw/ntgPp33hcOI/w294-h120-no/Solutions-Architect-Associate.png %}</p>
+<p><img src="https://lh5.googleusercontent.com/-d_HVsb6DgBc/UZs39XB1KGI/AAAAAAAAAuw/ntgPp33hcOI/w294-h120-no/Solutions-Architect-Associate.png"></p>
 
 <h2>LTスライド</h2>
 
-<p>{% slideshare 21341276 %}</p>
+<p><div class="embed-ss-container"><iframe src="http://www.slideshare.net/slideshow/embed_code/21341276 "></iframe></div></p>
 ]]></content>
   </entry>
   
@@ -308,11 +308,11 @@ sudo mount -t xfs -o noatime,logbufs=8 /dev/md0 /data
 
 <p>トランザクション推移</p>
 
-<p>{% img https://docs.google.com/spreadsheet/oimg?key=0Aliw9SoXFJNMdFhhcHJkcDA5MGlackNHTXlPcWt0VWc&amp;oid=2&amp;zx=ii4lryrf8pz8 %}</p>
+<p><img src="https://docs.google.com/spreadsheet/oimg?key=0Aliw9SoXFJNMdFhhcHJkcDA5MGlackNHTXlPcWt0VWc&amp;oid=2&amp;zx=ii4lryrf8pz8"></p>
 
 <p>レスポンスタイム推移</p>
 
-<p>{% img https://docs.google.com/spreadsheet/oimg?key=0Aliw9SoXFJNMdFhhcHJkcDA5MGlackNHTXlPcWt0VWc&amp;oid=3&amp;zx=c2drap7b5561 %}</p>
+<p><img src="https://docs.google.com/spreadsheet/oimg?key=0Aliw9SoXFJNMdFhhcHJkcDA5MGlackNHTXlPcWt0VWc&amp;oid=3&amp;zx=c2drap7b5561"></p>
 
 <p>Fusion-IOと比べて半分ぐらい。ioDrvie Duoの公称IOPSが250,000+ IOPSでhi1.4xlargeが120,000 IOPSなので、まあ合致しますね。</p>
 
@@ -336,7 +336,7 @@ sudo mount -t xfs -o noatime,logbufs=8 /dev/md0 /data
  tpcc_start -d tpcc -u root -p "" -w 500 -c 16 -r 300 -l 3600
 </code></pre>
 
-<p>{% img https://docs.google.com/spreadsheet/oimg?key=0Aliw9SoXFJNMdFhhcHJkcDA5MGlackNHTXlPcWt0VWc&amp;oid=4&amp;zx=y6kwyezb1qth %}</p>
+<p><img src="https://docs.google.com/spreadsheet/oimg?key=0Aliw9SoXFJNMdFhhcHJkcDA5MGlackNHTXlPcWt0VWc&amp;oid=4&amp;zx=y6kwyezb1qth"></p>
 
 <p>hi1.4xlargeの方が安定するまで少し時間がかかってます。<br />
 以下、安定化しだした900sあたりからの数値です。</p>

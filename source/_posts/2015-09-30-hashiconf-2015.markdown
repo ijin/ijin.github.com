@@ -1,0 +1,143 @@
+---
+layout: post
+title: "#HashiConf 2015に参加してきた"
+date: 2015-09-30 03:11
+comments: true
+categories: 
+- events
+- hashiconf
+---
+
+Portlandで開催された[HashiConf 2015](https://www.hashiconf.com)に参加してきました。
+
+## Day 1 ##
+
+### Keynote ###
+
+Founder & CEOのMitchell Hashimotoが登壇。
+今までのHashiCorpプロダクトを紹介した上で、新プロダクトの紹介！
+
+{% img https://lh3.googleusercontent.com/HlYLx0C2kBtEPHHdfe_7g7GEl__oIMgdmnoJCro-OArlGjSO1klN0DUnoNUwmO0H2EKgTUBrgLt2brPikCmmOT8LXsH34lJ-QZxX8wlt_L9U2kRmdf7zgFiXtg-XendkcCI7QjAOuQ_YCm7DcOSHVWiIbbdYS2HiUQuq0fAe4kXoZxS0jg2JMmchLF-BtcqcJYjL-eRFqw7XG2c5X9D4vjuFJUakiJ5C1ysg3LWPSykbxtrg0ZX7gZ6yik7guqb1AYf8-05Y_zbB_3KifaPJP0T4__dIfRvHvk9zSlvWldGV7Q7hosvHUbOfTVxfoqRyc_AkEs_PlR9d6ow65fKlZHTCtRJF2tQ5-AhKjaXH5J7iOD19j0PImxNcpCZnciEptA9AobuWY2WOK42IleQDxA0w807Xnn4ttRMPc7aCSPnwQjZgz-AulR1cUr0aPhcdDQeFi3ZZYMZ-0FVrCKDcqYZR53mu5UULIPeyGZzz-deyjYzX_k0dPpJb4vydaqHITc8qAVLgIcuNk0bKhGZ0B969uhdBTLXJ6WNfPYA2mAE=w465-h619-no  %}
+
+[Nomad](https://nomadproject.io)
+
+コンテナスケジューラ。ちょうどあるサービスの一部のDocker化でスケジューリング方法を考えていたので、グッドタイミング。
+
+---
+
+{% img https://lh3.googleusercontent.com/is8tIQa1MaHBOmeWWS3vvuKEKA7dXrb8zxegotRU4ENHod-S9Vgu1zhjqzA4uEdLCID6TxY32D1p4RXv7FFJmv4HbTHc0rvLQUEgXk1apTWPpyNigbIEW-tkY1_zKPHy-MaqrBklmZnCLkbxmCZlWBzjXzSINhEb8a65d3hGkR0bBBHkA5GiOp6hTryF-m5mEB9aAE-GbOGYxyLmBq6wY_7Jf6e1__LHZ2Y_wUlLpEbieJ-L4fV6tIAvj5D1iYW5gUkjKDoSLaFzYb74BSptxpkxd4xX4TQnSVlKRpxg0jKzehzosgB1CpXsuzip2tqdAasj7s4kUulx5ZBfieGXybWXSnkWcV-gYtIYpn2ZUgr8uCeTLOTZWDpMbm-1GUxA2Zks0SIciYAhZr1JaNvua28HPqnOfGFuGywjedKhwdfjqOzLZgP9Z3LBRBDsjp8wwX8VohNOJsXcO5KsdY0dRXPINz46s1ufMH0a72JmFbm0WUMrK44F7EBCtN95c2sL_NpZUObKCKRFgpfJGFnQjJIYPRWdZbKTeqdtbXGjKnw=w465-h619-no %}
+
+[Otto](https://ottoproject.io)
+
+開発からデプロイまで対応したmicroservicesを念頭に入れたVagrantの後継。
+
+### Operating Consul as an Early Adopter ###
+
+- 初期の頃からconsulを運用した苦労話
+- v0.2から始めた
+- `consule-template` 
+  - スケールしない。v0.6ではマシに
+  - 大きいクラスタで自身をDDOSする
+  - watchesを使わないでcronで`-once`
+- consulのDNSが不安定な時期があったので、15秒毎にzone fileを書き出し内部DNSで運用
+- その他初期バージョンで諸々不具合を発見してArmonと一緒に修正
+- ご苦労様
+
+
+### HashiCorp Tools in the Modern Enterprise ###
+
+- エンプラだって頑張ってDevOpsしてるもん！
+- 文字多めで眠くなっちゃった。。
+- [Izanamee](https://atlas.hashicorp.com/izanamee) イザナミ？
+
+### Resillient Infrastructure with Serf ###
+
+- Pagerdutyの人
+- SerfとChefと自社ツールを組み合わせて堅牢なインフラを構築
+- [Blender](https://github.com/PagerDuty/blender) - a modular remote command execution framework
+- [SerfX](https://github.com/ranjib/serfx) - a bare minimum ruby client for serf
+
+### Genesis: Terraforming a new Firefox crash stat infrastructure ###
+
+- Mozillaの人達による漫才ベースのプレゼン
+- Firefoxのクラッシュ統計データを受信するインフラの構築について
+- 結構笑いがとれてた
+
+### The future of management, and how we'll get there ###
+
+Puppetの作者Lukeさん。未来に観するディープで知見溢れるトーク
+
+## Day 2 ##
+
+### Keynote ###
+
+HashiCorpの哲学とAtlasの説明（2日目は新製品の発表はなし）
+
+{% img https://lh3.googleusercontent.com/dIv7xKjzT52KltVsZ28wdQc7_pD5Tif_0jmDlP3zhQbfGlSb1eGpey4gMDl7rZuUvbVrS5_VcaxGHqVNH1MrtPtsWoS3Zc5x3nALMeNf8F9KetY2pFU-BFgJXX4iLJfPjmgPoOk-210Uj2xlO2DZDtiubnKohJozYskuqdhqyd7hipCtaRefKhP3rU0eTYqYFumIg4_zW5H913Odt8wlIOgA-CypyPmRx7N1cWJYwj3jVf0YlfkDuqFFAM1vuQMNOy7WrTiubI0W-rWNE5zly0h02XXUy7wedzLpAOPUuqmpUvDHvwu-RBGQu5Qnu7a-g-0ZySNam6E1JypXOxv55rgDQylx3gyiETnsIFgCZf-z4EDkuCJzjX00UNI9J_MrM5pMJFKCsp5RbPhaex_YsTBD2s7wOymajngq2Vi1GBLy4LIL38BYeXIcJ3RddgJ5McrVW3IFUSI1WG8TWLjhh8HZ8UaAxvy7dFEJG5fF3SAB5NV-kI4OU-YsCu7kkkKJHgqfu55DMjVYZG2zBsxl5ml3AqXCCYvVbm13JVC1kBM=w619-h465-no %}
+
+### Dockerizing all the Things
+
+- Docker社内でのCIでconsul使ってるよって話
+- あんまり面白くなかった
+- 20分も残して終了。。
+
+### Automate your Infrastructure
+
+以下のツールでいろいろ自動化してるよ（ﾌｰﾝ）
+
+- Terraform
+- CircleCI
+- Docker (ECS)
+- Datadog
+- Slack
+
+### Managing Applications at Scale ###
+
+- CoreOSの人
+- Nomad vs Kubernetes 
+- CLI demo
+
+### Repeatable, Extensible Infra at Yelp ###
+
+- YelpのSite Reliability Engineer
+- 内部ツールで起動、puppetでプロビジョニング
+- Packerやpuppet managed VPCだったけど、今はTerraform
+- Smartstack (Service discovery)
+  - Nerve
+  - Synapse
+  - Hacheck
+  - qdisc_tools
+- Sensu
+- nsone
+- [terraform community modules](https://github.com/terraform-community-modules)をたくさん書いたよ
+
+
+### Virtual Machines, Containers, Lambdas? Oh my!
+
+- AWSの中の人（DevOps担当）
+- Microservicesについて
+- 導入の判断基準
+- VM（EC2, Packer, Terraform/Cloudformatio, Consul)
+- Container (ECS, Nomad)
+- Lambda (サーバレスアーキテクチャ。例：[SquirrelBin](http://squirrelbin.com)
+- さらっと自社サービスを紹介した後、結論はLambdaとAPI Gateway押し
+- そんなにサービス紹介を詰めこめなくても。。
+
+
+## 感想 ##
+
+Nomadの発表が一番エキサイティングだったけど、こういうカンファレンスは中の人やスピーカーや他のユーザーと直接話せるのが醍醐味。プロダクトの担当者に直接フィードバックを伝えたり、展望を聞いたりできて楽しかったです。また、会場で話した参加者も多種多様でアメリカ以外だとスペイン、オーストラリア、ニュージーランド、インド、日本等がいて、世界中から注目されている感じでした。
+
+第一回目ということで約300人の中規模だけど、このぐらいが皆の距離感近くて良い雰囲気。
+
+
+## その他 ##
+
+- 懇親会で飛び込みLTしたかったが会場設備が対応できなく、断念
+- Portland心地良くて過ごしやすい！
+- 記念にもらったHashiCorpとハシ（箸）をかけたジュークは誰も理解してなかった
+（Mitchellは日本人参加者が理解してくれるから良いんだと）
+
+{% img https://lh3.googleusercontent.com/CGXg4V8waqpzxbced18GuRIHobwneTumjyKuBUmjiuWOukYQLp1On9O6dj8tM1Q5XFaVeVviUsfDgs_thuEmWx-j0S6-iT7HL7rE5_uounl5mVyOQghmZTJzNEHCggF1rzZDgSy07P-sXcL4n8AW6f1E_lcwPbaO89KH8WdQwcKKriPaEUvswCcBEez27Tu6yobKLognCZgoQt-lfeTPmV3IJbQYvLzsJS3tkNVk3pinqeVn4pBUQj3h3tXHup_B9L-ydG6kt9r-Ua9WeMnbQQALlWOqsIjN2gSC5o686K3scPIq-bBT6RZLhewVtF4ShxS3MbK4HJL2H0VmR7aZowUohAKxKbfEPYK8NycQIe89Tcvknw56LroM9Nfn7kstNMe71jZUIxGnGbIcA5eYK-gVA9tIqaf3LIns7bmZD8SEqVCp7y_8jMzlu2kSVHWOVmxXlWk9j6ZgzBx00gc417nLL6Qo7sT3h1NALIX98T7mXUuoWINQT5BssmhskD0X-jA6dzJPoXlr8w2DYdEUjt9zr6Lv6au1bv6x3vsna3M=w429-h322-no %} 
+
+さて、来週はre:Inventだ！

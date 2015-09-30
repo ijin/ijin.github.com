@@ -23,8 +23,6 @@ Founder & CEOのMitchell Hashimotoが登壇。
 
 コンテナスケジューラ。ちょうどあるサービスの一部のDocker化でスケジューリング方法を考えていたので、グッドタイミング。
 
----
-
 {% img https://lh3.googleusercontent.com/is8tIQa1MaHBOmeWWS3vvuKEKA7dXrb8zxegotRU4ENHod-S9Vgu1zhjqzA4uEdLCID6TxY32D1p4RXv7FFJmv4HbTHc0rvLQUEgXk1apTWPpyNigbIEW-tkY1_zKPHy-MaqrBklmZnCLkbxmCZlWBzjXzSINhEb8a65d3hGkR0bBBHkA5GiOp6hTryF-m5mEB9aAE-GbOGYxyLmBq6wY_7Jf6e1__LHZ2Y_wUlLpEbieJ-L4fV6tIAvj5D1iYW5gUkjKDoSLaFzYb74BSptxpkxd4xX4TQnSVlKRpxg0jKzehzosgB1CpXsuzip2tqdAasj7s4kUulx5ZBfieGXybWXSnkWcV-gYtIYpn2ZUgr8uCeTLOTZWDpMbm-1GUxA2Zks0SIciYAhZr1JaNvua28HPqnOfGFuGywjedKhwdfjqOzLZgP9Z3LBRBDsjp8wwX8VohNOJsXcO5KsdY0dRXPINz46s1ufMH0a72JmFbm0WUMrK44F7EBCtN95c2sL_NpZUObKCKRFgpfJGFnQjJIYPRWdZbKTeqdtbXGjKnw=w465-h619-no %}
 
 [Otto](https://ottoproject.io)
@@ -78,7 +76,7 @@ HashiCorpの哲学とAtlasの説明（2日目は新製品の発表はなし）
 ### Dockerizing all the Things
 
 - Docker社内でのCIでconsul使ってるよって話
-- あんまり面白くなかった
+- あまり面白くなかった
 - 20分も残して終了。。
 
 ### Automate your Infrastructure
@@ -120,8 +118,8 @@ HashiCorpの哲学とAtlasの説明（2日目は新製品の発表はなし）
 - VM（EC2, Packer, Terraform/Cloudformatio, Consul)
 - Container (ECS, Nomad)
 - Lambda (サーバレスアーキテクチャ。例：[SquirrelBin](http://squirrelbin.com)
-- さらっと自社サービスを紹介した後、結論はLambdaとAPI Gateway押し
-- そんなにサービス紹介を詰めこめなくても。。
+- さらっと自社サービスをたっくさん紹介した後、結論はLambdaとAPI Gateway押し
+- そんなにサービスを詰めこめなくても。。
 
 
 ## 感想 ##
@@ -136,7 +134,7 @@ Nomadの発表が一番エキサイティングだったけど、こういうカ
 - 懇親会で飛び込みLTしたかったが会場設備が対応できなく、断念
 - Portland心地良くて過ごしやすい！
 - 記念にもらったHashiCorpとハシ（箸）をかけたジュークは誰も理解してなかった
-（Mitchellは日本人参加者が理解してくれるから良いんだと）
+（Mitchellが言うには日本人参加者が理解してくれるから良いんだと）
 
 {% img https://lh3.googleusercontent.com/CGXg4V8waqpzxbced18GuRIHobwneTumjyKuBUmjiuWOukYQLp1On9O6dj8tM1Q5XFaVeVviUsfDgs_thuEmWx-j0S6-iT7HL7rE5_uounl5mVyOQghmZTJzNEHCggF1rzZDgSy07P-sXcL4n8AW6f1E_lcwPbaO89KH8WdQwcKKriPaEUvswCcBEez27Tu6yobKLognCZgoQt-lfeTPmV3IJbQYvLzsJS3tkNVk3pinqeVn4pBUQj3h3tXHup_B9L-ydG6kt9r-Ua9WeMnbQQALlWOqsIjN2gSC5o686K3scPIq-bBT6RZLhewVtF4ShxS3MbK4HJL2H0VmR7aZowUohAKxKbfEPYK8NycQIe89Tcvknw56LroM9Nfn7kstNMe71jZUIxGnGbIcA5eYK-gVA9tIqaf3LIns7bmZD8SEqVCp7y_8jMzlu2kSVHWOVmxXlWk9j6ZgzBx00gc417nLL6Qo7sT3h1NALIX98T7mXUuoWINQT5BssmhskD0X-jA6dzJPoXlr8w2DYdEUjt9zr6Lv6au1bv6x3vsna3M=w429-h322-no %} 
 

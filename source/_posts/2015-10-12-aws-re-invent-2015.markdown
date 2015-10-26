@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "AWS re:Invent 2015に参加してきた"
-date: 2015-10-22 02:26
+date: 2015-10-26 02:26
 comments: true
 categories: 
 - events
@@ -115,6 +115,8 @@ Amazon Echoを使った、Alexaのプログラミングワークショップ。�
 新品のEchoを開封して使ったので、最後に貰える物かとささやかに期待したものの、$15のAWSクーポン配布のみ。さすがFrugalなAmazonさん。
 
 {% tweet https://twitter.com/ijin/status/652234646231646208 %}
+
+{% tweet https://twitter.com/ijin/status/652239936968654848 %}
 
 ### re:Play ###
 

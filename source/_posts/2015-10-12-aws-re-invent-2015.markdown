@@ -29,7 +29,7 @@ Unicornを貸し出すサービスを展開する仮想のスタートアップ�
 
 ちなみに最速レスポンスタイムはうちのチームが叩きだした。
 
-{% img https://lh3.googleusercontent.com/X7T6tN_hkoJ9S9e0z6hZuTtpZSa0v8DCD4sntvCYD9W6tQIJURw=w408-h544-no %}
+{% tweet https://twitter.com/ijin/status/651544851620700160 %}
 
 詳細は今度日本で開催されるかも知れないので控えておくが、非常に楽しめたので次回は運営側に回って手伝おうかと思います！
 
@@ -123,6 +123,8 @@ EDMの若きプリンスDJ、Zeddをシークレットゲストとして呼ん�
 {% tweet https://twitter.com/rukes/status/652400784353595392 %}
 
 もう完全にWernerのパーティー。
+
+{% tweet https://twitter.com/ijin/status/652681828441063425 %}
 
 {% youtube cT676BMT7A8 %}
 

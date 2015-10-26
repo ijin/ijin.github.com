@@ -4,7 +4,7 @@
   <title><![CDATA[Category: events | @ijin]]></title>
   <link href="http://ijin.github.io/blog/categories/events/atom.xml" rel="self"/>
   <link href="http://ijin.github.io/"/>
-  <updated>2015-10-01T18:28:38+09:00</updated>
+  <updated>2015-10-26T16:16:57+09:00</updated>
   <id>http://ijin.github.io/</id>
   <author>
     <name><![CDATA[Michael H. Oshita]]></name>
@@ -12,6 +12,152 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[AWS re:Invent 2015に参加してきた]]></title>
+    <link href="http://ijin.github.io/blog/2015/10/26/aws-re-invent-2015/"/>
+    <updated>2015-10-26T02:26:00+09:00</updated>
+    <id>http://ijin.github.io/blog/2015/10/26/aws-re-invent-2015</id>
+    <content type="html"><![CDATA[<p>今年で3度目の参加となるAWS re:Invent。
+忘れない内に記録を残しておきます。</p>
+
+<h2>Day 0</h2>
+
+<h3>Game Day</h3>
+
+<p>Unicornを貸し出すサービスを展開する仮想のスタートアップ企業にDevOpsチームとして最近入社したという設定。前任者が退職しており、資料が少ない中でサービスオープンに立ち会いつつ、様々な困難に直面するというフルデイ・イベント。
+今までのGame Dayと違って面白いのはパフォーマンス・チューニングをしつつも、コストも意識しながらチーム間でスコアを競争するところ。アプリは触れないので、<a href="http://isucon.net/">ISUCON</a>よりは昔やった<a href="/blog/2012/07/03/tuningathon4/">チューニンガソン</a>に近い感じ。</p>
+
+<p>スコアは累積の損益。アーキテクチャによっては利益が出たり損失が出たりする。例えば、多くのリクエストが処理できると利益は増すが、AWSのリソースが多いと費用が掛かって損失になりうる。
+当然最初は各チームは赤字から始まり、時間とともに積算した利益によって黒転して行く様が目新しかった。</p>
+
+<p>結果、48チーム中で<strong>6位</strong>。（上位2チームはチートで失格となったので<strong>実質は4位</strong>）</p>
+
+<p>{% img https://lh3.googleusercontent.com/H8zoy7lrftuIo9ZQTN_LsUC3KsiGsNkOJbPzuW4vAxy4o6IOAH8=w547-h298-no %}</p>
+
+<p>{% tweet https://twitter.com/KyleLichtenberg/status/651573816301219840 %}</p>
+
+<p>ちなみに最速レスポンスタイムはうちのチームが叩きだした。</p>
+
+<p>{% tweet https://twitter.com/ijin/status/651544851620700160 %}</p>
+
+<p>詳細は今度日本で開催されるかも知れないので控えておくが、非常に楽しめたので次回は運営側に回って手伝おうかと思います！</p>
+
+<h2>Day 1</h2>
+
+<h3>Keynote</h3>
+
+<p>Andy Jessy副社長による発表。今年のテーマは「<strong>自由</strong>」</p>
+
+<ul>
+<li>Amazon QuickSight</li>
+<li>Amazon Kinesis Firehose</li>
+<li>Amazon Snowball</li>
+<li>MariaDB for RDS</li>
+<li>AWS Database Migration Service</li>
+<li>AWS Schema Conversion Tool</li>
+<li>AWS Config Rules</li>
+<li>Amazon Inspector</li>
+</ul>
+
+
+<p>{% img https://lh3.googleusercontent.com/SSI_hMC3cjzUSvGPxT49FD26VBeY_QYt_qGoTLDPo8nBLwdmglM=w493-h544-no %}</p>
+
+<p><del>Oracle</del>からの自由、解放！</p>
+
+<h3>WRK306 - AWS Professional Services Architecting Workshop</h3>
+
+<p>実在した、ある企業のクラウド移行案件。RFP的なモノがあり、アーキテクチャをチーム内で議論し、最後にそれぞれ各チームが発表していく流れ。
+かつてjawsugで主催を手伝ったワールドカフェ形式とほぼ同じだったので、チームメンバーを先導してCacooでさくさく構成図を起こしていく。
+他のチームが模造紙にラフスケッチで発表する中、我らは綺麗に正本して、プロジェクターで登壇しながら発表。</p>
+
+<p>{% tweet https://twitter.com/ijin/status/651869691699425281 %}</p>
+
+<p>最後に実際にどう移行したかというAWSチームからの回答。まず、移行フェーズを段階的に分け、最初はシステムをほぼそのままクラウド上に乗せた後に部分的に最適化してコンポーネントを置き換えて行ったという話。最後にLambdaになっていた部分があったのが興味深かった。</p>
+
+<p>早く新サービスに対応したAWS Simple Iconsのアップデートが待たれるところ。</p>
+
+<p>{% img https://lh3.googleusercontent.com/IVrSN7g0MnAfVa6pB4ajQWUZYPmpFMOH6Ych-FedX1HqxCfEHtc=w583-h346-no %}</p>
+
+<p>今回提案した内容。</p>
+
+<h3>WRK305 - Zombie Apocalypse Survival: Building Serverless Microservices</h3>
+
+<p>Zombie Apocalypseが起こって、人類存亡の危機！途中まで実装されたチャットルームの機能を拡張・実装して危機を救え！というシナリオの元、LambdaとAPI Gatewayとjavascript sdkで実装されたサーバーレスアーキテクチャのワークショップ。</p>
+
+<p>機能拡張の為に実装が必要なので、設計しながらチーム内で作業分担し、コードをせっせと書いていく。
+ゾンビ出現のアラート通知、ヒートマップ描画、アンデッドカウンター、緊急食料倉庫の位置情報配信等、面白い機能要求が盛り沢山。</p>
+
+<p>{% img https://lh3.googleusercontent.com/-UStcIzDdtS42SZTgt657iKvYHWlbcfktbvuCq3-LIioBfrBzgI=w600-h346-no %}</p>
+
+<p>ささっとSlack部屋を作り、githubでコードを共有しながらのチームワーク作業。多分、うちらのチームが一番多く実装できた感触。</p>
+
+<p>{% img https://lh3.googleusercontent.com/WZ7nUMvRhoNzixWqjEdCFJ1wJqNH-BqjV4M4cq93mBXBnJ8UPOk=w493-h544-no %}</p>
+
+<p>このワークショップはかなりの人気で、開始30分前にすでに長蛇の列が。
+運良くぎりぎり最後の参加者として入れたけど、皆どれだけゾンビが好きなんだ。。</p>
+
+<h2>Day 2</h2>
+
+<h3>Keynote</h3>
+
+<p>Wernerl Vogels CTOの発表。</p>
+
+<ul>
+<li>Amazon Kinesis Analytics</li>
+<li>X1 instance (100 cores, 1TB RAM)</li>
+<li>t2.nano instance</li>
+<li>Amazon EC2 Container Registry</li>
+<li>Lambda
+
+<ul>
+<li>VPC support</li>
+<li>Long running Functions (300s)</li>
+<li>Scheduled Functions</li>
+<li>Custom Retry Logic</li>
+<li>Python</li>
+</ul>
+</li>
+<li>AWS IOT</li>
+</ul>
+
+
+<p>{% img https://lh3.googleusercontent.com/A4p3UvP0JiMxjpZF7L0zxdMFkU96aOYtZ-BExM2zFERDsebakXw=w493-h543-no %}</p>
+
+<p>前日にAndyが7つの自由を語って、当日はWernerが7つの法則を語る。</p>
+
+<h3>WRK308 - AWS + ASK: Teaching Amazon Echo New Skills</h3>
+
+<p>Amazon Echoを使った、Alexaのプログラミングワークショップ。音声によって、Echo経由でLambdaイベントを呼び出し、Alexaサービスと連携するカスタマイズしたスキルセットを実装して行く。</p>
+
+<p>例えば、Alexaに好きな色を覚えさせて、後ほど聞くと答えてくれる機能とか。全てボイスコントロール。<a href="http://yoshidashingo.hatenablog.com/?page=1445224481">吉田さんの英語でも通じた</a>ので、かなり優秀。</p>
+
+<p>新品のEchoを開封して使ったので、最後に貰える物かとささやかに期待したものの、$15のAWSクーポン配布のみ。さすがFrugalなAmazonさん。</p>
+
+<p>{% tweet https://twitter.com/ijin/status/652234646231646208 %}</p>
+
+<p>{% tweet https://twitter.com/ijin/status/652239936968654848 %}</p>
+
+<h3>re:Play</h3>
+
+<p>EDMの若きプリンスDJ、Zeddをシークレットゲストとして呼んでのアフター。</p>
+
+<p>{% tweet https://twitter.com/rukes/status/652400784353595392 %}</p>
+
+<p>もう完全にWernerのパーティー。</p>
+
+<p>{% tweet https://twitter.com/ijin/status/652681828441063425 %}</p>
+
+<p>{% youtube cT676BMT7A8 %}</p>
+
+<p>Zeldaのremixが良かった。</p>
+
+<h3>終わりに</h3>
+
+<p>結局セッションは一つも出なかったです。まあ、ビデオやスライドは公開されるので内容自体は後で把握可能なので別にいいかな。授業を聞きに来た分けでもないし。
+それよりも、現地に来ているエンジニアと交流したり、実装まで含んだハンズオンのワークショップをやった方が楽しいし、糧となる。後はトレンドを肌感覚として知るには最高の場所なので行った事ない人には是非オススメしておきたい。</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[#HashiConf 2015に参加してきた]]></title>
@@ -27,13 +173,13 @@
 <p>Founder &amp; CEOのMitchell Hashimotoが登壇。
 今までのHashiCorpプロダクトを紹介した上で、新プロダクトの紹介！</p>
 
-<p><img src="https://lh3.googleusercontent.com/kV2iR87ZYBN9LuPjMxGmuPxg1t1xzZLlcgi5LV_y8TwzSvsIOVE=w479-h638-no"></p>
+<p>{% img https://lh3.googleusercontent.com/kV2iR87ZYBN9LuPjMxGmuPxg1t1xzZLlcgi5LV_y8TwzSvsIOVE=w479-h638-no %}</p>
 
 <p><a href="https://nomadproject.io">Nomad</a></p>
 
 <p>コンテナスケジューラ。ちょうどあるサービスの一部のDocker化でスケジューリング方法を考えていたので、グッドタイミング。</p>
 
-<p><img src="https://lh3.googleusercontent.com/PaK-SUH-tybvL7ILwZFFXrYVdylvzw1cu0bFR8rKDadbIRgA8cA=w479-h638-no"></p>
+<p>{% img https://lh3.googleusercontent.com/PaK-SUH-tybvL7ILwZFFXrYVdylvzw1cu0bFR8rKDadbIRgA8cA=w479-h638-no %}</p>
 
 <p><a href="https://ottoproject.io">Otto</a></p>
 
@@ -96,7 +242,7 @@
 
 <p>HashiCorpの哲学とAtlasの説明（2日目は新製品の発表はなし）</p>
 
-<p><img src="https://lh3.googleusercontent.com/XzbJrBKpfWU73lMGv5tVFmfV90Uvyec7WWiizweiv_uTbZEEusY=w619-h465-no"></p>
+<p>{% img https://lh3.googleusercontent.com/XzbJrBKpfWU73lMGv5tVFmfV90Uvyec7WWiizweiv_uTbZEEusY=w619-h465-no %}</p>
 
 <h3>Dockerizing all the Things</h3>
 
@@ -180,7 +326,7 @@
 </ul>
 
 
-<p><img src="https://lh3.googleusercontent.com/50dhedo-8s4QS_7Chw6v1U6Ow58b4d53HHYlVQGQ6hwwuN6CT7c=w427-h320-no"></p>
+<p>{% img https://lh3.googleusercontent.com/50dhedo-8s4QS_7Chw6v1U6Ow58b4d53HHYlVQGQ6hwwuN6CT7c=w427-h320-no %}</p>
 
 <p>さて、来週はre:Inventだ！</p>
 ]]></content>
@@ -311,11 +457,11 @@ innodb_flush_log_at_trx_commit = 1
 
 <p>スコアの推移はこんな感じ。データセットが小さい分、スコアは大きめ。</p>
 
-<p><img src="https://docs.google.com/spreadsheets/d/1zm6-THRYR_EcLoHgacRScxlhSzeQAkbJ0RXiAI4fiRU/pubchart?oid=1067951178&amp;format=image"></p>
+<p>{% img https://docs.google.com/spreadsheets/d/1zm6-THRYR_EcLoHgacRScxlhSzeQAkbJ0RXiAI4fiRU/pubchart?oid=1067951178&amp;format=image %}</p>
 
 <p>終盤になってやっと本番に近いデータセットや実行時感で細かいチューニング。</p>
 
-<p><img src="https://docs.google.com/spreadsheets/d/1zm6-THRYR_EcLoHgacRScxlhSzeQAkbJ0RXiAI4fiRU/pubchart?oid=2026636320&amp;format=image"></p>
+<p>{% img https://docs.google.com/spreadsheets/d/1zm6-THRYR_EcLoHgacRScxlhSzeQAkbJ0RXiAI4fiRU/pubchart?oid=2026636320&amp;format=image %}</p>
 
 <p>最終的にローカルでのベストスコアは<strong>53420.332 TpmC</strong>でした。</p>
 
@@ -404,8 +550,7 @@ renice -n19 -p `ps auxf | grep mackerel | grep -v grep | awk ‘{print $2}’`
 
 <p>賞品として3DマッサージピローとSSDを頂きました！</p>
 
-<p><div class='embed tweet'><blockquote class="twitter-tweet"><p>3DマッサージピローとSSDをもらった。 <a href="https://twitter.com/hashtag/%E3%82%B5%E3%83%90%E3%83%95%E3%82%A7%E3%82%B9?src=hash">#サバフェス</a> <a href="http://t.co/mKczn9mflZ">pic.twitter.com/mKczn9mflZ</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/581048257171820544">March 26, 2015</a></blockquote>
-<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div></p>
+<p>{% tweet https://twitter.com/ijin/status/581048257171820544 %}</p>
 
 <p>個人敵には飛び込みLTした人がもらったDroneの方が良さそうだったけど、ピローは家族に好評でした。</p>
 ]]></content>
@@ -434,211 +579,6 @@ renice -n19 -p `ps auxf | grep mackerel | grep -v grep | awk ‘{print $2}’`
 <h2>最後に</h2>
 
 <p>とまあ、不完全燃焼だったけど、なんだかんだで面白かったです。運営＆参加者の皆様お疲れ様でした。来年またあるか分からないけど、楽しみにしています。</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[ISUCON4の予選を通過したんだった]]></title>
-    <link href="http://ijin.github.io/blog/2014/10/20/isucon4-qualifier/"/>
-    <updated>2014-10-20T15:38:00+09:00</updated>
-    <id>http://ijin.github.io/blog/2014/10/20/isucon4-qualifier</id>
-    <content type="html"><![CDATA[<p>そういえば、3回目の参加となる<a href="http://isucon.net/">ISUCON</a>の第4回目の予選を通過してました。</p>
-
-<p><a href="http://isucon.net/archives/40576269.html">結果</a>は185チーム中、<strong>19位</strong>というなんと微妙な結果で本戦にいける事に。</p>
-
-<h3>事前準備</h3>
-
-<p>今年も<a href="https://twitter.com/cads">@cads</a>と<a href="https://twitter.com/fruwe">@fruwe</a>でお馴染みのメンバーで「Mr. Frank &amp; Co: A New Hope」として登録。</p>
-
-<p>前日までこんな感じの打ち合わせや予習を実地。</p>
-
-<ul>
-<li>選択言語はruby</li>
-<li>効率化・自動化の為にansible playbookを用意
-
-<ul>
-<li>ssh keys</li>
-<li>dotfiles</li>
-<li>rubyの複数バージョン</li>
-<li>各種ミドルウェア</li>
-</ul>
-</li>
-<li>sidekiq等のバックグラウンドワーカーやキャッシュ周りの仮組み</li>
-<li>redisの復習</li>
-<li>去年やったエントリを読む</li>
-<li>当日の流れの確認</li>
-<li>コミュニケーションツールとして最近仕事で活躍してる<strong>Slack</strong>を導入</li>
-</ul>
-
-
-<p>役割としては他の二人がコード実装に集中できるように、私がインフラ周り、コードレビュー、ファシリテーターを務める。</p>
-
-<h3>お題発表</h3>
-
-<p>不正ログイン防止の為にアクセスの失敗回数に応じてログインロックをかけるシステム。実に今風なオンラインバンキングサービス「いすこん銀行」w 最後はjsonのレポートが出力。</p>
-
-<p><img src="https://lh5.googleusercontent.com/-XjuyJ-r62YE/VETj3ySpGkI/AAAAAAAABAo/2Q2yi6YWJUk/w622-h373-no/isucon4q-bank.png"></p>
-
-<h3>前半戦</h3>
-
-<p>まずは今までの経験からいきなりチューニングをせず、じっくりとアプリ挙動を把握し、計測し、コード解析に専念。レギュレーションもしっかり読む。この辺の衝動のコントロールはうまくなって来た感触。</p>
-
-<p>アプリ自体は例年の作りによく似ていて、まあそこそこ高速化はできるだろうけど、その分他のチームも同様だろうと予想。</p>
-
-<p>コードを3人で読みつつ、前日までに用意していたansibleを流したり、git化したり、計測を淡々と実地。</p>
-
-<p>言語をいくつか参考値として計測した初期スコア</p>
-
-<table>
-<thead>
-<tr>
-<th>language </th>
-<th> score </th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>ruby     </td>
-<td> 1236 </td>
-</tr>
-<tr>
-<td>go       </td>
-<td> 1733 </td>
-</tr>
-<tr>
-<td>perl     </td>
-<td> 1662 </td>
-</tr>
-</tbody>
-</table>
-
-
-<ul>
-<li>Web側は各リスエストの比率やレスポンスタイム等を解析</li>
-<li>DB周りは幸いMySQLだったので全ログ出力してpt-query-digestで解析<br />
-（Postgresだったらどうしたんだろう）</li>
-<li>OS周りはdstatやhtop等でリソースの利用具合を観測</li>
-</ul>
-
-
-<p>計測やコードの理解が出来た時点で新アーキテクチャの設計を3人でディスカッションし、戦略立案。</p>
-
-<p>タイムリミットをいくつか設け、いざ開始！（この時点ではまだ1行も変更してない）</p>
-
-<p>基本戦略としてはMySQLのRedisへの置き換えし、アプリの処理自体を減らしていく方向。チームメイトの2人には実装を担当してもらい、その間に私が既存のMySQLバージョンのチューニングを施し、地味にスコアを上げていく。</p>
-
-<ul>
-<li>INDEX追加</li>
-<li>MySQL parameter tuning</li>
-<li>stylesheetsやjavascriptの直接配信</li>
-<li>TCP tuning</li>
-<li>File Descriptor上限緩和</li>
-<li>unix domain socketの利用</li>
-</ul>
-
-
-<p>合間合間に声をかけ、実装具合や残り時間をチェックし、テンポをとる。</p>
-
-<p>予め決めていた期限である14:00（ソフトリミット）に到達した時点で進捗を確認し、15:00（ハードリミット）までには間に合いそうだったのでそのまま続行を決定。</p>
-
-<p>14:31にredis版が仕上がる！</p>
-
-<p><strong>実装方法</strong></p>
-
-<ul>
-<li>初期化スクリプトでMySQLからRedisへ変換</li>
-<li>失敗ログインはINCRでカウント</li>
-<li>lockとban時にはSADDでSETに追加</li>
-<li>SISMEMBERでlock/banの確認</li>
-<li>ユーザ個別の履歴はHMSET/HMGETでハッシュ化</li>
-<li>/reportはSMEMBERSで出力</li>
-</ul>
-
-
-<h3>後半戦</h3>
-
-<p>Redis版のgit branchに私のコミットをマージし計測。MySQL版よりは多少良いスコア。</p>
-
-<p>mysql version</p>
-
-<pre><code>tag:benchmarker type:score      success:82910   fail:0  score:17910
-</code></pre>
-
-<p>redis version</p>
-
-<pre><code>tag:benchmarker type:score      success:87810   fail:318  score:18969
-</code></pre>
-
-<p>CPU消費がアプリに移っていたので、後はいかにrubyに処理をさせないかの勝負となる。</p>
-
-<p>ここからやったのは</p>
-
-<ul>
-<li>worker loadの最適値模索</li>
-<li>パスワードを初期化スクリプト時にオンメモリで持つように改造</li>
-<li>パスワードのハッシュ計算除外（ハッシュ計算のスキップは結果的にスコアには影響せず）</li>
-<li>トップページのエラーリダイレクトをクエリパラメータ化し、nginxで静的キャッシュ</li>
-<li>ログイン部分のlua実装（間に合わず）</li>
-</ul>
-
-
-<p>最後のlua実装は取り掛かったものの、期限までには時間が足りないと判断し断念。かわりに失格とならないように再起動後の正常動作する事を入念に確認。</p>
-
-<p>結局、ハイスコアは<strong>39243</strong>で終了</p>
-
-<pre><code>tag:benchmarker    type:score    success:181670    fail:0    score:39243
-</code></pre>
-
-<p>後で気づいたのが最高スコアではなく、最終提出スコアが最終結果となるので誤差により若干下がってしまった。。</p>
-
-<p><strong>戦いの軌跡</strong></p>
-
-<p><img src="https://lh6.googleusercontent.com/VDc46K_BClolTXevFw5IH4W9sS5Z6akC6FIpIAcJhTM=w925-h328-no"></p>
-
-<h3>振り返り</h3>
-
-<ul>
-<li>戦略と遂行は概ね正しかったかと</li>
-<li>タイムキープ大事</li>
-<li>実装は段階的に作ったので大きなバグがなかった</li>
-<li>ansible便利（自動化で効率化）</li>
-<li>Slackが非常に良かった（特にgithub連携）</li>
-<li>VarnishのTシャツ着てたのに使わなかった</li>
-<li>access_logを切るのを忘れてた！（offで試した41594だった）</li>
-<li>多くのチームが失格となっていたので最終チェックは大事</li>
-<li>今回は基本実装が余裕で間に合ったので確実に上達していると実感</li>
-</ul>
-
-
-<h3>復習</h3>
-
-<p>予選終了後、最後に断念したlua化を一人で実装してみた。</p>
-
-<p>/login実装でスコアは<strong>5万超</strong>、/mypageまでやって<strong>6万超</strong>でした。</p>
-
-<pre><code>tag:benchmarker type:report     count:banned ips        value:1043
-tag:benchmarker type:report     count:locked users      value:5290
-tag:worker      type:fail       reason:Response code should be 201, got 403     method:POST     uri:/results
-tag:benchmarker type:fail       message: Score sending failed   reason:Response code should be 201, got 403     method:POST     uri:/results
-tag:benchmarker type:score      success:278260  fail:0  score:60108
-</code></pre>
-
-<p>その後に、競技中には思いつなかったimageやcssをUser Agent判定で切って（DOM構造は変えずに）みたら<strong>15万超え</strong></p>
-
-<pre><code>tag:benchmarker type:report     count:banned ips        value:3115
-tag:benchmarker type:report     count:locked users      value:10426
-tag:worker      type:fail       reason:Response code should be 201, got 403     method:POST     uri:/results
-tag:benchmarker type:fail       message: Score sending failed   reason:Response code should be 201, got 403     method:POST     uri:/results
-tag:benchmarker type:score      success:210324  fail:0  score:155272
-</code></pre>
-
-<p>この辺が限界。</p>
-
-<p>うーむ。山形組の<a href="http://nihen.hatenablog.com/entry/2014/10/01/092938">30万超え</a>には程遠いなぁ。恐ろしや。</p>
-
-<h3>最後に</h3>
-
-<p>運営の皆様、ベンチマークツールの<a href="http://isucon.net/archives/40434032.html">不具合</a>やインスタンスガチャの問題等ありましたが、対応方針は非常に納得のいくものでした。引き続き、本戦を楽しみにしています。ありがとうございました！</p>
 ]]></content>
   </entry>
   

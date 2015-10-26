@@ -1,0 +1,455 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>AWS re:Invent 2015に参加してきた - @ijin</title>
+  <meta name="author" content="Michael H. Oshita">
+
+  
+  <meta name="description" content="今年で3度目の参加となるAWS re:Invent。
+忘れない内に記録を残しておきます。 Day 0 Game Day Unicornを貸し出すサービスを展開する仮想のスタートアップ企業にDevOpsチームとして最近入社したという設定。前任者が退職しており、 &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://ijin.github.io/blog/2015/10/26/aws-re-invent-2015/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/stylesheets/data-table.css" rel="stylesheet" type="text/css" />
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="@ijin" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<!--<script type="text/javascript">
+document.base_document_write = document.write;
+document.write = function(html) {
+    if (html.match(/^<link rel="stylesheet".+gist-assets\.github\.com\/assets\/embed.*/) == null) {
+        document.base_document_write(html);
+    }
+}
+</script>
+
+-->
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-33110241-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">@ijin</a></h1>
+  
+    <h2>[Michael H. Oshita]</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:ijin.github.io" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">AWS re:Invent 2015に参加してきた</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2015-10-26T02:26:00+09:00" pubdate data-updated="true">Oct 26<span>th</span>, 2015</time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>今年で3度目の参加となるAWS re:Invent。
+忘れない内に記録を残しておきます。</p>
+
+<h2>Day 0</h2>
+
+<h3>Game Day</h3>
+
+<p>Unicornを貸し出すサービスを展開する仮想のスタートアップ企業にDevOpsチームとして最近入社したという設定。前任者が退職しており、資料が少ない中でサービスオープンに立ち会いつつ、様々な困難に直面するというフルデイ・イベント。
+今までのGame Dayと違って面白いのはパフォーマンス・チューニングをしつつも、コストも意識しながらチーム間でスコアを競争するところ。アプリは触れないので、<a href="http://isucon.net/">ISUCON</a>よりは昔やった<a href="/blog/2012/07/03/tuningathon4/">チューニンガソン</a>に近い感じ。</p>
+
+<p>スコアは累積の損益。アーキテクチャによっては利益が出たり損失が出たりする。例えば、多くのリクエストが処理できると利益は増すが、AWSのリソースが多いと費用が掛かって損失になりうる。
+当然最初は各チームは赤字から始まり、時間とともに積算した利益によって黒転して行く様が目新しかった。</p>
+
+<p>結果、48チーム中で<strong>6位</strong>。（上位2チームはチートで失格となったので<strong>実質は4位</strong>）</p>
+
+<p><img src="https://lh3.googleusercontent.com/H8zoy7lrftuIo9ZQTN_LsUC3KsiGsNkOJbPzuW4vAxy4o6IOAH8=w547-h298-no"></p>
+
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="en" dir="ltr"><a href="https://twitter.com/ijin">@ijin</a> <a href="https://twitter.com/AWSreInvent">@AWSreInvent</a> the rabbit icon was awarded to the team with the fastest response time to a request.0.0005s is not too shabby!</p>&mdash; Kyle Lichtenberg (@KyleLichtenberg) <a href="https://twitter.com/KyleLichtenberg/status/651573816301219840">October 7, 2015</a></blockquote>
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
+
+
+<p>ちなみに最速レスポンスタイムはうちのチームが叩きだした。</p>
+
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="en" dir="ltr">Our team - &quot;Ubercon&quot;! <a href="https://twitter.com/hashtag/reinvent?src=hash">#reinvent</a> <a href="https://twitter.com/hashtag/AWSGameDay?src=hash">#AWSGameDay</a> <a href="http://t.co/dpRu1vicgM">pic.twitter.com/dpRu1vicgM</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/651544851620700160">October 6, 2015</a></blockquote>
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
+
+
+<p>詳細は今度日本で開催されるかも知れないので控えておくが、非常に楽しめたので次回は運営側に回って手伝おうかと思います！</p>
+
+<h2>Day 1</h2>
+
+<h3>Keynote</h3>
+
+<p>Andy Jessy副社長による発表。今年のテーマは「<strong>自由</strong>」</p>
+
+<ul>
+<li>Amazon QuickSight</li>
+<li>Amazon Kinesis Firehose</li>
+<li>Amazon Snowball</li>
+<li>MariaDB for RDS</li>
+<li>AWS Database Migration Service</li>
+<li>AWS Schema Conversion Tool</li>
+<li>AWS Config Rules</li>
+<li>Amazon Inspector</li>
+</ul>
+
+
+<p><img src="https://lh3.googleusercontent.com/SSI_hMC3cjzUSvGPxT49FD26VBeY_QYt_qGoTLDPo8nBLwdmglM=w493-h544-no"></p>
+
+<p><del>Oracle</del>からの自由、解放！</p>
+
+<h3>WRK306 - AWS Professional Services Architecting Workshop</h3>
+
+<p>実在した、ある企業のクラウド移行案件。RFP的なモノがあり、アーキテクチャをチーム内で議論し、最後にそれぞれ各チームが発表していく流れ。
+かつてjawsugで主催を手伝ったワールドカフェ形式とほぼ同じだったので、チームメンバーを先導してCacooでさくさく構成図を起こしていく。
+他のチームが模造紙にラフスケッチで発表する中、我らは綺麗に正本して、プロジェクターで登壇しながら発表。</p>
+
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">ワークショップはうちらのチームだけCacooで図を書いたので制覇した感がある。 <a href="https://twitter.com/hashtag/reinvent?src=hash">#reinvent</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/651869691699425281">October 7, 2015</a></blockquote>
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
+
+
+<p>最後に実際にどう移行したかというAWSチームからの回答。まず、移行フェーズを段階的に分け、最初はシステムをほぼそのままクラウド上に乗せた後に部分的に最適化してコンポーネントを置き換えて行ったという話。最後にLambdaになっていた部分があったのが興味深かった。</p>
+
+<p>早く新サービスに対応したAWS Simple Iconsのアップデートが待たれるところ。</p>
+
+<p><img src="https://lh3.googleusercontent.com/IVrSN7g0MnAfVa6pB4ajQWUZYPmpFMOH6Ych-FedX1HqxCfEHtc=w583-h346-no"></p>
+
+<p>今回提案した内容。</p>
+
+<h3>WRK305 - Zombie Apocalypse Survival: Building Serverless Microservices</h3>
+
+<p>Zombie Apocalypseが起こって、人類存亡の危機！途中まで実装されたチャットルームの機能を拡張・実装して危機を救え！というシナリオの元、LambdaとAPI Gatewayとjavascript sdkで実装されたサーバーレスアーキテクチャのワークショップ。</p>
+
+<p>機能拡張の為に実装が必要なので、設計しながらチーム内で作業分担し、コードをせっせと書いていく。
+ゾンビ出現のアラート通知、ヒートマップ描画、アンデッドカウンター、緊急食料倉庫の位置情報配信等、面白い機能要求が盛り沢山。</p>
+
+<p><img src="https://lh3.googleusercontent.com/-UStcIzDdtS42SZTgt657iKvYHWlbcfktbvuCq3-LIioBfrBzgI=w600-h346-no"></p>
+
+<p>ささっとSlack部屋を作り、githubでコードを共有しながらのチームワーク作業。多分、うちらのチームが一番多く実装できた感触。</p>
+
+<p><img src="https://lh3.googleusercontent.com/WZ7nUMvRhoNzixWqjEdCFJ1wJqNH-BqjV4M4cq93mBXBnJ8UPOk=w493-h544-no"></p>
+
+<p>このワークショップはかなりの人気で、開始30分前にすでに長蛇の列が。
+運良くぎりぎり最後の参加者として入れたけど、皆どれだけゾンビが好きなんだ。。</p>
+
+<h2>Day 2</h2>
+
+<h3>Keynote</h3>
+
+<p>Wernerl Vogels CTOの発表。</p>
+
+<ul>
+<li>Amazon Kinesis Analytics</li>
+<li>X1 instance (100 cores, 1TB RAM)</li>
+<li>t2.nano instance</li>
+<li>Amazon EC2 Container Registry</li>
+<li>Lambda
+
+<ul>
+<li>VPC support</li>
+<li>Long running Functions (300s)</li>
+<li>Scheduled Functions</li>
+<li>Custom Retry Logic</li>
+<li>Python</li>
+</ul>
+</li>
+<li>AWS IOT</li>
+</ul>
+
+
+<p><img src="https://lh3.googleusercontent.com/A4p3UvP0JiMxjpZF7L0zxdMFkU96aOYtZ-BExM2zFERDsebakXw=w493-h543-no"></p>
+
+<p>前日にAndyが7つの自由を語って、当日はWernerが7つの法則を語る。</p>
+
+<h3>WRK308 - AWS + ASK: Teaching Amazon Echo New Skills</h3>
+
+<p>Amazon Echoを使った、Alexaのプログラミングワークショップ。音声によって、Echo経由でLambdaイベントを呼び出し、Alexaサービスと連携するカスタマイズしたスキルセットを実装して行く。</p>
+
+<p>例えば、Alexaに好きな色を覚えさせて、後ほど聞くと答えてくれる機能とか。全てボイスコントロール。<a href="http://yoshidashingo.hatenablog.com/?page=1445224481">吉田さんの英語でも通じた</a>ので、かなり優秀。</p>
+
+<p>新品のEchoを開封して使ったので、最後に貰える物かとささやかに期待したものの、$15のAWSクーポン配布のみ。さすがFrugalなAmazonさん。</p>
+
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">Alexaとlambdaが連携してEchoが喋った！ <a href="https://twitter.com/hashtag/reinvent?src=hash">#reinvent</a> <a href="http://t.co/V6QpNyj3tK">pic.twitter.com/V6QpNyj3tK</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/652234646231646208">October 8, 2015</a></blockquote>
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
+
+
+
+
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">Alexは今ユーザ駆動にしか対応してないけど、awsのイベント駆動はtop priorityとの事。そのうち例えばbilling alertを音声で通知できるようになるなぁ。楽しみだ。 <a href="https://twitter.com/hashtag/reinvent?src=hash">#reinvent</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/652239936968654848">October 8, 2015</a></blockquote>
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
+
+
+<h3>re:Play</h3>
+
+<p>EDMの若きプリンスDJ、Zeddをシークレットゲストとして呼んでのアフター。</p>
+
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="en" dir="ltr">What a view for this secret <a href="https://twitter.com/Zedd">@zedd</a> show, this crowd does not end! <a href="https://twitter.com/hashtag/vegas?src=hash">#vegas</a> <a href="http://t.co/0Itv012o0k">pic.twitter.com/0Itv012o0k</a></p>&mdash; Rukes (@rukes) <a href="https://twitter.com/rukes/status/652400784353595392">October 9, 2015</a></blockquote>
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
+
+
+<p>もう完全にWernerのパーティー。</p>
+
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">昨夜の <a href="https://twitter.com/hashtag/replay?src=hash">#replay</a> でこの積み上がったコンテナを見て、Docker Swarm を連想した人はさぞ多かったに違いない。 <a href="http://t.co/QxF2MkbHTi">pic.twitter.com/QxF2MkbHTi</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/652681828441063425">October 10, 2015</a></blockquote>
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
+
+
+
+
+<div class="embed-video-container"><iframe src="http://www.youtube.com/embed/cT676BMT7A8 "></iframe></div>
+
+
+<p>Zeldaのremixが良かった。</p>
+
+<h3>終わりに</h3>
+
+<p>結局セッションは一つも出なかったです。まあ、ビデオやスライドは公開されるので内容自体は後で把握可能なので別にいいかな。授業を聞きに来た分けでもないし。
+それよりも、現地に来ているエンジニアと交流したり、実装まで含んだハンズオンのワークショップをやった方が楽しいし、糧となる。後はトレンドを肌感覚として知るには最高の場所なので行った事ない人には是非オススメしておきたい。</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Michael H. Oshita</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2015-10-26T02:26:00+09:00" pubdate data-updated="true">Oct 26<span>th</span>, 2015</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/aws/'>aws</a>, <a class='category' href='/blog/categories/events/'>events</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://ijin.github.io/blog/2015/10/26/aws-re-invent-2015/" data-via="ijin" data-counturl="http://ijin.github.io/blog/2015/10/26/aws-re-invent-2015/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2015/09/30/hashiconf-2015/" title="Previous Post: #HashiConf 2015に参加してきた">&laquo; #HashiConf 2015に参加してきた</a>
+      
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2015/10/26/aws-re-invent-2015/">AWS re:Invent 2015に参加してきた</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/09/30/hashiconf-2015/">#HashiConf 2015に参加してきた</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/09/27/isucon5-qualifier/">ISUCON5の予選に記念参加してきた</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/08/23/yapc-asia-tokyo-2015/">YAPC::Asia Tokyo 2015に参加してきた</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/08/06/github-to-lambda-to-slack/">GitHubのeventをLambdaで処理してSlackへ通知</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/07/02/dynamodb-export-with-datapipeline/">Data PipelineによるDynamoDBのexport</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/05/01/notes-on-ec2-auto-recovery/">EC2 Auto Recoveryの注意点</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/04/17/self-healing-with-non-elb-autoscaling4/">Auto Scalingによる自動復旧（AWS Lambda+SNS編）</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/03/27/serverfesta-2015-spring/">サバフェス！2015に参加してきた</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/12/31/isucon4-final/">ISUCON4の本戦の思い出</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+<section>
+  <h1>Latest Tweets</h1>
+  <ul id="tweets">
+    <li class="loading">Status updating...</li>
+  </ul>
+  <script type="text/javascript">
+    $.domReady(function(){
+      getTwitterFeed("ijin", 4, false);
+    });
+  </script>
+  <script src="/javascripts/twitter.js" type="text/javascript"> </script>
+  
+    <a href="http://twitter.com/ijin" class="twitter-follow-button" data-show-count="false">Follow @ijin</a>
+  
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2015 - Michael H. Oshita -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'ijin';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://ijin.github.io/blog/2015/10/26/aws-re-invent-2015/';
+        var disqus_url = 'http://ijin.github.io/blog/2015/10/26/aws-re-invent-2015/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

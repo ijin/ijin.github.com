@@ -4,7 +4,7 @@
   <title><![CDATA[Category: consul | @ijin]]></title>
   <link href="http://ijin.github.io/blog/categories/consul/atom.xml" rel="self"/>
   <link href="http://ijin.github.io/"/>
-  <updated>2015-10-26T16:16:57+09:00</updated>
+  <updated>2015-10-26T16:25:20+09:00</updated>
   <id>http://ijin.github.io/</id>
   <author>
     <name><![CDATA[Michael H. Oshita]]></name>
@@ -63,7 +63,7 @@
 
 <h2>DEMO</h2>
 
-<p>{% youtube rA4hyJ-pccU %}</p>
+<p><div class="embed-video-container"><iframe src="http://www.youtube.com/embed/rA4hyJ-pccU "></iframe></div></p>
 
 <h2>Notes</h2>
 
@@ -73,7 +73,7 @@
 
 <p>以下、July Tech Festa 2014で発表した時のスライドです。</p>
 
-<p>{% speakerdeck e07317d0dc040131a0982229a5c1e016  %}</p>
+<p><script async="true" class="speakerdeck-embed" data-id="e07317d0dc040131a0982229a5c1e016" src="//speakerdeck.com/assets/embed.js"> </script></p>
 ]]></content>
   </entry>
   

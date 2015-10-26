@@ -4,7 +4,7 @@
   <title><![CDATA[Category: aws | @ijin]]></title>
   <link href="http://ijin.github.io/blog/categories/aws/atom.xml" rel="self"/>
   <link href="http://ijin.github.io/"/>
-  <updated>2015-10-26T16:16:57+09:00</updated>
+  <updated>2015-10-26T16:25:20+09:00</updated>
   <id>http://ijin.github.io/</id>
   <author>
     <name><![CDATA[Michael H. Oshita]]></name>
@@ -33,13 +33,15 @@
 
 <p>結果、48チーム中で<strong>6位</strong>。（上位2チームはチートで失格となったので<strong>実質は4位</strong>）</p>
 
-<p>{% img https://lh3.googleusercontent.com/H8zoy7lrftuIo9ZQTN_LsUC3KsiGsNkOJbPzuW4vAxy4o6IOAH8=w547-h298-no %}</p>
+<p><img src="https://lh3.googleusercontent.com/H8zoy7lrftuIo9ZQTN_LsUC3KsiGsNkOJbPzuW4vAxy4o6IOAH8=w547-h298-no"></p>
 
-<p>{% tweet https://twitter.com/KyleLichtenberg/status/651573816301219840 %}</p>
+<p><div class='embed tweet'><blockquote class="twitter-tweet"><p lang="en" dir="ltr"><a href="https://twitter.com/ijin">@ijin</a> <a href="https://twitter.com/AWSreInvent">@AWSreInvent</a> the rabbit icon was awarded to the team with the fastest response time to a request.0.0005s is not too shabby!</p>&mdash; Kyle Lichtenberg (@KyleLichtenberg) <a href="https://twitter.com/KyleLichtenberg/status/651573816301219840">October 7, 2015</a></blockquote>
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div></p>
 
 <p>ちなみに最速レスポンスタイムはうちのチームが叩きだした。</p>
 
-<p>{% tweet https://twitter.com/ijin/status/651544851620700160 %}</p>
+<p><div class='embed tweet'><blockquote class="twitter-tweet"><p lang="en" dir="ltr">Our team - &quot;Ubercon&quot;! <a href="https://twitter.com/hashtag/reinvent?src=hash">#reinvent</a> <a href="https://twitter.com/hashtag/AWSGameDay?src=hash">#AWSGameDay</a> <a href="http://t.co/dpRu1vicgM">pic.twitter.com/dpRu1vicgM</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/651544851620700160">October 6, 2015</a></blockquote>
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div></p>
 
 <p>詳細は今度日本で開催されるかも知れないので控えておくが、非常に楽しめたので次回は運営側に回って手伝おうかと思います！</p>
 
@@ -61,7 +63,7 @@
 </ul>
 
 
-<p>{% img https://lh3.googleusercontent.com/SSI_hMC3cjzUSvGPxT49FD26VBeY_QYt_qGoTLDPo8nBLwdmglM=w493-h544-no %}</p>
+<p><img src="https://lh3.googleusercontent.com/SSI_hMC3cjzUSvGPxT49FD26VBeY_QYt_qGoTLDPo8nBLwdmglM=w493-h544-no"></p>
 
 <p><del>Oracle</del>からの自由、解放！</p>
 
@@ -71,28 +73,29 @@
 かつてjawsugで主催を手伝ったワールドカフェ形式とほぼ同じだったので、チームメンバーを先導してCacooでさくさく構成図を起こしていく。
 他のチームが模造紙にラフスケッチで発表する中、我らは綺麗に正本して、プロジェクターで登壇しながら発表。</p>
 
-<p>{% tweet https://twitter.com/ijin/status/651869691699425281 %}</p>
+<p><div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">ワークショップはうちらのチームだけCacooで図を書いたので制覇した感がある。 <a href="https://twitter.com/hashtag/reinvent?src=hash">#reinvent</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/651869691699425281">October 7, 2015</a></blockquote>
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div></p>
 
 <p>最後に実際にどう移行したかというAWSチームからの回答。まず、移行フェーズを段階的に分け、最初はシステムをほぼそのままクラウド上に乗せた後に部分的に最適化してコンポーネントを置き換えて行ったという話。最後にLambdaになっていた部分があったのが興味深かった。</p>
 
 <p>早く新サービスに対応したAWS Simple Iconsのアップデートが待たれるところ。</p>
 
-<p>{% img https://lh3.googleusercontent.com/IVrSN7g0MnAfVa6pB4ajQWUZYPmpFMOH6Ych-FedX1HqxCfEHtc=w583-h346-no %}</p>
+<p><img src="https://lh3.googleusercontent.com/IVrSN7g0MnAfVa6pB4ajQWUZYPmpFMOH6Ych-FedX1HqxCfEHtc=w583-h346-no"></p>
 
 <p>今回提案した内容。</p>
 
 <h3>WRK305 - Zombie Apocalypse Survival: Building Serverless Microservices</h3>
 
-<p>Zombie Apocalypseが起こって、人類存亡の危機！途中まで実装されたチャットルームの機能を拡張・実装して危機を救え！というシナリオの元、LambdaとAPI Gatewayとjavascript sdkで実装されたサーバーレスアーキテクチャのワークショップ。</p>
+<p><a href="https://ja.wikipedia.org/wiki/%E3%82%BE%E3%83%B3%E3%83%93%E3%81%AB%E3%82%88%E3%82%8B%E4%B8%96%E7%95%8C%E3%81%AE%E7%B5%82%E6%9C%AB">Zombie Apocalypse</a>が起こって、人類存亡の危機！途中まで実装されたチャットルームの機能を拡張・実装して危機を救え！というシナリオの元、LambdaとAPI Gatewayとjavascript sdkで実装されたサーバーレスアーキテクチャのワークショップ。</p>
 
 <p>機能拡張の為に実装が必要なので、設計しながらチーム内で作業分担し、コードをせっせと書いていく。
 ゾンビ出現のアラート通知、ヒートマップ描画、アンデッドカウンター、緊急食料倉庫の位置情報配信等、面白い機能要求が盛り沢山。</p>
 
-<p>{% img https://lh3.googleusercontent.com/-UStcIzDdtS42SZTgt657iKvYHWlbcfktbvuCq3-LIioBfrBzgI=w600-h346-no %}</p>
+<p><img src="https://lh3.googleusercontent.com/-UStcIzDdtS42SZTgt657iKvYHWlbcfktbvuCq3-LIioBfrBzgI=w600-h346-no"></p>
 
 <p>ささっとSlack部屋を作り、githubでコードを共有しながらのチームワーク作業。多分、うちらのチームが一番多く実装できた感触。</p>
 
-<p>{% img https://lh3.googleusercontent.com/WZ7nUMvRhoNzixWqjEdCFJ1wJqNH-BqjV4M4cq93mBXBnJ8UPOk=w493-h544-no %}</p>
+<p><img src="https://lh3.googleusercontent.com/WZ7nUMvRhoNzixWqjEdCFJ1wJqNH-BqjV4M4cq93mBXBnJ8UPOk=w493-h544-no"></p>
 
 <p>このワークショップはかなりの人気で、開始30分前にすでに長蛇の列が。
 運良くぎりぎり最後の参加者として入れたけど、皆どれだけゾンビが好きなんだ。。</p>
@@ -122,7 +125,7 @@
 </ul>
 
 
-<p>{% img https://lh3.googleusercontent.com/A4p3UvP0JiMxjpZF7L0zxdMFkU96aOYtZ-BExM2zFERDsebakXw=w493-h543-no %}</p>
+<p><img src="https://lh3.googleusercontent.com/A4p3UvP0JiMxjpZF7L0zxdMFkU96aOYtZ-BExM2zFERDsebakXw=w493-h543-no"></p>
 
 <p>前日にAndyが7つの自由を語って、当日はWernerが7つの法則を語る。</p>
 
@@ -134,21 +137,25 @@
 
 <p>新品のEchoを開封して使ったので、最後に貰える物かとささやかに期待したものの、$15のAWSクーポン配布のみ。さすがFrugalなAmazonさん。</p>
 
-<p>{% tweet https://twitter.com/ijin/status/652234646231646208 %}</p>
+<p><div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">Alexaとlambdaが連携してEchoが喋った！ <a href="https://twitter.com/hashtag/reinvent?src=hash">#reinvent</a> <a href="http://t.co/V6QpNyj3tK">pic.twitter.com/V6QpNyj3tK</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/652234646231646208">October 8, 2015</a></blockquote>
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div></p>
 
-<p>{% tweet https://twitter.com/ijin/status/652239936968654848 %}</p>
+<p><div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">Alexは今ユーザ駆動にしか対応してないけど、awsのイベント駆動はtop priorityとの事。そのうち例えばbilling alertを音声で通知できるようになるなぁ。楽しみだ。 <a href="https://twitter.com/hashtag/reinvent?src=hash">#reinvent</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/652239936968654848">October 8, 2015</a></blockquote>
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div></p>
 
 <h3>re:Play</h3>
 
 <p>EDMの若きプリンスDJ、Zeddをシークレットゲストとして呼んでのアフター。</p>
 
-<p>{% tweet https://twitter.com/rukes/status/652400784353595392 %}</p>
+<p><div class='embed tweet'><blockquote class="twitter-tweet"><p lang="en" dir="ltr">What a view for this secret <a href="https://twitter.com/Zedd">@zedd</a> show, this crowd does not end! <a href="https://twitter.com/hashtag/vegas?src=hash">#vegas</a> <a href="http://t.co/0Itv012o0k">pic.twitter.com/0Itv012o0k</a></p>&mdash; Rukes (@rukes) <a href="https://twitter.com/rukes/status/652400784353595392">October 9, 2015</a></blockquote>
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div></p>
 
 <p>もう完全にWernerのパーティー。</p>
 
-<p>{% tweet https://twitter.com/ijin/status/652681828441063425 %}</p>
+<p><div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">昨夜の <a href="https://twitter.com/hashtag/replay?src=hash">#replay</a> でこの積み上がったコンテナを見て、Docker Swarm を連想した人はさぞ多かったに違いない。 <a href="http://t.co/QxF2MkbHTi">pic.twitter.com/QxF2MkbHTi</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/652681828441063425">October 10, 2015</a></blockquote>
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div></p>
 
-<p>{% youtube cT676BMT7A8 %}</p>
+<p><div class="embed-video-container"><iframe src="http://www.youtube.com/embed/cT676BMT7A8 "></iframe></div></p>
 
 <p>Zeldaのremixが良かった。</p>
 
@@ -179,7 +186,7 @@
 
 <p>やりたいことはこんな感じ。</p>
 
-<p>{%img https://lh3.googleusercontent.com/CZE1yk0yqzlizL0aK5xNBVTupVovIZCPhwp3CWwxOyc=w548-h334-no %}</p>
+<p><img src="https://lh3.googleusercontent.com/CZE1yk0yqzlizL0aK5xNBVTupVovIZCPhwp3CWwxOyc=w548-h334-no"></p>
 
 <p>あるGitHubリポジトリのissuesに特定のコメントが書き込まれると、そのユーザはプロジェクトのteamに自動で追加されて、Slackへ通知が流れるというモノです。</p>
 
@@ -233,11 +240,11 @@ $ aws sns create-topic --name github --region ap-northeast-1
 
 <p><em>Webhooks &amp; Services</em> からAmazonSNSと連携</p>
 
-<p>{%img https://lh3.googleusercontent.com/u4I9Z_Ing9YzhmVCQhMACwYDVIJxJM7C-aDmyMsNL3o=w328-h190-no %}</p>
+<p><img src="https://lh3.googleusercontent.com/u4I9Z_Ing9YzhmVCQhMACwYDVIJxJM7C-aDmyMsNL3o=w328-h190-no"></p>
 
 <p>AWS KEYには先ほど作成したIAMユーザのを利用。SNS topicのarnにはregionが書かれているにも関わらず、GitHubの方では明示的に指定が必要。</p>
 
-<p>{%img https://lh3.googleusercontent.com/kppZQx_RdhyC11LB7a0cPtppDUiKgfZBm6laYvRG3zA=w382-h289-no %}</p>
+<p><img src="https://lh3.googleusercontent.com/kppZQx_RdhyC11LB7a0cPtppDUiKgfZBm6laYvRG3zA=w382-h289-no"></p>
 
 <h3>通知するeventの有効化</h3>
 
@@ -310,13 +317,13 @@ kms.encrypt({KeyId: 'alias/ijin', Plaintext: text}, function(err, data) {
 
 <p>また、KMSキーの実行権限もlambdaのroleに紐づけておく。</p>
 
-<p>{%img https://lh3.googleusercontent.com/oMHQ76XC7RQUCR_fEo9JyaMhPKSbnIdhCzjIWurEJ9c=w542-h358-no %}</p>
+<p><img src="https://lh3.googleusercontent.com/oMHQ76XC7RQUCR_fEo9JyaMhPKSbnIdhCzjIWurEJ9c=w542-h358-no"></p>
 
 <h2>Lambda</h2>
 
 <p>Lambda function作成時にはSNSをevent sourceとして指定。</p>
 
-<p>{%img https://lh3.googleusercontent.com/uDXkEVLrXT1BdUSbiMu3v5lnwTqCoXOkv_nu07XVxkk=w555-h235-no %}</p>
+<p><img src="https://lh3.googleusercontent.com/uDXkEVLrXT1BdUSbiMu3v5lnwTqCoXOkv_nu07XVxkk=w555-h235-no"></p>
 
 <p>(※) KMSは現在us-eastにしかないので、そこ以外のregionでlambdaを実行する場合は、<code>timeout</code>は若干長めに指定して置くと良さげ</p>
 
@@ -331,9 +338,13 @@ kms.encrypt({KeyId: 'alias/ijin', Plaintext: text}, function(err, data) {
 </ol>
 
 
-<p>{% gist ef105e192a030571d83f %}</p>
+<p><div><script src='https://gist.github.com/ef105e192a030571d83f.js?file='></script>
+<noscript><pre><code></code></pre></noscript></div>
+</p>
 
-<p>{% gist f83e33a6ae0acd83902a %}</p>
+<p><div><script src='https://gist.github.com/f83e33a6ae0acd83902a.js?file='></script>
+<noscript><pre><code></code></pre></noscript></div>
+</p>
 
 <p>nodeのlibraryを使うともっとスッキリ書けたけど、1 function 1 fileで纏めたかったのでやや冗長なコードになっちゃいました。。</p>
 
@@ -341,7 +352,7 @@ kms.encrypt({KeyId: 'alias/ijin', Plaintext: text}, function(err, data) {
 
 <p>GitHubでコメント</p>
 
-<p>{%img https://lh3.googleusercontent.com/KY7fwR-laXAJBQhJFv9VKzo_ydWFzeKep0G-3kgS0mM=w388-h128-no %}</p>
+<p><img src="https://lh3.googleusercontent.com/KY7fwR-laXAJBQhJFv9VKzo_ydWFzeKep0G-3kgS0mM=w388-h128-no"></p>
 
 <p>Lambda発動</p>
 
@@ -381,11 +392,11 @@ REPORT RequestId: a25c66fc-403f-1e15-b291-25d4ee441689  Duration: 2268.06 ms    
 
 <p>teamへの追加（招待）</p>
 
-<p>{%img https://lh3.googleusercontent.com/lzamiiNraeHYD7FI6rrb8-403hxjzVRrAqGG6k3sBcc=w474-h191-no %}</p>
+<p><img src="https://lh3.googleusercontent.com/lzamiiNraeHYD7FI6rrb8-403hxjzVRrAqGG6k3sBcc=w474-h191-no"></p>
 
 <p>Slackへ通知</p>
 
-<p>{%img https://lh3.googleusercontent.com/EeEiHydBDc29YhVI6MBUcdj1WUzMXnf_Sis3U-URqhw=w388-h147-no %}</p>
+<p><img src="https://lh3.googleusercontent.com/EeEiHydBDc29YhVI6MBUcdj1WUzMXnf_Sis3U-URqhw=w388-h147-no"></p>
 
 <h2>結論</h2>
 
@@ -497,7 +508,7 @@ org.apache.hadoop.hive.ql.exec.FileSinkOperator.closeOp(FileSinkOperator.java:88
 
 <p>こんな感じ。</p>
 
-<p>{% img https://lh3.googleusercontent.com/ghExdELQB1cIE9K-d97gDqz7a634413GOTxAHhvJsBg %}</p>
+<p><img src="https://lh3.googleusercontent.com/ghExdELQB1cIE9K-d97gDqz7a634413GOTxAHhvJsBg"></p>
 
 <table>
 <thead>
@@ -537,7 +548,7 @@ org.apache.hadoop.hive.ql.exec.FileSinkOperator.closeOp(FileSinkOperator.java:88
 
 <p>その時の試行錯誤がこれ。</p>
 
-<p>{%img https://lh3.googleusercontent.com/xatqR0hx1M6PhroKFNAksOplqgqYgqsaCJgonanQyzA=w437-h197-no %}</p>
+<p><img src="https://lh3.googleusercontent.com/xatqR0hx1M6PhroKFNAksOplqgqYgqsaCJgonanQyzA=w437-h197-no"></p>
 
 <h3>計算</h3>
 
@@ -589,7 +600,7 @@ Hive Queryのread処理は<a href="http://hipsterdevblog.com/blog/2015/05/30/ana
 <p>しかし、上記を満たしているのに、特定のAMIをCLI経由で起動するとEC2 Auto Recoveryを設定できなくなります。</p>
 
 <p>（AWSコンソールでラジオボタンが押せない。CLIで設定しても効かない）
-{% img https://lh5.googleusercontent.com/-dwWUcfCssA4/VULwrOsgxNI/AAAAAAAABFo/VQy-GnIYQXg/w448-h186-no/Screenshot%2B2015-05-01%2B12.18.16.png %}</p>
+<img src="https://lh5.googleusercontent.com/-dwWUcfCssA4/VULwrOsgxNI/AAAAAAAABFo/VQy-GnIYQXg/w448-h186-no/Screenshot%2B2015-05-01%2B12.18.16.png"></p>
 
 <p>原因はAMIにephemeral disk等のblock device mappingが設定されていて、T2やC4等のEBS onlyなinstance typeで起動しているにも関わらず、AWS側がephemeral diskが付与されていると認識してしまう所にあります。なお、AWSコンソールからの起動だとこの現象は発生しません。</p>
 
@@ -636,11 +647,11 @@ Hive Queryのread処理は<a href="http://hipsterdevblog.com/blog/2015/05/30/ana
 
 <p>SNS連携によって前回のこれが</p>
 
-<p>{% img https://lh4.googleusercontent.com/-IxSeVgkwfQU/VIIapiet4tI/AAAAAAAABBw/ukic0BIBIT0/w529-h393-no/aws-advent-2014.png %}</p>
+<p><img src="https://lh4.googleusercontent.com/-IxSeVgkwfQU/VIIapiet4tI/AAAAAAAABBw/ukic0BIBIT0/w529-h393-no/aws-advent-2014.png"></p>
 
 <p>こうなります。（Lambdaのアイコンが出たので差し替えてます）</p>
 
-<p>{% img https://lh3.googleusercontent.com/-ejPyB1qrZyQ/VTCEjbhe2cI/AAAAAAAABFI/VCYVIo5hFao/w404-h393-no/as-sns-lambda2.png %}</p>
+<p><img src="https://lh3.googleusercontent.com/-ejPyB1qrZyQ/VTCEjbhe2cI/AAAAAAAABFI/VCYVIo5hFao/w404-h393-no/as-sns-lambda2.png"></p>
 
 <p>うーん、シンプル！</p>
 
@@ -697,7 +708,9 @@ $ aws cloudwatch put-metric-alarm --alarm-name StatusCheckFailed-Alarm-for-$INST
 </code></p>
 
 <p>Lambda Function
-{% gist 52033eb3b9b02c1fe975 %}</p>
+<div><script src='https://gist.github.com/52033eb3b9b02c1fe975.js?file='></script>
+<noscript><pre><code></code></pre></noscript></div>
+</p>
 
 <h3>自動復旧</h3>
 

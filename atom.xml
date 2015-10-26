@@ -4,7 +4,7 @@
   <title><![CDATA[@ijin]]></title>
   <link href="http://ijin.github.io/atom.xml" rel="self"/>
   <link href="http://ijin.github.io/"/>
-  <updated>2015-10-26T16:16:49+09:00</updated>
+  <updated>2015-10-26T16:25:20+09:00</updated>
   <id>http://ijin.github.io/</id>
   <author>
     <name><![CDATA[Michael H. Oshita]]></name>
@@ -89,7 +89,7 @@
 
 <h3>WRK305 - Zombie Apocalypse Survival: Building Serverless Microservices</h3>
 
-<p>Zombie Apocalypseが起こって、人類存亡の危機！途中まで実装されたチャットルームの機能を拡張・実装して危機を救え！というシナリオの元、LambdaとAPI Gatewayとjavascript sdkで実装されたサーバーレスアーキテクチャのワークショップ。</p>
+<p><a href="https://ja.wikipedia.org/wiki/%E3%82%BE%E3%83%B3%E3%83%93%E3%81%AB%E3%82%88%E3%82%8B%E4%B8%96%E7%95%8C%E3%81%AE%E7%B5%82%E6%9C%AB">Zombie Apocalypse</a>が起こって、人類存亡の危機！途中まで実装されたチャットルームの機能を拡張・実装して危機を救え！というシナリオの元、LambdaとAPI Gatewayとjavascript sdkで実装されたサーバーレスアーキテクチャのワークショップ。</p>
 
 <p>機能拡張の為に実装が必要なので、設計しながらチーム内で作業分担し、コードをせっせと書いていく。
 ゾンビ出現のアラート通知、ヒートマップ描画、アンデッドカウンター、緊急食料倉庫の位置情報配信等、面白い機能要求が盛り沢山。</p>

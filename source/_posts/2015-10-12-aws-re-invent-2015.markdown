@@ -114,7 +114,7 @@ Amazon Echoを使った、Alexaのプログラミングワークショップ。�
 
 新品のEchoを開封して使ったので、最後に貰える物かとささやかに期待したものの、$15のAWSクーポン配布のみ。さすがFrugalなAmazonさん。
 
-{% img https://lh3.googleusercontent.com/wHcux-USR5RnaVASzCOt0N21pqceaQk2IkQEd5rDXE1jrc1qymA=w493-h544-no %}
+{% tweet https://twitter.com/ijin/status/652234646231646208 %}
 
 ### re:Play ###
 

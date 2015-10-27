@@ -112,7 +112,7 @@ Amazon Echoを使った、Alexaのプログラミングワークショップ。�
 
 例えば、Alexaに好きな色を覚えさせて、後ほど聞くと答えてくれる機能とか。全てボイスコントロール。[吉田さんの英語でも通じた](http://yoshidashingo.hatenablog.com/?page=1445224481)ので、かなり優秀。
 
-新品のEchoを開封して使ったので、最後に貰える物かとささやかに期待したものの、$15のAWSクーポン配布のみ。さすがFrugalなAmazonさん。
+新品のEchoを開封して使ったので、最後に貰える物かとささやかに期待したものの、$15のAWSクーポン配布のみ。さすが~~ケチ~~FrugalなAmazonさん。
 
 {% tweet https://twitter.com/ijin/status/652234646231646208 %}
 

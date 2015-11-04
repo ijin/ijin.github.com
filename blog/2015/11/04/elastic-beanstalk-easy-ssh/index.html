@@ -9,7 +9,7 @@
   <meta name="author" content="Michael H. Oshita">
 
   
-  <meta name="description" content="AWS Elastic Beanstalk上で管理されているinstanceにsshするにはeb sshコマンドを使えば割りと簡単に接続できますが、アクセスキーの設定が必要で、開発者が多い場合にそれを発行してばら撒いて管理するのはかなり面倒です（IAM user/roleの割当にしても）。 そこで &hellip;">
+  <meta name="description" content="AWS Elastic Beanstalk上で管理されているinstanceにsshするにはeb sshコマンドを使えば割りと簡単に接続できますが、アクセスキーの設定が必要で、開発者が多い場合にそれを発行してばら撒いて管理するのはかなり面倒です（IAM user/roleの割当にしても）。 &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -113,7 +113,7 @@ document.write = function(html) {
   </header>
 
 
-<div class="entry-content"><p>AWS Elastic Beanstalk上で管理されているinstanceにsshするには<code>eb ssh</code>コマンドを使えば割りと簡単に接続できますが、アクセスキーの設定が必要で、開発者が多い場合にそれを発行してばら撒いて管理するのはかなり面倒です（IAM user/roleの割当にしても）。</p>
+<div class="entry-content"><p>AWS Elastic Beanstalk上で管理されているinstanceにsshするには<code>eb ssh</code>コマンドを使えば割りと簡単に接続できますが、アクセスキーの設定が必要で、開発者が多い場合にそれを発行してばら撒いて管理するのはかなり面倒です（IAM user/roleの割当にしても）。特に極稀にしか接続する必要がない場合。</p>
 
 <p>そこで、API GatewayとLambdaでinstanceのpublic ipを返却するエンドポイントを作り、SSH configを設定すれば誰でもアクセスできるようにしてみました。</p>
 
@@ -125,6 +125,7 @@ document.write = function(html) {
 <li>instanceにはログインユーザーのssh keyが登録積み（.ebextensions等で）</li>
 <li>ssh localhost可能である</li>
 <li>Elastic Beanstalkのenvironment名は数値で終わらない</li>
+<li>Auto ScalingのTermination Policyが<code>NewestInstance</code></li>
 </ul>
 
 
@@ -325,6 +326,8 @@ document.write = function(html) {
 
 
 <p>簡単！</p>
+
+<p>でも、よくよく考えたら普通のAuto Scalingの場合でも利用できる事に気付きました。</p>
 
 <h2>まとめ</h2>
 

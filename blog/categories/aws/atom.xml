@@ -4,7 +4,7 @@
   <title><![CDATA[Category: aws | @ijin]]></title>
   <link href="http://ijin.github.io/blog/categories/aws/atom.xml" rel="self"/>
   <link href="http://ijin.github.io/"/>
-  <updated>2015-11-04T10:35:50+09:00</updated>
+  <updated>2015-11-04T11:14:54+09:00</updated>
   <id>http://ijin.github.io/</id>
   <author>
     <name><![CDATA[Michael H. Oshita]]></name>
@@ -18,7 +18,7 @@
     <link href="http://ijin.github.io/blog/2015/11/04/elastic-beanstalk-easy-ssh/"/>
     <updated>2015-11-04T08:43:00+09:00</updated>
     <id>http://ijin.github.io/blog/2015/11/04/elastic-beanstalk-easy-ssh</id>
-    <content type="html"><![CDATA[<p>AWS Elastic Beanstalk上で管理されているinstanceにsshするには<code>eb ssh</code>コマンドを使えば割りと簡単に接続できますが、アクセスキーの設定が必要で、開発者が多い場合にそれを発行してばら撒いて管理するのはかなり面倒です（IAM user/roleの割当にしても）。</p>
+    <content type="html"><![CDATA[<p>AWS Elastic Beanstalk上で管理されているinstanceにsshするには<code>eb ssh</code>コマンドを使えば割りと簡単に接続できますが、アクセスキーの設定が必要で、開発者が多い場合にそれを発行してばら撒いて管理するのはかなり面倒です（IAM user/roleの割当にしても）。特に極稀にしか接続する必要がない場合。</p>
 
 <p>そこで、API GatewayとLambdaでinstanceのpublic ipを返却するエンドポイントを作り、SSH configを設定すれば誰でもアクセスできるようにしてみました。</p>
 
@@ -30,6 +30,7 @@
 <li>instanceにはログインユーザーのssh keyが登録積み（.ebextensions等で）</li>
 <li>ssh localhost可能である</li>
 <li>Elastic Beanstalkのenvironment名は数値で終わらない</li>
+<li>Auto ScalingのTermination Policyが<code>NewestInstance</code></li>
 </ul>
 
 
@@ -189,6 +190,8 @@ $ ssh my-ebenv-production
 </code></p>
 
 <p>簡単！</p>
+
+<p>でも、よくよく考えたら普通のAuto Scalingの場合でも利用できる事に気付きました。</p>
 
 <h2>まとめ</h2>
 

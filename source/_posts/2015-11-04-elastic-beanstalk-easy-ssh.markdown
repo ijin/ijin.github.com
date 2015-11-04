@@ -27,6 +27,8 @@ AWS Elastic Beanstalk上で管理されているinstanceにsshするには`eb ss
 
 {% gist bf735efbec42e1f96d4b %}
 
+当然、LambdaのIAM roleで`ec2:Describe*`のAction許可も必要。
+
 ## Swagger ##
 
 API Gatewayのresourceをコンソールでポチポチ作るのがイヤだったのでAPIの状態を[Swagger](http://swagger.io/)で定義してみた。awscliは[生REST APIが辛い](http://dev.classmethod.jp/cloud/aws/getting-started-with-api-gateway-lambda-integration/)。

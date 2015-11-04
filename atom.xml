@@ -4,7 +4,7 @@
   <title><![CDATA[@ijin]]></title>
   <link href="http://ijin.github.io/atom.xml" rel="self"/>
   <link href="http://ijin.github.io/"/>
-  <updated>2015-11-04T10:27:15+09:00</updated>
+  <updated>2015-11-04T10:35:50+09:00</updated>
   <id>http://ijin.github.io/</id>
   <author>
     <name><![CDATA[Michael H. Oshita]]></name>
@@ -42,6 +42,8 @@
 <div><script src='https://gist.github.com/bf735efbec42e1f96d4b.js?file='></script>
 <noscript><pre><code></code></pre></noscript></div>
 
+
+<p>当然、LambdaのIAM roleで<code>ec2:Describe*</code>のAction許可も必要。</p>
 
 <h2>Swagger</h2>
 

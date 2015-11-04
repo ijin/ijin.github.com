@@ -138,6 +138,8 @@ document.write = function(html) {
 <noscript><pre><code></code></pre></noscript></div>
 
 
+<p>当然、LambdaのIAM roleで<code>ec2:Describe*</code>のAction許可も必要。</p>
+
 <h2>Swagger</h2>
 
 <p>API Gatewayのresourceをコンソールでポチポチ作るのがイヤだったのでAPIの状態を<a href="http://swagger.io/">Swagger</a>で定義してみた。awscliは<a href="http://dev.classmethod.jp/cloud/aws/getting-started-with-api-gateway-lambda-integration/">生REST APIが辛い</a>。</p>

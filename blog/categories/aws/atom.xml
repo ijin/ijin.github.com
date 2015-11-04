@@ -4,7 +4,7 @@
   <title><![CDATA[Category: aws | @ijin]]></title>
   <link href="http://ijin.github.io/blog/categories/aws/atom.xml" rel="self"/>
   <link href="http://ijin.github.io/"/>
-  <updated>2015-10-27T12:14:38+09:00</updated>
+  <updated>2015-11-04T10:27:21+09:00</updated>
   <id>http://ijin.github.io/</id>
   <author>
     <name><![CDATA[Michael H. Oshita]]></name>
@@ -12,6 +12,188 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Elastic Beanstalkへの簡単ssh]]></title>
+    <link href="http://ijin.github.io/blog/2015/11/04/elastic-beanstalk-easy-ssh/"/>
+    <updated>2015-11-04T08:43:00+09:00</updated>
+    <id>http://ijin.github.io/blog/2015/11/04/elastic-beanstalk-easy-ssh</id>
+    <content type="html"><![CDATA[<p>AWS Elastic Beanstalk上で管理されているinstanceにsshするには<code>eb ssh</code>コマンドを使えば割りと簡単に接続できますが、アクセスキーの設定が必要で、開発者が多い場合にそれを発行してばら撒いて管理するのはかなり面倒です（IAM user/roleの割当にしても）。</p>
+
+<p>そこで、API GatewayとLambdaでinstanceのpublic ipを返却するエンドポイントを作り、SSH configを設定すれば誰でもアクセスできるようにしてみました。</p>
+
+<p>{% img https://lh3.googleusercontent.com/vqW8J9ASHnvZSjAZnwS-_4BMxUo37m6FJ3snn1c2j1dgbX1SVybDaz9TN0mG-fVLqKRUGDtUBO4uDbL2L_QILPXYNbKFCaCmG5Au4Ar8mNacZATEX3FjT2L08T-K4-JWwIXRvsd5SM1iwPu6az7ABb28N2ezTM5wp4-B4rB7tIHFzx8ZWCq9EvZQJGFnqVZpZxXEbdGc2edk6J4dd-QgrZRAmzx2XHXSK4oWnWCkbTB1VS-LGIk0ShMbqn1wjj8AugSoHozG1hsufsuEyeNxBN8-6lQowH_O8JWRdJc28ffNtEaQeGr6Xrj66DjjxYZmO_NdS9hnlgFzUAP4t9iWt1cRAVzDHHVXfqeROmtdXc1ogYLwQY3EOMpd42l-YDNzKbp_bi4H4YJ-Mr-pmF91szERTw2avQmc2MGYcUcsOATYxnyz47mNW1f6alfbzeUf1sFwlUZ1FqS3if6CWiaKnqNjRPvHHs8ccV7magouBQ0Qm3_DOgSKsuosLYXZzNYEuPZl1WYv-m2Hnz0pMglMUA42V_7zrl6lY-cleeY=w605-h431-no %}</p>
+
+<h2>前提条件</h2>
+
+<ul>
+<li>instanceにはログインユーザーのssh keyが登録積み（.ebextensions等で）</li>
+<li>ssh localhost可能である</li>
+<li>Elastic Beanstalkのenvironment名は数値で終わらない</li>
+</ul>
+
+
+<h2>Lambda</h2>
+
+<p>やってる事は単純で自動的に付与される<code>elasticbeanstalk:environment-name</code>タグのついたinstanceのipを（パラメータに応じて）返却するだけ。複数ある場合は、起動した順で。</p>
+
+<p>せっかくなので新しくサポートされたPythonで記述。</p>
+
+<p>{% gist bf735efbec42e1f96d4b %}</p>
+
+<h2>Swagger</h2>
+
+<p>API Gatewayのresourceをコンソールでポチポチ作るのがイヤだったのでAPIの状態を<a href="http://swagger.io/">Swagger</a>で定義してみた。awscliは<a href="http://dev.classmethod.jp/cloud/aws/getting-started-with-api-gateway-lambda-integration/">生REST APIが辛い</a>。</p>
+
+<p>編集しながらドキュメントも見れる<a href="http://editor.swagger.io/#/">online editor</a>が結構便利。</p>
+
+<p>{% gist a41059039937ffc8dada %}</p>
+
+<h2>API Gateway</h2>
+
+<p>Swagger上でYAMLで作成した定義書はjsonとしてexportし、<a href="https://github.com/awslabs/aws-apigateway-importer">aws-apigateway-importer</a>でAPIのresourceやmethodやらを生成する。</p>
+
+<h3>import処理</h3>
+
+<p><code>
+$ ./aws-api-import.sh -c swagger.json
+2015-11-04 02:23:18,507 INFO - Attempting to create API from Swagger definition. Swagger file: swagger.json
+reading from swagger.json
+2015-11-04 02:23:18,649 INFO - Parsed Swagger with 2 paths
+2015-11-04 02:23:18,655 INFO - Creating API with name EB API
+2015-11-04 02:23:19,417 INFO - Removing default model Error
+2015-11-04 02:23:19,634 INFO - Removing default model Empty
+2015-11-04 02:23:19,872 INFO - Creating model for api id nx3r6d6yhh with name IP
+2015-11-04 02:23:20,114 INFO - Generated json-schema for model IP: {"type":"object","properties":{"ip":{"type":"string","description":"IP address."}},"definitions":{}}
+2015-11-04 02:23:20,329 INFO - Creating model for api id nx3r6d6yhh with name Error
+2015-11-04 02:23:20,338 INFO - Generated json-schema for model Error: {"type":"object","properties":{"code":{"type":"integer","format":"int32"},"message":{"type":"string"},"fields":{"type":"string"}},"definitions":{}}
+2015-11-04 02:23:20,770 INFO - Creating resource 'eb' on bd5pqsq37h
+2015-11-04 02:23:21,420 INFO - Creating resource '{env_name}' on 8rjsbt
+2015-11-04 02:23:22,079 INFO - Creating resource 'ip' on 4cg26s
+2015-11-04 02:23:22,931 INFO - Creating method response for api nx3r6d6yhh and method GET and status 200
+2015-11-04 02:23:23,144 INFO - Creating new model referenced from response: IPaddresses
+2015-11-04 02:23:23,144 INFO - Creating model for api id nx3r6d6yhh with name IPaddresses
+2015-11-04 02:23:23,153 INFO - Generated json-schema for model IPaddresses: {"type":"string","definitions":{}}
+2015-11-04 02:23:23,770 WARN - Default response not supported, skipping
+2015-11-04 02:23:23,772 INFO - Creating method parameter for api nx3r6d6yhh and method GET with name method.request.path.env_name
+2015-11-04 02:23:23,998 INFO - Creating method for api id nx3r6d6yhh and resource id md6qcm with method get
+2015-11-04 02:23:24,822 INFO - Creating resource '{server_num}' on qmd6mc
+2015-11-04 02:23:25,689 INFO - Creating method response for api nx3r6d6yhh and method GET and status 200
+2015-11-04 02:23:25,896 INFO - Found reference to existing model IPaddresses
+2015-11-04 02:23:26,306 WARN - Default response not supported, skipping
+2015-11-04 02:23:26,306 INFO - Creating method parameter for api nx3r6d6yhh and method GET with name method.request.path.env_name
+2015-11-04 02:23:26,525 INFO - Creating method parameter for api nx3r6d6yhh and method GET with name method.request.path.server_number
+2015-11-04 02:23:26,764 INFO - Creating method for api id nx3r6d6yhh and resource id 5udxeo with method get
+</code></p>
+
+<p>これでAPI Gateway上に階層が出来上がり。</p>
+
+<p>{% img https://lh3.googleusercontent.com/cM7s04iaMWI73VwJcH3C9lsnFjrrFpw0qqnUCM4hkmKWZiB3Pp0idjace8rxQYPCVwYzpucRKJep1j3CN9rDQ4uG0xJa4iXM_ua_lLo6LjxCus_lXV9aPCanWS17Ab6eVfgzH3wMDS1YvUhBq_6aLl3JmGmQVlZPFAUrOjcT-Xwra2o4VRKgaTbE5LQCvoBkzkylYhe6JECBu-lqBW0T9CnyhEsbJ1KTUwnIvLLTYtvTPtG6xEqoBMiCo26QLrASGg_k5fXW66jB-SH3fK-W-2TlYHwGdvlJunbuJp__AN2RUAhU64IPTQmZS-PfBTknMF273wF0DyqoL4UsS4HCmAMytc4LBx4s3iJdxFlPkMHPQ5eM9Q6REK92yP1a9FUqXKGF15FD9M6njOGvXFQYH8BsDruCa-HvxY7l6J0oj7PjyWwgq3_Jpd13F27rQkAcK13ni-sSB17wTRi-la8Tgu5ZMvnpUYBK-ARup3vHz791VQW-LVcdecok2Sao2wG4sUiUi5pMSOUabX02OMORVCu5OSxCdw-GxGSzikM=w350-h280-no %}</p>
+
+<p>後は各<code>GET method</code>でLambdaへの関連付けをし、<code>Integration Request</code>と<code>Integration Response</code>の<code>mapping template</code>でパラメータやレスポンスを設定。（多分、この手順もswaggerで定義できるとは思うけど）</p>
+
+<h3>integration request</h3>
+
+<p>{% img https://lh3.googleusercontent.com/JtD50KDCwP5ggylHzSuD7WiM-fr1QvVkZFpGFKD0efPbe_wvJPR0HbaTihe8wSlBNJzFYHAAwN9ZvKS1-R1WVGqbWT-t5PCdlptIVgJkk8xjDF0HJTRXeFEjF6F5Z2sp5wfY3BMgKZnyAM0CL6Ax5WtLNxCENl1SskcqajLDAapVQP8bj0UMlxUhsATwg9wh6zbS-jKp6tjf8YlkDD3PDFV_jhE2oVnzytNTlKBb5sU_kwMRFOGfQiUIpwgsrPq11af4ETcdFiU99lxa2ey1fgwxIaoEddLNOgMyObSd7LV0ISNY_kbZj0aRi2PFFmUfnQmYfc0UTajjAejDRms08vn6oy0-6kwGRjcKMq8zDSLFMCxgaSU4_2m2zh4T1zo54DJCHRm8ilXg_r3Z2u4IdBBHf4xYdvvs2J0p4ZT6GOQy6tMT0cNAFN5XUQiC6zDVutj2Ia1OQSlhUFRvnXwtivqGdMvpOIyUqoyuJ5RHLhO3hWP90SsW_DuILy6eXAHkSMHHpDPu5uemVBD29KfKsf67GS1bmJPwu5_9gX4=w836-h208-no %}</p>
+
+<h3>integration response</h3>
+
+<p>{% img https://lh3.googleusercontent.com/-MuJyoH_nLN5jbjrcTsDW9qfsFUhDt6nHq_gNlYwMhVNZJqYL3C5qrgPwXLrPRXL0oRICG8xGpBVJpsLKIC3KhhFL4eHyo5LPZRVMbCXQ20UfT-tMV-Pt72-Rr7AKkhXDSzLcBANpRyJgioD5VlLb6YfqcnDLpczt1gnCOvnLHeWuuIf8NTa6q8hoGZXKyBo79Xapag_xvzbqco8AzSqu_yUxR6MXArEpp_we0JGhkJJHrve41LXNDX27QfC-Fj84feKgXY9CTgB1ytHWWDT_71gU05NwMdMisuQnAZPg9kRnoze55OBXu6c8TtzN5Idvdgmc9dbeKKxFG0f4bn_pt4lN6ZzOJ0ptOteVl-EpMDPk6M9_kwKerOc1GQbH47MEEYmQTXmoMeUp9ECJwhYdxdqu_LEB6ZxrjOC3VBPP6rE8sxBZJG8od_adtClp4UYU5-LBPm9_DYsde5hThh2su9PVBph8fbk42WE8I6o3BoOSciA1G9eIwfaa99OQh-4NZhJRVIGs7M4uMHVyUnDQk0RqtjFjf7TlCkeRC4=w811-h210-no %}</p>
+
+<p>参考：</p>
+
+<ul>
+<li><a href="http://qiita.com/yuyakato/items/89fcef9746afbf48977a">Amazon API GatewayでAWS Lambda関数にクエリ文字列をパラメータとして渡す</a></li>
+<li><a href="http://qiita.com/ijin/items/6edafc1f351a9de49b54">Amazon API Gatewayで文字列をクォーテーションなしで返却する</a></li>
+</ul>
+
+
+<h3>endpoint</h3>
+
+<p>Deployすれば、以下のAPIでipが取得可能。</p>
+
+<p><code>/$API_ENDPOINT/prod/eb/$EB_ENV_NAME/ip/[n]</code></p>
+
+<p>instance ip一覧</p>
+
+<p><code>
+$ curl -s https://altvsxa2kj.execute-api.ap-northeast-1.amazonaws.com/prod/eb/my-ebenv-production/ip
+54.189.149.5
+54.189.168.83
+</code></p>
+
+<p>特定のinstance ip</p>
+
+<p><code>
+$ curl -s https://altvsxa2kj.execute-api.ap-northeast-1.amazonaws.com/prod/eb/my-ebenv-production/ip/1
+54.189.149.5
+</code></p>
+
+<p>ipの部分だけ、PATHじゃなくquery paramterにした方がAPI Gatewayの設定がシンプルだったけど、少しでもRESTfulにしたかったもので。（まあ、そもそもjson返してないけど）</p>
+
+<h2>SSH Config</h2>
+
+<p>さて、ここからがキモです。</p>
+
+<p>~/.ssh/config</p>
+
+<p><code>
+Host my-ebenv-production*
+  User ec2-user
+  StrictHostKeyChecking no
+  ProxyCommand ssh -A localhost -W `N=$(grep -o '[0-9]\+$' &lt;&lt;&lt; %h || echo 1); E=$(perl -pe 's/\d+$//' &lt;&lt;&lt; %h); curl -s https://altvsxa2kj.execute-api.ap-northeast-1.amazonaws.com/prod/eb/$E/ip/$N`:%p
+</code></p>
+
+<p>上記の設定で<code>ssh $EB_ENV_NAME[n]</code>で指定したサーバに接続できるようになります。</p>
+
+<p>仕組みとしては、ホスト名をparseしAPI Gatewayに適切なリクエストを行い、返却されるpublic ipにローカル端末自身を踏み台としてsshする<code>ProxyCommand</code>の設定です。</p>
+
+<p>例えば、2番目（に起動した）のサーバに接続する場合は</p>
+
+<p>```
+$ ssh my-ebenv-production2
+Last login: Wed Nov  4 01:19:14 2015 from ndx6-ppp413.tokyo.sannet.ne.jp</p>
+
+<hr />
+
+<p>| <em><em><strong>| | </strong> _ </em>__| |</em>(<em>) </em><strong>| </strong> )  <em><strong>  </strong> _ _ <strong>  </strong></em>| |<em> __ </em>| | | <strong>
+|  <em>| | |/ </em><code>/ __| __| |/ __|  _ \ / _ \/ _</code> | '_ \/ </strong>| <strong>/ <em>` | | |/ /
+| |</em></strong>| | (<em>| _</em> \ |<em>| | (__| |</em>) |  <strong>/ (<em>| | | | _</em> \ || (<em>| | |   &lt;
+|</em></strong><strong>|<em>|_</em>,<em>|</em></strong>/_<em>|</em>|_<strong>|</strong><strong>/ _</strong>|_<em>,</em>|<em>| |</em>|<em><em><em>/_</em>_</em>,</em>|<em>|</em>|_\</p>
+
+<pre><code>                                   Amazon Linux AMI
+</code></pre>
+
+<p>This EC2 instance is managed by AWS Elastic Beanstalk. Changes made via SSH
+WILL BE LOST if the instance is replaced by auto-scaling. For more information
+on customizing your Elastic Beanstalk environment, see our documentation here:
+http://docs.aws.amazon.com/elasticbeanstalk/latest/dg/customize-containers-ec2.html
+```</p>
+
+<p>1番目の場合は明示的に指定する必要はありません。</p>
+
+<p><code>
+$ ssh my-ebenv-production
+</code></p>
+
+<p>また、Auto Scalingでinstanceが増減せずに1台のみの場合はもっとシンプルに記述できます。</p>
+
+<p><code>
+  ProxyCommand ssh -A localhost -W `curl -s https://altvsxa2kj.execute-api.ap-northeast-1.amazonaws.com/prod/eb/$E/ip`:%p
+</code></p>
+
+<p>簡単！</p>
+
+<h2>まとめ</h2>
+
+<ul>
+<li>Swaggerなかなか面白い</li>
+<li>API GatewayとLambda便利</li>
+<li>Lambda pythonも良い。けど、rubyサポートも早う。。</li>
+</ul>
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[AWS re:Invent 2015に参加してきた]]></title>
@@ -33,15 +215,13 @@
 
 <p>結果、48チーム中で<strong>6位</strong>。（上位2チームはチートで失格となったので<strong>実質は4位</strong>）</p>
 
-<p><img src="https://lh3.googleusercontent.com/H8zoy7lrftuIo9ZQTN_LsUC3KsiGsNkOJbPzuW4vAxy4o6IOAH8=w547-h298-no"></p>
+<p>{% img https://lh3.googleusercontent.com/H8zoy7lrftuIo9ZQTN_LsUC3KsiGsNkOJbPzuW4vAxy4o6IOAH8=w547-h298-no %}</p>
 
-<p><div class='embed tweet'><blockquote class="twitter-tweet"><p lang="en" dir="ltr"><a href="https://twitter.com/ijin">@ijin</a> <a href="https://twitter.com/AWSreInvent">@AWSreInvent</a> the rabbit icon was awarded to the team with the fastest response time to a request.0.0005s is not too shabby!</p>&mdash; Kyle Lichtenberg (@KyleLichtenberg) <a href="https://twitter.com/KyleLichtenberg/status/651573816301219840">October 7, 2015</a></blockquote>
-<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div></p>
+<p>{% tweet https://twitter.com/KyleLichtenberg/status/651573816301219840 %}</p>
 
 <p>ちなみに最速レスポンスタイムはうちのチームが叩きだした。</p>
 
-<p><div class='embed tweet'><blockquote class="twitter-tweet"><p lang="en" dir="ltr">Our team - &quot;Ubercon&quot;! <a href="https://twitter.com/hashtag/reinvent?src=hash">#reinvent</a> <a href="https://twitter.com/hashtag/AWSGameDay?src=hash">#AWSGameDay</a> <a href="http://t.co/dpRu1vicgM">pic.twitter.com/dpRu1vicgM</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/651544851620700160">October 6, 2015</a></blockquote>
-<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div></p>
+<p>{% tweet https://twitter.com/ijin/status/651544851620700160 %}</p>
 
 <p>詳細は今度日本で開催されるかも知れないので控えておくが、非常に楽しめたので次回は運営側に回って手伝おうかと思います！</p>
 
@@ -63,7 +243,7 @@
 </ul>
 
 
-<p><img src="https://lh3.googleusercontent.com/SSI_hMC3cjzUSvGPxT49FD26VBeY_QYt_qGoTLDPo8nBLwdmglM=w493-h544-no"></p>
+<p>{% img https://lh3.googleusercontent.com/SSI_hMC3cjzUSvGPxT49FD26VBeY_QYt_qGoTLDPo8nBLwdmglM=w493-h544-no %}</p>
 
 <p><del>Oracle</del>からの自由、解放！</p>
 
@@ -73,14 +253,13 @@
 かつてjawsugで主催を手伝ったワールドカフェ形式とほぼ同じだったので、チームメンバーを先導してCacooでさくさく構成図を起こしていく。
 他のチームが模造紙にラフスケッチで発表する中、我らは綺麗に正本して、プロジェクターで登壇しながら発表。</p>
 
-<p><div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">ワークショップはうちらのチームだけCacooで図を書いたので制覇した感がある。 <a href="https://twitter.com/hashtag/reinvent?src=hash">#reinvent</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/651869691699425281">October 7, 2015</a></blockquote>
-<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div></p>
+<p>{% tweet https://twitter.com/ijin/status/651869691699425281 %}</p>
 
 <p>最後に実際にどう移行したかというAWSチームからの回答。まず、移行フェーズを段階的に分け、最初はシステムをほぼそのままクラウド上に乗せた後に部分的に最適化してコンポーネントを置き換えて行ったという話。最後にLambdaになっていた部分があったのが興味深かった。</p>
 
 <p>早く新サービスに対応したAWS Simple Iconsのアップデートが待たれるところ。</p>
 
-<p><img src="https://lh3.googleusercontent.com/IVrSN7g0MnAfVa6pB4ajQWUZYPmpFMOH6Ych-FedX1HqxCfEHtc=w583-h346-no"></p>
+<p>{% img https://lh3.googleusercontent.com/IVrSN7g0MnAfVa6pB4ajQWUZYPmpFMOH6Ych-FedX1HqxCfEHtc=w583-h346-no %}</p>
 
 <p>今回提案した内容。</p>
 
@@ -91,11 +270,11 @@
 <p>機能拡張の為に実装が必要なので、設計しながらチーム内で作業分担し、コードをせっせと書いていく。
 ゾンビ出現のアラート通知、ヒートマップ描画、アンデッドカウンター、緊急食料倉庫の位置情報配信等、面白い機能要求が盛り沢山。</p>
 
-<p><img src="https://lh3.googleusercontent.com/-UStcIzDdtS42SZTgt657iKvYHWlbcfktbvuCq3-LIioBfrBzgI=w600-h346-no"></p>
+<p>{% img https://lh3.googleusercontent.com/-UStcIzDdtS42SZTgt657iKvYHWlbcfktbvuCq3-LIioBfrBzgI=w600-h346-no %}</p>
 
 <p>ささっとSlack部屋を作り、githubでコードを共有しながらのチームワーク作業。多分、うちらのチームが一番多く実装できた感触。</p>
 
-<p><img src="https://lh3.googleusercontent.com/WZ7nUMvRhoNzixWqjEdCFJ1wJqNH-BqjV4M4cq93mBXBnJ8UPOk=w493-h544-no"></p>
+<p>{% img https://lh3.googleusercontent.com/WZ7nUMvRhoNzixWqjEdCFJ1wJqNH-BqjV4M4cq93mBXBnJ8UPOk=w493-h544-no %}</p>
 
 <p>このワークショップはかなりの人気で、開始30分前にすでに長蛇の列が。
 運良くぎりぎり最後の参加者として入れたけど、皆どれだけゾンビが好きなんだ。。</p>
@@ -125,7 +304,7 @@
 </ul>
 
 
-<p><img src="https://lh3.googleusercontent.com/A4p3UvP0JiMxjpZF7L0zxdMFkU96aOYtZ-BExM2zFERDsebakXw=w493-h543-no"></p>
+<p>{% img https://lh3.googleusercontent.com/A4p3UvP0JiMxjpZF7L0zxdMFkU96aOYtZ-BExM2zFERDsebakXw=w493-h543-no %}</p>
 
 <p>前日にAndyが7つの自由を語って、当日はWernerが7つの法則を語る。</p>
 
@@ -137,25 +316,21 @@
 
 <p>新品のEchoを開封して使ったので、最後に貰える物かとささやかに期待したものの、$15のAWSクーポン配布のみ。さすが<del>ケチ</del>FrugalなAmazonさん。</p>
 
-<p><div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">Alexaとlambdaが連携してEchoが喋った！ <a href="https://twitter.com/hashtag/reinvent?src=hash">#reinvent</a> <a href="http://t.co/V6QpNyj3tK">pic.twitter.com/V6QpNyj3tK</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/652234646231646208">October 8, 2015</a></blockquote>
-<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div></p>
+<p>{% tweet https://twitter.com/ijin/status/652234646231646208 %}</p>
 
-<p><div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">Alexは今ユーザ駆動にしか対応してないけど、awsのイベント駆動はtop priorityとの事。そのうち例えばbilling alertを音声で通知できるようになるなぁ。楽しみだ。 <a href="https://twitter.com/hashtag/reinvent?src=hash">#reinvent</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/652239936968654848">October 8, 2015</a></blockquote>
-<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div></p>
+<p>{% tweet https://twitter.com/ijin/status/652239936968654848 %}</p>
 
 <h3>re:Play</h3>
 
 <p>EDMの若きプリンスDJ、Zeddをシークレットゲストとして呼んでのアフター。</p>
 
-<p><div class='embed tweet'><blockquote class="twitter-tweet"><p lang="en" dir="ltr">What a view for this secret <a href="https://twitter.com/Zedd">@zedd</a> show, this crowd does not end! <a href="https://twitter.com/hashtag/vegas?src=hash">#vegas</a> <a href="http://t.co/0Itv012o0k">pic.twitter.com/0Itv012o0k</a></p>&mdash; Rukes (@rukes) <a href="https://twitter.com/rukes/status/652400784353595392">October 9, 2015</a></blockquote>
-<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div></p>
+<p>{% tweet https://twitter.com/rukes/status/652400784353595392 %}</p>
 
 <p>もう完全にWernerのパーティー。</p>
 
-<p><div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">昨夜の <a href="https://twitter.com/hashtag/replay?src=hash">#replay</a> でこの積み上がったコンテナを見て、Docker Swarm を連想した人はさぞ多かったに違いない。 <a href="http://t.co/QxF2MkbHTi">pic.twitter.com/QxF2MkbHTi</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/652681828441063425">October 10, 2015</a></blockquote>
-<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div></p>
+<p>{% tweet https://twitter.com/ijin/status/652681828441063425 %}</p>
 
-<p><div class="embed-video-container"><iframe src="http://www.youtube.com/embed/cT676BMT7A8 "></iframe></div></p>
+<p>{% youtube cT676BMT7A8 %}</p>
 
 <p>Zeldaのremixが良かった。</p>
 
@@ -186,7 +361,7 @@
 
 <p>やりたいことはこんな感じ。</p>
 
-<p><img src="https://lh3.googleusercontent.com/CZE1yk0yqzlizL0aK5xNBVTupVovIZCPhwp3CWwxOyc=w548-h334-no"></p>
+<p>{%img https://lh3.googleusercontent.com/-aep_hTkw5Mo/VjkHcm612yI/AAAAAAAABbo/00aae3JXUkc/s548-Ic42/github%25252Blambda%25252Bslack%252520%2525281%252529.png %}</p>
 
 <p>あるGitHubリポジトリのissuesに特定のコメントが書き込まれると、そのユーザはプロジェクトのteamに自動で追加されて、Slackへ通知が流れるというモノです。</p>
 
@@ -240,11 +415,11 @@ $ aws sns create-topic --name github --region ap-northeast-1
 
 <p><em>Webhooks &amp; Services</em> からAmazonSNSと連携</p>
 
-<p><img src="https://lh3.googleusercontent.com/u4I9Z_Ing9YzhmVCQhMACwYDVIJxJM7C-aDmyMsNL3o=w328-h190-no"></p>
+<p>{%img https://lh3.googleusercontent.com/u4I9Z_Ing9YzhmVCQhMACwYDVIJxJM7C-aDmyMsNL3o=w328-h190-no %}</p>
 
 <p>AWS KEYには先ほど作成したIAMユーザのを利用。SNS topicのarnにはregionが書かれているにも関わらず、GitHubの方では明示的に指定が必要。</p>
 
-<p><img src="https://lh3.googleusercontent.com/kppZQx_RdhyC11LB7a0cPtppDUiKgfZBm6laYvRG3zA=w382-h289-no"></p>
+<p>{%img https://lh3.googleusercontent.com/kppZQx_RdhyC11LB7a0cPtppDUiKgfZBm6laYvRG3zA=w382-h289-no %}</p>
 
 <h3>通知するeventの有効化</h3>
 
@@ -317,13 +492,13 @@ kms.encrypt({KeyId: 'alias/ijin', Plaintext: text}, function(err, data) {
 
 <p>また、KMSキーの実行権限もlambdaのroleに紐づけておく。</p>
 
-<p><img src="https://lh3.googleusercontent.com/oMHQ76XC7RQUCR_fEo9JyaMhPKSbnIdhCzjIWurEJ9c=w542-h358-no"></p>
+<p>{%img https://lh3.googleusercontent.com/oMHQ76XC7RQUCR_fEo9JyaMhPKSbnIdhCzjIWurEJ9c=w542-h358-no %}</p>
 
 <h2>Lambda</h2>
 
 <p>Lambda function作成時にはSNSをevent sourceとして指定。</p>
 
-<p><img src="https://lh3.googleusercontent.com/uDXkEVLrXT1BdUSbiMu3v5lnwTqCoXOkv_nu07XVxkk=w555-h235-no"></p>
+<p>{%img https://lh3.googleusercontent.com/uDXkEVLrXT1BdUSbiMu3v5lnwTqCoXOkv_nu07XVxkk=w555-h235-no %}</p>
 
 <p>(※) KMSは現在us-eastにしかないので、そこ以外のregionでlambdaを実行する場合は、<code>timeout</code>は若干長めに指定して置くと良さげ</p>
 
@@ -338,13 +513,9 @@ kms.encrypt({KeyId: 'alias/ijin', Plaintext: text}, function(err, data) {
 </ol>
 
 
-<p><div><script src='https://gist.github.com/ef105e192a030571d83f.js?file='></script>
-<noscript><pre><code></code></pre></noscript></div>
-</p>
+<p>{% gist ef105e192a030571d83f %}</p>
 
-<p><div><script src='https://gist.github.com/f83e33a6ae0acd83902a.js?file='></script>
-<noscript><pre><code></code></pre></noscript></div>
-</p>
+<p>{% gist f83e33a6ae0acd83902a %}</p>
 
 <p>nodeのlibraryを使うともっとスッキリ書けたけど、1 function 1 fileで纏めたかったのでやや冗長なコードになっちゃいました。。</p>
 
@@ -352,7 +523,7 @@ kms.encrypt({KeyId: 'alias/ijin', Plaintext: text}, function(err, data) {
 
 <p>GitHubでコメント</p>
 
-<p><img src="https://lh3.googleusercontent.com/KY7fwR-laXAJBQhJFv9VKzo_ydWFzeKep0G-3kgS0mM=w388-h128-no"></p>
+<p>{%img https://lh3.googleusercontent.com/KY7fwR-laXAJBQhJFv9VKzo_ydWFzeKep0G-3kgS0mM=w388-h128-no %}</p>
 
 <p>Lambda発動</p>
 
@@ -392,11 +563,11 @@ REPORT RequestId: a25c66fc-403f-1e15-b291-25d4ee441689  Duration: 2268.06 ms    
 
 <p>teamへの追加（招待）</p>
 
-<p><img src="https://lh3.googleusercontent.com/lzamiiNraeHYD7FI6rrb8-403hxjzVRrAqGG6k3sBcc=w474-h191-no"></p>
+<p>{%img https://lh3.googleusercontent.com/lzamiiNraeHYD7FI6rrb8-403hxjzVRrAqGG6k3sBcc=w474-h191-no %}</p>
 
 <p>Slackへ通知</p>
 
-<p><img src="https://lh3.googleusercontent.com/EeEiHydBDc29YhVI6MBUcdj1WUzMXnf_Sis3U-URqhw=w388-h147-no"></p>
+<p>{%img https://lh3.googleusercontent.com/EeEiHydBDc29YhVI6MBUcdj1WUzMXnf_Sis3U-URqhw=w388-h147-no %}</p>
 
 <h2>結論</h2>
 
@@ -508,7 +679,7 @@ org.apache.hadoop.hive.ql.exec.FileSinkOperator.closeOp(FileSinkOperator.java:88
 
 <p>こんな感じ。</p>
 
-<p><img src="https://lh3.googleusercontent.com/ghExdELQB1cIE9K-d97gDqz7a634413GOTxAHhvJsBg"></p>
+<p>{% img https://lh3.googleusercontent.com/ghExdELQB1cIE9K-d97gDqz7a634413GOTxAHhvJsBg %}</p>
 
 <table>
 <thead>
@@ -548,7 +719,7 @@ org.apache.hadoop.hive.ql.exec.FileSinkOperator.closeOp(FileSinkOperator.java:88
 
 <p>その時の試行錯誤がこれ。</p>
 
-<p><img src="https://lh3.googleusercontent.com/xatqR0hx1M6PhroKFNAksOplqgqYgqsaCJgonanQyzA=w437-h197-no"></p>
+<p>{%img https://lh3.googleusercontent.com/xatqR0hx1M6PhroKFNAksOplqgqYgqsaCJgonanQyzA=w437-h197-no %}</p>
 
 <h3>計算</h3>
 
@@ -600,7 +771,7 @@ Hive Queryのread処理は<a href="http://hipsterdevblog.com/blog/2015/05/30/ana
 <p>しかし、上記を満たしているのに、特定のAMIをCLI経由で起動するとEC2 Auto Recoveryを設定できなくなります。</p>
 
 <p>（AWSコンソールでラジオボタンが押せない。CLIで設定しても効かない）
-<img src="https://lh5.googleusercontent.com/-dwWUcfCssA4/VULwrOsgxNI/AAAAAAAABFo/VQy-GnIYQXg/w448-h186-no/Screenshot%2B2015-05-01%2B12.18.16.png"></p>
+{% img https://lh5.googleusercontent.com/-dwWUcfCssA4/VULwrOsgxNI/AAAAAAAABFo/VQy-GnIYQXg/w448-h186-no/Screenshot%2B2015-05-01%2B12.18.16.png %}</p>
 
 <p>原因はAMIにephemeral disk等のblock device mappingが設定されていて、T2やC4等のEBS onlyなinstance typeで起動しているにも関わらず、AWS側がephemeral diskが付与されていると認識してしまう所にあります。なお、AWSコンソールからの起動だとこの現象は発生しません。</p>
 
@@ -630,224 +801,6 @@ Hive Queryのread処理は<a href="http://hipsterdevblog.com/blog/2015/05/30/ana
 
 
 <p>これは明らかにAWS側のバグなので早く治って欲しいものですね。</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Auto Scalingによる自動復旧（AWS Lambda+SNS編）]]></title>
-    <link href="http://ijin.github.io/blog/2015/04/17/self-healing-with-non-elb-autoscaling4/"/>
-    <updated>2015-04-17T14:01:00+09:00</updated>
-    <id>http://ijin.github.io/blog/2015/04/17/self-healing-with-non-elb-autoscaling4</id>
-    <content type="html"><![CDATA[<p>先週の<a href="http://aws.amazon.com/summits/san-francisco/">AWS Summit San Fransisco</a>にて、ついにLambdaがSNSに<a href="http://docs.aws.amazon.com/sns/latest/dg/sns-lambda.html">対応</a>しました。
-様々なサービスが発表された中、個人的にはこれが一番のヒットです！というのも、この機能によってAWS間のサービスがより連携しやすくなり、新しいリアクティブなアーキテクチャをどんどん実現できそうだからです。</p>
-
-<p>というわけで、少し試してみました。</p>
-
-<p>お題は去年12月に試したAutoScaling + Lambda。（当時はLambdaはまだこの機能がなかったのでSNS→SQSにてイベントをプロセスする仕組みを<a href="/blog/2014/12/05/self-healing-with-non-elb-autoscaling3/">作りました</a>。）</p>
-
-<p>SNS連携によって前回のこれが</p>
-
-<p><img src="https://lh4.googleusercontent.com/-IxSeVgkwfQU/VIIapiet4tI/AAAAAAAABBw/ukic0BIBIT0/w529-h393-no/aws-advent-2014.png"></p>
-
-<p>こうなります。（Lambdaのアイコンが出たので差し替えてます）</p>
-
-<p><img src="https://lh3.googleusercontent.com/-ejPyB1qrZyQ/VTCEjbhe2cI/AAAAAAAABFI/VCYVIo5hFao/w404-h393-no/as-sns-lambda2.png"></p>
-
-<p>うーん、シンプル！</p>
-
-<h3>設定</h3>
-
-<p>前回とほぼ同様。</p>
-
-<p>SNS作成
-```
-$ aws sns create-topic --name instance-alert --region ap-northeast-1
-{</p>
-
-<pre><code>"TopicArn": "arn:aws:sns:ap-northeast-1:123456789012:instance-alert"
-</code></pre>
-
-<p>}
-```</p>
-
-<p>LambdaとSNS連携できるようにポリシーを付与
-```
-$ aws lambda add-permission --function-name makeASUnhealty --statement-id sns-instance-alert \
---action "lambda:invokeFunction" --principal sns.amazonaws.com \
---source-arn arn:aws:sns:ap-northeast-1:123456789012:instance-alert --region us-west-2                                                                                                                                                                                                <br/>
-{</p>
-
-<pre><code>"Statement": "{\"Condition\":{\"ArnLike\":{\"AWS:SourceArn\":\"arn:aws:sns:ap-northeast-1:123456789012:instance-alert\"}},\"Resource\":\"arn:aws:lambda:us-west-2:123456789012:function:makeASUnhealty\",\"Action\":[\"lambda:invokeFunction\"],\"Principal\":{\"Service\":\"sns.amazonaws.com\"},\"Sid\":\"sns-instance-alert\",\"Effect\":\"Allow\"}"
-</code></pre>
-
-<p>}
-```</p>
-
-<p>Subscribe
-```
-$ aws sns subscribe --topic-arn arn:aws:sns:ap-northeast-1:123456789012:instance- --protocol lambda \
---notification-endpoint arn:aws:lambda:us-west-2:123456789012:function:makeASUnhealty --region ap-northeast-1
-{</p>
-
-<pre><code>"SubscriptionArn": "arn:aws:sns:ap-northeast-1:123456789012:as-test:4b22eec6-aeb5-4421-7a2f-99ca33a4b8ab"
-</code></pre>
-
-<p>}
-```
-aws cliはのヘルプにはまだSNSをLambdaへsubscribeするやり方は書いてませんが、上記のようにやればできます。 <a href="http://alestic.com/2015/04/aws-cli-sns-lambda">Thanks Eric!</a></p>
-
-<p>EC2 Status Check
-<code>
-$ export INSTANCE=i-xxxxxxxx
-$ aws cloudwatch put-metric-alarm --alarm-name StatusCheckFailed-Alarm-for-$INSTANCE \
---alarm-description "Instance $INSTANCE has failed" --metric-name StatusCheckFailed \
---namespace AWS/EC2 --statistic Maximum --dimensions Name=InstanceId,Value=$INSTANCE \
---period 60 --unit Count --evaluation-periods 2 --threshold 1 --comparison-operator \
-  GreaterThanOrEqualToThreshold --alarm-actions arn:aws:sns:ap-northeast-1:560336700862:instance-alert \
---region ap-northeast-1
-</code></p>
-
-<p>Lambda Function
-<div><script src='https://gist.github.com/52033eb3b9b02c1fe975.js?file='></script>
-<noscript><pre><code></code></pre></noscript></div>
-</p>
-
-<h3>自動復旧</h3>
-
-<p>通信を遮断し、Status Check Failを発動させる
-<code>
-$ date; sudo ifdown eth0
-Fri Apr 17 03:08:39 UTC 2015
-</code></p>
-
-<p>EC2 Status Check。2分でfail検知
-```
-Fri Apr 17 12:10:25 JST 2015
-ok
-DETAILS reachability    passed</p>
-
-<p>Fri Apr 17 12:10:31 JST 2015
-impaired
-DETAILS 2015-04-17T03:10:00.000Z        reachability    failed
-```</p>
-
-<p>SNS通知。さらに2分ちょい。
-```
-Alarm Details:
-- Name:                       StatusCheckFailed-Alarm-for-i-xxxxxxxx
-- Description:                Instance i-xxxxxxxx has failed
-- State Change:               OK -> ALARM
-- Reason for State Change:    Threshold Crossed: 2 datapoints were greater than or equal to the threshold (1.0). The most recent datapoints: [1.0, 1.0].
-- Timestamp:                  Friday 17 April, 2015 03:13:09 UTC
-- AWS Account:                123456789012</p>
-
-<p>Threshold:
-- The alarm is in the ALARM state when the metric is GreaterThanOrEqualToThreshold 1.0 for 60 seconds.</p>
-
-<p>Monitored Metric:
-- MetricNamespace:            AWS/EC2
-- MetricName:                 StatusCheckFailed
-- Dimensions:                 [InstanceId = i-xxxxxxxx]
-- Period:                     60 seconds
-- Statistic:                  Maximum
-- Unit:                       Count
-```</p>
-
-<p>Lambdaログ
-<code>
-2015-04-17T03:13:14.504Z  ac9ed52f-e4af-1e14-b826-ee9008a99db9  Received event:..
-2015-04-17T03:13:14.504Z  ace9d52f-e4af-1e14-b826-ee9008a99db9  Changing instance health for: i-xxxxxxxx
-2015-04-17T03:13:15.682Z  ace9d25f-e4af-1e14-b826-ee9008a99db9  { ResponseMetadata: { RequestId: 'b0194dfb-e4af-1e14-895f-abdf96b0b593' } }
-2015-04-17T03:13:15.684Z  ace9d25f-e4af-1e14-b826-ee9008a99db9  result: ""
-</code>
-タイムスタンプによるとSNS発砲されてたからLambda発火まで5秒！</p>
-
-<p>Auto ScalingのHealth Status
-```
-Fri Apr 17 12:13:10 JST 2015
-as-sg   ap-northeast-1a HEALTHY i-ce02563d      as-lc   InService</p>
-
-<p>Fri Apr 17 12:13:15 JST 2015
-as-sg   ap-northeast-1a UNHEALTHY       i-ce02563d      as-lc   InService</p>
-
-<p>Fri Apr 17 12:13:20 JST 2015
-as-sg   ap-northeast-1a UNHEALTHY       i-ce02563d      as-lc   InService</p>
-
-<p>Fri Apr 17 12:13:26 JST 2015
-as-sg   ap-northeast-1a UNHEALTHY       i-ce02563d      as-lc   InService</p>
-
-<p>Fri Apr 17 12:13:31 JST 2015
-as-sg   ap-northeast-1a UNHEALTHY       i-ce02563d      as-lc   InService</p>
-
-<p>Fri Apr 17 12:13:37 JST 2015
-as-sg   ap-northeast-1a UNHEALTHY       i-ce02563d      as-lc   Terminating</p>
-
-<p>Fri Apr 17 12:13:43 JST 2015
-as-sg   ap-northeast-1a UNHEALTHY       i-ce02563d      as-lc   Terminating</p>
-
-<p>Fri Apr 17 12:13:49 JST 2015
-as-sg   ap-northeast-1a UNHEALTHY       i-ce02563d      as-lc   Terminating</p>
-
-<p>Fri Apr 17 12:13:54 JST 2015
-as-sg   ap-northeast-1a UNHEALTHY       i-ce02563d      as-lc   Terminating</p>
-
-<p>Fri Apr 17 12:13:59 JST 2015</p>
-
-<p>Fri Apr 17 12:14:05 JST 2015
-as-sg   ap-northeast-1a HEALTHY i-525601a1      as-lc   Pending</p>
-
-<p>Fri Apr 17 12:14:10 JST 2015
-as-sg   ap-northeast-1a HEALTHY i-525601a1      as-lc   Pending</p>
-
-<p>Fri Apr 17 12:14:16 JST 2015
-as-sg   ap-northeast-1a HEALTHY i-525601a1      as-lc   Pending</p>
-
-<p>Fri Apr 17 12:14:21 JST 2015
-as-sg   ap-northeast-1a HEALTHY i-525601a1      as-lc   Pending</p>
-
-<p>Fri Apr 17 12:14:26 JST 2015
-as-sg   ap-northeast-1a HEALTHY i-525601a1      as-lc   Pending</p>
-
-<p>Fri Apr 17 12:14:32 JST 2015
-as-sg   ap-northeast-1a HEALTHY i-525601a1      as-lc   Pending</p>
-
-<p>Fri Apr 17 12:14:37 JST 2015
-as-sg   ap-northeast-1a HEALTHY i-525601a1      as-lc   InService
-```</p>
-
-<p>ちゃんとTerminateされてリプレースされてますね。</p>
-
-<p>AutoScalingの通知
-<code>
-Service: AWS Auto Scaling
-Time: 2015-04-17T03:13:59.367Z
-RequestId: efa97137-fa15-4aa4-9c8c-5241961a2d0e
-Event: autoscaling:EC2_INSTANCE_TERMINATE
-AccountId: 123456789012
-AutoScalingGroupName: as-sg
-AutoScalingGroupARN: arn:aws:autoscaling:ap-northeast-1:123456789012:autoScalingGroup:c395c157-3a7e-4d56-287b-5ad9b26eb464:autoScalingGroupName/as-sg
-ActivityId: efa97137-fa15-4aa4-9c8c-5241961a2d0e
-Description: Terminating EC2 instance: i-xxxxxxxx
-Cause: At 2015-04-17T03:13:36Z an instance was taken out of service in response to a user health-check.
-StartTime: 2015-04-17T03:13:36.342Z
-EndTime: 2015-04-17T03:13:59.367Z
-StatusCode: InProgress
-StatusMessage:
-Progress: 50
-EC2InstanceId: i-xxxxxxxx
-Details: {"Availability Zone":"ap-northeast-1a","Subnet ID":"subnet-bbbbbbbb"}
-</code></p>
-
-<p>通常は<code>Cause</code>が<code>an instance was taken out of service in response to a EC2 health check indicating it has been terminated or stopped.</code>となるのが<code>an instance was taken out of service in response to a user health-check.</code>となっているのでAutoScalingのEC2 Health Checkより前にアクションが起こされた事が分かります。</p>
-
-<p>障害発生からInstanceがリプレースされて<code>InService</code>になるAuto Healingのトータル時間は6分ちょいになりました。
-<a href="http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-instance-recover.html">EC2 Auto Recovery</a>を使えば済む場合もありますが、あちらはAWS側の障害に起因する<code>StatusCheckFailed_System</code>のみで<code>StatusCheckFailed_Instance</code>はトリガー対象じゃないのと、特定のインスタンスタイプやVPC等若干制限があります。</p>
-
-<h3>終わりに</h3>
-
-<p>ちなみに今回はinstanceやSNSは東京リージョン（ap-northeast-1）、Lambdaはオレゴンリージョン（us-west-2）というリージョンを跨いだ連携も可能という事が分かりました。まだ東京に来てないけど、既にproduction readyなのでもう普通に使っていけます。</p>
-
-<p>いやー。SNS連携によって夢は広がりますねぇ。</p>
 ]]></content>
   </entry>
   

@@ -9,7 +9,7 @@
   <meta name="author" content="Michael H. Oshita">
 
   
-  <meta name="description" content="ちょうど1年程前に「非ELBなAutoscalingによる自動復旧」の再検証をしました。前回も復旧までのタイムラグが20分だったので、この1年で変わったかまた検証してみました。 (*) このエントリはAWS Advent Calendar 2014の5日目分です。 設定 前回とほぼ一種ですが、 &hellip;">
+  <meta name="description" content="ISUCON4の本戦の直後にそのままAWS re:Inventへ行ったきりエントリを書いてなかったので思い出だけでも年内に書いておく。 内容のエントリはたくさんあるので、詳しい内容なそちらに任せます。 結果は予選よりちょい上の15位。まあ、中間層は結構団子状態だったので誤差の範囲とも言えますが &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -87,6 +87,59 @@ document.write = function(html) {
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/12/31/isucon4-final/">ISUCON4の本戦の思い出</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-12-31T20:52:00+09:00" pubdate data-updated="true">Dec 31<span>st</span>, 2014</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>ISUCON4の本戦の直後にそのままAWS re:Inventへ行ったきりエントリを書いてなかったので思い出だけでも年内に書いておく。</p>
+
+<p>内容の<a href="http://isucon.net/archives/41252218.html">エントリ</a>はたくさんあるので、詳しい内容なそちらに任せます。</p>
+
+<p>結果は予選よりちょい上の<strong>15位</strong>。まあ、中間層は結構団子状態だったので誤差の範囲とも言えますが。。</p>
+
+<h2>Cache-Control</h2>
+
+<p>結局はCache-Controlヘッダーに気づくかどうかという点にかかっていて、達成したのは<a href="http://isucon.net/archives/41634734.html">2チーム</a>のみ。優勝チームのモリスさんが「頭から煙が出る程考えて」やっと直前に答えにたどり着いた事を考えると、ベンチマークツールの挙動が若干不思議な実装になっていたとはいえ、思慮深さが足りなかったと反省。</p>
+
+<h2>冒険しすぎた</h2>
+
+<p>今回はrubyとGoのハイブリッド構成でもろもろチューニング。が、しばらくして帯域が頭打ちに。。
+また、その間にメンバーの一人の<a href="https://twitter.com/fruwe">@fruwe</a>に<a href="http://undertow.io/">Undertow</a>というjavaのフレームワークでチャレンジしてもらうものの（事前の技術検証では結構期待できそうだった）、実装完走にはいたらず。この辺は冒険し過ぎたかな。。振り返ってみれば、結局2位のチームがブレークスルーをしたのを見て、全作業を一旦ストップしてでも皆で考えなおす行動を取れば良かったのかもしれないですね。ただ、当時は予選でのベンチマークツールがいささか不安定だった事と運営側もリアルタイムでバグフィックスをしてたという事情もあり、きっとバグか何かだろうとあまり気にしてなかったのも確か。</p>
+
+<h2>最後に</h2>
+
+<p>とまあ、不完全燃焼だったけど、なんだかんだで面白かったです。運営＆参加者の皆様お疲れ様でした。来年またあるか分からないけど、楽しみにしています。</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -1887,210 +1940,6 @@ CDP的には「<a href="http://aws.clouddesignpattern.org/index.php/CDP:Server_S
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2013/10/07/isucon3-preliminary/">ISUCON3の予選を通過した（はず）</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-10-07T12:12:00+09:00" pubdate data-updated="true">Oct 7<span>th</span>, 2013</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p><a href="http://ijin.github.io/blog/2012/11/05/isucon2/">去年</a>に引き続き参加した<a href="http://isucon.net/">ISUCON</a>第3回目の予選を通過しました。</p>
-
-<p><a href="http://isucon.net/archives/32848462.html">結果</a>は参戦1日目の方で<strong>4位</strong>。
-74チーム中、総合<strong>6位</strong>になりました。</p>
-
-<h3>事前準備</h3>
-
-<p>再び<a href="https://twitter.com/cads">@cads</a>と<a href="https://twitter.com/fruwe">@fruwe</a>に声をかけ、去年3位という雪辱を果たすべく、「The Revenge of Mr. Frank &amp; Co.」とチーム名を改名。
-今年はチーム数が膨れると予想されてたので去年と違って予選がありトップ20位ぐらいまでしか本戦に行けないという仕組み。方針は以下の通り。</p>
-
-<ul>
-<li>言語は我々の得意なruby（goも面白そうだったけど）で勝負</li>
-<li>去年Railsの再実装で失敗した為、Sinatra（であれば）でやりきる</li>
-<li>Sinatra、Varnish、Sidekiq、Redisの復習</li>
-<li>計測ツールの導入</li>
-<li>早い時期に全体のスケジュールを決定する</li>
-<li>戦略転換の見極め</li>
-</ul>
-
-
-<p>特に去年の敗因が戦略転換の遅れだったので、それを意識するようにしました。</p>
-
-<h3>お題発表</h3>
-
-<p>Markdownを使ったコメントシステム。しかもユーザログインがあってポストのprivate/public指定ができるというちょっとアドバンストな作り。</p>
-
-<h3>前半戦</h3>
-
-<p>今回、サーバはAWSのAMIとして提供され自分のアカウントで起動するやり方だったので、<a href="http://d.conma.me/entry/2013/04/08/190229">CPUガチャ</a>に若干期待しつつ10台一気にlaunchする。確認したら全部同じCPUだったので半分落として、後は本番用、開発用、バックアップ用として残す。</p>
-
-<p>まずは、状況把握の為にひとまず皆でルールの理解とソース解析。ざっと目を通した後はブラウザで動作確認し、今回同一マシン内で実行させるベンチマークプログラムを複数言語で実行。制御方法は去年と同じsupervisord</p>
-
-<p>Perl</p>
-
-<pre><code>2013/10/05 10:31:15 done benchmark
-Result:   SUCCESS
-RawScore: 1020.4
-Fails:    0
-Score:    1020.4
-</code></pre>
-
-<p>Ruby</p>
-
-<pre><code>2013/10/05 10:38:11 done benchmark
-Result:   SUCCESS
-RawScore: 2446.9
-Fails:    0
-Score:    2446.9
-</code></pre>
-
-<p>Go</p>
-
-<pre><code>2013/10/05 10:45:32 done benchmark
-Result:   SUCCESS
-RawScore: 2840.1
-Fails:    0
-Score:    2840.1
-</code></pre>
-
-<p>Node</p>
-
-<pre><code>2013/10/05 10:49:07 done benchmark
-Result:   SUCCESS
-RawScore: 1543.4
-Fails:    0
-Score:    1543.4
-</code></pre>
-
-<p>お、rubyそんなに悪くないかも。
-デフォルトのperlが遅いのはメモリが温まってないかなと思って再実行したけど飛躍的に良くはならなかったですね。</p>
-
-<p>この辺で予め決めていた開始後1時間という期限になったので作戦会議とスケジュール策定に入る。</p>
-
-<p>まずはVarnishを入れてみようという事なので一人がその作業にとりかかる。もう一人はNewrelicという測定ツールの導入とバックアッププランのRedisバージョンの作りこみ。私はDB周りのチューニングやミドルウェア周り、後は二人のサポート。</p>
-
-<p>DBはMySQLだったので全クエリを吐き出してpt-query-digestで解析して統計的に遅いクエリ順に潰す。
-schemaをよく見たらindexがなかったので張ったり、クエリーをちょっと改善してみたり、パラメータを変更（innodb_buffer_pool_sizeとinnodb_flush_log_at_trx_commitのみ）したり黙々作業。</p>
-
-<p>時間はあっという間に過ぎて両方のバージョンを導入してみるもののベンチマークツールからFAILを大量にくらい、スコアが全然つかず。。。</p>
-
-<p>折り返し時点が迫ってきたので、とりあえず今あるチューニングだけのスコアを送信。</p>
-
-<pre><code>2013/10/05 13:43:37 done benchmark
-Result:   SUCCESS
-RawScore: 3791.5
-Fails:    6
-Score:    3450.2
-</code></pre>
-
-<h2>後半戦</h2>
-
-<p>その後、unicornのワーカー数を調整したり、クエリーを更に見なおしたり、initializer作って事前にキャッシュを温める仕組みを作ったりして6000ぐらいのスコアを出した気がする（この辺は作業ログを残すのを忘れていたので記憶が曖昧）</p>
-
-<p>Redisバージョンは雰囲気的に無理そうだったので早々に捨ててこの辺は去年の教訓が生かされてると思う）ESI対応 + Varnishに注力する事を決断。しかし、こっちもエラーの連発。。</p>
-
-<p>最も悩まされたのは</p>
-
-<pre><code>14:53:20 [FAIL] invalid Cache-Control header
-14:53:21 [FAIL] invalid post memo URL http://localhost/
-</code></pre>
-
-<p>どうやらリバースプロクシ用に付与しているヘッダーチェックで弾かれていた模様。</p>
-
-<p>VCLファイルをよく見たら既存のシステムから流用したモノらしく、余計なルールがたくさん入っていたので、仕切り直しということで一旦白紙から再作成する事に。</p>
-
-<p>なんとか基本部分だけ動かす事ができるようになってスコア送信。</p>
-
-<pre><code>2013/10/05 15:45:18 done benchmark
-Result:   SUCCESS
-RawScore: 14694.2
-Fails:    0
-Score:    14694.2
-</code></pre>
-
-<p>この辺で暫定一位。</p>
-
-<div class='embed tweet'><blockquote class="twitter-tweet"><p><a href="https://twitter.com/search?q=%23isucon&amp;src=hash">#isucon</a> オンライン予選一日目 中間発表二回目です。残り2時間となった16時時点での順位は以下の通り&#10;1. The Revenge of Mr. Frank &amp; Co.&#10;2. hidekiy&#10;3. ( (0) / (0)) ☆祝☆&#10;4. パイの実g&#10;5. 白金動物園&#10;続く</p>&mdash; 941 (@941) <a href="https://twitter.com/941/statuses/386386593696604161">October 5, 2013</a></blockquote>
-<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
-
-
-<div class='embed tweet'><blockquote class="twitter-tweet"><p>isuconは外国県人会が暴れてるのかな？</p>&mdash; ばば としあき (@netmarkjp) <a href="https://twitter.com/netmarkjp/statuses/386393051230261248">October 5, 2013</a></blockquote>
-<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
-
-
-
-
-<br />
-
-
-<p>しかしその後privateページのキャッシュexpire方法を模索するも、なかなか進まずにタイムリミットが刻々と迫り、他のチームがどんどん上位に食い込んできて若干焦り始める。ひとまず、強制フラッシュするエンドポイントと裏で定期実行するバックグランドタスク（Varnishでいう所のbanlurker相当）を即席で実装したりしてスコアを伸ばすもトップには届かず敢え無く終了。</p>
-
-<p>振り返ってタイムスタンプを見るとギリギリまで粘っていたのが分かりますね。</p>
-
-<pre><code>-rw-r--r-- 1 root root 2322 Oct  5 17:59 /etc/supervisord.conf
-</code></pre>
-
-<p>結果、送信できた最終スコアは「<strong>20599.5</strong>」でした（ローカルスコアは22000ぐらいだったけど）。
-予選突破（暫定）はできたものの、まだまだ課題山積な感じです。</p>
-
-<h3>良かった点</h3>
-
-<ul>
-<li>最初に戦略とスケジュールを策定できた</li>
-<li>去年学んだ捨てる勇気を持てたこと</li>
-<li>去年よりいろいろ試せたので敗北感は改善</li>
-<li>オンライン参戦なので普段使い慣れてる環境で落ち着いて出来た（本戦はアウェー）</li>
-<li>今年の密かな目標であるモリスさんに勝ったこと（予選だけど）</li>
-</ul>
-
-
-<h3>反省点</h3>
-
-<ul>
-<li>作業ログをもっとしっかり取るべき</li>
-<li>バージョン違いはgit mergeせずにbranchをcheckoutするべき</li>
-<li>lingrサポート見ればよかった</li>
-<li>MySQL5.6のMemcache APIの存在には気づいてたけど、罠とは知らなかった</li>
-<li>Newrelic導入に時間かけた割には得られる情報量が薄かった</li>
-<li>リバースプロクシが遅れたのは全実装して投入を試みたからでincremental apporachの方が良かった</li>
-<li>全員のタスクマネジメントとペアプログラミングをもっとすれば良かった</li>
-</ul>
-
-
-<p>今回も前回同様、非常に楽しめました。
-運営の皆様、お疲れ様でした&amp;本戦はさらなる期待をしてます！</p>
-
-<h3>おまけ</h3>
-
-<p>後日行われた各チームの反省会で判明したのがworkloadの存在。どうやらベンチマークツールの並列度を上げる事ができるらしく、そこそこ速くなっているシステムだったらスコアが1.5倍ぐらいは伸びたかもとの事。最終スコアを考えると、30000点台のトップを取れたかもしれないのが無念。。アプローチ自体は総合トップの<a href="https://twitter.com/sechiro">@sechiro</a>さんと<a href="http://sechiro.hatenablog.com/entry/2013/10/07/%23isucon_2013_%E4%BA%88%E9%81%B8%E3%82%92%E3%83%88%E3%83%83%E3%83%97%E9%80%9A%E9%81%8E%E3%81%97%E3%81%A6%E3%81%8D%E3%81%9F%EF%BC%88%E3%81%AF%E3%81%9A%EF%BC%89%E3%80%82">似ていた</a>ので方針は間違ってなかったかと。</p>
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/blog/page/3/">&larr; Older</a>
@@ -2106,6 +1955,10 @@ Score:    14694.2
     <section>
   <h1>Recent Posts</h1>
   <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2015/11/04/elastic-beanstalk-easy-ssh/">Elastic Beanstalkへの簡単ssh</a>
+      </li>
     
       <li class="post">
         <a href="/blog/2015/10/26/aws-re-invent-2015/">AWS re:Invent 2015に参加してきた</a>
@@ -2141,10 +1994,6 @@ Score:    14694.2
     
       <li class="post">
         <a href="/blog/2015/03/27/serverfesta-2015-spring/">サバフェス！2015に参加してきた</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2014/12/31/isucon4-final/">ISUCON4の本戦の思い出</a>
       </li>
     
   </ul>

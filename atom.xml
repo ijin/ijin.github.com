@@ -4,7 +4,7 @@
   <title><![CDATA[@ijin]]></title>
   <link href="http://ijin.github.io/atom.xml" rel="self"/>
   <link href="http://ijin.github.io/"/>
-  <updated>2015-10-27T12:14:38+09:00</updated>
+  <updated>2015-11-04T10:27:15+09:00</updated>
   <id>http://ijin.github.io/</id>
   <author>
     <name><![CDATA[Michael H. Oshita]]></name>
@@ -12,6 +12,233 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Elastic Beanstalkへの簡単ssh]]></title>
+    <link href="http://ijin.github.io/blog/2015/11/04/elastic-beanstalk-easy-ssh/"/>
+    <updated>2015-11-04T08:43:00+09:00</updated>
+    <id>http://ijin.github.io/blog/2015/11/04/elastic-beanstalk-easy-ssh</id>
+    <content type="html"><![CDATA[<p>AWS Elastic Beanstalk上で管理されているinstanceにsshするには<code>eb ssh</code>コマンドを使えば割りと簡単に接続できますが、アクセスキーの設定が必要で、開発者が多い場合にそれを発行してばら撒いて管理するのはかなり面倒です（IAM user/roleの割当にしても）。</p>
+
+<p>そこで、API GatewayとLambdaでinstanceのpublic ipを返却するエンドポイントを作り、SSH configを設定すれば誰でもアクセスできるようにしてみました。</p>
+
+<p><img src="https://lh3.googleusercontent.com/vqW8J9ASHnvZSjAZnwS-_4BMxUo37m6FJ3snn1c2j1dgbX1SVybDaz9TN0mG-fVLqKRUGDtUBO4uDbL2L_QILPXYNbKFCaCmG5Au4Ar8mNacZATEX3FjT2L08T-K4-JWwIXRvsd5SM1iwPu6az7ABb28N2ezTM5wp4-B4rB7tIHFzx8ZWCq9EvZQJGFnqVZpZxXEbdGc2edk6J4dd-QgrZRAmzx2XHXSK4oWnWCkbTB1VS-LGIk0ShMbqn1wjj8AugSoHozG1hsufsuEyeNxBN8-6lQowH_O8JWRdJc28ffNtEaQeGr6Xrj66DjjxYZmO_NdS9hnlgFzUAP4t9iWt1cRAVzDHHVXfqeROmtdXc1ogYLwQY3EOMpd42l-YDNzKbp_bi4H4YJ-Mr-pmF91szERTw2avQmc2MGYcUcsOATYxnyz47mNW1f6alfbzeUf1sFwlUZ1FqS3if6CWiaKnqNjRPvHHs8ccV7magouBQ0Qm3_DOgSKsuosLYXZzNYEuPZl1WYv-m2Hnz0pMglMUA42V_7zrl6lY-cleeY=w605-h431-no"></p>
+
+<h2>前提条件</h2>
+
+<ul>
+<li>instanceにはログインユーザーのssh keyが登録積み（.ebextensions等で）</li>
+<li>ssh localhost可能である</li>
+<li>Elastic Beanstalkのenvironment名は数値で終わらない</li>
+</ul>
+
+
+<h2>Lambda</h2>
+
+<p>やってる事は単純で自動的に付与される<code>elasticbeanstalk:environment-name</code>タグのついたinstanceのipを（パラメータに応じて）返却するだけ。複数ある場合は、起動した順で。</p>
+
+<p>せっかくなので新しくサポートされたPythonで記述。</p>
+
+<div><script src='https://gist.github.com/bf735efbec42e1f96d4b.js?file='></script>
+<noscript><pre><code></code></pre></noscript></div>
+
+
+<h2>Swagger</h2>
+
+<p>API Gatewayのresourceをコンソールでポチポチ作るのがイヤだったのでAPIの状態を<a href="http://swagger.io/">Swagger</a>で定義してみた。awscliは<a href="http://dev.classmethod.jp/cloud/aws/getting-started-with-api-gateway-lambda-integration/">生REST APIが辛い</a>。</p>
+
+<p>編集しながらドキュメントも見れる<a href="http://editor.swagger.io/#/">online editor</a>が結構便利。</p>
+
+<div><script src='https://gist.github.com/a41059039937ffc8dada.js?file='></script>
+<noscript><pre><code></code></pre></noscript></div>
+
+
+<h2>API Gateway</h2>
+
+<p>Swagger上でYAMLで作成した定義書はjsonとしてexportし、<a href="https://github.com/awslabs/aws-apigateway-importer">aws-apigateway-importer</a>でAPIのresourceやmethodやらを生成する。</p>
+
+<h3>import処理</h3>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ ./aws-api-import.sh -c swagger.json
+</span><span class='line'>2015-11-04 02:23:18,507 INFO - Attempting to create API from Swagger definition. Swagger file: swagger.json
+</span><span class='line'>reading from swagger.json
+</span><span class='line'>2015-11-04 02:23:18,649 INFO - Parsed Swagger with 2 paths
+</span><span class='line'>2015-11-04 02:23:18,655 INFO - Creating API with name EB API
+</span><span class='line'>2015-11-04 02:23:19,417 INFO - Removing default model Error
+</span><span class='line'>2015-11-04 02:23:19,634 INFO - Removing default model Empty
+</span><span class='line'>2015-11-04 02:23:19,872 INFO - Creating model for api id nx3r6d6yhh with name IP
+</span><span class='line'>2015-11-04 02:23:20,114 INFO - Generated json-schema for model IP: {"type":"object","properties":{"ip":{"type":"string","description":"IP address."}},"definitions":{}}
+</span><span class='line'>2015-11-04 02:23:20,329 INFO - Creating model for api id nx3r6d6yhh with name Error
+</span><span class='line'>2015-11-04 02:23:20,338 INFO - Generated json-schema for model Error: {"type":"object","properties":{"code":{"type":"integer","format":"int32"},"message":{"type":"string"},"fields":{"type":"string"}},"definitions":{}}
+</span><span class='line'>2015-11-04 02:23:20,770 INFO - Creating resource 'eb' on bd5pqsq37h
+</span><span class='line'>2015-11-04 02:23:21,420 INFO - Creating resource '{env_name}' on 8rjsbt
+</span><span class='line'>2015-11-04 02:23:22,079 INFO - Creating resource 'ip' on 4cg26s
+</span><span class='line'>2015-11-04 02:23:22,931 INFO - Creating method response for api nx3r6d6yhh and method GET and status 200
+</span><span class='line'>2015-11-04 02:23:23,144 INFO - Creating new model referenced from response: IPaddresses
+</span><span class='line'>2015-11-04 02:23:23,144 INFO - Creating model for api id nx3r6d6yhh with name IPaddresses
+</span><span class='line'>2015-11-04 02:23:23,153 INFO - Generated json-schema for model IPaddresses: {"type":"string","definitions":{}}
+</span><span class='line'>2015-11-04 02:23:23,770 WARN - Default response not supported, skipping
+</span><span class='line'>2015-11-04 02:23:23,772 INFO - Creating method parameter for api nx3r6d6yhh and method GET with name method.request.path.env_name
+</span><span class='line'>2015-11-04 02:23:23,998 INFO - Creating method for api id nx3r6d6yhh and resource id md6qcm with method get
+</span><span class='line'>2015-11-04 02:23:24,822 INFO - Creating resource '{server_num}' on qmd6mc
+</span><span class='line'>2015-11-04 02:23:25,689 INFO - Creating method response for api nx3r6d6yhh and method GET and status 200
+</span><span class='line'>2015-11-04 02:23:25,896 INFO - Found reference to existing model IPaddresses
+</span><span class='line'>2015-11-04 02:23:26,306 WARN - Default response not supported, skipping
+</span><span class='line'>2015-11-04 02:23:26,306 INFO - Creating method parameter for api nx3r6d6yhh and method GET with name method.request.path.env_name
+</span><span class='line'>2015-11-04 02:23:26,525 INFO - Creating method parameter for api nx3r6d6yhh and method GET with name method.request.path.server_number
+</span><span class='line'>2015-11-04 02:23:26,764 INFO - Creating method for api id nx3r6d6yhh and resource id 5udxeo with method get</span></code></pre></td></tr></table></div></figure>
+
+
+<p>これでAPI Gateway上に階層が出来上がり。</p>
+
+<p><img src="https://lh3.googleusercontent.com/cM7s04iaMWI73VwJcH3C9lsnFjrrFpw0qqnUCM4hkmKWZiB3Pp0idjace8rxQYPCVwYzpucRKJep1j3CN9rDQ4uG0xJa4iXM_ua_lLo6LjxCus_lXV9aPCanWS17Ab6eVfgzH3wMDS1YvUhBq_6aLl3JmGmQVlZPFAUrOjcT-Xwra2o4VRKgaTbE5LQCvoBkzkylYhe6JECBu-lqBW0T9CnyhEsbJ1KTUwnIvLLTYtvTPtG6xEqoBMiCo26QLrASGg_k5fXW66jB-SH3fK-W-2TlYHwGdvlJunbuJp__AN2RUAhU64IPTQmZS-PfBTknMF273wF0DyqoL4UsS4HCmAMytc4LBx4s3iJdxFlPkMHPQ5eM9Q6REK92yP1a9FUqXKGF15FD9M6njOGvXFQYH8BsDruCa-HvxY7l6J0oj7PjyWwgq3_Jpd13F27rQkAcK13ni-sSB17wTRi-la8Tgu5ZMvnpUYBK-ARup3vHz791VQW-LVcdecok2Sao2wG4sUiUi5pMSOUabX02OMORVCu5OSxCdw-GxGSzikM=w350-h280-no"></p>
+
+<p>後は各<code>GET method</code>でLambdaへの関連付けをし、<code>Integration Request</code>と<code>Integration Response</code>の<code>mapping template</code>でパラメータやレスポンスを設定。（多分、この手順もswaggerで定義できるとは思うけど）</p>
+
+<h3>integration request</h3>
+
+<p><img src="https://lh3.googleusercontent.com/JtD50KDCwP5ggylHzSuD7WiM-fr1QvVkZFpGFKD0efPbe_wvJPR0HbaTihe8wSlBNJzFYHAAwN9ZvKS1-R1WVGqbWT-t5PCdlptIVgJkk8xjDF0HJTRXeFEjF6F5Z2sp5wfY3BMgKZnyAM0CL6Ax5WtLNxCENl1SskcqajLDAapVQP8bj0UMlxUhsATwg9wh6zbS-jKp6tjf8YlkDD3PDFV_jhE2oVnzytNTlKBb5sU_kwMRFOGfQiUIpwgsrPq11af4ETcdFiU99lxa2ey1fgwxIaoEddLNOgMyObSd7LV0ISNY_kbZj0aRi2PFFmUfnQmYfc0UTajjAejDRms08vn6oy0-6kwGRjcKMq8zDSLFMCxgaSU4_2m2zh4T1zo54DJCHRm8ilXg_r3Z2u4IdBBHf4xYdvvs2J0p4ZT6GOQy6tMT0cNAFN5XUQiC6zDVutj2Ia1OQSlhUFRvnXwtivqGdMvpOIyUqoyuJ5RHLhO3hWP90SsW_DuILy6eXAHkSMHHpDPu5uemVBD29KfKsf67GS1bmJPwu5_9gX4=w836-h208-no"></p>
+
+<h3>integration response</h3>
+
+<p><img src="https://lh3.googleusercontent.com/-MuJyoH_nLN5jbjrcTsDW9qfsFUhDt6nHq_gNlYwMhVNZJqYL3C5qrgPwXLrPRXL0oRICG8xGpBVJpsLKIC3KhhFL4eHyo5LPZRVMbCXQ20UfT-tMV-Pt72-Rr7AKkhXDSzLcBANpRyJgioD5VlLb6YfqcnDLpczt1gnCOvnLHeWuuIf8NTa6q8hoGZXKyBo79Xapag_xvzbqco8AzSqu_yUxR6MXArEpp_we0JGhkJJHrve41LXNDX27QfC-Fj84feKgXY9CTgB1ytHWWDT_71gU05NwMdMisuQnAZPg9kRnoze55OBXu6c8TtzN5Idvdgmc9dbeKKxFG0f4bn_pt4lN6ZzOJ0ptOteVl-EpMDPk6M9_kwKerOc1GQbH47MEEYmQTXmoMeUp9ECJwhYdxdqu_LEB6ZxrjOC3VBPP6rE8sxBZJG8od_adtClp4UYU5-LBPm9_DYsde5hThh2su9PVBph8fbk42WE8I6o3BoOSciA1G9eIwfaa99OQh-4NZhJRVIGs7M4uMHVyUnDQk0RqtjFjf7TlCkeRC4=w811-h210-no"></p>
+
+<p>参考：</p>
+
+<ul>
+<li><a href="http://qiita.com/yuyakato/items/89fcef9746afbf48977a">Amazon API GatewayでAWS Lambda関数にクエリ文字列をパラメータとして渡す</a></li>
+<li><a href="http://qiita.com/ijin/items/6edafc1f351a9de49b54">Amazon API Gatewayで文字列をクォーテーションなしで返却する</a></li>
+</ul>
+
+
+<h3>endpoint</h3>
+
+<p>Deployすれば、以下のAPIでipが取得可能。</p>
+
+<p><code>/$API_ENDPOINT/prod/eb/$EB_ENV_NAME/ip/[n]</code></p>
+
+<p>instance ip一覧</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ curl -s https://altvsxa2kj.execute-api.ap-northeast-1.amazonaws.com/prod/eb/my-ebenv-production/ip
+</span><span class='line'>54.189.149.5
+</span><span class='line'>54.189.168.83</span></code></pre></td></tr></table></div></figure>
+
+
+<p>特定のinstance ip</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ curl -s https://altvsxa2kj.execute-api.ap-northeast-1.amazonaws.com/prod/eb/my-ebenv-production/ip/1
+</span><span class='line'>54.189.149.5</span></code></pre></td></tr></table></div></figure>
+
+
+<p>ipの部分だけ、PATHじゃなくquery paramterにした方がAPI Gatewayの設定がシンプルだったけど、少しでもRESTfulにしたかったもので。（まあ、そもそもjson返してないけど）</p>
+
+<h2>SSH Config</h2>
+
+<p>さて、ここからがキモです。</p>
+
+<p>~/.ssh/config</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>Host my-ebenv-production*
+</span><span class='line'>  User ec2-user
+</span><span class='line'>  StrictHostKeyChecking no
+</span><span class='line'>  ProxyCommand ssh -A localhost -W `N=$(grep -o '[0-9]\+$' &lt;&lt;&lt; %h || echo 1); E=$(perl -pe 's/\d+$//' &lt;&lt;&lt; %h); curl -s https://altvsxa2kj.execute-api.ap-northeast-1.amazonaws.com/prod/eb/$E/ip/$N`:%p</span></code></pre></td></tr></table></div></figure>
+
+
+<p>上記の設定で<code>ssh $EB_ENV_NAME[n]</code>で指定したサーバに接続できるようになります。</p>
+
+<p>仕組みとしては、ホスト名をparseしAPI Gatewayに適切なリクエストを行い、返却されるpublic ipにローカル端末自身を踏み台としてsshする<code>ProxyCommand</code>の設定です。</p>
+
+<p>例えば、2番目（に起動した）のサーバに接続する場合は</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ ssh my-ebenv-production2
+</span><span class='line'>Last login: Wed Nov  4 01:19:14 2015 from ndx6-ppp413.tokyo.sannet.ne.jp
+</span><span class='line'> _____ _           _   _      ____                       _        _ _
+</span><span class='line'>| ____| | __ _ ___| |_(_) ___| __ )  ___  __ _ _ __  ___| |_ __ _| | | __
+</span><span class='line'>|  _| | |/ _` / __| __| |/ __|  _ \ / _ \/ _` | '_ \/ __| __/ _` | | |/ /
+</span><span class='line'>| |___| | (_| \__ \ |_| | (__| |_) |  __/ (_| | | | \__ \ || (_| | |   &lt;
+</span><span class='line'>|_____|_|\__,_|___/\__|_|\___|____/ \___|\__,_|_| |_|___/\__\__,_|_|_|\_\
+</span><span class='line'>                                       Amazon Linux AMI
+</span><span class='line'>
+</span><span class='line'>This EC2 instance is managed by AWS Elastic Beanstalk. Changes made via SSH 
+</span><span class='line'>WILL BE LOST if the instance is replaced by auto-scaling. For more information 
+</span><span class='line'>on customizing your Elastic Beanstalk environment, see our documentation here: 
+</span><span class='line'>http://docs.aws.amazon.com/elasticbeanstalk/latest/dg/customize-containers-ec2.html</span></code></pre></td></tr></table></div></figure>
+
+
+<p>1番目の場合は明示的に指定する必要はありません。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ ssh my-ebenv-production</span></code></pre></td></tr></table></div></figure>
+
+
+<p>また、Auto Scalingでinstanceが増減せずに1台のみの場合はもっとシンプルに記述できます。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>  ProxyCommand ssh -A localhost -W `curl -s https://altvsxa2kj.execute-api.ap-northeast-1.amazonaws.com/prod/eb/$E/ip`:%p</span></code></pre></td></tr></table></div></figure>
+
+
+<p>簡単！</p>
+
+<h2>まとめ</h2>
+
+<ul>
+<li>Swaggerなかなか面白い</li>
+<li>API GatewayとLambda便利</li>
+<li>Lambda pythonも良い。けど、rubyサポートも早う。。</li>
+</ul>
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[AWS re:Invent 2015に参加してきた]]></title>
@@ -506,7 +733,7 @@ CPUやB+ Treeの気持ちになって考える事が大事。</p>
 
 <p>やりたいことはこんな感じ。</p>
 
-<p><img src="https://lh3.googleusercontent.com/CZE1yk0yqzlizL0aK5xNBVTupVovIZCPhwp3CWwxOyc=w548-h334-no"></p>
+<p><img src="https://lh3.googleusercontent.com/-aep_hTkw5Mo/VjkHcm612yI/AAAAAAAABbo/00aae3JXUkc/s548-Ic42/github%25252Blambda%25252Bslack%252520%2525281%252529.png"></p>
 
 <p>あるGitHubリポジトリのissuesに特定のコメントが書き込まれると、そのユーザはプロジェクトのteamに自動で追加されて、Slackへ通知が流れるというモノです。</p>
 
@@ -3128,183 +3355,6 @@ CDP的には「<a href="http://aws.clouddesignpattern.org/index.php/CDP:Server_S
 <h3>おまけ</h3>
 
 <p>さて。1年間待ち望んだイベントがあっという間に終わってしまって消失感・焦燥感を味わいつつも、気を取り直して次はAWS re:InventのGAMEDAYに日本から唯一（多分）の参加者として参戦します！</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[ISUCON3の予選を通過した（はず）]]></title>
-    <link href="http://ijin.github.io/blog/2013/10/07/isucon3-preliminary/"/>
-    <updated>2013-10-07T12:12:00+09:00</updated>
-    <id>http://ijin.github.io/blog/2013/10/07/isucon3-preliminary</id>
-    <content type="html"><![CDATA[<p><a href="http://ijin.github.io/blog/2012/11/05/isucon2/">去年</a>に引き続き参加した<a href="http://isucon.net/">ISUCON</a>第3回目の予選を通過しました。</p>
-
-<p><a href="http://isucon.net/archives/32848462.html">結果</a>は参戦1日目の方で<strong>4位</strong>。
-74チーム中、総合<strong>6位</strong>になりました。</p>
-
-<h3>事前準備</h3>
-
-<p>再び<a href="https://twitter.com/cads">@cads</a>と<a href="https://twitter.com/fruwe">@fruwe</a>に声をかけ、去年3位という雪辱を果たすべく、「The Revenge of Mr. Frank &amp; Co.」とチーム名を改名。
-今年はチーム数が膨れると予想されてたので去年と違って予選がありトップ20位ぐらいまでしか本戦に行けないという仕組み。方針は以下の通り。</p>
-
-<ul>
-<li>言語は我々の得意なruby（goも面白そうだったけど）で勝負</li>
-<li>去年Railsの再実装で失敗した為、Sinatra（であれば）でやりきる</li>
-<li>Sinatra、Varnish、Sidekiq、Redisの復習</li>
-<li>計測ツールの導入</li>
-<li>早い時期に全体のスケジュールを決定する</li>
-<li>戦略転換の見極め</li>
-</ul>
-
-
-<p>特に去年の敗因が戦略転換の遅れだったので、それを意識するようにしました。</p>
-
-<h3>お題発表</h3>
-
-<p>Markdownを使ったコメントシステム。しかもユーザログインがあってポストのprivate/public指定ができるというちょっとアドバンストな作り。</p>
-
-<h3>前半戦</h3>
-
-<p>今回、サーバはAWSのAMIとして提供され自分のアカウントで起動するやり方だったので、<a href="http://d.conma.me/entry/2013/04/08/190229">CPUガチャ</a>に若干期待しつつ10台一気にlaunchする。確認したら全部同じCPUだったので半分落として、後は本番用、開発用、バックアップ用として残す。</p>
-
-<p>まずは、状況把握の為にひとまず皆でルールの理解とソース解析。ざっと目を通した後はブラウザで動作確認し、今回同一マシン内で実行させるベンチマークプログラムを複数言語で実行。制御方法は去年と同じsupervisord</p>
-
-<p>Perl</p>
-
-<pre><code>2013/10/05 10:31:15 done benchmark
-Result:   SUCCESS
-RawScore: 1020.4
-Fails:    0
-Score:    1020.4
-</code></pre>
-
-<p>Ruby</p>
-
-<pre><code>2013/10/05 10:38:11 done benchmark
-Result:   SUCCESS
-RawScore: 2446.9
-Fails:    0
-Score:    2446.9
-</code></pre>
-
-<p>Go</p>
-
-<pre><code>2013/10/05 10:45:32 done benchmark
-Result:   SUCCESS
-RawScore: 2840.1
-Fails:    0
-Score:    2840.1
-</code></pre>
-
-<p>Node</p>
-
-<pre><code>2013/10/05 10:49:07 done benchmark
-Result:   SUCCESS
-RawScore: 1543.4
-Fails:    0
-Score:    1543.4
-</code></pre>
-
-<p>お、rubyそんなに悪くないかも。
-デフォルトのperlが遅いのはメモリが温まってないかなと思って再実行したけど飛躍的に良くはならなかったですね。</p>
-
-<p>この辺で予め決めていた開始後1時間という期限になったので作戦会議とスケジュール策定に入る。</p>
-
-<p>まずはVarnishを入れてみようという事なので一人がその作業にとりかかる。もう一人はNewrelicという測定ツールの導入とバックアッププランのRedisバージョンの作りこみ。私はDB周りのチューニングやミドルウェア周り、後は二人のサポート。</p>
-
-<p>DBはMySQLだったので全クエリを吐き出してpt-query-digestで解析して統計的に遅いクエリ順に潰す。
-schemaをよく見たらindexがなかったので張ったり、クエリーをちょっと改善してみたり、パラメータを変更（innodb_buffer_pool_sizeとinnodb_flush_log_at_trx_commitのみ）したり黙々作業。</p>
-
-<p>時間はあっという間に過ぎて両方のバージョンを導入してみるもののベンチマークツールからFAILを大量にくらい、スコアが全然つかず。。。</p>
-
-<p>折り返し時点が迫ってきたので、とりあえず今あるチューニングだけのスコアを送信。</p>
-
-<pre><code>2013/10/05 13:43:37 done benchmark
-Result:   SUCCESS
-RawScore: 3791.5
-Fails:    6
-Score:    3450.2
-</code></pre>
-
-<h2>後半戦</h2>
-
-<p>その後、unicornのワーカー数を調整したり、クエリーを更に見なおしたり、initializer作って事前にキャッシュを温める仕組みを作ったりして6000ぐらいのスコアを出した気がする（この辺は作業ログを残すのを忘れていたので記憶が曖昧）</p>
-
-<p>Redisバージョンは雰囲気的に無理そうだったので早々に捨ててこの辺は去年の教訓が生かされてると思う）ESI対応 + Varnishに注力する事を決断。しかし、こっちもエラーの連発。。</p>
-
-<p>最も悩まされたのは</p>
-
-<pre><code>14:53:20 [FAIL] invalid Cache-Control header
-14:53:21 [FAIL] invalid post memo URL http://localhost/
-</code></pre>
-
-<p>どうやらリバースプロクシ用に付与しているヘッダーチェックで弾かれていた模様。</p>
-
-<p>VCLファイルをよく見たら既存のシステムから流用したモノらしく、余計なルールがたくさん入っていたので、仕切り直しということで一旦白紙から再作成する事に。</p>
-
-<p>なんとか基本部分だけ動かす事ができるようになってスコア送信。</p>
-
-<pre><code>2013/10/05 15:45:18 done benchmark
-Result:   SUCCESS
-RawScore: 14694.2
-Fails:    0
-Score:    14694.2
-</code></pre>
-
-<p>この辺で暫定一位。</p>
-
-<div class='embed tweet'><blockquote class="twitter-tweet"><p><a href="https://twitter.com/search?q=%23isucon&amp;src=hash">#isucon</a> オンライン予選一日目 中間発表二回目です。残り2時間となった16時時点での順位は以下の通り&#10;1. The Revenge of Mr. Frank &amp; Co.&#10;2. hidekiy&#10;3. ( (0) / (0)) ☆祝☆&#10;4. パイの実g&#10;5. 白金動物園&#10;続く</p>&mdash; 941 (@941) <a href="https://twitter.com/941/statuses/386386593696604161">October 5, 2013</a></blockquote>
-<script async src="http://ijin.github.io//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
-
-
-<div class='embed tweet'><blockquote class="twitter-tweet"><p>isuconは外国県人会が暴れてるのかな？</p>&mdash; ばば としあき (@netmarkjp) <a href="https://twitter.com/netmarkjp/statuses/386393051230261248">October 5, 2013</a></blockquote>
-<script async src="http://ijin.github.io//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
-
-
-
-
-<br />
-
-
-<p>しかしその後privateページのキャッシュexpire方法を模索するも、なかなか進まずにタイムリミットが刻々と迫り、他のチームがどんどん上位に食い込んできて若干焦り始める。ひとまず、強制フラッシュするエンドポイントと裏で定期実行するバックグランドタスク（Varnishでいう所のbanlurker相当）を即席で実装したりしてスコアを伸ばすもトップには届かず敢え無く終了。</p>
-
-<p>振り返ってタイムスタンプを見るとギリギリまで粘っていたのが分かりますね。</p>
-
-<pre><code>-rw-r--r-- 1 root root 2322 Oct  5 17:59 /etc/supervisord.conf
-</code></pre>
-
-<p>結果、送信できた最終スコアは「<strong>20599.5</strong>」でした（ローカルスコアは22000ぐらいだったけど）。
-予選突破（暫定）はできたものの、まだまだ課題山積な感じです。</p>
-
-<h3>良かった点</h3>
-
-<ul>
-<li>最初に戦略とスケジュールを策定できた</li>
-<li>去年学んだ捨てる勇気を持てたこと</li>
-<li>去年よりいろいろ試せたので敗北感は改善</li>
-<li>オンライン参戦なので普段使い慣れてる環境で落ち着いて出来た（本戦はアウェー）</li>
-<li>今年の密かな目標であるモリスさんに勝ったこと（予選だけど）</li>
-</ul>
-
-
-<h3>反省点</h3>
-
-<ul>
-<li>作業ログをもっとしっかり取るべき</li>
-<li>バージョン違いはgit mergeせずにbranchをcheckoutするべき</li>
-<li>lingrサポート見ればよかった</li>
-<li>MySQL5.6のMemcache APIの存在には気づいてたけど、罠とは知らなかった</li>
-<li>Newrelic導入に時間かけた割には得られる情報量が薄かった</li>
-<li>リバースプロクシが遅れたのは全実装して投入を試みたからでincremental apporachの方が良かった</li>
-<li>全員のタスクマネジメントとペアプログラミングをもっとすれば良かった</li>
-</ul>
-
-
-<p>今回も前回同様、非常に楽しめました。
-運営の皆様、お疲れ様でした&amp;本戦はさらなる期待をしてます！</p>
-
-<h3>おまけ</h3>
-
-<p>後日行われた各チームの反省会で判明したのがworkloadの存在。どうやらベンチマークツールの並列度を上げる事ができるらしく、そこそこ速くなっているシステムだったらスコアが1.5倍ぐらいは伸びたかもとの事。最終スコアを考えると、30000点台のトップを取れたかもしれないのが無念。。アプローチ自体は総合トップの<a href="https://twitter.com/sechiro">@sechiro</a>さんと<a href="http://sechiro.hatenablog.com/entry/2013/10/07/%23isucon_2013_%E4%BA%88%E9%81%B8%E3%82%92%E3%83%88%E3%83%83%E3%83%97%E9%80%9A%E9%81%8E%E3%81%97%E3%81%A6%E3%81%8D%E3%81%9F%EF%BC%88%E3%81%AF%E3%81%9A%EF%BC%89%E3%80%82">似ていた</a>ので方針は間違ってなかったかと。</p>
 ]]></content>
   </entry>
   

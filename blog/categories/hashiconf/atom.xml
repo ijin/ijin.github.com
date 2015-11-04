@@ -4,7 +4,7 @@
   <title><![CDATA[Category: hashiconf | @ijin]]></title>
   <link href="http://ijin.github.io/blog/categories/hashiconf/atom.xml" rel="self"/>
   <link href="http://ijin.github.io/"/>
-  <updated>2015-10-27T12:14:38+09:00</updated>
+  <updated>2015-11-04T10:27:21+09:00</updated>
   <id>http://ijin.github.io/</id>
   <author>
     <name><![CDATA[Michael H. Oshita]]></name>
@@ -27,13 +27,13 @@
 <p>Founder &amp; CEOのMitchell Hashimotoが登壇。
 今までのHashiCorpプロダクトを紹介した上で、新プロダクトの紹介！</p>
 
-<p><img src="https://lh3.googleusercontent.com/kV2iR87ZYBN9LuPjMxGmuPxg1t1xzZLlcgi5LV_y8TwzSvsIOVE=w479-h638-no"></p>
+<p>{% img https://lh3.googleusercontent.com/kV2iR87ZYBN9LuPjMxGmuPxg1t1xzZLlcgi5LV_y8TwzSvsIOVE=w479-h638-no %}</p>
 
 <p><a href="https://nomadproject.io">Nomad</a></p>
 
 <p>コンテナスケジューラ。ちょうどあるサービスの一部のDocker化でスケジューリング方法を考えていたので、グッドタイミング。</p>
 
-<p><img src="https://lh3.googleusercontent.com/PaK-SUH-tybvL7ILwZFFXrYVdylvzw1cu0bFR8rKDadbIRgA8cA=w479-h638-no"></p>
+<p>{% img https://lh3.googleusercontent.com/PaK-SUH-tybvL7ILwZFFXrYVdylvzw1cu0bFR8rKDadbIRgA8cA=w479-h638-no %}</p>
 
 <p><a href="https://ottoproject.io">Otto</a></p>
 
@@ -96,7 +96,7 @@
 
 <p>HashiCorpの哲学とAtlasの説明（2日目は新製品の発表はなし）</p>
 
-<p><img src="https://lh3.googleusercontent.com/XzbJrBKpfWU73lMGv5tVFmfV90Uvyec7WWiizweiv_uTbZEEusY=w619-h465-no"></p>
+<p>{% img https://lh3.googleusercontent.com/XzbJrBKpfWU73lMGv5tVFmfV90Uvyec7WWiizweiv_uTbZEEusY=w619-h465-no %}</p>
 
 <h3>Dockerizing all the Things</h3>
 
@@ -180,7 +180,7 @@
 </ul>
 
 
-<p><img src="https://lh3.googleusercontent.com/50dhedo-8s4QS_7Chw6v1U6Ow58b4d53HHYlVQGQ6hwwuN6CT7c=w427-h320-no"></p>
+<p>{% img https://lh3.googleusercontent.com/50dhedo-8s4QS_7Chw6v1U6Ow58b4d53HHYlVQGQ6hwwuN6CT7c=w427-h320-no %}</p>
 
 <p>さて、来週はre:Inventだ！</p>
 ]]></content>

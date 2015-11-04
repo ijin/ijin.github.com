@@ -7,7 +7,7 @@ categories:
 - aws
 ---
 
-AWS Elastic Beanstalk上で管理されているinstanceにsshするには`eb ssh`コマンドを使えば割りと簡単に接続できますが、アクセスキーの設定が必要で、開発者が多い場合にそれを発行してばら撒いて管理するのはかなり面倒です（IAM user/roleの割当にしても）。
+AWS Elastic Beanstalk上で管理されているinstanceにsshするには`eb ssh`コマンドを使えば割りと簡単に接続できますが、アクセスキーの設定が必要で、開発者が多い場合にそれを発行してばら撒いて管理するのはかなり面倒です（IAM user/roleの割当にしても）。特に極稀にしか接続する必要がない場合。
 
 そこで、API GatewayとLambdaでinstanceのpublic ipを返却するエンドポイントを作り、SSH configを設定すれば誰でもアクセスできるようにしてみました。
 
@@ -18,6 +18,7 @@ AWS Elastic Beanstalk上で管理されているinstanceにsshするには`eb ss
 - instanceにはログインユーザーのssh keyが登録積み（.ebextensions等で）
 - ssh localhost可能である
 - Elastic Beanstalkのenvironment名は数値で終わらない
+- Auto ScalingのTermination Policyが`NewestInstance`
 
 ## Lambda ##
 
@@ -167,6 +168,8 @@ $ ssh my-ebenv-production
 ```
 
 簡単！
+
+でも、よくよく考えたら普通のAuto Scalingの場合でも利用できる事に気付きました。
 
 ## まとめ ##
 

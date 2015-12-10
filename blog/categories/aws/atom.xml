@@ -4,7 +4,7 @@
   <title><![CDATA[Category: aws | @ijin]]></title>
   <link href="http://ijin.github.io/blog/categories/aws/atom.xml" rel="self"/>
   <link href="http://ijin.github.io/"/>
-  <updated>2015-11-04T11:14:54+09:00</updated>
+  <updated>2015-12-10T11:51:25+09:00</updated>
   <id>http://ijin.github.io/</id>
   <author>
     <name><![CDATA[Michael H. Oshita]]></name>
@@ -12,6 +12,83 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[LambdaのログをSlackで見る]]></title>
+    <link href="http://ijin.github.io/blog/2015/12/10/post-lambda-logs-to-slack/"/>
+    <updated>2015-12-10T00:56:00+09:00</updated>
+    <id>http://ijin.github.io/blog/2015/12/10/post-lambda-logs-to-slack</id>
+    <content type="html"><![CDATA[<p><a href="http://qiita.com/advent-calendar/2015/lambda">今年もやるよ！AWS Lambda縛り Advent Calendar 2015</a>の10日分です。</p>
+
+<h2>背景</h2>
+
+<p>AWS Lambdaで開発してるとちょこちょこ実行ログを見たりします。cliであれば、<a href="https://twitter.com/sgwr_dts">@sgwr_dts</a>さんの<a href="https://github.com/winebarrel/lambchop">lambchop</a>が<code>tail</code>的に使えて素敵なんだけど、後で見返したり、検索したりするので、最近ではログをSlackに通知するようにしているのでその紹介を。</p>
+
+<p>イメージはこんな感じ。</p>
+
+<p><img src="https://lh3.googleusercontent.com/A1fsUgw4m52Db4UeOqR3xaQHIGF940MsbA1tchFkF8Pul-ixO6E=w563-h445-no"></p>
+
+<p>ログはCloudWatch logsに溜まるのでsubscriptionさえ出来れば、別にソースはLambdaじゃなくても良いんですけどね。</p>
+
+<h2>Lambda</h2>
+
+<p><div><script src='https://gist.github.com/917193e443ff41cdf98b.js?file='></script>
+<noscript><pre><code></code></pre></noscript></div>
+</p>
+
+<p>CloudWatch logsのイベントをparseして、日付の色付けやタイムゾーン変換等ちょっこっと加工してメッセージと共に指定の<code>#channel</code>に飛ばすようにし、別のSlack通知用lambda functionをinvokeしているだけですね。
+（Slack用のlambdaは<a href="/blog/2015/08/06/github-to-lambda-to-slack/">以前のエントリ</a>を参照）</p>
+
+<p>何故Slackの部分を別functionにしてるかというと、最小単位の機能の切り出しによる<strong>portability</strong>とcross-account間のinvokeが可能となる<strong>reusability</strong>からです。</p>
+
+<h2>紐付け</h2>
+
+<h3>cloudwatch logsにlambda呼び出しの権限設定</h3>
+
+<p><code>
+aws --region ap-northeast-1 lambda add-permission --function-name "cloudwatch_logs" \
+  --statement-id "logs-my_lambda" --principal "logs.ap-northeast-1.amazonaws.com" \
+  --action "lambda:InvokeFunction" --source-account "123456789012" --source-arn \
+  "arn:aws:logs:ap-northeast-1:123456789012:log-group:/aws/lambda/my_lambda:*"
+</code></p>
+
+<h3>subscription filterの作成</h3>
+
+<p><code>
+aws --region ap-northeast-1 logs put-subscription-filter \
+  --log-group-name "/aws/lambda/my_lambda" --filter-name logs-my_lambda \
+  --filter-pattern ""
+  --destination-arn arn:aws:lambda:ap-northeast-1:123456789012:function:cloudwatch_logs`
+</code></p>
+
+<h2>実行</h2>
+
+<p>これでlambda functionが実行されると、Slackにログが通知されまず。</p>
+
+<p><img src="https://lh3.googleusercontent.com/-PgkSA7jGbVTf3w1Eq5CZuvUAN4_bkKpR811Vcij5MlLam22C10=w706-h396-no">
+<img src="https://lh3.googleusercontent.com/JKU31Qsd6cOSWe011m8UJaBYljDrXwz08ym0ff79DngGMxDL_y0=w705-h234-no"></p>
+
+<p>うん、分かりやすい。</p>
+
+<h2>問題点</h2>
+
+<p>これでログが飛ぶようになったのは良いですが、Lambdaが実行されてからSlackへの通知まで10数秒とやや長めの時間がかかってしまうのが現在の難点です。（Immediate Feedbackはないものの履歴や検索用途には十分だけど）</p>
+
+<p>調べてみるとLambdaからCloudWatch logsへの書き出しが一番時間がかかっているのが判明。Logsへ書き出されたら、そこからの処理時間は1〜2秒とちょっと前に<a href="https://aws.amazon.com/about-aws/whats-new/2015/09/near-real-time-processing-of-amazon-cloudwatch-logs-with-aws-lambda/">発表された</a>CloudWatch logsの<em>near realtime processing</em>の通りなので、早く<code>Lambda -&gt; CloudWatch logs</code>も同じような処理時間を実現して欲しいものです。</p>
+
+<p>まあ、別にCloudWatch logsにさえ入れば早いので、lambda logに限らずいろいろ応用できそうですが。</p>
+
+<p>では、Happy Lambda Life!</p>
+
+<p>参考</p>
+
+<ul>
+<li><a href="http://docs.aws.amazon.com/AmazonCloudWatch/latest/DeveloperGuide/Subscriptions.html#LambdaFunctionExample">http://docs.aws.amazon.com/AmazonCloudWatch/latest/DeveloperGuide/Subscriptions.html#LambdaFunctionExample</a></li>
+<li><a href="http://inokara.hateblo.jp/entry/2015/10/18/201212">http://inokara.hateblo.jp/entry/2015/10/18/201212</a></li>
+</ul>
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Elastic Beanstalkへの簡単ssh]]></title>
@@ -765,62 +842,6 @@ Hive Queryのread処理は<a href="http://hipsterdevblog.com/blog/2015/05/30/ana
 <p>バックアップのタイミングでDynamoDBのthroughputをガツンと上げれば、件数によっては短時間で済む場合もあるので、参考にでも！</p>
 
 <p>（※ Production Trafficに影響がないように、Read Throughput Percentは適切に設定する必要があります）</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[EC2 Auto Recoveryの注意点]]></title>
-    <link href="http://ijin.github.io/blog/2015/05/01/notes-on-ec2-auto-recovery/"/>
-    <updated>2015-05-01T11:45:00+09:00</updated>
-    <id>http://ijin.github.io/blog/2015/05/01/notes-on-ec2-auto-recovery</id>
-    <content type="html"><![CDATA[<p>先日、EC2のAuto Recoveryでちょっとハマったのでメモ。</p>
-
-<p>Cloudwatchの<code>StatusCheckFailed_System</code>アラームを設定すると、インスタンスを自動的に復旧してくれるEC2 Auto Recoveryという機能があり、使うためには条件がいくつかあります。</p>
-
-<ul>
-<li>特定のリージョン</li>
-<li>C3, C4, M3, R3, T2 instances</li>
-<li>VPC</li>
-<li>共有tenancy</li>
-<li>EBSストレージのみのサーバ</li>
-</ul>
-
-
-<p><a href="http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-instance-recover.html">Recover Your Instance</a></p>
-
-<p>しかし、上記を満たしているのに、特定のAMIをCLI経由で起動するとEC2 Auto Recoveryを設定できなくなります。</p>
-
-<p>（AWSコンソールでラジオボタンが押せない。CLIで設定しても効かない）
-<img src="https://lh5.googleusercontent.com/-dwWUcfCssA4/VULwrOsgxNI/AAAAAAAABFo/VQy-GnIYQXg/w448-h186-no/Screenshot%2B2015-05-01%2B12.18.16.png"></p>
-
-<p>原因はAMIにephemeral disk等のblock device mappingが設定されていて、T2やC4等のEBS onlyなinstance typeで起動しているにも関わらず、AWS側がephemeral diskが付与されていると認識してしまう所にあります。なお、AWSコンソールからの起動だとこの現象は発生しません。</p>
-
-<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-
-
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/gist-embed/2.1/gist-embed.min.js"></script>
-
-
-<p>AMIでblock device mappingが埋め込まれている</p>
-
-<pre><code>aws ec2 describe-images --image-ids ami-e74b60e6 --region ap-northeast-1
-</code></pre>
-
-<p><code data-gist-id="55659515d54593c29618" data-gist-highlight-line="21-28"></code></p>
-
-<p>本来はEBS onlyなinstance typeだとblock device mappingの設定如何に関わらず、付与自体が不可能なので、全く関係ないはずです。</p>
-
-<p>解決方法は現時点（2015/5/1）では3通り</p>
-
-<ul>
-<li>extraなmappingが設定されていないAMIを使う（Amazon Linux等）</li>
-<li>AWSコンソールから起動する</li>
-<li>明示的に<code>--block-device-mappings</code>パラメータで<code>NoDevice</code>と指定
-<code>aws ec2 run-instances --image-id ami-e74b60e6 --instance-type t2.small --subnet-id subnet-xxxxxxxx --block-device-mappings "[{\"DeviceName\": \"/dev/sdb\",  \"NoDevice\": \"\"}, {\"DeviceName\": \"/dev/sdc\",  \"NoDevice\": \"\"}]"</code></li>
-</ul>
-
-
-<p>これは明らかにAWS側のバグなので早く治って欲しいものですね。</p>
 ]]></content>
   </entry>
   

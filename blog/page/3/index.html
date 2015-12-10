@@ -9,8 +9,7 @@
   <meta name="author" content="Michael H. Oshita">
 
   
-  <meta name="description" content="去年に引き続き参加したISUCON第3回目の予選を通過しました。 結果は参戦1日目の方で4位。
-74チーム中、総合6位になりました。 事前準備 再び@cadsと@fruweに声をかけ、去年3位という雪辱を果たすべく、「The Revenge of Mr. Frank &amp; Co.」 &hellip;">
+  <meta name="description" content="先月の予選に通過したので、ISUCON3の本戦に参加してきました。 完敗。 お題発表 画像版twitter。投稿する画像の公開レベルをpublic, private, followers onlyに設定できるシステムが1台のVPS（2コア、4GB RAM）で動いている状態。プレスを打った為、 &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -88,6 +87,111 @@ document.write = function(html) {
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2013/11/11/isucon3-final/">ISUCON3の本戦に参加してきた</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-11-11T11:27:00+09:00" pubdate data-updated="true">Nov 11<span>th</span>, 2013</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>先月の<a href="http://ijin.github.io/blog/2013/10/07/isucon3-preliminary/">予選に通過したの</a>で、<a href="http://isucon.net/">ISUCON3</a>の本戦に参加してきました。</p>
+
+<p>完敗。</p>
+
+<h3>お題発表</h3>
+
+<p>画像版twitter。投稿する画像の公開レベルをpublic, private, followers onlyに設定できるシステムが1台のVPS（2コア、4GB RAM）で動いている状態。プレスを打った為、大量アクセスがくる18時までに別途用意された4台のサーバを使ってスケールせよという使命を与えられる。</p>
+
+<h3>流れ</h3>
+
+<p>画像データが1万点・約3GBあったので、まず失敗しても戻れるようにバックアップ取得を開始。それと平行して他のサーバへのsshキー登録したり、hosts書いたり、もろもろ下準備。</p>
+
+<p>デフォルトのperlのスコアは<strong>1206.8</strong></p>
+
+<p>言語はrubyと決めていたので、supervisorで立ち上げてみるが起動失敗。よくよく調べてみるとforemanが入ってなくてGemfileに追加してbundle。</p>
+
+<p>この時のスコアが<strong>1180.8</strong></p>
+
+<p>次にデータベースを見てみるものの、レコード数も比較的少なく、総容量が2MBもないのでできる事は限定されていると判断。クエリーをさらっと見た後にentriesのimageカラムに対してインデックスを張ったぐらい。</p>
+
+<p>アクセスログにレスポンスタイムを出力するようにして1回ベンチを走らせログを解析。</p>
+
+<p>ブラウザ上の挙動を確認しつつ、ソースコードを読んで結局画像変換のconvert処理が一番重そうだったのでそこから着手することに。</p>
+
+<p>予選の時も外部プログラムを呼んでいるところが改善ポイントの一つだったので、まずfastimage_resizeを使って置き換えてみるものの、処理速度はそんなに上がらず、スコアもほぼ横ばい。</p>
+
+<p>その間に、ロングポーリングの処理を変更してみるけど、</p>
+
+<pre><code> "message": "2013-11-09T14:48:17 [36898] [CRITICAL] timeline refrection timeout"
+</code></pre>
+
+<p>タイムラインの反映がうまくいってない模様。
+（ちなみにエラーメッセージのrefrectionはreflectionのスペルミスですね）</p>
+
+<p>次に画像変換処理の部分で毎回リクエストがくる度に実行されるリンクをredisにてキャッシュ。これは効果があり、スコアは<strong>6634.2</strong>で暫定3位。</p>
+
+<p>その間にVarnishやHaproxy + nfsを軽ーく試してみるものの、スコアは伸びず。</p>
+
+<p>この辺でリンクだけではなく、画像自体をredisに突っ込んで全サーバで処理するアーキテクチャを決定。<a href="https://twitter.com/acidlemon">@acidlemon</a>さんと似た<a href="http://beatsync.net/main/log20131110.html">構成</a>ですね。ただ違うのはPOST後のsidekiqを使って処理を裏のワーカーに任せるという事。</p>
+
+<p>sidekiqが動作するところまではでき、全画像の変換を試みるがredisサーバのメモリが溢れてたので、最初にアクセスされる直近30件、アクセス比率が高いサイズsと、新規画像のみに注力。スコアは徐々に上がる。</p>
+
+<p>その後はただひたすらに、もくもく実装とデバッグ。</p>
+
+<p>残り3-40分ぐらいのところで、生ハムチームでブレークスルーが起こり、彼らが一気にトップへ踊り出る。我々も1台構成であれば5位ぐらいにはなれただろうけど、スケールアウトしなければ全く勝負にならないので最後の最後まで果敢に挑戦するもあえなくタイムアップ。</p>
+
+<p>結果、FAIL。</p>
+
+<h3>感想</h3>
+
+<p>今回はサーバが5台もあったので、スケールアウトしなければならないのは明白で、実装を真っ先に着手するべきでしたね。前半で1台だけチューニングして後でスケールしようと思ったのが戦略上の致命的ミス。時間切れで終わったので実装が間に合っていたらそれなりのスコアが出たはずかと。優勝した生ハムチームが結構ギリギリまでかかったのを考えると、やはり見極めたポイントは重要で、さすがとしか言いようがないです。また、一番時間のかかった画像配信に関しては普段AWSを使っている身としてはs3へ画像を突っ込むのが当然だと考えていたので、なかなか新鮮で違う脳を使う感じで楽しめました。</p>
+
+<h3>その他</h3>
+
+<ul>
+<li>途中ディスカッションをすれば良かった（予選は上々でも本戦で焦ってしまった）</li>
+<li>落ち着いて俯瞰して見るべし。見極め大事</li>
+<li>予選とかの先入観が邪魔したのでまっさらの状態で考えるべき</li>
+<li>ベンチマークツールはFAILしても再実行に2分待たされるのがどうしてももどかしかった</li>
+<li>ベンチマークツールの他のサーバへの実行切替がバグってて時間をロスった</li>
+<li>チーム名のRevengeが果たせなかったので、来年はチーム名どうしようかな。。</li>
+<li>ドヤモリスが満面の笑みで幸せそうだった</li>
+</ul>
+
+
+<p>ISUCONのレベルも毎回毎回レベルが上がっていき、運営側の苦労が伺えます。本当にお疲れ様でした！また来年にも期待しています！</p>
+
+<h3>おまけ</h3>
+
+<p>さて。1年間待ち望んだイベントがあっという間に終わってしまって消失感・焦燥感を味わいつつも、気を取り直して次はAWS re:InventのGAMEDAYに日本から唯一（多分）の参加者として参戦します！</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -1730,6 +1834,10 @@ Varnishの<a href="https://www.varnish-software.com/static/book/_images/vcl.png"
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2015/12/10/post-lambda-logs-to-slack/">LambdaのログをSlackで見る</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2015/11/04/elastic-beanstalk-easy-ssh/">Elastic Beanstalkへの簡単ssh</a>
       </li>
     
@@ -1763,10 +1871,6 @@ Varnishの<a href="https://www.varnish-software.com/static/book/_images/vcl.png"
     
       <li class="post">
         <a href="/blog/2015/04/17/self-healing-with-non-elb-autoscaling4/">Auto Scalingによる自動復旧（AWS Lambda+SNS編）</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2015/03/27/serverfesta-2015-spring/">サバフェス！2015に参加してきた</a>
       </li>
     
   </ul>

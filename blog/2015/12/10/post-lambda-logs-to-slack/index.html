@@ -5,12 +5,11 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>i2 instanceでMySQLベンチマーク - @ijin</title>
+  <title>LambdaのログをSlackで見る - @ijin</title>
   <meta name="author" content="Michael H. Oshita">
 
   
-  <meta name="description" content="新年明けました。おめでとうございます。 すっかり12月のaws/mysql advent calendarに乗り遅れたので、AWSのi2 instanceでのMySQLのベンチマークを勝手におまけとして公表します。
-以前取ったhi1.4xlargeとの比較になります。 構築 &hellip;">
+  <meta name="description" content="今年もやるよ！AWS Lambda縛り Advent Calendar 2015の10日分です。 背景 AWS Lambdaで開発してるとちょこちょこ実行ログを見たりします。cliであれば、@sgwr_dtsさんのlambchopがtail的に使えて素敵なんだけど、後で見返したり、 &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -19,7 +18,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://ijin.github.io/blog/2014/01/01/mysql-benchmarks-on-aws-i2-instance-ssds/">
+  <link rel="canonical" href="http://ijin.github.io/blog/2015/12/10/post-lambda-logs-to-slack/">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <link href="/stylesheets/data-table.css" rel="stylesheet" type="text/css" />
@@ -91,7 +90,7 @@ document.write = function(html) {
   
   <header>
     
-      <h1 class="entry-title">I2 instanceでMySQLベンチマーク</h1>
+      <h1 class="entry-title">LambdaのログをSlackで見る</h1>
     
     
       <p class="meta">
@@ -107,89 +106,88 @@ document.write = function(html) {
   
 
 
-<time datetime="2014-01-01T00:00:00+09:00" pubdate data-updated="true">Jan 1<span>st</span>, 2014</time>
+<time datetime="2015-12-10T00:56:00+09:00" pubdate data-updated="true">Dec 10<span>th</span>, 2015</time>
         
       </p>
     
   </header>
 
 
-<div class="entry-content"><p>新年明けました。おめでとうございます。</p>
+<div class="entry-content"><p><a href="http://qiita.com/advent-calendar/2015/lambda">今年もやるよ！AWS Lambda縛り Advent Calendar 2015</a>の10日分です。</p>
 
-<p>すっかり12月の<a href="http://www.zusaar.com/event/1117005">aws</a>/<a href="http://www.zusaar.com/event/1847003">mysql</a> advent calendarに乗り遅れたので、AWSのi2 instanceでのMySQLのベンチマークを勝手におまけとして公表します。
-以前取ったhi1.4xlargeとの比較になります。</p>
+<h2>背景</h2>
 
-<h2>構築</h2>
+<p>AWS Lambdaで開発してるとちょこちょこ実行ログを見たりします。cliであれば、<a href="https://twitter.com/sgwr_dts">@sgwr_dts</a>さんの<a href="https://github.com/winebarrel/lambchop">lambchop</a>が<code>tail</code>的に使えて素敵なんだけど、後で見返したり、検索したりするので、最近ではログをSlackに通知するようにしているのでその紹介を。</p>
 
-<p>SSDディスクはAWSが<a href="http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/i2-instances.html#i2-instances-diskperf">推奨する</a>over-provisioningを有効にする為に10%を非partitionし、それぞれ720Gでパーティション作成。</p>
+<p>イメージはこんな感じ。</p>
 
-<pre><code>sudo mdadm --create /dev/md0 --level 0 --raid-devices 8 /dev/xvdb1 /dev/xvdc1  /dev/xvdd1 /dev/xvde1 /dev/xvdf1 /dev/xvdg1 /dev/xvdh1 /dev/xvdi1
-sudo mkfs.xfs -f -b size=4096 -i size=512 -l size=64m /dev/md0
-sudo mount -t xfs -o noatime,logbufs=8 /dev/md0 /data
-</code></pre>
+<p><img src="https://lh3.googleusercontent.com/A1fsUgw4m52Db4UeOqR3xaQHIGF940MsbA1tchFkF8Pul-ixO6E=w563-h445-no"></p>
 
-<p>OSはkernel versionが3.8以上が<a href="http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/i2-instances.html#i2-instances-diskperf">望ましい</a>のでいつものLTSではなく、Ubuntu Server 13.10のHVMタイプ (ami-b93264d0)</p>
+<p>ログはCloudWatch logsに溜まるのでsubscriptionさえ出来れば、別にソースはLambdaじゃなくても良いんですけどね。</p>
 
-<h2>sysbench</h2>
+<h2>Lambda</h2>
 
-<p>やり方やパラメータは<a href="/blog/2013/02/22/mysql-benchmarks-on-aws-ssd-vs-fusion-io/">前回</a>の計測方法と同じ。i2.8xlaregは32coreですが、今回はhi1.4xlargeの時と比較する為に敢えて16スレッドで計測しました。</p>
+<div><script src='https://gist.github.com/917193e443ff41cdf98b.js?file='></script>
+<noscript><pre><code></code></pre></noscript></div>
+
+
+<p>CloudWatch logsのイベントをparseして、日付の色付けやタイムゾーン変換等ちょっこっと加工してメッセージと共に指定の<code>#channel</code>に飛ばすようにし、別のSlack通知用lambda functionをinvokeしているだけですね。
+（Slack用のlambdaは<a href="/blog/2015/08/06/github-to-lambda-to-slack/">以前のエントリ</a>を参照）</p>
+
+<p>何故Slackの部分を別functionにしてるかというと、最小単位の機能の切り出しによる<strong>portability</strong>とcross-account間のinvokeが可能となる<strong>reusability</strong>からです。</p>
+
+<h2>紐付け</h2>
+
+<h3>cloudwatch logsにlambda呼び出しの権限設定</h3>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>aws --region ap-northeast-1 lambda add-permission --function-name "cloudwatch_logs" \
+</span><span class='line'>  --statement-id "logs-my_lambda" --principal "logs.ap-northeast-1.amazonaws.com" \
+</span><span class='line'>  --action "lambda:InvokeFunction" --source-account "123456789012" --source-arn \
+</span><span class='line'>  "arn:aws:logs:ap-northeast-1:123456789012:log-group:/aws/lambda/my_lambda:*"</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>subscription filterの作成</h3>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>aws --region ap-northeast-1 logs put-subscription-filter \
+</span><span class='line'>  --log-group-name "/aws/lambda/my_lambda" --filter-name logs-my_lambda \
+</span><span class='line'>  --filter-pattern ""
+</span><span class='line'>  --destination-arn arn:aws:lambda:ap-northeast-1:123456789012:function:cloudwatch_logs`</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>実行</h2>
+
+<p>これでlambda functionが実行されると、Slackにログが通知されまず。</p>
+
+<p><img src="https://lh3.googleusercontent.com/-PgkSA7jGbVTf3w1Eq5CZuvUAN4_bkKpR811Vcij5MlLam22C10=w706-h396-no">
+<img src="https://lh3.googleusercontent.com/JKU31Qsd6cOSWe011m8UJaBYljDrXwz08ym0ff79DngGMxDL_y0=w705-h234-no"></p>
+
+<p>うん、分かりやすい。</p>
+
+<h2>問題点</h2>
+
+<p>これでログが飛ぶようになったのは良いですが、Lambdaが実行されてからSlackへの通知まで10数秒とやや長めの時間がかかってしまうのが現在の難点です。（Immediate Feedbackはないものの履歴や検索用途には十分だけど）</p>
+
+<p>調べてみるとLambdaからCloudWatch logsへの書き出しが一番時間がかかっているのが判明。Logsへ書き出されたら、そこからの処理時間は1〜2秒とちょっと前に<a href="https://aws.amazon.com/about-aws/whats-new/2015/09/near-real-time-processing-of-amazon-cloudwatch-logs-with-aws-lambda/">発表された</a>CloudWatch logsの<em>near realtime processing</em>の通りなので、早く<code>Lambda -&gt; CloudWatch logs</code>も同じような処理時間を実現して欲しいものです。</p>
+
+<p>まあ、別にCloudWatch logsにさえ入れば早いので、lambda logに限らずいろいろ応用できそうですが。</p>
+
+<p>では、Happy Lambda Life!</p>
+
+<p>参考</p>
 
 <ul>
-<li>sysbenchのoltpモード</li>
-<li>データサイズは12G（5000万件）</li>
-<li>readonly</li>
-<li>uniform（フルスキャン）</li>
+<li><a href="http://docs.aws.amazon.com/AmazonCloudWatch/latest/DeveloperGuide/Subscriptions.html#LambdaFunctionExample">http://docs.aws.amazon.com/AmazonCloudWatch/latest/DeveloperGuide/Subscriptions.html#LambdaFunctionExample</a></li>
+<li><a href="http://inokara.hateblo.jp/entry/2015/10/18/201212">http://inokara.hateblo.jp/entry/2015/10/18/201212</a></li>
 </ul>
 
-
-<p>コマンド</p>
-
-<pre><code>time sysbench --test=oltp --oltp-table-size=50000000 --db-driver=mysql --mysql-user=root --num-threads=16 --max-requests=0 --max-time=180 --init-rng=on --oltp-read-only=on --oltp-dist-type=uniform 2&gt;&amp;1 run
-</code></pre>
-
-<p>トランザクション推移</p>
-
-<p><img src="https://docs.google.com/spreadsheet/oimg?key=0Aliw9SoXFJNMdFhhcHJkcDA5MGlackNHTXlPcWt0VWc&oid=5&zx=jwv2ytp6xwx3"></p>
-
-<p>レスポンスタイム推移</p>
-
-<p><img src="https://docs.google.com/spreadsheet/oimg?key=0Aliw9SoXFJNMdFhhcHJkcDA5MGlackNHTXlPcWt0VWc&oid=6&zx=sfl6ocblw5ob"></p>
-
-<p>速いですね。</p>
-
-<h2>tpcc-mysql</h2>
-
-<p>こちらも<a href="/blog/2013/02/22/mysql-benchmarks-on-aws-ssd-vs-fusion-io/">前回</a>)の計測方法と同じ。</p>
-
-<ul>
-<li>500 warehouses (50GBぐらい)</li>
-<li>24GB Buffer pool</li>
-<li>16スレッド</li>
-<li>1時間実行</li>
-</ul>
-
-
-<p>コマンド</p>
-
-<pre><code> tpcc_load localhost tpcc root "" 500
- tpcc_start -d tpcc -u root -p "" -w 500 -c 16 -r 300 -l 3600
-</code></pre>
-
-<p><img src="https://docs.google.com/spreadsheet/oimg?key=0Aliw9SoXFJNMdFhhcHJkcDA5MGlackNHTXlPcWt0VWc&oid=7&zx=fc6nz8iel3ez"></p>
-
-<p>hi1.4xlargeはSSD1台で計測した事を考えると、同価格帯のi2.4xlarge（SSD4台）の半分（SSD2台）のパフォーマンスが出るのは妥当ですね。</p>
-
-<h2>fio</h2>
-
-<p>ついでにfioでそれぞれRAID0した場合のベンチマークも取ってみたけど、<a href="http://d.hatena.ne.jp/rx7/20131224/p1">並河さん</a>と結果が違ってwriteがスケールしてます。OSとmkfs.xfsのオプションしか違わないはずだけど。。</p>
-
-<p><img src="https://docs.google.com/spreadsheet/oimg?key=0Aliw9SoXFJNMdFhhcHJkcDA5MGlackNHTXlPcWt0VWc&oid=9&zx=v7nbywda04bp"></p>
-
-<h2>その他</h2>
-
-<p>いやー。spot instanceがないので計測だけで結構かかってしまった。</p>
-
-<p>しかし、なんでhi1世代の次はhi2ではなく、i2なんだろう。</p>
 </div>
 
 
@@ -212,12 +210,12 @@ sudo mount -t xfs -o noatime,logbufs=8 /dev/md0 /data
   
 
 
-<time datetime="2014-01-01T00:00:00+09:00" pubdate data-updated="true">Jan 1<span>st</span>, 2014</time>
+<time datetime="2015-12-10T00:56:00+09:00" pubdate data-updated="true">Dec 10<span>th</span>, 2015</time>
       
 
 <span class="categories">
   
-    <a class='category' href='/blog/categories/aws/'>aws</a>, <a class='category' href='/blog/categories/mysql/'>mysql</a>
+    <a class='category' href='/blog/categories/aws/'>aws</a>, <a class='category' href='/blog/categories/lambda/'>lambda</a>
   
 </span>
 
@@ -226,7 +224,7 @@ sudo mount -t xfs -o noatime,logbufs=8 /dev/md0 /data
     
       <div class="sharing">
   
-  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://ijin.github.io/blog/2014/01/01/mysql-benchmarks-on-aws-i2-instance-ssds/" data-via="ijin" data-counturl="http://ijin.github.io/blog/2014/01/01/mysql-benchmarks-on-aws-i2-instance-ssds/" >Tweet</a>
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://ijin.github.io/blog/2015/12/10/post-lambda-logs-to-slack/" data-via="ijin" data-counturl="http://ijin.github.io/blog/2015/12/10/post-lambda-logs-to-slack/" >Tweet</a>
   
   
   
@@ -235,10 +233,8 @@ sudo mount -t xfs -o noatime,logbufs=8 /dev/md0 /data
     
     <p class="meta">
       
-        <a class="basic-alignment left" href="/blog/2013/12/14/self-healing-with-non-elb-autoscaling2/" title="Previous Post: Autoscalingによる自動復旧(Immutable Infrastucture)">&laquo; Autoscalingによる自動復旧(Immutable Infrastucture)</a>
+        <a class="basic-alignment left" href="/blog/2015/11/04/elastic-beanstalk-easy-ssh/" title="Previous Post: Elastic Beanstalkへの簡単ssh">&laquo; Elastic Beanstalkへの簡単ssh</a>
       
-      
-        <a class="basic-alignment right" href="/blog/2014/03/14/aws-game-day-japan-2014-spring/" title="Next Post: AWS Game Day Japan 2014春を開催してきた">AWS Game Day Japan 2014春を開催してきた &raquo;</a>
       
     </p>
   </footer>
@@ -341,8 +337,8 @@ sudo mount -t xfs -o noatime,logbufs=8 /dev/md0 /data
       
         
         // var disqus_developer = 1;
-        var disqus_identifier = 'http://ijin.github.io/blog/2014/01/01/mysql-benchmarks-on-aws-i2-instance-ssds/';
-        var disqus_url = 'http://ijin.github.io/blog/2014/01/01/mysql-benchmarks-on-aws-i2-instance-ssds/';
+        var disqus_identifier = 'http://ijin.github.io/blog/2015/12/10/post-lambda-logs-to-slack/';
+        var disqus_url = 'http://ijin.github.io/blog/2015/12/10/post-lambda-logs-to-slack/';
         var disqus_script = 'embed.js';
       
     (function () {

@@ -4,7 +4,7 @@
   <title><![CDATA[Category: lambda | @ijin]]></title>
   <link href="http://ijin.github.io/blog/categories/lambda/atom.xml" rel="self"/>
   <link href="http://ijin.github.io/"/>
-  <updated>2015-12-10T11:51:25+09:00</updated>
+  <updated>2015-12-10T11:55:38+09:00</updated>
   <id>http://ijin.github.io/</id>
   <author>
     <name><![CDATA[Michael H. Oshita]]></name>
@@ -14,7 +14,7 @@
 
   
   <entry>
-    <title type="html"><![CDATA[LambdaのログをSlackで見る]]></title>
+    <title type="html"><![CDATA[LambdaのログをSlackで見よう]]></title>
     <link href="http://ijin.github.io/blog/2015/12/10/post-lambda-logs-to-slack/"/>
     <updated>2015-12-10T00:56:00+09:00</updated>
     <id>http://ijin.github.io/blog/2015/12/10/post-lambda-logs-to-slack</id>
@@ -68,7 +68,7 @@ aws --region ap-northeast-1 logs put-subscription-filter \
 <p><img src="https://lh3.googleusercontent.com/-PgkSA7jGbVTf3w1Eq5CZuvUAN4_bkKpR811Vcij5MlLam22C10=w706-h396-no">
 <img src="https://lh3.googleusercontent.com/JKU31Qsd6cOSWe011m8UJaBYljDrXwz08ym0ff79DngGMxDL_y0=w705-h234-no"></p>
 
-<p>うん、分かりやすい。</p>
+<p>うん、見やすい。</p>
 
 <h2>問題点</h2>
 

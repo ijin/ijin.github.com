@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Lambdaの容量を監視"
+title: "Lambdaの容量を監視しよう"
 date: 2016-01-14 05:23
 comments: true
 categories: 

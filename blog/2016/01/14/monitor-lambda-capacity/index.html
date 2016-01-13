@@ -5,11 +5,11 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>LambdaのログをSlackで見よう - @ijin</title>
+  <title>Lambdaの容量を監視 - @ijin</title>
   <meta name="author" content="Michael H. Oshita">
 
   
-  <meta name="description" content="今年もやるよ！AWS Lambda縛り Advent Calendar 2015の10日分です。 背景 AWS Lambdaで開発してるとちょこちょこ実行ログを見たりします。cliであれば、@sgwr_dtsさんのlambchopがtail的に使えて素敵なんだけど、後で見返したり、 &hellip;">
+  <meta name="description" content="2016/1/14現在、AWS Lambdaにはなんとリージョン毎！にアップロードできるパッケージの合計サイズがたったの1.5GBという悲しい制限があります。特にlibraryを同包したり、versioningを使ったりしてCIをガンガン回してると、結構すぐこの上限に達してしまいがちです。そこで、 &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -18,7 +18,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://ijin.github.io/blog/2015/12/10/post-lambda-logs-to-slack/">
+  <link rel="canonical" href="http://ijin.github.io/blog/2016/01/14/monitor-lambda-capacity/">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <link href="/stylesheets/data-table.css" rel="stylesheet" type="text/css" />
@@ -90,7 +90,7 @@ document.write = function(html) {
   
   <header>
     
-      <h1 class="entry-title">LambdaのログをSlackで見よう</h1>
+      <h1 class="entry-title">Lambdaの容量を監視</h1>
     
     
       <p class="meta">
@@ -106,88 +106,84 @@ document.write = function(html) {
   
 
 
-<time datetime="2015-12-10T00:56:00+09:00" pubdate data-updated="true">Dec 10<span>th</span>, 2015</time>
+<time datetime="2016-01-14T05:23:00+09:00" pubdate data-updated="true">Jan 14<span>th</span>, 2016</time>
         
       </p>
     
   </header>
 
 
-<div class="entry-content"><p><a href="http://qiita.com/advent-calendar/2015/lambda">今年もやるよ！AWS Lambda縛り Advent Calendar 2015</a>の10日分です。</p>
+<div class="entry-content"><p><code>2016/1/14</code>現在、AWS Lambdaにはなんと<strong>リージョン</strong>毎！にアップロードできるパッケージの合計サイズがたったの<strong>1.5GB</strong>という<a href="http://docs.aws.amazon.com/lambda/latest/dg/limits.html#limits-list">悲しい制限</a>があります。特にlibraryを同包したり、versioningを使ったりしてCIをガンガン回してると、結構すぐこの上限に達してしまいがちです。そこで、Lambdaの総容量はAWSコンソール上には表示されるものの、トラッキングし辛いので監視する仕組みを作ってみました。</p>
 
-<h2>背景</h2>
+<h2>仕組み</h2>
 
-<p>AWS Lambdaで開発してるとちょこちょこ実行ログを見たりします。cliであれば、<a href="https://twitter.com/sgwr_dts">@sgwr_dts</a>さんの<a href="https://github.com/winebarrel/lambchop">lambchop</a>が<code>tail</code>的に使えて素敵なんだけど、後で見返したり、検索したりするので、最近ではログをSlackに通知するようにしているのでその紹介を。</p>
+<p>LambdaのScheduled Eventsを使って、<code>ListFunctions</code> APIを叩いて、個別functionの<code>CodeSize</code>をサマって、<code>PutMetricData</code>でCloudWatchに投げて、Alarm設定してるだけ。</p>
 
-<p>イメージはこんな感じ。</p>
-
-<p><img src="https://lh3.googleusercontent.com/A1fsUgw4m52Db4UeOqR3xaQHIGF940MsbA1tchFkF8Pul-ixO6E=w563-h445-no"></p>
-
-<p>ログはCloudWatch logsに溜まるのでsubscriptionさえ出来れば、別にソースはLambdaじゃなくても良いんですけどね。</p>
-
-<h2>Lambda</h2>
-
-<div><script src='https://gist.github.com/917193e443ff41cdf98b.js?file='></script>
-<noscript><pre><code></code></pre></noscript></div>
+<script src="https://gist-it.appspot.com/https://github.com/ijin/check_lambda_capacity/blob/master/lambda_function.py"></script>
 
 
-<p>CloudWatch logsのイベントをparseして、日付の色付けやタイムゾーン変換等ちょっこっと加工してメッセージと共に指定の<code>#channel</code>に飛ばすようにし、別のSlack通知用lambda functionをinvokeしているだけですね。
-（Slack用のlambdaは<a href="/blog/2015/08/06/github-to-lambda-to-slack/">以前のエントリ</a>を参照）</p>
+<p>といっても、今後別アカウントでいちいち設定（IAM role&amp;policy、Lambda、SNS、CloudWatch）するのも非常に面倒くさいので、今回は<a href="http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/working-with-templates-cfn-designer.html">CloudFormation Designer</a>を使って、ほぼ一発で環境を再現できるようにしました。</p>
 
-<p>何故Slackの部分を別functionにしてるかというと、最小単位の機能の切り出しによる<strong>portability</strong>とcross-account間のinvokeが可能となる<strong>reusability</strong>からです。</p>
+<h2>CloudFormation</h2>
 
-<h2>紐付け</h2>
+<p>ボタン作ってみた。<a href="https://console.aws.amazon.com/cloudformation/home?region=ap-northeast-1#/stacks/new?stackName=check-lambda-capacity&templateURL=https://s3-ap-northeast-1.amazonaws.com/ijin/aws/lambda/check_lambda_capacity/check_lambda_capacity.template">
+<img src="https://s3.amazonaws.com/cloudformation-examples/cloudformation-launch-stack.png">
+</a></p>
 
-<h3>cloudwatch logsにlambda呼び出しの権限設定</h3>
+<h3>Stack Creation</h3>
 
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>aws --region ap-northeast-1 lambda add-permission --function-name "cloudwatch_logs" \
-</span><span class='line'>  --statement-id "logs-my_lambda" --principal "logs.ap-northeast-1.amazonaws.com" \
-</span><span class='line'>  --action "lambda:InvokeFunction" --source-account "123456789012" --source-arn \
-</span><span class='line'>  "arn:aws:logs:ap-northeast-1:123456789012:log-group:/aws/lambda/my_lambda:*"</span></code></pre></td></tr></table></div></figure>
+<p>Designerではこんな感じ。心なしか、jsonの苦痛が多少楽になったような。。後、Propertyの補完機能は良いけどショートカットが<code>Cmd+Space</code>なのでSpotlightさんがぁ。</p>
 
+<p><img src="https://lh3.googleusercontent.com/CLHrqYHPDKPxABDkWdrl0FYbEEC9enKmbOaK75TqhqL5tPnQ8oRjA3_f3N3iJoD5cSanPbbvt9lT=w880-h586-no"></p>
 
-<h3>subscription filterの作成</h3>
+<p>s3からtemplateを指定。
+template urlは<code>https://s3-ap-northeast-1.amazonaws.com/ijin/aws/lambda/check_lambda_capacity/check_lambda_capacity.template</code></p>
 
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>aws --region ap-northeast-1 logs put-subscription-filter \
-</span><span class='line'>  --log-group-name "/aws/lambda/my_lambda" --filter-name logs-my_lambda \
-</span><span class='line'>  --filter-pattern ""
-</span><span class='line'>  --destination-arn arn:aws:lambda:ap-northeast-1:123456789012:function:cloudwatch_logs`</span></code></pre></td></tr></table></div></figure>
+<p><img src="https://lh3.googleusercontent.com/XeF-yQk1cxy8z8KnHTJS3mP-onExoYmbJ7-OYISmLd3NYxO4fVCQnqAxygAEu6zdMtzEy16641C-=w826-h268-no"></p>
 
-
-<h2>実行</h2>
-
-<p>これでlambda functionが実行されると、Slackにログが通知されます。</p>
-
-<p><img src="https://lh3.googleusercontent.com/-PgkSA7jGbVTf3w1Eq5CZuvUAN4_bkKpR811Vcij5MlLam22C10=w706-h396-no">
-<img src="https://lh3.googleusercontent.com/JKU31Qsd6cOSWe011m8UJaBYljDrXwz08ym0ff79DngGMxDL_y0=w705-h234-no"></p>
-
-<p>うん、見やすい。</p>
-
-<h2>問題点</h2>
-
-<p>これでログが飛ぶようになったのは良いですが、Lambdaが実行されてからSlackへの通知まで10数秒とやや長めの時間がかかってしまうのが現在の難点です。（Immediate Feedbackはないものの履歴や検索用途には十分だけど）</p>
-
-<p>調べてみるとLambdaからCloudWatch logsへの書き出しが一番時間がかかっているのが判明。Logsへ書き出されたら、そこからの処理時間は1〜2秒とちょっと前に<a href="https://aws.amazon.com/about-aws/whats-new/2015/09/near-real-time-processing-of-amazon-cloudwatch-logs-with-aws-lambda/">発表された</a>CloudWatch logsの<em>near realtime processing</em>の通りなので、早く<code>Lambda -&gt; CloudWatch logs</code>も同じような処理時間を実現して欲しいものです。</p>
-
-<p>まあ、別にCloudWatch logsにさえ入れば早いので、lambda logに限らずいろいろ応用できそうですが。</p>
-
-<p>では、Happy Lambda Life!</p>
-
-<p>参考</p>
+<p>Parameterとしては以下が指定可能</p>
 
 <ul>
-<li><a href="http://docs.aws.amazon.com/AmazonCloudWatch/latest/DeveloperGuide/Subscriptions.html#LambdaFunctionExample">http://docs.aws.amazon.com/AmazonCloudWatch/latest/DeveloperGuide/Subscriptions.html#LambdaFunctionExample</a></li>
-<li><a href="http://inokara.hateblo.jp/entry/2015/10/18/201212">http://inokara.hateblo.jp/entry/2015/10/18/201212</a></li>
+<li>アラート閾値（Byte単位）</li>
+<li>SNS topic（空の場合は、自動作成される）</li>
 </ul>
 
+
+<p><img src="https://lh3.googleusercontent.com/vX0JiEE_me3Wn6__PbNysmSYVkGiOs4jbqivZm7lOoq18kZpyrV9lj01kL9-rDMCX1JAS7BHVmI4=w902-h509-no"></p>
+
+<p>Stackを作成すると、諸々のリソースが数分で出来上がり。</p>
+
+<p><img src="https://lh3.googleusercontent.com/rQy-Any2cmz9I7YxuGD-Pi8_4VB9dGKFnCbAxWHH4QPjRMF7Y9nKAi2sZPY2HogoL2vpcc8ABy4E=w1050-h260-no"></p>
+
+<h3>Manual Labor</h3>
+
+<p>本当は以上で終了！にしたいところですが、LambdaのScheduled Eventsの設定はAWSコンソールからのみしか出来ないという<a href="http://docs.aws.amazon.com/lambda/latest/dg/with-scheduled-events.html">残念な状態</a>（<code>2016/1/14</code>現在）なので、ここからポチポチ設定作業。。（API重視の開発姿勢はどこ行ったんだろう）</p>
+
+<p><img src="https://lh3.googleusercontent.com/2pedymzqDYHJ30u7VglVv-7_6IpFhpOnRdnE4-QxjuIdX1fep2FwtoyDNr1Kl5yEqT1rtjoLDLZx=w581-h238-no"></p>
+
+<p><img src="https://lh3.googleusercontent.com/hcLpNX45gIQZQUQGvsyyIXfOH3s9yDpNLIZJN8TU-RUZDdMGdrsNXAb_NRupjWF9Hf4QrK4y6lXO=w864-h441-no"></p>
+
+<p>最小頻度が5分毎
+<img src="https://lh3.googleusercontent.com/lzuWtzvkK1A5pUSPyShVaFzzOQ13cD8PFVfCAz3rxSYkn5sKirWnhq-4PlKyhuesMlCQtrfH57yx=w862-h507-no"></p>
+
+<h3>Graph</h3>
+
+<p>これで、グラフが取れて閾値を超えたらアラートが飛ぶようになる</p>
+
+<p><img src="https://lh3.googleusercontent.com/yzswstqCbaTzpkYfy5MlRS2I9ur5Is3hI8Eii-o27twq-fYA_6o8SY5Rrn0DbyZEn8UJarGhh_9L=w570-h270-no"></p>
+
+<p><img src="https://lh3.googleusercontent.com/NE43x1KQW76QO7b4TMIjjcEYrpQ07B9SNOb-9L-wEnNKc8oC-69HpgzWiVABnQwBSNGtDz4ayeTR=w286-h221-no"></p>
+
+<h2>Code</h2>
+
+<p>出来上がったCloudFormation templateコードはこちら。<code>AWS::Lambda::Function</code>がlambdaのresource担当だけど、templateにfunctionをインラインで埋め込めるのは現時点では<a href="http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-lambda-function-code.html"><code>nodejs</code>のみ</a>なので仕方なくzipしたpythonコードをs3にアップして参照するようにしてる。</p>
+
+<script src="https://gist-it.appspot.com/https://github.com/ijin/check_lambda_capacity/blob/master/check_lambda_capacity.template"></script>
+
+
+<p>元気があれば、そのうちnode版も書こうかな。。</p>
+
+<p>GitHubのリポジトリは<a href="https://github.com/ijin/check_lambda_capacity">こちらから</a>。</p>
 </div>
 
 
@@ -210,7 +206,7 @@ document.write = function(html) {
   
 
 
-<time datetime="2015-12-10T00:56:00+09:00" pubdate data-updated="true">Dec 10<span>th</span>, 2015</time>
+<time datetime="2016-01-14T05:23:00+09:00" pubdate data-updated="true">Jan 14<span>th</span>, 2016</time>
       
 
 <span class="categories">
@@ -224,7 +220,7 @@ document.write = function(html) {
     
       <div class="sharing">
   
-  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://ijin.github.io/blog/2015/12/10/post-lambda-logs-to-slack/" data-via="ijin" data-counturl="http://ijin.github.io/blog/2015/12/10/post-lambda-logs-to-slack/" >Tweet</a>
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://ijin.github.io/blog/2016/01/14/monitor-lambda-capacity/" data-via="ijin" data-counturl="http://ijin.github.io/blog/2016/01/14/monitor-lambda-capacity/" >Tweet</a>
   
   
   
@@ -233,10 +229,8 @@ document.write = function(html) {
     
     <p class="meta">
       
-        <a class="basic-alignment left" href="/blog/2015/11/04/elastic-beanstalk-easy-ssh/" title="Previous Post: Elastic Beanstalkへの簡単ssh">&laquo; Elastic Beanstalkへの簡単ssh</a>
+        <a class="basic-alignment left" href="/blog/2015/12/18/co-working-in-hubud/" title="Previous Post: バリ島のHubudでコワークしてきた">&laquo; バリ島のHubudでコワークしてきた</a>
       
-      
-        <a class="basic-alignment right" href="/blog/2015/12/18/co-working-in-hubud/" title="Next Post: バリ島のHubudでコワークしてきた">バリ島のHubudでコワークしてきた &raquo;</a>
       
     </p>
   </footer>
@@ -339,8 +333,8 @@ document.write = function(html) {
       
         
         // var disqus_developer = 1;
-        var disqus_identifier = 'http://ijin.github.io/blog/2015/12/10/post-lambda-logs-to-slack/';
-        var disqus_url = 'http://ijin.github.io/blog/2015/12/10/post-lambda-logs-to-slack/';
+        var disqus_identifier = 'http://ijin.github.io/blog/2016/01/14/monitor-lambda-capacity/';
+        var disqus_url = 'http://ijin.github.io/blog/2016/01/14/monitor-lambda-capacity/';
         var disqus_script = 'embed.js';
       
     (function () {

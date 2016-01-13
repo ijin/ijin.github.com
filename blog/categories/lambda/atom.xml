@@ -4,7 +4,7 @@
   <title><![CDATA[Category: lambda | @ijin]]></title>
   <link href="http://ijin.github.io/blog/categories/lambda/atom.xml" rel="self"/>
   <link href="http://ijin.github.io/"/>
-  <updated>2015-12-18T16:45:05+09:00</updated>
+  <updated>2016-01-14T08:09:23+09:00</updated>
   <id>http://ijin.github.io/</id>
   <author>
     <name><![CDATA[Michael H. Oshita]]></name>
@@ -12,6 +12,85 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Lambdaの容量を監視]]></title>
+    <link href="http://ijin.github.io/blog/2016/01/14/monitor-lambda-capacity/"/>
+    <updated>2016-01-14T05:23:00+09:00</updated>
+    <id>http://ijin.github.io/blog/2016/01/14/monitor-lambda-capacity</id>
+    <content type="html"><![CDATA[<p><code>2016/1/14</code>現在、AWS Lambdaにはなんと<strong>リージョン</strong>毎！にアップロードできるパッケージの合計サイズがたったの<strong>1.5GB</strong>という<a href="http://docs.aws.amazon.com/lambda/latest/dg/limits.html#limits-list">悲しい制限</a>があります。特にlibraryを同包したり、versioningを使ったりしてCIをガンガン回してると、結構すぐこの上限に達してしまいがちです。そこで、Lambdaの総容量はAWSコンソール上には表示されるものの、トラッキングし辛いので監視する仕組みを作ってみました。</p>
+
+<h2>仕組み</h2>
+
+<p>LambdaのScheduled Eventsを使って、<code>ListFunctions</code> APIを叩いて、個別functionの<code>CodeSize</code>をサマって、<code>PutMetricData</code>でCloudWatchに投げて、Alarm設定してるだけ。</p>
+
+<script src="https://gist-it.appspot.com/https://github.com/ijin/check_lambda_capacity/blob/master/lambda_function.py"></script>
+
+
+<p>といっても、今後別アカウントでいちいち設定（IAM role&amp;policy、Lambda、SNS、CloudWatch）するのも非常に面倒くさいので、今回は<a href="http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/working-with-templates-cfn-designer.html">CloudFormation Designer</a>を使って、ほぼ一発で環境を再現できるようにしました。</p>
+
+<h2>CloudFormation</h2>
+
+<p>ボタン作ってみた。<a href="https://console.aws.amazon.com/cloudformation/home?region=ap-northeast-1#/stacks/new?stackName=check-lambda-capacity&templateURL=https://s3-ap-northeast-1.amazonaws.com/ijin/aws/lambda/check_lambda_capacity/check_lambda_capacity.template">
+<img src="https://s3.amazonaws.com/cloudformation-examples/cloudformation-launch-stack.png">
+</a></p>
+
+<h3>Stack Creation</h3>
+
+<p>Designerではこんな感じ。心なしか、jsonの苦痛が多少楽になったような。。後、Propertyの補完機能は良いけどショートカットが<code>Cmd+Space</code>なのでSpotlightさんがぁ。</p>
+
+<p><img src="https://lh3.googleusercontent.com/CLHrqYHPDKPxABDkWdrl0FYbEEC9enKmbOaK75TqhqL5tPnQ8oRjA3_f3N3iJoD5cSanPbbvt9lT=w880-h586-no"></p>
+
+<p>s3からtemplateを指定。
+template urlは<code>https://s3-ap-northeast-1.amazonaws.com/ijin/aws/lambda/check_lambda_capacity/check_lambda_capacity.template</code></p>
+
+<p><img src="https://lh3.googleusercontent.com/XeF-yQk1cxy8z8KnHTJS3mP-onExoYmbJ7-OYISmLd3NYxO4fVCQnqAxygAEu6zdMtzEy16641C-=w826-h268-no"></p>
+
+<p>Parameterとしては以下が指定可能</p>
+
+<ul>
+<li>アラート閾値（Byte単位）</li>
+<li>SNS topic（空の場合は、自動作成される）</li>
+</ul>
+
+
+<p><img src="https://lh3.googleusercontent.com/vX0JiEE_me3Wn6__PbNysmSYVkGiOs4jbqivZm7lOoq18kZpyrV9lj01kL9-rDMCX1JAS7BHVmI4=w902-h509-no"></p>
+
+<p>Stackを作成すると、諸々のリソースが数分で出来上がり。</p>
+
+<p><img src="https://lh3.googleusercontent.com/rQy-Any2cmz9I7YxuGD-Pi8_4VB9dGKFnCbAxWHH4QPjRMF7Y9nKAi2sZPY2HogoL2vpcc8ABy4E=w1050-h260-no"></p>
+
+<h3>Manual Labor</h3>
+
+<p>本当は以上で終了！にしたいところですが、LambdaのScheduled Eventsの設定はAWSコンソールからのみしか出来ないという<a href="http://docs.aws.amazon.com/lambda/latest/dg/with-scheduled-events.html">残念な状態</a>（<code>2016/1/14</code>現在）なので、ここからポチポチ設定作業。。（API重視の開発姿勢はどこ行ったんだろう）</p>
+
+<p><img src="https://lh3.googleusercontent.com/2pedymzqDYHJ30u7VglVv-7_6IpFhpOnRdnE4-QxjuIdX1fep2FwtoyDNr1Kl5yEqT1rtjoLDLZx=w581-h238-no"></p>
+
+<p><img src="https://lh3.googleusercontent.com/hcLpNX45gIQZQUQGvsyyIXfOH3s9yDpNLIZJN8TU-RUZDdMGdrsNXAb_NRupjWF9Hf4QrK4y6lXO=w864-h441-no"></p>
+
+<p>最小頻度が5分毎
+<img src="https://lh3.googleusercontent.com/lzuWtzvkK1A5pUSPyShVaFzzOQ13cD8PFVfCAz3rxSYkn5sKirWnhq-4PlKyhuesMlCQtrfH57yx=w862-h507-no"></p>
+
+<h3>Graph</h3>
+
+<p>これで、グラフが取れて閾値を超えたらアラートが飛ぶようになる</p>
+
+<p><img src="https://lh3.googleusercontent.com/yzswstqCbaTzpkYfy5MlRS2I9ur5Is3hI8Eii-o27twq-fYA_6o8SY5Rrn0DbyZEn8UJarGhh_9L=w570-h270-no"></p>
+
+<p><img src="https://lh3.googleusercontent.com/NE43x1KQW76QO7b4TMIjjcEYrpQ07B9SNOb-9L-wEnNKc8oC-69HpgzWiVABnQwBSNGtDz4ayeTR=w286-h221-no"></p>
+
+<h2>Code</h2>
+
+<p>出来上がったCloudFormation templateコードはこちら。<code>AWS::Lambda::Function</code>がlambdaのresource担当だけど、templateにfunctionをインラインで埋め込めるのは現時点では<a href="http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-lambda-function-code.html"><code>nodejs</code>のみ</a>なので仕方なくzipしたpythonコードをs3にアップして参照するようにしてる。</p>
+
+<script src="https://gist-it.appspot.com/https://github.com/ijin/check_lambda_capacity/blob/master/check_lambda_capacity.template"></script>
+
+
+<p>元気があれば、そのうちnode版も書こうかな。。</p>
+
+<p>GitHubのリポジトリは<a href="https://github.com/ijin/check_lambda_capacity">こちらから</a>。</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[LambdaのログをSlackで見よう]]></title>

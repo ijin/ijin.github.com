@@ -48,7 +48,7 @@ Stackを作成すると、諸々のリソースが数分で出来上がり。
 {%img https://lh3.googleusercontent.com/rQy-Any2cmz9I7YxuGD-Pi8_4VB9dGKFnCbAxWHH4QPjRMF7Y9nKAi2sZPY2HogoL2vpcc8ABy4E=w1050-h260-no %}
 
 ### Manual Labor
-本当は以上で終了！にしたいところですが、LambdaのScheduled Eventsの設定はAWSコンソールからのみしか出来ないという[残念な状態](http://docs.aws.amazon.com/lambda/latest/dg/with-scheduled-events.html)（`2016/1/14`現在）なので、ここからポチポチ設定作業。。（API重視の開発姿勢はどこ行ったんだろう）
+本当は以上で終了！にしたいところですが、LambdaのScheduled Eventsの設定はAWSコンソールからのみしか出来ないという~~情けない~~[残念な状態](http://docs.aws.amazon.com/lambda/latest/dg/with-scheduled-events.html)（`2016/1/14`現在）なので、ここからポチポチ設定作業。。（API重視の開発姿勢はどこ行ったんだろう）
 
 {%img https://lh3.googleusercontent.com/2pedymzqDYHJ30u7VglVv-7_6IpFhpOnRdnE4-QxjuIdX1fep2FwtoyDNr1Kl5yEqT1rtjoLDLZx=w581-h238-no %}
 

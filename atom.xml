@@ -4,7 +4,7 @@
   <title><![CDATA[@ijin]]></title>
   <link href="http://ijin.github.io/atom.xml" rel="self"/>
   <link href="http://ijin.github.io/"/>
-  <updated>2016-01-14T08:16:03+09:00</updated>
+  <updated>2016-01-26T14:07:39+09:00</updated>
   <id>http://ijin.github.io/</id>
   <author>
     <name><![CDATA[Michael H. Oshita]]></name>
@@ -22,10 +22,12 @@
 
 <h2>仕組み</h2>
 
-<p>LambdaのScheduled Eventsを使って、<code>ListFunctions</code> APIを叩いて、個別functionの<code>CodeSize</code>をサマって、<code>PutMetricData</code>でCloudWatchに投げて、Alarm設定してるだけ。</p>
+<p>LambdaのScheduled Eventsを使って、<code>ListFunctions</code>と<code>ListVersionsByFunction</code> APIを叩いて、個別functionの<code>CodeSize</code>をサマって、<code>PutMetricData</code>でCloudWatchに投げて、Alarm設定してるだけ。</p>
 
 <script src="https://gist-it.appspot.com/https://github.com/ijin/check_lambda_capacity/blob/master/lambda_function.py"></script>
 
+
+<p>(*) <code>2016/1/26</code> 追記：<a href="https://twitter.com/marcy_terui">@marcy_terui</a>さんからの<a href="https://twitter.com/marcy_terui/status/689326911634329600">ご指摘</a>でVersionsの容量計算が抜けてました。ありがとうございます。</p>
 
 <p>といっても、今後別アカウントでいちいち設定（IAM role&amp;policy、Lambda、SNS、CloudWatch）するのも非常に面倒くさいので、今回は<a href="http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/working-with-templates-cfn-designer.html">CloudFormation Designer</a>を使って、ほぼ一発で環境を再現できるようにしました。</p>
 
@@ -70,6 +72,8 @@ template urlは<code>https://s3-ap-northeast-1.amazonaws.com/ijin/aws/lambda/che
 
 <p>最小頻度が5分毎
 <img src="https://lh3.googleusercontent.com/lzuWtzvkK1A5pUSPyShVaFzzOQ13cD8PFVfCAz3rxSYkn5sKirWnhq-4PlKyhuesMlCQtrfH57yx=w862-h507-no"></p>
+
+<p>(*) <code>2016/1/26</code> 追記：この記事の翌日に発表された <a href="http://docs.aws.amazon.com/AmazonCloudWatch/latest/DeveloperGuide/WhatIsCloudWatchEvents.html"><code>CloudWatch Events</code></a> の <a href="http://docs.aws.amazon.com/AmazonCloudWatch/latest/DeveloperGuide/ScheduledEvents.html"><code>scheduling</code> 機能</a> によって出来るようになりました。なんというタイミング。</p>
 
 <h3>Graph</h3>
 

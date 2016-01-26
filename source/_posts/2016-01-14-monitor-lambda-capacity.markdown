@@ -51,14 +51,14 @@ Stackを作成すると、諸々のリソースが数分で出来上がり。
 ### Manual Labor
 本当は以上で終了！にしたいところですが、LambdaのScheduled Eventsの設定はAWSコンソールからのみしか出来ないという~~情けない~~[残念な状態](http://docs.aws.amazon.com/lambda/latest/dg/with-scheduled-events.html)（`2016/1/14`現在）なので、ここからポチポチ設定作業。。（API重視の開発姿勢はどこ行ったんだろう）
 
+(*) `2016/1/26` 追記：この記事の翌日に発表された [`CloudWatch Events`](http://docs.aws.amazon.com/AmazonCloudWatch/latest/DeveloperGuide/WhatIsCloudWatchEvents.html) の [`scheduling` 機能](http://docs.aws.amazon.com/AmazonCloudWatch/latest/DeveloperGuide/ScheduledEvents.html) によって出来るようになりました。なんというタイミング。
+
 {%img https://lh3.googleusercontent.com/2pedymzqDYHJ30u7VglVv-7_6IpFhpOnRdnE4-QxjuIdX1fep2FwtoyDNr1Kl5yEqT1rtjoLDLZx=w581-h238-no %}
 
 {%img https://lh3.googleusercontent.com/hcLpNX45gIQZQUQGvsyyIXfOH3s9yDpNLIZJN8TU-RUZDdMGdrsNXAb_NRupjWF9Hf4QrK4y6lXO=w864-h441-no %}
 
 最小頻度が5分毎
 {%img https://lh3.googleusercontent.com/lzuWtzvkK1A5pUSPyShVaFzzOQ13cD8PFVfCAz3rxSYkn5sKirWnhq-4PlKyhuesMlCQtrfH57yx=w862-h507-no %}
-
-(*) `2016/1/26` 追記：この記事の翌日に発表された [`CloudWatch Events`](http://docs.aws.amazon.com/AmazonCloudWatch/latest/DeveloperGuide/WhatIsCloudWatchEvents.html) の [`scheduling` 機能](http://docs.aws.amazon.com/AmazonCloudWatch/latest/DeveloperGuide/ScheduledEvents.html) によって出来るようになりました。なんというタイミング。
 
 ### Graph
 

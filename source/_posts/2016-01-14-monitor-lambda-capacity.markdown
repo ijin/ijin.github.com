@@ -12,10 +12,11 @@ categories:
 
 ## 仕組み
 
-LambdaのScheduled Eventsを使って、`ListFunctions` APIを叩いて、個別functionの`CodeSize`をサマって、`PutMetricData`でCloudWatchに投げて、Alarm設定してるだけ。
+LambdaのScheduled Eventsを使って、`ListFunctions`と`ListVersionsByFunction` APIを叩いて、個別functionの`CodeSize`をサマって、`PutMetricData`でCloudWatchに投げて、Alarm設定してるだけ。
 
 <script src="https://gist-it.appspot.com/https://github.com/ijin/check_lambda_capacity/blob/master/lambda_function.py"></script>
 
+(*) `2016/1/26` 追記：[@marcy_terui](https://twitter.com/marcy_terui)さんからの[ご指摘](https://twitter.com/marcy_terui/status/689326911634329600)でVersionsの容量計算が抜けてました。ありがとうございます。
 
 といっても、今後別アカウントでいちいち設定（IAM role&policy、Lambda、SNS、CloudWatch）するのも非常に面倒くさいので、今回は[CloudFormation Designer](http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/working-with-templates-cfn-designer.html)を使って、ほぼ一発で環境を再現できるようにしました。
 
@@ -56,6 +57,8 @@ Stackを作成すると、諸々のリソースが数分で出来上がり。
 
 最小頻度が5分毎
 {%img https://lh3.googleusercontent.com/lzuWtzvkK1A5pUSPyShVaFzzOQ13cD8PFVfCAz3rxSYkn5sKirWnhq-4PlKyhuesMlCQtrfH57yx=w862-h507-no %}
+
+(*) `2016/1/26` 追記：この記事の翌日に発表された [`CloudWatch Events`](http://docs.aws.amazon.com/AmazonCloudWatch/latest/DeveloperGuide/WhatIsCloudWatchEvents.html) の [`scheduling` 機能](http://docs.aws.amazon.com/AmazonCloudWatch/latest/DeveloperGuide/ScheduledEvents.html) によって出来るようになりました。なんというタイミング。
 
 ### Graph
 

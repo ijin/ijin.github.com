@@ -4,7 +4,7 @@
   <title><![CDATA[Category: aws | @ijin]]></title>
   <link href="http://ijin.github.io/blog/categories/aws/atom.xml" rel="self"/>
   <link href="http://ijin.github.io/"/>
-  <updated>2016-02-19T07:50:47+09:00</updated>
+  <updated>2016-02-19T09:41:36+09:00</updated>
   <id>http://ijin.github.io/</id>
   <author>
     <name><![CDATA[Michael H. Oshita]]></name>
@@ -42,6 +42,8 @@
 <p>Gitは<a href="https://github.com/jelmer/dulwich"><code>dulwich</code></a>というライブラリを利用。sshプロトコルの場合、デフォルトではシステム上のsshが利用されるのでPython版の<code>ParamikoSSHVendor</code>クラスを使えばすんなりいくと思いきや、キーファイル指定が出来なかったのでそこを少し改変。また、Lambda上での特殊な環境の為か<code>sys.stderr</code> のencode周りがうまく検出されなかったので、<code>dulwich.porcelain.push</code> methodも若干修正。</p>
 
 <p>Paramikoを使っているので、上記同様パッケージ作成はLinux上で。</p>
+
+<p>以下はprivate repositoryをclone後、別branchに新規ファイルを追加後にcommitし、githubへpushする例。</p>
 
 <p><div><script src='https://gist.github.com/080822d2c7859b528631.js?file='></script>
 <noscript><pre><code></code></pre></noscript></div>

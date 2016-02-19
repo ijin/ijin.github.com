@@ -28,6 +28,8 @@ Gitは[`dulwich`](https://github.com/jelmer/dulwich)というライブラリを�
 
 Paramikoを使っているので、上記同様パッケージ作成はLinux上で。
 
+以下はprivate repositoryをclone後、別branchに新規ファイルを追加後にcommitし、githubへpushする例。
+
 {% gist 080822d2c7859b528631 %}
 
 

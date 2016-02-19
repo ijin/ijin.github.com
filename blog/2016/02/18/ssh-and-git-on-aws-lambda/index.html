@@ -5,11 +5,11 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Category: consul - @ijin</title>
+  <title>LambdaでSSHやGitを使ってみよう - @ijin</title>
   <meta name="author" content="Michael H. Oshita">
 
   
-  <meta name="description" content="Category: consul">
+  <meta name="description" content="AWS Lambda上でsshやgitを使えたら便利！思ったけど、そもそもバイナリ自体が入ってない上にパッケージのインストールが出来ないので回避方法を悩んでいたところ、幸いそれぞれPython nativeの実装があったので先人の肩に乗っかる事で事無きを得ました。 SSH &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -18,7 +18,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://ijin.github.ioblog/categories/consul/">
+  <link rel="canonical" href="http://ijin.github.io/blog/2016/02/18/ssh-and-git-on-aws-lambda/">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <link href="/stylesheets/data-table.css" rel="stylesheet" type="text/css" />
@@ -86,36 +86,120 @@ document.write = function(html) {
   <div id="main">
     <div id="content">
       <div>
-<article role="article">
+<article class="hentry" role="article">
   
   <header>
-    <h1 class="entry-title">Category: Consul</h1>
+    
+      <h1 class="entry-title">LambdaでSSHやGitを使ってみよう</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2016-02-18T12:35:00+09:00" pubdate data-updated="true">Feb 18<span>th</span>, 2016</time>
+        
+      </p>
     
   </header>
-  
-  <div id="blog-archives" class="category">
 
 
+<div class="entry-content"><p>AWS Lambda上で<code>ssh</code>や<code>git</code>を使えたら便利！思ったけど、そもそもバイナリ自体が入ってない上にパッケージのインストールが出来ないので回避方法を悩んでいたところ、幸いそれぞれPython nativeの実装があったので先人の肩に乗っかる事で事無きを得ました。</p>
 
-  
-  <h2>2014</h2>
+<h2>SSH</h2>
 
-<article>
-  
-<h1><a href="/blog/2014/07/11/mysql-failover-with-consul/">ConsulによるMySQLフェールオーバー</a></h1>
-<time datetime="2014-07-11T10:12:00+09:00" pubdate><span class='month'>Jul</span> <span class='day'>11</span> <span class='year'>2014</span></time>
+<p>SSHは<a href="http://www.paramiko.org">Paramiko</a>というライブラリを利用。s3上に<a href="http://docs.aws.amazon.com/AmazonS3/latest/dev/UsingKMSEncryption.html">SSE-KMS</a>で暗号化されたキーファイルをダウンロードし、それを使ってサーバと認証しログイン。</p>
 
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/consul/'>consul</a>, <a class='category' href='/blog/categories/events/'>events</a>, <a class='category' href='/blog/categories/mysql/'>mysql</a></span>
-</footer>
+<p>注意点</p>
+
+<ul>
+<li>Lambdaの実行環境にはデフォルトでParamikoが入ってないので、deployment packageに含める必要がある</li>
+<li>Mac上ではpythonライブラリの互換性が衝突する為、Linux（EC2等）上でpackageを作成する必要がある</li>
+<li>最近発表された<a href="https://aws.amazon.com/blogs/aws/new-access-resources-in-a-vpc-from-your-lambda-functions/">VPC対応</a>を使ってprivate networkで通信をしたい場合、外部への経路はそのままでは不可なので、s3の場合はVPC endpointを作成するかNATが必要になってくる。詳しくはこの<a href="http://qiita.com/ijin/items/94c0bc4b8f6f5e77a591">記事</a>を。</li>
+</ul>
 
 
-</article>
+<div><script src='https://gist.github.com/26afca1e9b03ecaf4d8e.js?file='></script>
+<noscript><pre><code></code></pre></noscript></div>
 
+
+<h2>Git</h2>
+
+<p>Gitは<a href="https://github.com/jelmer/dulwich"><code>dulwich</code></a>というライブラリを利用。sshプロトコルの場合、デフォルトではシステム上のsshが利用されるのでPython版の<code>ParamikoSSHVendor</code>クラスを使えばすんなりいくと思いきや、キーファイル指定が出来なかったのでそこを少し改変。また、Lambda上での特殊な環境の為か<code>sys.stderr</code> のencode周りがうまく検出されなかったので、<code>dulwich.porcelain.push</code> methodも若干修正。</p>
+
+<p>Paramikoを使っているので、上記同様パッケージ作成はLinux上で。</p>
+
+<div><script src='https://gist.github.com/080822d2c7859b528631.js?file='></script>
+<noscript><pre><code></code></pre></noscript></div>
+
+
+<p>それでは、良いLambdaライフを！</p>
 </div>
 
+
+  <footer>
+    <p class="meta">
+      
   
+
+<span class="byline author vcard">Posted by <span class="fn">Michael H. Oshita</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2016-02-18T12:35:00+09:00" pubdate data-updated="true">Feb 18<span>th</span>, 2016</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/aws/'>aws</a>, <a class='category' href='/blog/categories/lambda/'>lambda</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://ijin.github.io/blog/2016/02/18/ssh-and-git-on-aws-lambda/" data-via="ijin" data-counturl="http://ijin.github.io/blog/2016/02/18/ssh-and-git-on-aws-lambda/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2016/01/14/monitor-lambda-capacity/" title="Previous Post: Lambdaの容量を監視しよう">&laquo; Lambdaの容量を監視しよう</a>
+      
+      
+    </p>
+  </footer>
 </article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
 
 </div>
 
@@ -207,7 +291,10 @@ document.write = function(html) {
       var disqus_shortname = 'ijin';
       
         
-        var disqus_script = 'count.js';
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://ijin.github.io/blog/2016/02/18/ssh-and-git-on-aws-lambda/';
+        var disqus_url = 'http://ijin.github.io/blog/2016/02/18/ssh-and-git-on-aws-lambda/';
+        var disqus_script = 'embed.js';
       
     (function () {
       var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;

@@ -4,7 +4,7 @@
   <title><![CDATA[Category: lambda | @ijin]]></title>
   <link href="http://ijin.github.io/blog/categories/lambda/atom.xml" rel="self"/>
   <link href="http://ijin.github.io/"/>
-  <updated>2016-01-26T14:38:20+09:00</updated>
+  <updated>2016-02-19T07:50:47+09:00</updated>
   <id>http://ijin.github.io/</id>
   <author>
     <name><![CDATA[Michael H. Oshita]]></name>
@@ -12,6 +12,44 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[LambdaでSSHやGitを使ってみよう]]></title>
+    <link href="http://ijin.github.io/blog/2016/02/18/ssh-and-git-on-aws-lambda/"/>
+    <updated>2016-02-18T12:35:00+09:00</updated>
+    <id>http://ijin.github.io/blog/2016/02/18/ssh-and-git-on-aws-lambda</id>
+    <content type="html"><![CDATA[<p>AWS Lambda上で<code>ssh</code>や<code>git</code>を使えたら便利！思ったけど、そもそもバイナリ自体が入ってない上にパッケージのインストールが出来ないので回避方法を悩んでいたところ、幸いそれぞれPython nativeの実装があったので先人の肩に乗っかる事で事無きを得ました。</p>
+
+<h2>SSH</h2>
+
+<p>SSHは<a href="http://www.paramiko.org">Paramiko</a>というライブラリを利用。s3上に<a href="http://docs.aws.amazon.com/AmazonS3/latest/dev/UsingKMSEncryption.html">SSE-KMS</a>で暗号化されたキーファイルをダウンロードし、それを使ってサーバと認証しログイン。</p>
+
+<p>注意点</p>
+
+<ul>
+<li>Lambdaの実行環境にはデフォルトでParamikoが入ってないので、deployment packageに含める必要がある</li>
+<li>Mac上ではpythonライブラリの互換性が衝突する為、Linux（EC2等）上でpackageを作成する必要がある</li>
+<li>最近発表された<a href="https://aws.amazon.com/blogs/aws/new-access-resources-in-a-vpc-from-your-lambda-functions/">VPC対応</a>を使ってprivate networkで通信をしたい場合、外部への経路はそのままでは不可なので、s3の場合はVPC endpointを作成するかNATが必要になってくる。詳しくはこの<a href="http://qiita.com/ijin/items/94c0bc4b8f6f5e77a591">記事</a>を。</li>
+</ul>
+
+
+<p><div><script src='https://gist.github.com/26afca1e9b03ecaf4d8e.js?file='></script>
+<noscript><pre><code></code></pre></noscript></div>
+</p>
+
+<h2>Git</h2>
+
+<p>Gitは<a href="https://github.com/jelmer/dulwich"><code>dulwich</code></a>というライブラリを利用。sshプロトコルの場合、デフォルトではシステム上のsshが利用されるのでPython版の<code>ParamikoSSHVendor</code>クラスを使えばすんなりいくと思いきや、キーファイル指定が出来なかったのでそこを少し改変。また、Lambda上での特殊な環境の為か<code>sys.stderr</code> のencode周りがうまく検出されなかったので、<code>dulwich.porcelain.push</code> methodも若干修正。</p>
+
+<p>Paramikoを使っているので、上記同様パッケージ作成はLinux上で。</p>
+
+<p><div><script src='https://gist.github.com/080822d2c7859b528631.js?file='></script>
+<noscript><pre><code></code></pre></noscript></div>
+</p>
+
+<p>それでは、良いLambdaライフを！</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Lambdaの容量を監視しよう]]></title>

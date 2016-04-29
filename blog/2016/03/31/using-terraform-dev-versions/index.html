@@ -5,11 +5,14 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>ISUCON5の予選に記念参加してきた - @ijin</title>
+  <title>Terraformで特定のブランチを使う - @ijin</title>
   <meta name="author" content="Michael H. Oshita">
 
   
-  <meta name="description" content="とあるエンジニアが言い放ちました。 「上位に届かないチームはただの記念参加だよねー。」 というわけで、今年のISUCONは見事に予選落ちしました。 お題 「ISUxi」というどこか懐かしい響きの「高負荷に耐えられるSNSコミュニティサイト」 友達、記事、コメント、足あと機能が揃っており、 &hellip;">
+  <meta name="description" content="HashiCorpのTerraformの開発は非常に活発であり日々進化していますが、リリースまでに待てない実装中や実験的な機能を使いたい場合は、自分で特定のブランチを変更・ビルドして使えます。 リポジトリ取得 1
+2
+3
+$ go get github.com/hashicorp/ &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -18,7 +21,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://ijin.github.io/blog/2015/09/27/isucon5-qualifier/">
+  <link rel="canonical" href="http://ijin.github.io/blog/2016/03/31/using-terraform-dev-versions/">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <link href="/stylesheets/data-table.css" rel="stylesheet" type="text/css" />
@@ -90,7 +93,7 @@ document.write = function(html) {
   
   <header>
     
-      <h1 class="entry-title">ISUCON5の予選に記念参加してきた</h1>
+      <h1 class="entry-title">Terraformで特定のブランチを使う</h1>
     
     
       <p class="meta">
@@ -106,75 +109,63 @@ document.write = function(html) {
   
 
 
-<time datetime="2015-09-27T17:01:00+09:00" pubdate data-updated="true">Sep 27<span>th</span>, 2015</time>
+<time datetime="2016-03-31T16:38:00+09:00" pubdate data-updated="true">Mar 31<span>st</span>, 2016</time>
         
       </p>
     
   </header>
 
 
-<div class="entry-content"><p>とあるエンジニアが言い放ちました。</p>
+<div class="entry-content"><p>HashiCorpの<a href="https://terraform.io/">Terraform</a>の開発は非常に活発であり日々進化していますが、リリースまでに待てない実装中や実験的な機能を使いたい場合は、自分で特定のブランチを変更・ビルドして使えます。</p>
 
-<p>「<em>上位に届かないチームはただの記念参加だよねー。</em>」</p>
+<h3>リポジトリ取得</h3>
 
-<p>というわけで、今年のISUCONは見事に予選落ちしました。</p>
-
-<h3>お題</h3>
-
-<p>「<strong>ISUx</strong>i」というどこか懐かしい響きの「高負荷に耐えられるSNSコミュニティサイト」</p>
-
-<p>友達、記事、コメント、足あと機能が揃っており、以前より複雑度が増したなかなかの凝った作り。</p>
-
-<h3>起こったこと</h3>
-
-<p>これはESIによるpartial cachingが出来るので、Varnishでやってみよう！</p>
-
-<p>と意気込んだものの、エラーが解決できず結局は間に合わずに終了ーーっ。</p>
-
-<h3>やりたかったこと</h3>
-
-<ul>
-<li>Varnish + ESI + Redis &amp; MySQL</li>
-</ul>
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ go get github.com/hashicorp/terraform
+</span><span class='line'>$ cd $GOPATH/src/github.com/hashicorp/terraform
+</span><span class='line'>$ git checkout new-aws-feature</span></code></pre></td></tr></table></div></figure>
 
 
-<h3>やれたこと</h3>
+<h3>commit hash付与</h3>
 
-<p>具体的な作業内容は今手元にないので、ぼんやりと。</p>
+<p>どのコミットリビジョンを使っているか簡単に分かるように、versionにgitのcommit hashを指定。</p>
 
-<ul>
-<li>MySQLのクエリー修正、パラメータ、Indexの追加</li>
-<li>nginxのパラメータ追加</li>
-<li>kernelのパラメータ追加</li>
-<li>一部 redis化</li>
-<li>rubyプロセスの調整</li>
-<li>sidekiqのワーカーで遅延書き込み</li>
-</ul>
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>sed -i -e "s/dev/dev - `git rev-parse --short HEAD`/" terraform/version.go</span></code></pre></td></tr></table></div></figure>
 
 
-<h3>はまったとこ</h3>
+<h3>ビルド</h3>
 
-<p>今回はいろいろ初めてがあったので無駄に時間を潰した感じ。</p>
+<p>make devすると全pluginやproviderがコンパイルされ、非常に時間がかかる（特に最近は対応範囲の広がりが著しく、生成されるバイナリの総容量が増加傾向）。
+よって、特定のproviderを指定して時間短縮する。以下はaws providerで作業している場合。</p>
 
-<ul>
-<li><code>systemd</code> -
-最新のUbuntu 15.04はsystemdなんですね。ずっと14.04 LTSのupstartに慣れていたので、こっちは初めて触わった。</li>
-<li><code>apparmor</code> -
-設定ファイルをsymlinkでやろうとすると読み込まれず。。こいつのせいだと気づくのにちょっと手間取った。いらない子には怒りの<code>apt-get purge</code>を。</li>
-<li><code>mysql</code> -
-なんか設定ファイルが/etc/mysql/my.cnf単体じゃなくて、symlinkされたりいろんなディレクトリに散らばってたりで若干戸惑った。後、上記のapparmor関連で設定ファイルがしばらく全然反映されずに。。</li>
-<li><code>varnish</code> -
-こちらもvclやパラメータ指定が本来<code>/etc/default/varnish</code>で出来るはずが、なかなか反映されずに苦労した。Varnish 4.0のパッケージはapt-getですんなり入るんだけど、起動スクリプトが<code>/etc/init.d/varnish</code>に設置されるのに、そちらは無視され、systemdの方が優先される模様。カスタマイズするには<code>/lib/systemd/system/varnish.service</code>をコピって編集して<code>daemon-reload</code>が必要。詳しくは<a href="http://deshack.net/how-to-varnish-listen-port-80-systemd/">こちら</a></li>
-</ul>
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ make core-dev plugin-dev PLUGIN=provider-aws
+</span><span class='line'>==&gt; Checking that code complies with gofmt requirements...
+</span><span class='line'>/Users/ijin/golang/bin/stringer
+</span><span class='line'>go generate $(go list ./... | grep -v /vendor/)
+</span><span class='line'>go install github.com/hashicorp/terraform
+</span><span class='line'>go install github.com/hashicorp/terraform/builtin/bins/provider-aws
+</span><span class='line'>mv /Users/ijin/golang/bin/provider-aws /Users/ijin/golang/bin/terraform-provider-aws</span></code></pre></td></tr></table></div></figure>
 
 
-<h3>終わりに</h3>
+<h3>確認</h3>
 
-<p>競技内容が確実に進化していて、非常ーーに楽しめました！その分、出題者の苦労が計り知れず。。こんどビールでも奢ります。今年の本戦は残念ながら行けないけど、外野として楽しくポップコーンでも食べながら観戦したい所ですね。</p>
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ terraform version
+</span><span class='line'>Terraform v0.6.15-dev - 123abcd</span></code></pre></td></tr></table></div></figure>
 
-<h3>おまけ</h3>
 
-<p>現在はHashiConfに向けての飛行機の中だけど、悔しいので機内で復習しておきます！</p>
+<p>Happy Terraforming!</p>
 </div>
 
 
@@ -197,12 +188,12 @@ document.write = function(html) {
   
 
 
-<time datetime="2015-09-27T17:01:00+09:00" pubdate data-updated="true">Sep 27<span>th</span>, 2015</time>
+<time datetime="2016-03-31T16:38:00+09:00" pubdate data-updated="true">Mar 31<span>st</span>, 2016</time>
       
 
 <span class="categories">
   
-    <a class='category' href='/blog/categories/events/'>events</a>, <a class='category' href='/blog/categories/study/'>study</a>
+    <a class='category' href='/blog/categories/golang/'>golang</a>, <a class='category' href='/blog/categories/terraform/'>terraform</a>
   
 </span>
 
@@ -211,7 +202,7 @@ document.write = function(html) {
     
       <div class="sharing">
   
-  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://ijin.github.io/blog/2015/09/27/isucon5-qualifier/" data-via="ijin" data-counturl="http://ijin.github.io/blog/2015/09/27/isucon5-qualifier/" >Tweet</a>
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://ijin.github.io/blog/2016/03/31/using-terraform-dev-versions/" data-via="ijin" data-counturl="http://ijin.github.io/blog/2016/03/31/using-terraform-dev-versions/" >Tweet</a>
   
   
   
@@ -220,10 +211,10 @@ document.write = function(html) {
     
     <p class="meta">
       
-        <a class="basic-alignment left" href="/blog/2015/08/23/yapc-asia-tokyo-2015/" title="Previous Post: YAPC::Asia Tokyo 2015に参加してきた">&laquo; YAPC::Asia Tokyo 2015に参加してきた</a>
+        <a class="basic-alignment left" href="/blog/2016/02/18/ssh-and-git-on-aws-lambda/" title="Previous Post: LambdaでSSHやGitを使ってみよう">&laquo; LambdaでSSHやGitを使ってみよう</a>
       
       
-        <a class="basic-alignment right" href="/blog/2015/09/30/hashiconf-2015/" title="Next Post: #HashiConf 2015に参加してきた">#HashiConf 2015に参加してきた &raquo;</a>
+        <a class="basic-alignment right" href="/blog/2016/04/28/terraforming-api-gatewways/" title="Next Post: TerraformでAPI Gatewway">TerraformでAPI Gatewway &raquo;</a>
       
     </p>
   </footer>
@@ -326,8 +317,8 @@ document.write = function(html) {
       
         
         // var disqus_developer = 1;
-        var disqus_identifier = 'http://ijin.github.io/blog/2015/09/27/isucon5-qualifier/';
-        var disqus_url = 'http://ijin.github.io/blog/2015/09/27/isucon5-qualifier/';
+        var disqus_identifier = 'http://ijin.github.io/blog/2016/03/31/using-terraform-dev-versions/';
+        var disqus_url = 'http://ijin.github.io/blog/2016/03/31/using-terraform-dev-versions/';
         var disqus_script = 'embed.js';
       
     (function () {

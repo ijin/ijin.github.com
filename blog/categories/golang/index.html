@@ -5,11 +5,11 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>ISUCON5の予選に記念参加してきた - @ijin</title>
+  <title>Category: golang - @ijin</title>
   <meta name="author" content="Michael H. Oshita">
 
   
-  <meta name="description" content="とあるエンジニアが言い放ちました。 「上位に届かないチームはただの記念参加だよねー。」 というわけで、今年のISUCONは見事に予選落ちしました。 お題 「ISUxi」というどこか懐かしい響きの「高負荷に耐えられるSNSコミュニティサイト」 友達、記事、コメント、足あと機能が揃っており、 &hellip;">
+  <meta name="description" content="Category: golang">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -18,7 +18,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://ijin.github.io/blog/2015/09/27/isucon5-qualifier/">
+  <link rel="canonical" href="http://ijin.github.ioblog/categories/golang/">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <link href="/stylesheets/data-table.css" rel="stylesheet" type="text/css" />
@@ -86,154 +86,36 @@ document.write = function(html) {
   <div id="main">
     <div id="content">
       <div>
-<article class="hentry" role="article">
+<article role="article">
   
   <header>
-    
-      <h1 class="entry-title">ISUCON5の予選に記念参加してきた</h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2015-09-27T17:01:00+09:00" pubdate data-updated="true">Sep 27<span>th</span>, 2015</time>
-        
-      </p>
+    <h1 class="entry-title">Category: Golang</h1>
     
   </header>
-
-
-<div class="entry-content"><p>とあるエンジニアが言い放ちました。</p>
-
-<p>「<em>上位に届かないチームはただの記念参加だよねー。</em>」</p>
-
-<p>というわけで、今年のISUCONは見事に予選落ちしました。</p>
-
-<h3>お題</h3>
-
-<p>「<strong>ISUx</strong>i」というどこか懐かしい響きの「高負荷に耐えられるSNSコミュニティサイト」</p>
-
-<p>友達、記事、コメント、足あと機能が揃っており、以前より複雑度が増したなかなかの凝った作り。</p>
-
-<h3>起こったこと</h3>
-
-<p>これはESIによるpartial cachingが出来るので、Varnishでやってみよう！</p>
-
-<p>と意気込んだものの、エラーが解決できず結局は間に合わずに終了ーーっ。</p>
-
-<h3>やりたかったこと</h3>
-
-<ul>
-<li>Varnish + ESI + Redis &amp; MySQL</li>
-</ul>
-
-
-<h3>やれたこと</h3>
-
-<p>具体的な作業内容は今手元にないので、ぼんやりと。</p>
-
-<ul>
-<li>MySQLのクエリー修正、パラメータ、Indexの追加</li>
-<li>nginxのパラメータ追加</li>
-<li>kernelのパラメータ追加</li>
-<li>一部 redis化</li>
-<li>rubyプロセスの調整</li>
-<li>sidekiqのワーカーで遅延書き込み</li>
-</ul>
-
-
-<h3>はまったとこ</h3>
-
-<p>今回はいろいろ初めてがあったので無駄に時間を潰した感じ。</p>
-
-<ul>
-<li><code>systemd</code> -
-最新のUbuntu 15.04はsystemdなんですね。ずっと14.04 LTSのupstartに慣れていたので、こっちは初めて触わった。</li>
-<li><code>apparmor</code> -
-設定ファイルをsymlinkでやろうとすると読み込まれず。。こいつのせいだと気づくのにちょっと手間取った。いらない子には怒りの<code>apt-get purge</code>を。</li>
-<li><code>mysql</code> -
-なんか設定ファイルが/etc/mysql/my.cnf単体じゃなくて、symlinkされたりいろんなディレクトリに散らばってたりで若干戸惑った。後、上記のapparmor関連で設定ファイルがしばらく全然反映されずに。。</li>
-<li><code>varnish</code> -
-こちらもvclやパラメータ指定が本来<code>/etc/default/varnish</code>で出来るはずが、なかなか反映されずに苦労した。Varnish 4.0のパッケージはapt-getですんなり入るんだけど、起動スクリプトが<code>/etc/init.d/varnish</code>に設置されるのに、そちらは無視され、systemdの方が優先される模様。カスタマイズするには<code>/lib/systemd/system/varnish.service</code>をコピって編集して<code>daemon-reload</code>が必要。詳しくは<a href="http://deshack.net/how-to-varnish-listen-port-80-systemd/">こちら</a></li>
-</ul>
-
-
-<h3>終わりに</h3>
-
-<p>競技内容が確実に進化していて、非常ーーに楽しめました！その分、出題者の苦労が計り知れず。。こんどビールでも奢ります。今年の本戦は残念ながら行けないけど、外野として楽しくポップコーンでも食べながら観戦したい所ですね。</p>
-
-<h3>おまけ</h3>
-
-<p>現在はHashiConfに向けての飛行機の中だけど、悔しいので機内で復習しておきます！</p>
-</div>
-
-
-  <footer>
-    <p class="meta">
-      
   
-
-<span class="byline author vcard">Posted by <span class="fn">Michael H. Oshita</span></span>
-
-      
-
-
-
-
-
+  <div id="blog-archives" class="category">
 
 
 
   
+  <h2>2016</h2>
+
+<article>
+  
+<h1><a href="/blog/2016/03/31/using-terraform-dev-versions/">Terraformで特定のブランチを使う</a></h1>
+<time datetime="2016-03-31T16:38:00+09:00" pubdate><span class='month'>Mar</span> <span class='day'>31</span> <span class='year'>2016</span></time>
+
+<footer>
+  <span class="categories">posted in <a class='category' href='/blog/categories/golang/'>golang</a>, <a class='category' href='/blog/categories/terraform/'>terraform</a></span>
+</footer>
 
 
-<time datetime="2015-09-27T17:01:00+09:00" pubdate data-updated="true">Sep 27<span>th</span>, 2015</time>
-      
-
-<span class="categories">
-  
-    <a class='category' href='/blog/categories/events/'>events</a>, <a class='category' href='/blog/categories/study/'>study</a>
-  
-</span>
-
-
-    </p>
-    
-      <div class="sharing">
-  
-  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://ijin.github.io/blog/2015/09/27/isucon5-qualifier/" data-via="ijin" data-counturl="http://ijin.github.io/blog/2015/09/27/isucon5-qualifier/" >Tweet</a>
-  
-  
-  
-</div>
-
-    
-    <p class="meta">
-      
-        <a class="basic-alignment left" href="/blog/2015/08/23/yapc-asia-tokyo-2015/" title="Previous Post: YAPC::Asia Tokyo 2015に参加してきた">&laquo; YAPC::Asia Tokyo 2015に参加してきた</a>
-      
-      
-        <a class="basic-alignment right" href="/blog/2015/09/30/hashiconf-2015/" title="Next Post: #HashiConf 2015に参加してきた">#HashiConf 2015に参加してきた &raquo;</a>
-      
-    </p>
-  </footer>
 </article>
 
-  <section>
-    <h1>Comments</h1>
-    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
 </div>
-  </section>
+
+  
+</article>
 
 </div>
 
@@ -325,10 +207,7 @@ document.write = function(html) {
       var disqus_shortname = 'ijin';
       
         
-        // var disqus_developer = 1;
-        var disqus_identifier = 'http://ijin.github.io/blog/2015/09/27/isucon5-qualifier/';
-        var disqus_url = 'http://ijin.github.io/blog/2015/09/27/isucon5-qualifier/';
-        var disqus_script = 'embed.js';
+        var disqus_script = 'count.js';
       
     (function () {
       var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;

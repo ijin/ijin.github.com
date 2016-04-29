@@ -9,7 +9,7 @@
   <meta name="author" content="Michael H. Oshita">
 
   
-  <meta name="description" content="AWS Lambda上でsshやgitを使えたら便利！思ったけど、そもそもバイナリ自体が入ってない上にパッケージのインストールが出来ないので回避方法を悩んでいたところ、幸いそれぞれPython nativeの実装があったので先人の肩に乗っかる事で事無きを得ました。 SSH &hellip;">
+  <meta name="description" content="つい先日、Terraformでずっと気になっていたAmazon API Gatewayのselection_patternのpull requestがmergeされました。 今まではAPI GWをInfrastructure As Codeで構築するにあたって複数のintegration &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -87,6 +87,754 @@ document.write = function(html) {
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2016/04/28/terraforming-api-gatewways/">TerraformでAPI Gatewway</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2016-04-28T18:01:00+09:00" pubdate data-updated="true">Apr 28<span>th</span>, 2016</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>つい先日、<a href="https://terraform.io/">Terraform</a>でずっと気になっていたAmazon API Gatewayの<code>selection_pattern</code>の<a href="https://github.com/hashicorp/terraform/pull/5893">pull request</a>がmergeされました。</p>
+
+<p>今まではAPI GWをInfrastructure As Codeで構築するにあたって複数のintegration responseパターンを返却できないのがネックだったのが、これでようやく解決。途中までTerraformで作って、その後に以下のようにawscliで追加するというちょっと煩わしい手順でした。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>REST_ID=$(aws apigateway get-rest-apis --query 'items[?name==`my_api`].id' --output text)
+</span><span class='line'>RESOURCE_ID=$(aws apigateway get-resources --rest-api-id $REST_ID --query 'items[?path==`/my_path`].id' --output text)
+</span><span class='line'>aws apigateway put-integration-response --rest-api-id $REST_ID --resource-id $RESOURCE_ID --http-method GET --status-code 400 --response-templates '{"application/json": "$input.path('$').errorMessage"}' --selection-pattern "[^0-9](.|\n)*" </span></code></pre></td></tr></table></div></figure>
+
+
+<p>というわけで、早速実験。お題は以前<a href="/blog/2015/11/04/elastic-beanstalk-easy-ssh/">紹介した</a>Elastic Beanstalk ssh用のAPI GWで。</p>
+
+<h3>Terraform version</h3>
+
+<p>まずは、<code>master</code>にmergeされた開発版Terraformのビルド。やり方は<a href="/blog/2016/03/31/using-terraform-dev-versions/">こちら</a>。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ terraform version
+</span><span class='line'>Terraform v0.6.16-dev - 5cd27c2</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>Terraform file</h3>
+
+<p>API GWのterraform化はこんな感じで。</p>
+
+<div><script src='https://gist.github.com/db027846fefb339187e3f2833fe2d034.js?file='></script>
+<noscript><pre><code></code></pre></noscript></div>
+
+
+<p>(*) permissionはlambda作成後に許可</p>
+
+<h3>Terraform plan/apply</h3>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+<span class='line-number'>62</span>
+<span class='line-number'>63</span>
+<span class='line-number'>64</span>
+<span class='line-number'>65</span>
+<span class='line-number'>66</span>
+<span class='line-number'>67</span>
+<span class='line-number'>68</span>
+<span class='line-number'>69</span>
+<span class='line-number'>70</span>
+<span class='line-number'>71</span>
+<span class='line-number'>72</span>
+<span class='line-number'>73</span>
+<span class='line-number'>74</span>
+<span class='line-number'>75</span>
+<span class='line-number'>76</span>
+<span class='line-number'>77</span>
+<span class='line-number'>78</span>
+<span class='line-number'>79</span>
+<span class='line-number'>80</span>
+<span class='line-number'>81</span>
+<span class='line-number'>82</span>
+<span class='line-number'>83</span>
+<span class='line-number'>84</span>
+<span class='line-number'>85</span>
+<span class='line-number'>86</span>
+<span class='line-number'>87</span>
+<span class='line-number'>88</span>
+<span class='line-number'>89</span>
+<span class='line-number'>90</span>
+<span class='line-number'>91</span>
+<span class='line-number'>92</span>
+<span class='line-number'>93</span>
+<span class='line-number'>94</span>
+<span class='line-number'>95</span>
+<span class='line-number'>96</span>
+<span class='line-number'>97</span>
+<span class='line-number'>98</span>
+<span class='line-number'>99</span>
+<span class='line-number'>100</span>
+<span class='line-number'>101</span>
+<span class='line-number'>102</span>
+<span class='line-number'>103</span>
+<span class='line-number'>104</span>
+<span class='line-number'>105</span>
+<span class='line-number'>106</span>
+<span class='line-number'>107</span>
+<span class='line-number'>108</span>
+<span class='line-number'>109</span>
+<span class='line-number'>110</span>
+<span class='line-number'>111</span>
+<span class='line-number'>112</span>
+<span class='line-number'>113</span>
+<span class='line-number'>114</span>
+<span class='line-number'>115</span>
+<span class='line-number'>116</span>
+<span class='line-number'>117</span>
+<span class='line-number'>118</span>
+<span class='line-number'>119</span>
+<span class='line-number'>120</span>
+<span class='line-number'>121</span>
+<span class='line-number'>122</span>
+<span class='line-number'>123</span>
+<span class='line-number'>124</span>
+<span class='line-number'>125</span>
+<span class='line-number'>126</span>
+<span class='line-number'>127</span>
+<span class='line-number'>128</span>
+<span class='line-number'>129</span>
+<span class='line-number'>130</span>
+<span class='line-number'>131</span>
+<span class='line-number'>132</span>
+<span class='line-number'>133</span>
+<span class='line-number'>134</span>
+<span class='line-number'>135</span>
+<span class='line-number'>136</span>
+<span class='line-number'>137</span>
+<span class='line-number'>138</span>
+<span class='line-number'>139</span>
+<span class='line-number'>140</span>
+<span class='line-number'>141</span>
+<span class='line-number'>142</span>
+<span class='line-number'>143</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ terraform plan
+</span><span class='line'>Refreshing Terraform state prior to plan...
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'>The Terraform execution plan has been generated and is shown below.
+</span><span class='line'>Resources are shown in alphabetical order for quick scanning. Green resources
+</span><span class='line'>will be created (or destroyed and then created if an existing resource
+</span><span class='line'>exists), yellow resources are being changed in-place, and red resources
+</span><span class='line'>will be destroyed.
+</span><span class='line'>
+</span><span class='line'>Note: You didn't specify an "-out" parameter to save this plan, so when
+</span><span class='line'>"apply" is called, Terraform can't guarantee this is what will execute.
+</span><span class='line'>
+</span><span class='line'>+ aws_api_gateway_deployment.eb_deployment
+</span><span class='line'>    rest_api_id: "" =&gt; "${aws_api_gateway_rest_api.EB.id}"
+</span><span class='line'>    stage_name:  "" =&gt; "prod"
+</span><span class='line'>
+</span><span class='line'>+ aws_api_gateway_integration.ip_get
+</span><span class='line'>    http_method:                        "" =&gt; "GET"
+</span><span class='line'>    integration_http_method:            "" =&gt; "POST"
+</span><span class='line'>    request_templates.#:                "" =&gt; "1"
+</span><span class='line'>    request_templates.application/json: "" =&gt; "{ \"env_name\": \"$input.params('env_name')\" }"
+</span><span class='line'>    resource_id:                        "" =&gt; "${aws_api_gateway_resource.ip.id}"
+</span><span class='line'>    rest_api_id:                        "" =&gt; "${aws_api_gateway_rest_api.EB.id}"
+</span><span class='line'>    type:                               "" =&gt; "AWS"
+</span><span class='line'>    uri:                                "" =&gt; "arn:aws:apigateway:ap-northeast-1:lambda:path/2015-03-31/functions/arn:aws:lambda:ap-northeast-1:123456789012:function:eb_ip/invocations"
+</span><span class='line'>
+</span><span class='line'>+ aws_api_gateway_integration.server_num_get
+</span><span class='line'>    http_method:                        "" =&gt; "GET"
+</span><span class='line'>    integration_http_method:            "" =&gt; "POST"
+</span><span class='line'>    request_templates.#:                "" =&gt; "1"
+</span><span class='line'>    request_templates.application/json: "" =&gt; "{\n \"env_name\": \"$input.params('env_name')\",\n \"server_num\": \"$input.params('server_num')\" \n}"
+</span><span class='line'>    resource_id:                        "" =&gt; "${aws_api_gateway_resource.server_num.id}"
+</span><span class='line'>    rest_api_id:                        "" =&gt; "${aws_api_gateway_rest_api.EB.id}"
+</span><span class='line'>    type:                               "" =&gt; "AWS"
+</span><span class='line'>    uri:                                "" =&gt; "arn:aws:apigateway:ap-northeast-1:lambda:path/2015-03-31/functions/arn:aws:lambda:ap-northeast-1:123456789012:function:eb_ip/invocations"
+</span><span class='line'>
+</span><span class='line'>+ aws_api_gateway_integration_response.ip_get_200
+</span><span class='line'>    http_method:                         "" =&gt; "GET"
+</span><span class='line'>    resource_id:                         "" =&gt; "${aws_api_gateway_resource.ip.id}"
+</span><span class='line'>    response_templates.#:                "" =&gt; "1"
+</span><span class='line'>    response_templates.application/json: "" =&gt; "$input.path('$')"
+</span><span class='line'>    rest_api_id:                         "" =&gt; "${aws_api_gateway_rest_api.EB.id}"
+</span><span class='line'>    status_code:                         "" =&gt; "200"
+</span><span class='line'>
+</span><span class='line'>+ aws_api_gateway_integration_response.ip_get_400
+</span><span class='line'>    http_method:                         "" =&gt; "GET"
+</span><span class='line'>    resource_id:                         "" =&gt; "${aws_api_gateway_resource.ip.id}"
+</span><span class='line'>    response_templates.#:                "" =&gt; "1"
+</span><span class='line'>    response_templates.application/json: "" =&gt; "$input.path('$').errorMessage"
+</span><span class='line'>    rest_api_id:                         "" =&gt; "${aws_api_gateway_rest_api.EB.id}"
+</span><span class='line'>    selection_pattern:                   "" =&gt; "[^0-9](.|\n)*"
+</span><span class='line'>    status_code:                         "" =&gt; "400"
+</span><span class='line'>
+</span><span class='line'>+ aws_api_gateway_integration_response.server_num_get_200
+</span><span class='line'>    http_method:                         "" =&gt; "GET"
+</span><span class='line'>    resource_id:                         "" =&gt; "${aws_api_gateway_resource.server_num.id}"
+</span><span class='line'>    response_templates.#:                "" =&gt; "1"
+</span><span class='line'>    response_templates.application/json: "" =&gt; "$input.path('$')"
+</span><span class='line'>    rest_api_id:                         "" =&gt; "${aws_api_gateway_rest_api.EB.id}"
+</span><span class='line'>    status_code:                         "" =&gt; "200"
+</span><span class='line'>
+</span><span class='line'>+ aws_api_gateway_integration_response.server_num_get_400
+</span><span class='line'>    http_method:                         "" =&gt; "GET"
+</span><span class='line'>    resource_id:                         "" =&gt; "${aws_api_gateway_resource.server_num.id}"
+</span><span class='line'>    response_templates.#:                "" =&gt; "1"
+</span><span class='line'>    response_templates.application/json: "" =&gt; "$input.path('$').errorMessage"
+</span><span class='line'>    rest_api_id:                         "" =&gt; "${aws_api_gateway_rest_api.EB.id}"
+</span><span class='line'>    selection_pattern:                   "" =&gt; "[^0-9](.|\n)*"
+</span><span class='line'>    status_code:                         "" =&gt; "400"
+</span><span class='line'>
+</span><span class='line'>+ aws_api_gateway_method.ip_get
+</span><span class='line'>    api_key_required: "" =&gt; "0"
+</span><span class='line'>    authorization:    "" =&gt; "NONE"
+</span><span class='line'>    http_method:      "" =&gt; "GET"
+</span><span class='line'>    resource_id:      "" =&gt; "${aws_api_gateway_resource.ip.id}"
+</span><span class='line'>    rest_api_id:      "" =&gt; "${aws_api_gateway_rest_api.EB.id}"
+</span><span class='line'>
+</span><span class='line'>+ aws_api_gateway_method.server_num_get
+</span><span class='line'>    api_key_required: "" =&gt; "0"
+</span><span class='line'>    authorization:    "" =&gt; "NONE"
+</span><span class='line'>    http_method:      "" =&gt; "GET"
+</span><span class='line'>    api_key_required: "" =&gt; "0"
+</span><span class='line'>    authorization:    "" =&gt; "NONE"
+</span><span class='line'>    http_method:      "" =&gt; "GET"
+</span><span class='line'>    resource_id:      "" =&gt; "${aws_api_gateway_resource.server_num.id}"
+</span><span class='line'>    rest_api_id:      "" =&gt; "${aws_api_gateway_rest_api.EB.id}"
+</span><span class='line'>
+</span><span class='line'>+ aws_api_gateway_method_response.ip_200
+</span><span class='line'>    http_method: "" =&gt; "GET"
+</span><span class='line'>    resource_id: "" =&gt; "${aws_api_gateway_resource.ip.id}"
+</span><span class='line'>    rest_api_id: "" =&gt; "${aws_api_gateway_rest_api.EB.id}"
+</span><span class='line'>    status_code: "" =&gt; "200"
+</span><span class='line'>
+</span><span class='line'>+ aws_api_gateway_method_response.ip_400
+</span><span class='line'>    http_method: "" =&gt; "GET"
+</span><span class='line'>    resource_id: "" =&gt; "${aws_api_gateway_resource.ip.id}"
+</span><span class='line'>    rest_api_id: "" =&gt; "${aws_api_gateway_rest_api.EB.id}"
+</span><span class='line'>    status_code: "" =&gt; "400"
+</span><span class='line'>
+</span><span class='line'>+ aws_api_gateway_method_response.server_num_200
+</span><span class='line'>    http_method: "" =&gt; "GET"
+</span><span class='line'>    resource_id: "" =&gt; "${aws_api_gateway_resource.server_num.id}"
+</span><span class='line'>    rest_api_id: "" =&gt; "${aws_api_gateway_rest_api.EB.id}"
+</span><span class='line'>    status_code: "" =&gt; "200"
+</span><span class='line'>
+</span><span class='line'>+ aws_api_gateway_method_response.server_num_400
+</span><span class='line'>    http_method: "" =&gt; "GET"
+</span><span class='line'>    resource_id: "" =&gt; "${aws_api_gateway_resource.server_num.id}"
+</span><span class='line'>    rest_api_id: "" =&gt; "${aws_api_gateway_rest_api.EB.id}"
+</span><span class='line'>    status_code: "" =&gt; "400"
+</span><span class='line'>
+</span><span class='line'>+ aws_api_gateway_resource.eb
+</span><span class='line'>    parent_id:   "" =&gt; "${aws_api_gateway_rest_api.EB.root_resource_id}"
+</span><span class='line'>    path:        "" =&gt; "&lt;computed&gt;"
+</span><span class='line'>    path_part:   "" =&gt; "eb"
+</span><span class='line'>    rest_api_id: "" =&gt; "${aws_api_gateway_rest_api.EB.id}"
+</span><span class='line'>
+</span><span class='line'>+ aws_api_gateway_resource.env_name
+</span><span class='line'>    parent_id:   "" =&gt; "${aws_api_gateway_resource.eb.id}"
+</span><span class='line'>    path:        "" =&gt; "&lt;computed&gt;"
+</span><span class='line'>    path_part:   "" =&gt; "{env_name}"
+</span><span class='line'>    rest_api_id: "" =&gt; "${aws_api_gateway_rest_api.EB.id}"
+</span><span class='line'>
+</span><span class='line'>+ aws_api_gateway_resource.ip
+</span><span class='line'>    parent_id:   "" =&gt; "${aws_api_gateway_resource.env_name.id}"
+</span><span class='line'>    path:        "" =&gt; "&lt;computed&gt;"
+</span><span class='line'>    path_part:   "" =&gt; "ip"
+</span><span class='line'>    rest_api_id: "" =&gt; "${aws_api_gateway_rest_api.EB.id}"
+</span><span class='line'>
+</span><span class='line'>+ aws_api_gateway_resource.server_num
+</span><span class='line'>    parent_id:   "" =&gt; "${aws_api_gateway_resource.ip.id}"
+</span><span class='line'>    path:        "" =&gt; "&lt;computed&gt;"
+</span><span class='line'>    path_part:   "" =&gt; "{server_num}"
+</span><span class='line'>    rest_api_id: "" =&gt; "${aws_api_gateway_rest_api.EB.id}"
+</span><span class='line'>
+</span><span class='line'>+ aws_api_gateway_rest_api.EB
+</span><span class='line'>    description:      "" =&gt; "get EB info"
+</span><span class='line'>    name:             "" =&gt; "EB"
+</span><span class='line'>    root_resource_id: "" =&gt; "&lt;computed&gt;"
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'>Plan: 18 to add, 0 to change, 0 to destroy.</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+<span class='line-number'>62</span>
+<span class='line-number'>63</span>
+<span class='line-number'>64</span>
+<span class='line-number'>65</span>
+<span class='line-number'>66</span>
+<span class='line-number'>67</span>
+<span class='line-number'>68</span>
+<span class='line-number'>69</span>
+<span class='line-number'>70</span>
+<span class='line-number'>71</span>
+<span class='line-number'>72</span>
+<span class='line-number'>73</span>
+<span class='line-number'>74</span>
+<span class='line-number'>75</span>
+<span class='line-number'>76</span>
+<span class='line-number'>77</span>
+<span class='line-number'>78</span>
+<span class='line-number'>79</span>
+<span class='line-number'>80</span>
+<span class='line-number'>81</span>
+<span class='line-number'>82</span>
+<span class='line-number'>83</span>
+<span class='line-number'>84</span>
+<span class='line-number'>85</span>
+<span class='line-number'>86</span>
+<span class='line-number'>87</span>
+<span class='line-number'>88</span>
+<span class='line-number'>89</span>
+<span class='line-number'>90</span>
+<span class='line-number'>91</span>
+<span class='line-number'>92</span>
+<span class='line-number'>93</span>
+<span class='line-number'>94</span>
+<span class='line-number'>95</span>
+<span class='line-number'>96</span>
+<span class='line-number'>97</span>
+<span class='line-number'>98</span>
+<span class='line-number'>99</span>
+<span class='line-number'>100</span>
+<span class='line-number'>101</span>
+<span class='line-number'>102</span>
+<span class='line-number'>103</span>
+<span class='line-number'>104</span>
+<span class='line-number'>105</span>
+<span class='line-number'>106</span>
+<span class='line-number'>107</span>
+<span class='line-number'>108</span>
+<span class='line-number'>109</span>
+<span class='line-number'>110</span>
+<span class='line-number'>111</span>
+<span class='line-number'>112</span>
+<span class='line-number'>113</span>
+<span class='line-number'>114</span>
+<span class='line-number'>115</span>
+<span class='line-number'>116</span>
+<span class='line-number'>117</span>
+<span class='line-number'>118</span>
+<span class='line-number'>119</span>
+<span class='line-number'>120</span>
+<span class='line-number'>121</span>
+<span class='line-number'>122</span>
+<span class='line-number'>123</span>
+<span class='line-number'>124</span>
+<span class='line-number'>125</span>
+<span class='line-number'>126</span>
+<span class='line-number'>127</span>
+<span class='line-number'>128</span>
+<span class='line-number'>129</span>
+<span class='line-number'>130</span>
+<span class='line-number'>131</span>
+<span class='line-number'>132</span>
+<span class='line-number'>133</span>
+<span class='line-number'>134</span>
+<span class='line-number'>135</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ terraform apply
+</span><span class='line'>aws_api_gateway_rest_api.EB: Creating...
+</span><span class='line'>  description:      "" =&gt; "get EB info"
+</span><span class='line'>  name:             "" =&gt; "EB"
+</span><span class='line'>  root_resource_id: "" =&gt; "&lt;computed&gt;"
+</span><span class='line'>aws_api_gateway_rest_api.EB: Creation complete
+</span><span class='line'>aws_api_gateway_resource.eb: Creating...
+</span><span class='line'>  parent_id:   "" =&gt; "k9x3d7qlhd"
+</span><span class='line'>  path:        "" =&gt; "&lt;computed&gt;"
+</span><span class='line'>  path_part:   "" =&gt; "eb"
+</span><span class='line'>  rest_api_id: "" =&gt; "mdsyn3w42a"
+</span><span class='line'>aws_api_gateway_resource.eb: Creation complete
+</span><span class='line'>aws_api_gateway_resource.env_name: Creating...
+</span><span class='line'>  parent_id:   "" =&gt; "nr2lkm"
+</span><span class='line'>  path:        "" =&gt; "&lt;computed&gt;"
+</span><span class='line'>  path_part:   "" =&gt; "{env_name}"
+</span><span class='line'>  rest_api_id: "" =&gt; "mdsyn3w42a"
+</span><span class='line'>aws_api_gateway_resource.env_name: Creation complete
+</span><span class='line'>aws_api_gateway_resource.ip: Creating...
+</span><span class='line'>  parent_id:   "" =&gt; "g29h7n"
+</span><span class='line'>  path:        "" =&gt; "&lt;computed&gt;"
+</span><span class='line'>  path_part:   "" =&gt; "ip"
+</span><span class='line'>  rest_api_id: "" =&gt; "mdsyn3w42a"
+</span><span class='line'>aws_api_gateway_resource.ip: Creation complete
+</span><span class='line'>aws_api_gateway_resource.server_num: Creating...
+</span><span class='line'>  parent_id:   "" =&gt; "sthj28"
+</span><span class='line'>  path:        "" =&gt; "&lt;computed&gt;"
+</span><span class='line'>  path_part:   "" =&gt; "{server_num}"
+</span><span class='line'>  rest_api_id: "" =&gt; "mdsyn3w42a"
+</span><span class='line'>aws_api_gateway_method.ip_get: Creating...
+</span><span class='line'>  api_key_required: "" =&gt; "0"
+</span><span class='line'>  authorization:    "" =&gt; "NONE"
+</span><span class='line'>  http_method:      "" =&gt; "GET"
+</span><span class='line'>  resource_id:      "" =&gt; "sthj28"
+</span><span class='line'>  rest_api_id:      "" =&gt; "mdsyn3w42a"
+</span><span class='line'>aws_api_gateway_method.ip_get: Creation complete
+</span><span class='line'>aws_api_gateway_method_response.ip_200: Creating...
+</span><span class='line'>  http_method: "" =&gt; "GET"
+</span><span class='line'>  resource_id: "" =&gt; "sthj28"
+</span><span class='line'>  rest_api_id: "" =&gt; "mdsyn3w42a"
+</span><span class='line'>  status_code: "" =&gt; "200"
+</span><span class='line'>aws_api_gateway_integration.ip_get: Creating...
+</span><span class='line'>  http_method:                        "" =&gt; "GET"
+</span><span class='line'>  integration_http_method:            "" =&gt; "POST"
+</span><span class='line'>  request_templates.#:                "" =&gt; "1"
+</span><span class='line'>  request_templates.application/json: "" =&gt; "{ \"env_name\": \"$input.params('env_name')\" }"
+</span><span class='line'>  resource_id:                        "" =&gt; "sthj28"
+</span><span class='line'>  rest_api_id:                        "" =&gt; "mdsyn3w42a"
+</span><span class='line'>  type:                               "" =&gt; "AWS"
+</span><span class='line'>  uri:                                "" =&gt; "arn:aws:apigateway:ap-northeast-1:lambda:path/2015-03-31/functions/arn:aws:lambda:ap-northeast-1:123456789012:function:eb_ip/invocations"
+</span><span class='line'>aws_api_gateway_resource.server_num: Creation complete
+</span><span class='line'>aws_api_gateway_method.server_num_get: Creating...
+</span><span class='line'>  api_key_required: "" =&gt; "0"
+</span><span class='line'>  authorization:    "" =&gt; "NONE"
+</span><span class='line'>  http_method:      "" =&gt; "GET"
+</span><span class='line'>  resource_id:      "" =&gt; "9w68fs"
+</span><span class='line'>  rest_api_id:      "" =&gt; "mdsyn3w42a"
+</span><span class='line'>aws_api_gateway_method_response.ip_200: Creation complete
+</span><span class='line'>aws_api_gateway_method_response.ip_400: Creating...
+</span><span class='line'>  http_method: "" =&gt; "GET"
+</span><span class='line'>  resource_id: "" =&gt; "sthj28"
+</span><span class='line'>  rest_api_id: "" =&gt; "mdsyn3w42a"
+</span><span class='line'>  status_code: "" =&gt; "400"
+</span><span class='line'>aws_api_gateway_integration_response.ip_get_200: Creating...
+</span><span class='line'>  http_method:                         "" =&gt; "GET"
+</span><span class='line'>  resource_id:                         "" =&gt; "sthj28"
+</span><span class='line'>  response_templates.#:                "" =&gt; "1"
+</span><span class='line'>  response_templates.application/json: "" =&gt; "$input.path('$')"
+</span><span class='line'>  rest_api_id:                         "" =&gt; "mdsyn3w42a"
+</span><span class='line'>  status_code:                         "" =&gt; "200"
+</span><span class='line'>aws_api_gateway_integration.ip_get: Creation complete
+</span><span class='line'>aws_api_gateway_method.server_num_get: Creation complete
+</span><span class='line'>aws_api_gateway_method_response.server_num_200: Creating...
+</span><span class='line'>  http_method: "" =&gt; "GET"
+</span><span class='line'>  resource_id: "" =&gt; "9w68fs"
+</span><span class='line'>  rest_api_id: "" =&gt; "mdsyn3w42a"
+</span><span class='line'>  status_code: "" =&gt; "200"
+</span><span class='line'>aws_api_gateway_integration.server_num_get: Creating...
+</span><span class='line'>  http_method:                        "" =&gt; "GET"
+</span><span class='line'>  integration_http_method:            "" =&gt; "POST"
+</span><span class='line'>  request_templates.#:                "" =&gt; "1"
+</span><span class='line'>  request_templates.application/json: "" =&gt; "{\n \"env_name\": \"$input.params('env_name')\",\n \"server_num\": \"$input.params('server_num')\" \n}"
+</span><span class='line'>  resource_id:                        "" =&gt; "9w68fs"
+</span><span class='line'>  rest_api_id:                        "" =&gt; "mdsyn3w42a"
+</span><span class='line'>  type:                               "" =&gt; "AWS"
+</span><span class='line'>  uri:                                "" =&gt; "arn:aws:apigateway:ap-northeast-1:lambda:path/2015-03-31/functions/arn:aws:lambda:ap-northeast-1:123456789012:function:eb_ip/invocations"
+</span><span class='line'>aws_api_gateway_integration_response.ip_get_200: Creation complete
+</span><span class='line'>aws_api_gateway_method_response.ip_400: Creation complete
+</span><span class='line'>aws_api_gateway_integration_response.ip_get_400: Creating...
+</span><span class='line'>  http_method:                         "" =&gt; "GET"
+</span><span class='line'>  resource_id:                         "" =&gt; "sthj28"
+</span><span class='line'>  response_templates.#:                "" =&gt; "1"
+</span><span class='line'>  response_templates.application/json: "" =&gt; "$input.path('$').errorMessage"
+</span><span class='line'>  rest_api_id:                         "" =&gt; "mdsyn3w42a"
+</span><span class='line'>  selection_pattern:                   "" =&gt; "[^0-9](.|\n)*"
+</span><span class='line'>  status_code:                         "" =&gt; "400"
+</span><span class='line'>aws_api_gateway_integration.server_num_get: Creation complete
+</span><span class='line'>aws_api_gateway_method_response.server_num_200: Creation complete
+</span><span class='line'>aws_api_gateway_method_response.server_num_400: Creating...
+</span><span class='line'>  http_method: "" =&gt; "GET"
+</span><span class='line'>  resource_id: "" =&gt; "9w68fs"
+</span><span class='line'>  rest_api_id: "" =&gt; "mdsyn3w42a"
+</span><span class='line'>  status_code: "" =&gt; "400"
+</span><span class='line'>aws_api_gateway_method_response.server_num_400: Creation complete
+</span><span class='line'>aws_api_gateway_integration_response.ip_get_400: Creation complete
+</span><span class='line'>aws_api_gateway_integration_response.server_num_get_200: Creating...
+</span><span class='line'>  http_method:                         "" =&gt; "GET"
+</span><span class='line'>  resource_id:                         "" =&gt; "9w68fs"
+</span><span class='line'>  response_templates.#:                "" =&gt; "1"
+</span><span class='line'>  response_templates.application/json: "" =&gt; "$input.path('$')"
+</span><span class='line'>  rest_api_id:                         "" =&gt; "mdsyn3w42a"
+</span><span class='line'>  status_code:                         "" =&gt; "200"
+</span><span class='line'>aws_api_gateway_integration_response.server_num_get_200: Creation complete
+</span><span class='line'>aws_api_gateway_integration_response.server_num_get_400: Creating...
+</span><span class='line'>  http_method:                         "" =&gt; "GET"
+</span><span class='line'>  resource_id:                         "" =&gt; "9w68fs"
+</span><span class='line'>  response_templates.#:                "" =&gt; "1"
+</span><span class='line'>  response_templates.application/json: "" =&gt; "$input.path('$').errorMessage"
+</span><span class='line'>  rest_api_id:                         "" =&gt; "mdsyn3w42a"
+</span><span class='line'>  selection_pattern:                   "" =&gt; "[^0-9](.|\n)*"
+</span><span class='line'>  status_code:                         "" =&gt; "400"
+</span><span class='line'>aws_api_gateway_integration_response.server_num_get_400: Creation complete
+</span><span class='line'>aws_api_gateway_deployment.eb_deployment: Creating...
+</span><span class='line'>  rest_api_id: "" =&gt; "mdsyn3w42a"
+</span><span class='line'>  stage_name:  "" =&gt; "prod"
+</span><span class='line'>aws_api_gateway_deployment.eb_deployment: Creation complete
+</span><span class='line'>
+</span><span class='line'>Apply complete! Resources: 18 added, 0 changed, 0 destroyed.
+</span><span class='line'>
+</span><span class='line'>The state of your infrastructure has been saved to the path
+</span><span class='line'>below. This state is required to modify and destroy your
+</span><span class='line'>infrastructure, so keep it safe. To inspect the complete state
+</span><span class='line'>use the `terraform show` command.
+</span><span class='line'>
+</span><span class='line'>State path: terraform.tfstate</span></code></pre></td></tr></table></div></figure>
+
+
+<p>できた！</p>
+
+<h3>考察</h3>
+
+<ul>
+<li>依存関係</li>
+</ul>
+
+
+<p>リソースを作成するのに並列処理が出来なかったり、依存関係がまだうまく対応できてないので、<code>depends_on</code>を駆使する必要があるのが若干まだ面倒。ない場合は、<code>BadRequestException: Unable to complete operation due to concurrent modification. Please try again later</code>や<code>BadRequestException: No integration defined for method status code: 400</code>等のエラーが発生する。</p>
+
+<ul>
+<li>Integration/Method Response Headers</li>
+</ul>
+
+
+<p>CORS等の設定するする際には<code>Access-Control-Allow-Origin</code>等のヘッダーをMethodやIntegrationのResponse Headerに設定をする必要があるけど、<code>.</code>の扱い問題で未対応（<a href="https://github.com/hashicorp/terraform/issues/2143">#2143</a>）。それまではawscliで以下のようにすると事で回避。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>aws apigateway update-integration-response --rest-api-id $rest_id --resource-id $appo_resource_id --http-method OPTIONS --status-code 200 --patch-operations op=add,path="/responseParameters/method.response.header.Access-Control-Allow-Headers",value="\"'Content-Type,X-Amz-Date,Authorization,X-Api-Key, Access-Control-Allow-Origin, x-amz-security-token'\""</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Issueはこの前上げたので（<a href="https://github.com/hashicorp/terraform/issues/6092">#6092</a>）、ウォッチしておくと良い。</p>
+
+<ul>
+<li>Infrastructure as Code</li>
+</ul>
+
+
+<p>API Gatewayは<code>resource</code>, <code>method</code>, <code>integration</code>, <code>method response</code>、<code>integration response</code>等を記述しないといけないので、どうしてもコードが多くになってしまう。場合によってはSwaggerでやった方が楽だったりするかも。その場合は<strong>Infrastructure as YAML</strong>になってしまう。。また、YAMLは整形してからimportする必要があったりするので、その辺はトレードオフかな。</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2016/03/31/using-terraform-dev-versions/">Terraformで特定のブランチを使う</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2016-03-31T16:38:00+09:00" pubdate data-updated="true">Mar 31<span>st</span>, 2016</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>HashiCorpの<a href="https://terraform.io/">Terraform</a>の開発は非常に活発であり日々進化していますが、リリースまでに待てない実装中や実験的な機能を使いたい場合は、自分で特定のブランチを変更・ビルドして使えます。</p>
+
+<h3>リポジトリ取得</h3>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ go get github.com/hashicorp/terraform
+</span><span class='line'>$ cd $GOPATH/src/github.com/hashicorp/terraform
+</span><span class='line'>$ git checkout new-aws-feature</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>commit hash付与</h3>
+
+<p>どのコミットリビジョンを使っているか簡単に分かるように、versionにgitのcommit hashを指定。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>sed -i -e "s/dev/dev - `git rev-parse --short HEAD`/" terraform/version.go</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>ビルド</h3>
+
+<p>make devすると全pluginやproviderがコンパイルされ、非常に時間がかかる（特に最近は対応範囲の広がりが著しく、生成されるバイナリの総容量が増加傾向）。
+よって、特定のproviderを指定して時間短縮する。以下はaws providerで作業している場合。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ make core-dev plugin-dev PLUGIN=provider-aws
+</span><span class='line'>==&gt; Checking that code complies with gofmt requirements...
+</span><span class='line'>/Users/ijin/golang/bin/stringer
+</span><span class='line'>go generate $(go list ./... | grep -v /vendor/)
+</span><span class='line'>go install github.com/hashicorp/terraform
+</span><span class='line'>go install github.com/hashicorp/terraform/builtin/bins/provider-aws
+</span><span class='line'>mv /Users/ijin/golang/bin/provider-aws /Users/ijin/golang/bin/terraform-provider-aws</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>確認</h3>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ terraform version
+</span><span class='line'>Terraform v0.6.15-dev - 123abcd</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Happy Terraforming!</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -1238,421 +1986,6 @@ template urlは<code>https://s3-ap-northeast-1.amazonaws.com/ijin/aws/lambda/che
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2015/08/23/yapc-asia-tokyo-2015/">YAPC::Asia Tokyo 2015に参加してきた</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2015-08-23T15:27:00+09:00" pubdate data-updated="true">Aug 23<span>rd</span>, 2015</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>例年この時期は海外にいるので、なかなか行けなかったYAPC::Asia Tokyo 2015にやっと参加してきた。</p>
-
-<p>スケジュール上、今年は参加できるぞって意気込んでいたら、まさかのSold Out&#8230;</p>
-
-<p>それをtwitter上で嘆いていたら、<a href="https://twitter.com/kenjiskywalker">@kenjiskywalker</a>さんから救いの手が！</p>
-
-<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr"><a href="https://twitter.com/ijin">@ijin</a> Tシャツ付きの前売り券購入したのですが、スピーカー枠で参加できそうなのでお譲りしましょうか？</p>&mdash; kenjiskywalker (@kenjiskywalker) <a href="https://twitter.com/kenjiskywalker/status/619079064880463872">July 9, 2015</a></blockquote>
-<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
-
-
-<p>感謝！</p>
-
-<p>さて、一口コメント</p>
-
-<p><strong>Consulと自作OSSを活用した100台規模のWebサービス運用</strong>] - <a href="https://twitter.com/fujiwara">@fujiwara</a></p>
-
-<p><a href="https://github.com/sorah/mamiya">mamiya</a>や<a href="http://aws.amazon.com/codedeploy/">AWS CodeDeploy</a>にインスパイアされた<a href="https://github.com/fujiwara/stretcher">stretcher</a>を使ったイベントベースのdeploy周りが面白かった。s3からの取得失敗時の処理は考えてないといけない。</p>
-
-<p><strong>Conway&#8217;s Law of Distributed Work</strong> - Casey West</p>
-
-<p>最近はリモートワークが殆どなので、なかなか共感できる部分が多かった。コミュニケーション大事。</p>
-
-<p><strong>大規模でも小中規模サービスでも捗る microservices な Web サービスのつくりかた</strong> - <a href="https://twitter.com/yappo">@Yappo</a></p>
-
-<p>どのタイミングでコンポーネントの分割をするか。ちゃんと設計しようねって話</p>
-
-<p><strong>ISUCONの勝ち方</strong> - <a href="https://twitter.com/kazeburo">@kazeburo</a></p>
-
-<p>ポイントがよく纏められていて、うちらのチームでも多くを実践していた。まだ勝ててないけど。
-CPUやB+ Treeの気持ちになって考える事が大事。</p>
-
-<p><strong>我々はどのように冗長化を失敗したのか</strong> - <a href="https://twitter.com/kenjiskywalker">@kenjiskywalker</a></p>
-
-<p>Networkが不安定だと、様々な冗長化に仕組みがうまく作動しない。検証はProductionと同じ環境でやりましょう。</p>
-
-<p><strong>Profiling &amp; Optimizing in Go</strong> - Brad Fitzpatrick</p>
-
-<p>Bradさんのライブコーディング。奥が深かった。</p>
-
-<p><strong>LT</strong></p>
-
-<p>どれもこれもハイレベル！</p>
-
-<p>特に素晴らしかったのが、テンポの良い<a href="https://twitter.com/yoku0825">@yoku0825</a>さんの<strong>MySQL 5.7の罠があなたを狙っている</strong> と超早業を披露した<a href="http://conbu.net">CONBU</a>さんの<strong>CONBUの道具箱</strong></p>
-
-<iframe allowfullscreen="" frameborder="0" height="355" marginheight="0" marginwidth="0" scrolling="no" src="//www.slideshare.net/slideshow/embed_code/key/dJ6c2p0tc7QM3B" style="border-width: 1px; border: 1px solid #CCC; margin-bottom: 5px; max-width: 100%;" width="425"> </iframe>
-
-
-<p> <br /></p>
-
-<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">突然目の前に無線APが生えてきた <a href="https://twitter.com/hashtag/yapcasia?src=hash">#yapcasia</a> <a href="http://t.co/UWcSzvRv08">pic.twitter.com/UWcSzvRv08</a></p>&mdash; ぷりんたいは求職中です、 (@spacepro_be) <a href="https://twitter.com/spacepro_be/status/635004222291902464">August 22, 2015</a></blockquote>
-<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
-
-
-<p>いやー、非常に楽しめました。運営の皆様、ありがとうございました！！</p>
-
-<p>さて、これから出国ー。</p>
-</div>
-  
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2015/08/06/github-to-lambda-to-slack/">GitHubのeventをLambdaで処理してSlackへ通知</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2015-08-06T01:46:00+09:00" pubdate data-updated="true">Aug 6<span>th</span>, 2015</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>ちょっと前にGitHubのeventを<a href="https://aws.amazon.com/lambda/">AWS Lambda</a>で処理して、GitHubやSlackのAPIを叩く仕組みを作ったので、メモ。</p>
-
-<p>材料</p>
-
-<ul>
-<li>Github</li>
-<li>SNS</li>
-<li>KMS</li>
-<li>Lambda</li>
-<li>Slack</li>
-</ul>
-
-
-<p>やりたいことはこんな感じ。</p>
-
-<p><img src="https://lh3.googleusercontent.com/-aep_hTkw5Mo/VjkHcm612yI/AAAAAAAABbo/00aae3JXUkc/s548-Ic42/github%25252Blambda%25252Bslack%252520%2525281%252529.png"></p>
-
-<p>あるGitHubリポジトリのissuesに特定のコメントが書き込まれると、そのユーザはプロジェクトのteamに自動で追加されて、Slackへ通知が流れるというモノです。</p>
-
-<h2>SNS</h2>
-
-<p>まずは媒介となるSNSの作成。</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>$ aws sns create-topic --name github --region ap-northeast-1
-</span><span class='line'>{
-</span><span class='line'>    "TopicArn": "arn:aws:sns:ap-northeast-1:123456789012:github"
-</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
-
-
-<p>次にSNSに対してpublishできるIAM userを作成</p>
-
-<p>IAM Policy</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>{
-</span><span class='line'>  "Version": "2012-10-17",
-</span><span class='line'>  "Statement": [
-</span><span class='line'>    {
-</span><span class='line'>      "Action": [
-</span><span class='line'>        "sns:Publish"
-</span><span class='line'>      ],
-</span><span class='line'>      "Sid": "Stmt0000000000000",
-</span><span class='line'>      "Resource": [
-</span><span class='line'>        "arn:aws:sns:ap-northeast-1:123456789012:github"
-</span><span class='line'>      ],
-</span><span class='line'>      "Effect": "Allow"
-</span><span class='line'>    }
-</span><span class='line'>  ]
-</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
-
-
-<h2>GitHub</h2>
-
-<ul>
-<li>organization: <code>my_org</code></li>
-<li>repository: <code>test</code></li>
-<li>team: <code>reader</code></li>
-</ul>
-
-
-<h3>SNS連携</h3>
-
-<p><em>Webhooks &amp; Services</em> からAmazonSNSと連携</p>
-
-<p><img src="https://lh3.googleusercontent.com/u4I9Z_Ing9YzhmVCQhMACwYDVIJxJM7C-aDmyMsNL3o=w328-h190-no"></p>
-
-<p>AWS KEYには先ほど作成したIAMユーザのを利用。SNS topicのarnにはregionが書かれているにも関わらず、GitHubの方では明示的に指定が必要。</p>
-
-<p><img src="https://lh3.googleusercontent.com/kppZQx_RdhyC11LB7a0cPtppDUiKgfZBm6laYvRG3zA=w382-h289-no"></p>
-
-<h3>通知するeventの有効化</h3>
-
-<p>さて、GitHubではSNSの場合、<a href="https://api.github.com/hooks">hooksのjson</a>にある通り、<code>push</code>時のeventにしか対応していないので、</p>
-
-<figure class='code'><figcaption><span>hooks </span><a href='https://api.github.com/hooks'>link</a></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class='json'><span class='line'><span class="s2">&quot;name&quot;</span><span class="err">:</span> <span class="s2">&quot;amazonsns&quot;</span><span class="err">,</span>
-</span><span class='line'><span class="s2">&quot;events&quot;</span><span class="err">:</span> <span class="p">[</span>
-</span><span class='line'>  <span class="s2">&quot;push&quot;</span>
-</span><span class='line'><span class="p">]</span><span class="err">,</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>GitHubの<a href="https://developer.github.com/v3/orgs/hooks/">Webhook API</a>に従って<code>issue_comment</code>を追加してやります。</p>
-
-<p>先ほどのSNS連携のhook idを取得するには<code>GET /orgs/:org/hooks</code></p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nb">export </span><span class="nv">HOOK_ID</span><span class="o">=</span><span class="k">$(</span>curl -H <span class="s1">&#39;Uer-Agent: ijin&#39;</span> -X GET -s -H <span class="s2">&quot;Authorization: token xxxxxxxxxx&quot;</span> <span class="se">\</span>
-</span><span class='line'>https://api.github.com/repos/my_org/test/hooks | jq <span class="s1">&#39;.[].id&#39;</span><span class="k">)</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>編集するには<code>PATCH /orgs/:org/hooks/:id</code></p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>curl -H <span class="s1">&#39;Uer-Agent: ijin&#39;</span> -X PATCH -s -H <span class="s2">&quot;Authorization: token xxxxxxxxxx&quot;</span> <span class="se">\</span>
-</span><span class='line'>https://api.github.com/repos/my_org/test/hooks/<span class="nv">$HOOK_ID</span> -d <span class="s1">&#39;{&quot;add_events&quot;: [&quot;issue_comment&quot;]}&#39;</span> | jq .
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Web UIからは分からないので、ついでに<code>reader</code> teamのIDも取得しておく</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>curl -H <span class="s1">&#39;Uer-Agent: ijin&#39;</span> -X GET -s -H <span class="s2">&quot;Authorization: token xxxxxxxxxx&quot;</span> <span class="se">\</span>
-</span><span class='line'>https://api.github.com/orgs/my_org/teams | jq <span class="s1">&#39;.[] | select(.name==&quot;reader&quot;)&#39;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>（※）User-Agentは<a href="https://developer.github.com/v3/#user-agent-required">必須</a></p>
-
-<p>これで、誰かがコメントをした時にもSNSが飛びます。</p>
-
-<h2>KMS</h2>
-
-<p>lambdaでは以下の認証情報を使うので、予めKMSで暗号化しておく。</p>
-
-<ul>
-<li>GitHub token</li>
-<li>Slack webhook</li>
-</ul>
-
-
-<p>rubyで暗号化する場合</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="nb">require</span> <span class="s1">&#39;aws-sdk&#39;</span>
-</span><span class='line'><span class="nb">require</span> <span class="s1">&#39;base64&#39;</span>
-</span><span class='line'><span class="n">kms</span> <span class="o">=</span> <span class="ss">Aws</span><span class="p">:</span><span class="ss">:KMS</span><span class="o">::</span><span class="no">Client</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="ss">region</span><span class="p">:</span> <span class="s1">&#39;us-east-1&#39;</span><span class="p">)</span>
-</span><span class='line'><span class="no">Base64</span><span class="o">.</span><span class="n">encode64</span> <span class="n">kms</span><span class="o">.</span><span class="n">encrypt</span><span class="p">(</span><span class="n">key_id</span><span class="p">:</span> <span class="s2">&quot;alias/ijin&quot;</span><span class="p">,</span> <span class="ss">plaintext</span><span class="p">:</span> <span class="s1">&#39;my plain text code&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">ciphertext_blob</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>javascriptの場合</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">var</span> <span class="nx">aws</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;aws-sdk&#39;</span><span class="p">);</span>
-</span><span class='line'><span class="kd">var</span> <span class="nx">kms</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">aws</span><span class="p">.</span><span class="nx">KMS</span><span class="p">({</span> <span class="nx">region</span><span class="o">:</span> <span class="s1">&#39;us-east-1&#39;</span> <span class="p">});</span>
-</span><span class='line'><span class="kd">var</span> <span class="nx">text</span> <span class="o">=</span> <span class="s1">&#39;my plain text code&#39;</span><span class="p">;</span>
-</span><span class='line'><span class="nx">kms</span><span class="p">.</span><span class="nx">encrypt</span><span class="p">({</span><span class="nx">KeyId</span><span class="o">:</span> <span class="s1">&#39;alias/ijin&#39;</span><span class="p">,</span> <span class="nx">Plaintext</span><span class="o">:</span> <span class="nx">text</span><span class="p">},</span> <span class="kd">function</span><span class="p">(</span><span class="nx">err</span><span class="p">,</span> <span class="nx">data</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>  <span class="k">if</span> <span class="p">(</span><span class="nx">err</span><span class="p">)</span> <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">err</span><span class="p">,</span> <span class="nx">err</span><span class="p">.</span><span class="nx">stack</span><span class="p">);</span>
-</span><span class='line'>  <span class="k">else</span> <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">data</span><span class="p">.</span><span class="nx">CiphertextBlob</span><span class="p">.</span><span class="nx">toString</span><span class="p">(</span><span class="s1">&#39;base64&#39;</span><span class="p">));</span>
-</span><span class='line'><span class="p">});</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>こうしておくと、SCMに入れても安心。</p>
-
-<p>また、KMSキーの実行権限もlambdaのroleに紐づけておく。</p>
-
-<p><img src="https://lh3.googleusercontent.com/oMHQ76XC7RQUCR_fEo9JyaMhPKSbnIdhCzjIWurEJ9c=w542-h358-no"></p>
-
-<h2>Lambda</h2>
-
-<p>Lambda function作成時にはSNSをevent sourceとして指定。</p>
-
-<p><img src="https://lh3.googleusercontent.com/uDXkEVLrXT1BdUSbiMu3v5lnwTqCoXOkv_nu07XVxkk=w555-h235-no"></p>
-
-<p>(※) KMSは現在us-eastにしかないので、そこ以外のregionでlambdaを実行する場合は、<code>timeout</code>は若干長めに指定して置くと良さげ</p>
-
-<p>コードはこんな感じ。</p>
-
-<ol>
-<li>GitHubからSNS hookを受け取って</li>
-<li>コメントした内容が<code>join</code>の場合</li>
-<li>KMSによってGitHubのtokenを復号化し</li>
-<li>そのユーザをteamへ追加する</li>
-<li>その後、別lambda functionでslackへ通知する</li>
-</ol>
-
-
-<div><script src='https://gist.github.com/ef105e192a030571d83f.js?file='></script>
-<noscript><pre><code></code></pre></noscript></div>
-
-
-
-
-<div><script src='https://gist.github.com/f83e33a6ae0acd83902a.js?file='></script>
-<noscript><pre><code></code></pre></noscript></div>
-
-
-<p>nodeのlibraryを使うともっとスッキリ書けたけど、1 function 1 fileで纏めたかったのでやや冗長なコードになっちゃいました。。</p>
-
-<h2>実行</h2>
-
-<p>GitHubでコメント</p>
-
-<p><img src="https://lh3.googleusercontent.com/KY7fwR-laXAJBQhJFv9VKzo_ydWFzeKep0G-3kgS0mM=w388-h128-no"></p>
-
-<p>Lambda発動</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="mi">2015</span><span class="o">-</span><span class="mi">08</span><span class="o">-</span><span class="mi">11</span><span class="nx">T15</span><span class="o">:</span><span class="mi">42</span><span class="o">:</span><span class="mf">53.108</span><span class="nx">Z</span>   <span class="nx">a09e3c80</span><span class="o">-</span><span class="mi">403</span><span class="nx">f</span><span class="o">-</span><span class="mi">1</span><span class="nx">e15</span><span class="o">-</span><span class="nx">bbb5</span><span class="o">-</span><span class="mi">55</span><span class="nx">b693433c0e</span>    <span class="nx">user</span><span class="o">:</span> <span class="nx">ijin2</span>
-</span><span class='line'><span class="mi">2015</span><span class="o">-</span><span class="mi">08</span><span class="o">-</span><span class="mi">11</span><span class="nx">T15</span><span class="o">:</span><span class="mi">42</span><span class="o">:</span><span class="mf">53.108</span><span class="nx">Z</span>  <span class="nx">a09e3c80</span><span class="o">-</span><span class="mi">403</span><span class="nx">f</span><span class="o">-</span><span class="mi">1</span><span class="nx">e15</span><span class="o">-</span><span class="nx">bbb5</span><span class="o">-</span><span class="mi">55</span><span class="nx">b693433c0e</span>    <span class="nx">comment</span><span class="o">:</span> <span class="nx">join</span>
-</span><span class='line'><span class="mi">2015</span><span class="o">-</span><span class="mi">08</span><span class="o">-</span><span class="mi">11</span><span class="nx">T15</span><span class="o">:</span><span class="mi">42</span><span class="o">:</span><span class="mf">55.417</span><span class="nx">Z</span>  <span class="nx">a09e3c80</span><span class="o">-</span><span class="mi">403</span><span class="nx">f</span><span class="o">-</span><span class="mi">1</span><span class="nx">e15</span><span class="o">-</span><span class="nx">bbb5</span><span class="o">-</span><span class="mi">55</span><span class="nx">b693433c0e</span>    <span class="nx">status</span> <span class="nx">code</span><span class="o">:</span> <span class="mi">200</span>
-</span><span class='line'><span class="mi">2015</span><span class="o">-</span><span class="mi">08</span><span class="o">-</span><span class="mi">11</span><span class="nx">T15</span><span class="o">:</span><span class="mi">42</span><span class="o">:</span><span class="mf">55.418</span><span class="nx">Z</span>  <span class="nx">a09e3c80</span><span class="o">-</span><span class="mi">403</span><span class="nx">f</span><span class="o">-</span><span class="mi">1</span><span class="nx">e15</span><span class="o">-</span><span class="nx">bbb5</span><span class="o">-</span><span class="mi">55</span><span class="nx">b693433c0e</span>    <span class="nx">response</span><span class="o">:</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="s2">&quot;state&quot;</span><span class="o">:</span> <span class="s2">&quot;pending&quot;</span><span class="p">,</span>
-</span><span class='line'>    <span class="s2">&quot;url&quot;</span><span class="o">:</span> <span class="s2">&quot;https://api.github.com/teams/1234567/memberships/ijin2&quot;</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'><span class="mi">2015</span><span class="o">-</span><span class="mi">08</span><span class="o">-</span><span class="mi">11</span><span class="nx">T15</span><span class="o">:</span><span class="mi">42</span><span class="o">:</span><span class="mf">55.418</span><span class="nx">Z</span>  <span class="nx">a09e3c80</span><span class="o">-</span><span class="mi">403</span><span class="nx">f</span><span class="o">-</span><span class="mi">1</span><span class="nx">e15</span><span class="o">-</span><span class="nx">bbb5</span><span class="o">-</span><span class="mi">55</span><span class="nx">b693433c0e</span>    <span class="nx">Added</span> <span class="nx">to</span> <span class="nx">the</span> <span class="nx">team</span>
-</span><span class='line'><span class="nx">END</span> <span class="nx">RequestId</span><span class="o">:</span> <span class="nx">a09e3c80</span><span class="o">-</span><span class="mi">403</span><span class="nx">f</span><span class="o">-</span><span class="mi">1</span><span class="nx">e15</span><span class="o">-</span><span class="nx">bbb5</span><span class="o">-</span><span class="mi">55</span><span class="nx">b693433c0e</span>
-</span><span class='line'><span class="nx">REPORT</span> <span class="nx">RequestId</span><span class="o">:</span> <span class="nx">a09e3c80</span><span class="o">-</span><span class="mi">403</span><span class="nx">f</span><span class="o">-</span><span class="mi">1</span><span class="nx">e15</span><span class="o">-</span><span class="nx">bbb5</span><span class="o">-</span><span class="mi">55</span><span class="nx">b693433c0e</span> <span class="nx">Duration</span><span class="o">:</span> <span class="mf">5211.48</span> <span class="nx">ms</span> <span class="nx">Billed</span> <span class="nx">Duration</span><span class="o">:</span> <span class="mi">5300</span> <span class="nx">ms</span> <span class="nx">Memory</span> <span class="nx">Size</span><span class="o">:</span> <span class="mi">128</span> <span class="nx">MB</span>  <span class="nx">Max</span> <span class="nx">Memory</span> <span class="nx">Used</span><span class="o">:</span> <span class="mi">14</span> <span class="nx">MB</span>   
-</span></code></pre></td></tr></table></div></figure>
-
-
-
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="mi">2015</span><span class="o">-</span><span class="mi">08</span><span class="o">-</span><span class="mi">11</span><span class="nx">T15</span><span class="o">:</span><span class="mi">42</span><span class="o">:</span><span class="mf">56.058</span><span class="nx">Z</span>   <span class="nx">a25c66fc</span><span class="o">-</span><span class="mi">403</span><span class="nx">f</span><span class="o">-</span><span class="mi">11</span><span class="nx">e5</span><span class="o">-</span><span class="nx">b291</span><span class="o">-</span><span class="mi">25</span><span class="nx">d4ee441689</span>    <span class="nx">Received</span> <span class="nx">event</span><span class="o">:</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="s2">&quot;username&quot;</span><span class="o">:</span> <span class="s2">&quot;ijin2&quot;</span><span class="p">,</span>
-</span><span class='line'>    <span class="s2">&quot;icon_url&quot;</span><span class="o">:</span> <span class="s2">&quot;https://avatars.githubusercontent.com/u/12809425?v=3&quot;</span><span class="p">,</span>
-</span><span class='line'>    <span class="s2">&quot;text&quot;</span><span class="o">:</span> <span class="s2">&quot;Added to the team&quot;</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'><span class="mi">2015</span><span class="o">-</span><span class="mi">08</span><span class="o">-</span><span class="mi">11</span><span class="nx">T15</span><span class="o">:</span><span class="mi">42</span><span class="o">:</span><span class="mf">58.310</span><span class="nx">Z</span>  <span class="nx">a25c66fc</span><span class="o">-</span><span class="mi">403</span><span class="nx">f</span><span class="o">-</span><span class="mi">1</span><span class="nx">e15</span><span class="o">-</span><span class="nx">b291</span><span class="o">-</span><span class="mi">25</span><span class="nx">d4ee441689</span>    <span class="mi">200</span>
-</span><span class='line'><span class="mi">2015</span><span class="o">-</span><span class="mi">08</span><span class="o">-</span><span class="mi">11</span><span class="nx">T15</span><span class="o">:</span><span class="mi">42</span><span class="o">:</span><span class="mf">58.311</span><span class="nx">Z</span>  <span class="nx">a25c66fc</span><span class="o">-</span><span class="mi">403</span><span class="nx">f</span><span class="o">-</span><span class="mi">1</span><span class="nx">e15</span><span class="o">-</span><span class="nx">b291</span><span class="o">-</span><span class="mi">25</span><span class="nx">d4ee441689</span>    <span class="nx">ok</span>
-</span><span class='line'><span class="mi">2015</span><span class="o">-</span><span class="mi">08</span><span class="o">-</span><span class="mi">11</span><span class="nx">T15</span><span class="o">:</span><span class="mi">42</span><span class="o">:</span><span class="mf">58.311</span><span class="nx">Z</span>  <span class="nx">a25c66fc</span><span class="o">-</span><span class="mi">403</span><span class="nx">f</span><span class="o">-</span><span class="mi">1</span><span class="nx">e15</span><span class="o">-</span><span class="nx">b291</span><span class="o">-</span><span class="mi">25</span><span class="nx">d4ee441689</span>    <span class="nx">Successfully</span> <span class="nx">posted</span> <span class="nx">to</span> <span class="nx">Slack</span><span class="o">!</span>
-</span><span class='line'><span class="nx">END</span> <span class="nx">RequestId</span><span class="o">:</span> <span class="nx">a25c66fc</span><span class="o">-</span><span class="mi">403</span><span class="nx">f</span><span class="o">-</span><span class="mi">11</span><span class="nx">e5</span><span class="o">-</span><span class="nx">b291</span><span class="o">-</span><span class="mi">25</span><span class="nx">d4ee441689</span>
-</span><span class='line'><span class="nx">REPORT</span> <span class="nx">RequestId</span><span class="o">:</span> <span class="nx">a25c66fc</span><span class="o">-</span><span class="mi">403</span><span class="nx">f</span><span class="o">-</span><span class="mi">1</span><span class="nx">e15</span><span class="o">-</span><span class="nx">b291</span><span class="o">-</span><span class="mi">25</span><span class="nx">d4ee441689</span> <span class="nx">Duration</span><span class="o">:</span> <span class="mf">2268.06</span> <span class="nx">ms</span> <span class="nx">Billed</span> <span class="nx">Duration</span><span class="o">:</span> <span class="mi">2300</span> <span class="nx">ms</span> <span class="nx">Memory</span> <span class="nx">Size</span><span class="o">:</span> <span class="mi">128</span> <span class="nx">MB</span>  <span class="nx">Max</span> <span class="nx">Memory</span> <span class="nx">Used</span><span class="o">:</span> <span class="mi">14</span> <span class="nx">MB</span>   
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>teamへの追加（招待）</p>
-
-<p><img src="https://lh3.googleusercontent.com/lzamiiNraeHYD7FI6rrb8-403hxjzVRrAqGG6k3sBcc=w474-h191-no"></p>
-
-<p>Slackへ通知</p>
-
-<p><img src="https://lh3.googleusercontent.com/EeEiHydBDc29YhVI6MBUcdj1WUzMXnf_Sis3U-URqhw=w388-h147-no"></p>
-
-<h2>結論</h2>
-
-<p>簡単にできますね。実はこんな風に作っちゃった2週間後ぐらいにAWSの人も似たような<a href="https://aws.amazon.com/blogs/compute/dynamic-github-actions-with-aws-lambda/">ブログ</a>を書いていた事を発見しましたが。まあ、こっちはKMSとSlack使ってるので。。</p>
-
-<p>後、KMSのアイコンが欲しい！</p>
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/blog/page/2/">&larr; Older</a>
@@ -1666,6 +1999,14 @@ CPUやB+ Treeの気持ちになって考える事が大事。</p>
     <section>
   <h1>Recent Posts</h1>
   <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2016/04/28/terraforming-api-gatewways/">TerraformでAPI Gatewway</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2016/03/31/using-terraform-dev-versions/">Terraformで特定のブランチを使う</a>
+      </li>
     
       <li class="post">
         <a href="/blog/2016/02/18/ssh-and-git-on-aws-lambda/">LambdaでSSHやGitを使ってみよう</a>
@@ -1697,14 +2038,6 @@ CPUやB+ Treeの気持ちになって考える事が大事。</p>
     
       <li class="post">
         <a href="/blog/2015/09/27/isucon5-qualifier/">ISUCON5の予選に記念参加してきた</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2015/08/23/yapc-asia-tokyo-2015/">YAPC::Asia Tokyo 2015に参加してきた</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2015/08/06/github-to-lambda-to-slack/">GitHubのeventをLambdaで処理してSlackへ通知</a>
       </li>
     
   </ul>

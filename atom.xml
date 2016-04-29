@@ -4,7 +4,7 @@
   <title><![CDATA[@ijin]]></title>
   <link href="http://ijin.github.io/atom.xml" rel="self"/>
   <link href="http://ijin.github.io/"/>
-  <updated>2016-02-19T09:41:36+09:00</updated>
+  <updated>2016-04-29T12:18:11+09:00</updated>
   <id>http://ijin.github.io/</id>
   <author>
     <name><![CDATA[Michael H. Oshita]]></name>
@@ -12,6 +12,700 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[TerraformでAPI Gatewway]]></title>
+    <link href="http://ijin.github.io/blog/2016/04/28/terraforming-api-gatewways/"/>
+    <updated>2016-04-28T18:01:00+09:00</updated>
+    <id>http://ijin.github.io/blog/2016/04/28/terraforming-api-gatewways</id>
+    <content type="html"><![CDATA[<p>つい先日、<a href="https://terraform.io/">Terraform</a>でずっと気になっていたAmazon API Gatewayの<code>selection_pattern</code>の<a href="https://github.com/hashicorp/terraform/pull/5893">pull request</a>がmergeされました。</p>
+
+<p>今まではAPI GWをInfrastructure As Codeで構築するにあたって複数のintegration responseパターンを返却できないのがネックだったのが、これでようやく解決。途中までTerraformで作って、その後に以下のようにawscliで追加するというちょっと煩わしい手順でした。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>REST_ID=$(aws apigateway get-rest-apis --query 'items[?name==`my_api`].id' --output text)
+</span><span class='line'>RESOURCE_ID=$(aws apigateway get-resources --rest-api-id $REST_ID --query 'items[?path==`/my_path`].id' --output text)
+</span><span class='line'>aws apigateway put-integration-response --rest-api-id $REST_ID --resource-id $RESOURCE_ID --http-method GET --status-code 400 --response-templates '{"application/json": "$input.path('$').errorMessage"}' --selection-pattern "[^0-9](.|\n)*" </span></code></pre></td></tr></table></div></figure>
+
+
+<p>というわけで、早速実験。お題は以前<a href="http://ijin.github.io/blog/2015/11/04/elastic-beanstalk-easy-ssh/">紹介した</a>Elastic Beanstalk ssh用のAPI GWで。</p>
+
+<h3>Terraform version</h3>
+
+<p>まずは、<code>master</code>にmergeされた開発版Terraformのビルド。やり方は<a href="http://ijin.github.io/blog/2016/03/31/using-terraform-dev-versions/">こちら</a>。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ terraform version
+</span><span class='line'>Terraform v0.6.16-dev - 5cd27c2</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>Terraform file</h3>
+
+<p>API GWのterraform化はこんな感じで。</p>
+
+<div><script src='https://gist.github.com/db027846fefb339187e3f2833fe2d034.js?file='></script>
+<noscript><pre><code></code></pre></noscript></div>
+
+
+<p>(*) permissionはlambda作成後に許可</p>
+
+<h3>Terraform plan/apply</h3>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+<span class='line-number'>62</span>
+<span class='line-number'>63</span>
+<span class='line-number'>64</span>
+<span class='line-number'>65</span>
+<span class='line-number'>66</span>
+<span class='line-number'>67</span>
+<span class='line-number'>68</span>
+<span class='line-number'>69</span>
+<span class='line-number'>70</span>
+<span class='line-number'>71</span>
+<span class='line-number'>72</span>
+<span class='line-number'>73</span>
+<span class='line-number'>74</span>
+<span class='line-number'>75</span>
+<span class='line-number'>76</span>
+<span class='line-number'>77</span>
+<span class='line-number'>78</span>
+<span class='line-number'>79</span>
+<span class='line-number'>80</span>
+<span class='line-number'>81</span>
+<span class='line-number'>82</span>
+<span class='line-number'>83</span>
+<span class='line-number'>84</span>
+<span class='line-number'>85</span>
+<span class='line-number'>86</span>
+<span class='line-number'>87</span>
+<span class='line-number'>88</span>
+<span class='line-number'>89</span>
+<span class='line-number'>90</span>
+<span class='line-number'>91</span>
+<span class='line-number'>92</span>
+<span class='line-number'>93</span>
+<span class='line-number'>94</span>
+<span class='line-number'>95</span>
+<span class='line-number'>96</span>
+<span class='line-number'>97</span>
+<span class='line-number'>98</span>
+<span class='line-number'>99</span>
+<span class='line-number'>100</span>
+<span class='line-number'>101</span>
+<span class='line-number'>102</span>
+<span class='line-number'>103</span>
+<span class='line-number'>104</span>
+<span class='line-number'>105</span>
+<span class='line-number'>106</span>
+<span class='line-number'>107</span>
+<span class='line-number'>108</span>
+<span class='line-number'>109</span>
+<span class='line-number'>110</span>
+<span class='line-number'>111</span>
+<span class='line-number'>112</span>
+<span class='line-number'>113</span>
+<span class='line-number'>114</span>
+<span class='line-number'>115</span>
+<span class='line-number'>116</span>
+<span class='line-number'>117</span>
+<span class='line-number'>118</span>
+<span class='line-number'>119</span>
+<span class='line-number'>120</span>
+<span class='line-number'>121</span>
+<span class='line-number'>122</span>
+<span class='line-number'>123</span>
+<span class='line-number'>124</span>
+<span class='line-number'>125</span>
+<span class='line-number'>126</span>
+<span class='line-number'>127</span>
+<span class='line-number'>128</span>
+<span class='line-number'>129</span>
+<span class='line-number'>130</span>
+<span class='line-number'>131</span>
+<span class='line-number'>132</span>
+<span class='line-number'>133</span>
+<span class='line-number'>134</span>
+<span class='line-number'>135</span>
+<span class='line-number'>136</span>
+<span class='line-number'>137</span>
+<span class='line-number'>138</span>
+<span class='line-number'>139</span>
+<span class='line-number'>140</span>
+<span class='line-number'>141</span>
+<span class='line-number'>142</span>
+<span class='line-number'>143</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ terraform plan
+</span><span class='line'>Refreshing Terraform state prior to plan...
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'>The Terraform execution plan has been generated and is shown below.
+</span><span class='line'>Resources are shown in alphabetical order for quick scanning. Green resources
+</span><span class='line'>will be created (or destroyed and then created if an existing resource
+</span><span class='line'>exists), yellow resources are being changed in-place, and red resources
+</span><span class='line'>will be destroyed.
+</span><span class='line'>
+</span><span class='line'>Note: You didn't specify an "-out" parameter to save this plan, so when
+</span><span class='line'>"apply" is called, Terraform can't guarantee this is what will execute.
+</span><span class='line'>
+</span><span class='line'>+ aws_api_gateway_deployment.eb_deployment
+</span><span class='line'>    rest_api_id: "" =&gt; "${aws_api_gateway_rest_api.EB.id}"
+</span><span class='line'>    stage_name:  "" =&gt; "prod"
+</span><span class='line'>
+</span><span class='line'>+ aws_api_gateway_integration.ip_get
+</span><span class='line'>    http_method:                        "" =&gt; "GET"
+</span><span class='line'>    integration_http_method:            "" =&gt; "POST"
+</span><span class='line'>    request_templates.#:                "" =&gt; "1"
+</span><span class='line'>    request_templates.application/json: "" =&gt; "{ \"env_name\": \"$input.params('env_name')\" }"
+</span><span class='line'>    resource_id:                        "" =&gt; "${aws_api_gateway_resource.ip.id}"
+</span><span class='line'>    rest_api_id:                        "" =&gt; "${aws_api_gateway_rest_api.EB.id}"
+</span><span class='line'>    type:                               "" =&gt; "AWS"
+</span><span class='line'>    uri:                                "" =&gt; "arn:aws:apigateway:ap-northeast-1:lambda:path/2015-03-31/functions/arn:aws:lambda:ap-northeast-1:123456789012:function:eb_ip/invocations"
+</span><span class='line'>
+</span><span class='line'>+ aws_api_gateway_integration.server_num_get
+</span><span class='line'>    http_method:                        "" =&gt; "GET"
+</span><span class='line'>    integration_http_method:            "" =&gt; "POST"
+</span><span class='line'>    request_templates.#:                "" =&gt; "1"
+</span><span class='line'>    request_templates.application/json: "" =&gt; "{\n \"env_name\": \"$input.params('env_name')\",\n \"server_num\": \"$input.params('server_num')\" \n}"
+</span><span class='line'>    resource_id:                        "" =&gt; "${aws_api_gateway_resource.server_num.id}"
+</span><span class='line'>    rest_api_id:                        "" =&gt; "${aws_api_gateway_rest_api.EB.id}"
+</span><span class='line'>    type:                               "" =&gt; "AWS"
+</span><span class='line'>    uri:                                "" =&gt; "arn:aws:apigateway:ap-northeast-1:lambda:path/2015-03-31/functions/arn:aws:lambda:ap-northeast-1:123456789012:function:eb_ip/invocations"
+</span><span class='line'>
+</span><span class='line'>+ aws_api_gateway_integration_response.ip_get_200
+</span><span class='line'>    http_method:                         "" =&gt; "GET"
+</span><span class='line'>    resource_id:                         "" =&gt; "${aws_api_gateway_resource.ip.id}"
+</span><span class='line'>    response_templates.#:                "" =&gt; "1"
+</span><span class='line'>    response_templates.application/json: "" =&gt; "$input.path('$')"
+</span><span class='line'>    rest_api_id:                         "" =&gt; "${aws_api_gateway_rest_api.EB.id}"
+</span><span class='line'>    status_code:                         "" =&gt; "200"
+</span><span class='line'>
+</span><span class='line'>+ aws_api_gateway_integration_response.ip_get_400
+</span><span class='line'>    http_method:                         "" =&gt; "GET"
+</span><span class='line'>    resource_id:                         "" =&gt; "${aws_api_gateway_resource.ip.id}"
+</span><span class='line'>    response_templates.#:                "" =&gt; "1"
+</span><span class='line'>    response_templates.application/json: "" =&gt; "$input.path('$').errorMessage"
+</span><span class='line'>    rest_api_id:                         "" =&gt; "${aws_api_gateway_rest_api.EB.id}"
+</span><span class='line'>    selection_pattern:                   "" =&gt; "[^0-9](.|\n)*"
+</span><span class='line'>    status_code:                         "" =&gt; "400"
+</span><span class='line'>
+</span><span class='line'>+ aws_api_gateway_integration_response.server_num_get_200
+</span><span class='line'>    http_method:                         "" =&gt; "GET"
+</span><span class='line'>    resource_id:                         "" =&gt; "${aws_api_gateway_resource.server_num.id}"
+</span><span class='line'>    response_templates.#:                "" =&gt; "1"
+</span><span class='line'>    response_templates.application/json: "" =&gt; "$input.path('$')"
+</span><span class='line'>    rest_api_id:                         "" =&gt; "${aws_api_gateway_rest_api.EB.id}"
+</span><span class='line'>    status_code:                         "" =&gt; "200"
+</span><span class='line'>
+</span><span class='line'>+ aws_api_gateway_integration_response.server_num_get_400
+</span><span class='line'>    http_method:                         "" =&gt; "GET"
+</span><span class='line'>    resource_id:                         "" =&gt; "${aws_api_gateway_resource.server_num.id}"
+</span><span class='line'>    response_templates.#:                "" =&gt; "1"
+</span><span class='line'>    response_templates.application/json: "" =&gt; "$input.path('$').errorMessage"
+</span><span class='line'>    rest_api_id:                         "" =&gt; "${aws_api_gateway_rest_api.EB.id}"
+</span><span class='line'>    selection_pattern:                   "" =&gt; "[^0-9](.|\n)*"
+</span><span class='line'>    status_code:                         "" =&gt; "400"
+</span><span class='line'>
+</span><span class='line'>+ aws_api_gateway_method.ip_get
+</span><span class='line'>    api_key_required: "" =&gt; "0"
+</span><span class='line'>    authorization:    "" =&gt; "NONE"
+</span><span class='line'>    http_method:      "" =&gt; "GET"
+</span><span class='line'>    resource_id:      "" =&gt; "${aws_api_gateway_resource.ip.id}"
+</span><span class='line'>    rest_api_id:      "" =&gt; "${aws_api_gateway_rest_api.EB.id}"
+</span><span class='line'>
+</span><span class='line'>+ aws_api_gateway_method.server_num_get
+</span><span class='line'>    api_key_required: "" =&gt; "0"
+</span><span class='line'>    authorization:    "" =&gt; "NONE"
+</span><span class='line'>    http_method:      "" =&gt; "GET"
+</span><span class='line'>    api_key_required: "" =&gt; "0"
+</span><span class='line'>    authorization:    "" =&gt; "NONE"
+</span><span class='line'>    http_method:      "" =&gt; "GET"
+</span><span class='line'>    resource_id:      "" =&gt; "${aws_api_gateway_resource.server_num.id}"
+</span><span class='line'>    rest_api_id:      "" =&gt; "${aws_api_gateway_rest_api.EB.id}"
+</span><span class='line'>
+</span><span class='line'>+ aws_api_gateway_method_response.ip_200
+</span><span class='line'>    http_method: "" =&gt; "GET"
+</span><span class='line'>    resource_id: "" =&gt; "${aws_api_gateway_resource.ip.id}"
+</span><span class='line'>    rest_api_id: "" =&gt; "${aws_api_gateway_rest_api.EB.id}"
+</span><span class='line'>    status_code: "" =&gt; "200"
+</span><span class='line'>
+</span><span class='line'>+ aws_api_gateway_method_response.ip_400
+</span><span class='line'>    http_method: "" =&gt; "GET"
+</span><span class='line'>    resource_id: "" =&gt; "${aws_api_gateway_resource.ip.id}"
+</span><span class='line'>    rest_api_id: "" =&gt; "${aws_api_gateway_rest_api.EB.id}"
+</span><span class='line'>    status_code: "" =&gt; "400"
+</span><span class='line'>
+</span><span class='line'>+ aws_api_gateway_method_response.server_num_200
+</span><span class='line'>    http_method: "" =&gt; "GET"
+</span><span class='line'>    resource_id: "" =&gt; "${aws_api_gateway_resource.server_num.id}"
+</span><span class='line'>    rest_api_id: "" =&gt; "${aws_api_gateway_rest_api.EB.id}"
+</span><span class='line'>    status_code: "" =&gt; "200"
+</span><span class='line'>
+</span><span class='line'>+ aws_api_gateway_method_response.server_num_400
+</span><span class='line'>    http_method: "" =&gt; "GET"
+</span><span class='line'>    resource_id: "" =&gt; "${aws_api_gateway_resource.server_num.id}"
+</span><span class='line'>    rest_api_id: "" =&gt; "${aws_api_gateway_rest_api.EB.id}"
+</span><span class='line'>    status_code: "" =&gt; "400"
+</span><span class='line'>
+</span><span class='line'>+ aws_api_gateway_resource.eb
+</span><span class='line'>    parent_id:   "" =&gt; "${aws_api_gateway_rest_api.EB.root_resource_id}"
+</span><span class='line'>    path:        "" =&gt; "&lt;computed&gt;"
+</span><span class='line'>    path_part:   "" =&gt; "eb"
+</span><span class='line'>    rest_api_id: "" =&gt; "${aws_api_gateway_rest_api.EB.id}"
+</span><span class='line'>
+</span><span class='line'>+ aws_api_gateway_resource.env_name
+</span><span class='line'>    parent_id:   "" =&gt; "${aws_api_gateway_resource.eb.id}"
+</span><span class='line'>    path:        "" =&gt; "&lt;computed&gt;"
+</span><span class='line'>    path_part:   "" =&gt; "{env_name}"
+</span><span class='line'>    rest_api_id: "" =&gt; "${aws_api_gateway_rest_api.EB.id}"
+</span><span class='line'>
+</span><span class='line'>+ aws_api_gateway_resource.ip
+</span><span class='line'>    parent_id:   "" =&gt; "${aws_api_gateway_resource.env_name.id}"
+</span><span class='line'>    path:        "" =&gt; "&lt;computed&gt;"
+</span><span class='line'>    path_part:   "" =&gt; "ip"
+</span><span class='line'>    rest_api_id: "" =&gt; "${aws_api_gateway_rest_api.EB.id}"
+</span><span class='line'>
+</span><span class='line'>+ aws_api_gateway_resource.server_num
+</span><span class='line'>    parent_id:   "" =&gt; "${aws_api_gateway_resource.ip.id}"
+</span><span class='line'>    path:        "" =&gt; "&lt;computed&gt;"
+</span><span class='line'>    path_part:   "" =&gt; "{server_num}"
+</span><span class='line'>    rest_api_id: "" =&gt; "${aws_api_gateway_rest_api.EB.id}"
+</span><span class='line'>
+</span><span class='line'>+ aws_api_gateway_rest_api.EB
+</span><span class='line'>    description:      "" =&gt; "get EB info"
+</span><span class='line'>    name:             "" =&gt; "EB"
+</span><span class='line'>    root_resource_id: "" =&gt; "&lt;computed&gt;"
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'>Plan: 18 to add, 0 to change, 0 to destroy.</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+<span class='line-number'>62</span>
+<span class='line-number'>63</span>
+<span class='line-number'>64</span>
+<span class='line-number'>65</span>
+<span class='line-number'>66</span>
+<span class='line-number'>67</span>
+<span class='line-number'>68</span>
+<span class='line-number'>69</span>
+<span class='line-number'>70</span>
+<span class='line-number'>71</span>
+<span class='line-number'>72</span>
+<span class='line-number'>73</span>
+<span class='line-number'>74</span>
+<span class='line-number'>75</span>
+<span class='line-number'>76</span>
+<span class='line-number'>77</span>
+<span class='line-number'>78</span>
+<span class='line-number'>79</span>
+<span class='line-number'>80</span>
+<span class='line-number'>81</span>
+<span class='line-number'>82</span>
+<span class='line-number'>83</span>
+<span class='line-number'>84</span>
+<span class='line-number'>85</span>
+<span class='line-number'>86</span>
+<span class='line-number'>87</span>
+<span class='line-number'>88</span>
+<span class='line-number'>89</span>
+<span class='line-number'>90</span>
+<span class='line-number'>91</span>
+<span class='line-number'>92</span>
+<span class='line-number'>93</span>
+<span class='line-number'>94</span>
+<span class='line-number'>95</span>
+<span class='line-number'>96</span>
+<span class='line-number'>97</span>
+<span class='line-number'>98</span>
+<span class='line-number'>99</span>
+<span class='line-number'>100</span>
+<span class='line-number'>101</span>
+<span class='line-number'>102</span>
+<span class='line-number'>103</span>
+<span class='line-number'>104</span>
+<span class='line-number'>105</span>
+<span class='line-number'>106</span>
+<span class='line-number'>107</span>
+<span class='line-number'>108</span>
+<span class='line-number'>109</span>
+<span class='line-number'>110</span>
+<span class='line-number'>111</span>
+<span class='line-number'>112</span>
+<span class='line-number'>113</span>
+<span class='line-number'>114</span>
+<span class='line-number'>115</span>
+<span class='line-number'>116</span>
+<span class='line-number'>117</span>
+<span class='line-number'>118</span>
+<span class='line-number'>119</span>
+<span class='line-number'>120</span>
+<span class='line-number'>121</span>
+<span class='line-number'>122</span>
+<span class='line-number'>123</span>
+<span class='line-number'>124</span>
+<span class='line-number'>125</span>
+<span class='line-number'>126</span>
+<span class='line-number'>127</span>
+<span class='line-number'>128</span>
+<span class='line-number'>129</span>
+<span class='line-number'>130</span>
+<span class='line-number'>131</span>
+<span class='line-number'>132</span>
+<span class='line-number'>133</span>
+<span class='line-number'>134</span>
+<span class='line-number'>135</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ terraform apply
+</span><span class='line'>aws_api_gateway_rest_api.EB: Creating...
+</span><span class='line'>  description:      "" =&gt; "get EB info"
+</span><span class='line'>  name:             "" =&gt; "EB"
+</span><span class='line'>  root_resource_id: "" =&gt; "&lt;computed&gt;"
+</span><span class='line'>aws_api_gateway_rest_api.EB: Creation complete
+</span><span class='line'>aws_api_gateway_resource.eb: Creating...
+</span><span class='line'>  parent_id:   "" =&gt; "k9x3d7qlhd"
+</span><span class='line'>  path:        "" =&gt; "&lt;computed&gt;"
+</span><span class='line'>  path_part:   "" =&gt; "eb"
+</span><span class='line'>  rest_api_id: "" =&gt; "mdsyn3w42a"
+</span><span class='line'>aws_api_gateway_resource.eb: Creation complete
+</span><span class='line'>aws_api_gateway_resource.env_name: Creating...
+</span><span class='line'>  parent_id:   "" =&gt; "nr2lkm"
+</span><span class='line'>  path:        "" =&gt; "&lt;computed&gt;"
+</span><span class='line'>  path_part:   "" =&gt; "{env_name}"
+</span><span class='line'>  rest_api_id: "" =&gt; "mdsyn3w42a"
+</span><span class='line'>aws_api_gateway_resource.env_name: Creation complete
+</span><span class='line'>aws_api_gateway_resource.ip: Creating...
+</span><span class='line'>  parent_id:   "" =&gt; "g29h7n"
+</span><span class='line'>  path:        "" =&gt; "&lt;computed&gt;"
+</span><span class='line'>  path_part:   "" =&gt; "ip"
+</span><span class='line'>  rest_api_id: "" =&gt; "mdsyn3w42a"
+</span><span class='line'>aws_api_gateway_resource.ip: Creation complete
+</span><span class='line'>aws_api_gateway_resource.server_num: Creating...
+</span><span class='line'>  parent_id:   "" =&gt; "sthj28"
+</span><span class='line'>  path:        "" =&gt; "&lt;computed&gt;"
+</span><span class='line'>  path_part:   "" =&gt; "{server_num}"
+</span><span class='line'>  rest_api_id: "" =&gt; "mdsyn3w42a"
+</span><span class='line'>aws_api_gateway_method.ip_get: Creating...
+</span><span class='line'>  api_key_required: "" =&gt; "0"
+</span><span class='line'>  authorization:    "" =&gt; "NONE"
+</span><span class='line'>  http_method:      "" =&gt; "GET"
+</span><span class='line'>  resource_id:      "" =&gt; "sthj28"
+</span><span class='line'>  rest_api_id:      "" =&gt; "mdsyn3w42a"
+</span><span class='line'>aws_api_gateway_method.ip_get: Creation complete
+</span><span class='line'>aws_api_gateway_method_response.ip_200: Creating...
+</span><span class='line'>  http_method: "" =&gt; "GET"
+</span><span class='line'>  resource_id: "" =&gt; "sthj28"
+</span><span class='line'>  rest_api_id: "" =&gt; "mdsyn3w42a"
+</span><span class='line'>  status_code: "" =&gt; "200"
+</span><span class='line'>aws_api_gateway_integration.ip_get: Creating...
+</span><span class='line'>  http_method:                        "" =&gt; "GET"
+</span><span class='line'>  integration_http_method:            "" =&gt; "POST"
+</span><span class='line'>  request_templates.#:                "" =&gt; "1"
+</span><span class='line'>  request_templates.application/json: "" =&gt; "{ \"env_name\": \"$input.params('env_name')\" }"
+</span><span class='line'>  resource_id:                        "" =&gt; "sthj28"
+</span><span class='line'>  rest_api_id:                        "" =&gt; "mdsyn3w42a"
+</span><span class='line'>  type:                               "" =&gt; "AWS"
+</span><span class='line'>  uri:                                "" =&gt; "arn:aws:apigateway:ap-northeast-1:lambda:path/2015-03-31/functions/arn:aws:lambda:ap-northeast-1:123456789012:function:eb_ip/invocations"
+</span><span class='line'>aws_api_gateway_resource.server_num: Creation complete
+</span><span class='line'>aws_api_gateway_method.server_num_get: Creating...
+</span><span class='line'>  api_key_required: "" =&gt; "0"
+</span><span class='line'>  authorization:    "" =&gt; "NONE"
+</span><span class='line'>  http_method:      "" =&gt; "GET"
+</span><span class='line'>  resource_id:      "" =&gt; "9w68fs"
+</span><span class='line'>  rest_api_id:      "" =&gt; "mdsyn3w42a"
+</span><span class='line'>aws_api_gateway_method_response.ip_200: Creation complete
+</span><span class='line'>aws_api_gateway_method_response.ip_400: Creating...
+</span><span class='line'>  http_method: "" =&gt; "GET"
+</span><span class='line'>  resource_id: "" =&gt; "sthj28"
+</span><span class='line'>  rest_api_id: "" =&gt; "mdsyn3w42a"
+</span><span class='line'>  status_code: "" =&gt; "400"
+</span><span class='line'>aws_api_gateway_integration_response.ip_get_200: Creating...
+</span><span class='line'>  http_method:                         "" =&gt; "GET"
+</span><span class='line'>  resource_id:                         "" =&gt; "sthj28"
+</span><span class='line'>  response_templates.#:                "" =&gt; "1"
+</span><span class='line'>  response_templates.application/json: "" =&gt; "$input.path('$')"
+</span><span class='line'>  rest_api_id:                         "" =&gt; "mdsyn3w42a"
+</span><span class='line'>  status_code:                         "" =&gt; "200"
+</span><span class='line'>aws_api_gateway_integration.ip_get: Creation complete
+</span><span class='line'>aws_api_gateway_method.server_num_get: Creation complete
+</span><span class='line'>aws_api_gateway_method_response.server_num_200: Creating...
+</span><span class='line'>  http_method: "" =&gt; "GET"
+</span><span class='line'>  resource_id: "" =&gt; "9w68fs"
+</span><span class='line'>  rest_api_id: "" =&gt; "mdsyn3w42a"
+</span><span class='line'>  status_code: "" =&gt; "200"
+</span><span class='line'>aws_api_gateway_integration.server_num_get: Creating...
+</span><span class='line'>  http_method:                        "" =&gt; "GET"
+</span><span class='line'>  integration_http_method:            "" =&gt; "POST"
+</span><span class='line'>  request_templates.#:                "" =&gt; "1"
+</span><span class='line'>  request_templates.application/json: "" =&gt; "{\n \"env_name\": \"$input.params('env_name')\",\n \"server_num\": \"$input.params('server_num')\" \n}"
+</span><span class='line'>  resource_id:                        "" =&gt; "9w68fs"
+</span><span class='line'>  rest_api_id:                        "" =&gt; "mdsyn3w42a"
+</span><span class='line'>  type:                               "" =&gt; "AWS"
+</span><span class='line'>  uri:                                "" =&gt; "arn:aws:apigateway:ap-northeast-1:lambda:path/2015-03-31/functions/arn:aws:lambda:ap-northeast-1:123456789012:function:eb_ip/invocations"
+</span><span class='line'>aws_api_gateway_integration_response.ip_get_200: Creation complete
+</span><span class='line'>aws_api_gateway_method_response.ip_400: Creation complete
+</span><span class='line'>aws_api_gateway_integration_response.ip_get_400: Creating...
+</span><span class='line'>  http_method:                         "" =&gt; "GET"
+</span><span class='line'>  resource_id:                         "" =&gt; "sthj28"
+</span><span class='line'>  response_templates.#:                "" =&gt; "1"
+</span><span class='line'>  response_templates.application/json: "" =&gt; "$input.path('$').errorMessage"
+</span><span class='line'>  rest_api_id:                         "" =&gt; "mdsyn3w42a"
+</span><span class='line'>  selection_pattern:                   "" =&gt; "[^0-9](.|\n)*"
+</span><span class='line'>  status_code:                         "" =&gt; "400"
+</span><span class='line'>aws_api_gateway_integration.server_num_get: Creation complete
+</span><span class='line'>aws_api_gateway_method_response.server_num_200: Creation complete
+</span><span class='line'>aws_api_gateway_method_response.server_num_400: Creating...
+</span><span class='line'>  http_method: "" =&gt; "GET"
+</span><span class='line'>  resource_id: "" =&gt; "9w68fs"
+</span><span class='line'>  rest_api_id: "" =&gt; "mdsyn3w42a"
+</span><span class='line'>  status_code: "" =&gt; "400"
+</span><span class='line'>aws_api_gateway_method_response.server_num_400: Creation complete
+</span><span class='line'>aws_api_gateway_integration_response.ip_get_400: Creation complete
+</span><span class='line'>aws_api_gateway_integration_response.server_num_get_200: Creating...
+</span><span class='line'>  http_method:                         "" =&gt; "GET"
+</span><span class='line'>  resource_id:                         "" =&gt; "9w68fs"
+</span><span class='line'>  response_templates.#:                "" =&gt; "1"
+</span><span class='line'>  response_templates.application/json: "" =&gt; "$input.path('$')"
+</span><span class='line'>  rest_api_id:                         "" =&gt; "mdsyn3w42a"
+</span><span class='line'>  status_code:                         "" =&gt; "200"
+</span><span class='line'>aws_api_gateway_integration_response.server_num_get_200: Creation complete
+</span><span class='line'>aws_api_gateway_integration_response.server_num_get_400: Creating...
+</span><span class='line'>  http_method:                         "" =&gt; "GET"
+</span><span class='line'>  resource_id:                         "" =&gt; "9w68fs"
+</span><span class='line'>  response_templates.#:                "" =&gt; "1"
+</span><span class='line'>  response_templates.application/json: "" =&gt; "$input.path('$').errorMessage"
+</span><span class='line'>  rest_api_id:                         "" =&gt; "mdsyn3w42a"
+</span><span class='line'>  selection_pattern:                   "" =&gt; "[^0-9](.|\n)*"
+</span><span class='line'>  status_code:                         "" =&gt; "400"
+</span><span class='line'>aws_api_gateway_integration_response.server_num_get_400: Creation complete
+</span><span class='line'>aws_api_gateway_deployment.eb_deployment: Creating...
+</span><span class='line'>  rest_api_id: "" =&gt; "mdsyn3w42a"
+</span><span class='line'>  stage_name:  "" =&gt; "prod"
+</span><span class='line'>aws_api_gateway_deployment.eb_deployment: Creation complete
+</span><span class='line'>
+</span><span class='line'>Apply complete! Resources: 18 added, 0 changed, 0 destroyed.
+</span><span class='line'>
+</span><span class='line'>The state of your infrastructure has been saved to the path
+</span><span class='line'>below. This state is required to modify and destroy your
+</span><span class='line'>infrastructure, so keep it safe. To inspect the complete state
+</span><span class='line'>use the `terraform show` command.
+</span><span class='line'>
+</span><span class='line'>State path: terraform.tfstate</span></code></pre></td></tr></table></div></figure>
+
+
+<p>できた！</p>
+
+<h3>考察</h3>
+
+<ul>
+<li>依存関係</li>
+</ul>
+
+
+<p>リソースを作成するのに並列処理が出来なかったり、依存関係がまだうまく対応できてないので、<code>depends_on</code>を駆使する必要があるのが若干まだ面倒。ない場合は、<code>BadRequestException: Unable to complete operation due to concurrent modification. Please try again later</code>や<code>BadRequestException: No integration defined for method status code: 400</code>等のエラーが発生する。</p>
+
+<ul>
+<li>Integration/Method Response Headers</li>
+</ul>
+
+
+<p>CORS等の設定するする際には<code>Access-Control-Allow-Origin</code>等のヘッダーをMethodやIntegrationのResponse Headerに設定をする必要があるけど、<code>.</code>の扱い問題で未対応（<a href="https://github.com/hashicorp/terraform/issues/2143">#2143</a>）。それまではawscliで以下のようにすると事で回避。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>aws apigateway update-integration-response --rest-api-id $rest_id --resource-id $appo_resource_id --http-method OPTIONS --status-code 200 --patch-operations op=add,path="/responseParameters/method.response.header.Access-Control-Allow-Headers",value="\"'Content-Type,X-Amz-Date,Authorization,X-Api-Key, Access-Control-Allow-Origin, x-amz-security-token'\""</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Issueはこの前上げたので（<a href="https://github.com/hashicorp/terraform/issues/6092">#6092</a>）、ウォッチしておくと良い。</p>
+
+<ul>
+<li>Infrastructure as Code</li>
+</ul>
+
+
+<p>API Gatewayは<code>resource</code>, <code>method</code>, <code>integration</code>, <code>method response</code>、<code>integration response</code>等を記述しないといけないので、どうしてもコードが多くになってしまう。場合によってはSwaggerでやった方が楽だったりするかも。その場合は<strong>Infrastructure as YAML</strong>になってしまう。。また、YAMLは整形してからimportする必要があったりするので、その辺はトレードオフかな。</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Terraformで特定のブランチを使う]]></title>
+    <link href="http://ijin.github.io/blog/2016/03/31/using-terraform-dev-versions/"/>
+    <updated>2016-03-31T16:38:00+09:00</updated>
+    <id>http://ijin.github.io/blog/2016/03/31/using-terraform-dev-versions</id>
+    <content type="html"><![CDATA[<p>HashiCorpの<a href="https://terraform.io/">Terraform</a>の開発は非常に活発であり日々進化していますが、リリースまでに待てない実装中や実験的な機能を使いたい場合は、自分で特定のブランチを変更・ビルドして使えます。</p>
+
+<h3>リポジトリ取得</h3>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ go get github.com/hashicorp/terraform
+</span><span class='line'>$ cd $GOPATH/src/github.com/hashicorp/terraform
+</span><span class='line'>$ git checkout new-aws-feature</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>commit hash付与</h3>
+
+<p>どのコミットリビジョンを使っているか簡単に分かるように、versionにgitのcommit hashを指定。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>sed -i -e "s/dev/dev - `git rev-parse --short HEAD`/" terraform/version.go</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>ビルド</h3>
+
+<p>make devすると全pluginやproviderがコンパイルされ、非常に時間がかかる（特に最近は対応範囲の広がりが著しく、生成されるバイナリの総容量が増加傾向）。
+よって、特定のproviderを指定して時間短縮する。以下はaws providerで作業している場合。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ make core-dev plugin-dev PLUGIN=provider-aws
+</span><span class='line'>==&gt; Checking that code complies with gofmt requirements...
+</span><span class='line'>/Users/ijin/golang/bin/stringer
+</span><span class='line'>go generate $(go list ./... | grep -v /vendor/)
+</span><span class='line'>go install github.com/hashicorp/terraform
+</span><span class='line'>go install github.com/hashicorp/terraform/builtin/bins/provider-aws
+</span><span class='line'>mv /Users/ijin/golang/bin/provider-aws /Users/ijin/golang/bin/terraform-provider-aws</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>確認</h3>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ terraform version
+</span><span class='line'>Terraform v0.6.15-dev - 123abcd</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Happy Terraforming!</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[LambdaでSSHやGitを使ってみよう]]></title>
@@ -2765,258 +3459,6 @@ tag:benchmarker type:score      success:210324  fail:0  score:155272
 
 <script async="true" class="speakerdeck-embed" data-id="e07317d0dc040131a0982229a5c1e016" src="http://ijin.github.io//speakerdeck.com/assets/embed.js"> </script>
 
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[#ChefConf 2014に参加してきた]]></title>
-    <link href="http://ijin.github.io/blog/2014/04/21/chefconf-2014/"/>
-    <updated>2014-04-21T12:10:00+09:00</updated>
-    <id>http://ijin.github.io/blog/2014/04/21/chefconf-2014</id>
-    <content type="html"><![CDATA[<p>San Franciscoで行われた<a href="http://chefconf.opscode.com/chefconf/">#ChefConf</a>に参加してきました。
-忘れないうちに忘備録的に少しメモっておく。</p>
-
-<h2>Day 1</h2>
-
-<h3>Awesome Postmortems by Dave Zwieback</h3>
-
-<p>システム障害に対して素晴らしいPost Mortem（振り返り／報告書）の書き方に関する丸一日のワークショップ</p>
-
-<h4>前半</h4>
-
-<p>まずはチームに分かれて断片的且つ関連性の不明な情報を渡される。
-例えば、</p>
-
-<ul>
-<li>Tomは紫色の家の住人より短い</li>
-<li>Jimは両隣の住人より高い</li>
-<li>赤色の家の隣人は子供が5人いる</li>
-</ul>
-
-
-<p>各メンバーは情報を全部開示できないまま、ある不明確なタスクを時間内に完了させる必要がある。しかし、紙やモノを使って情報の整理をしてはならず、口頭による連絡のみなので当然情報は錯綜しタスクは未完のまま終了。</p>
-
-<p>障害時の情報不足・体制不足のシミュレーション。Nosey Neighborsと言うゲームらしい。</p>
-
-<p>その後、お怒りのCEOからDarth Vader風のオーディオ・メッセージで以下を解答せよとのお達しが。。</p>
-
-<ul>
-<li>根本原因は何か</li>
-<li>何をすれば良かったか</li>
-<li>誰の責任か</li>
-</ul>
-
-
-<p>メンバー間で議論して各グループとの比較・プレゼンする</p>
-
-<h4>後半</h4>
-
-<p>パラダイム・シフトとディスカッション形式</p>
-
-<p>以下、メモ</p>
-
-<ul>
-<li>たった一つの根本原因は存在しない。システムはimpermanence（非恒久・無常）である。コレに対して誰かが「なんてZenなんだ！」w</li>
-<li>そもそもHuman Error（人的エラー）は原因ではなくもっと大きな問題を示すサインであり、症状であり個人やグループのせいにしてはいけない。そうすると簡単で気持ち良いが解決にはならない。80年代の航空会社の事故分析のパラダイム・シフトを引き合いに</li>
-<li>Accountability vs Responsibility（個人・グループに責任は負わせないけど説明・報告はさせるべき）</li>
-<li>その為にもBlameless（誰かを責める事のないように）でNonpunitive（非罰則）にするべき。火災の消防活動に対する消防隊員の扱いの例が面白かった</li>
-<li>Hindsight/Outcome Bias（事後だと情報が多くより物事がより鮮明になるけどそれは偏見である）</li>
-<li>Counterfactual（事実に反する。タラレバ）な事を書いてはならない。起こった事は事象は変えられない</li>
-<li>3 Rs (Regret, Reason, Remedy)　遺憾を示し、事象のリニアなタイムラインを記載し、解決案の列挙</li>
-<li>5 Whys 日本では「なぜなぜ分析」というらしい。要因追求のイテレーティブ・プロセス。</li>
-<li>Sharp End vs Blunt End（顕在的エラー vs 潜在的エラー）</li>
-<li><a href="https://github.com/etsy/morgue">Morgue</a> - Postmortem用の便利なツール</li>
-</ul>
-
-
-<p>主に組織論やカルチャーの話やDevOpsとの関連性の議論等。今度<em>#トラしゅ</em>に組み込もうかな。</p>
-
-<p>※ <em>山◯君はこっちではボブと呼ばれる</em></p>
-
-<h2>Day 2</h2>
-
-<h3>Keynote</h3>
-
-<ul>
-<li>ヘビメタ風のBGM</li>
-<li>Barry Crist CEOによるDelightful Economyの熱いプレゼン。Uberの紹介</li>
-<li><a href="https://github.com/opscode/chef-metal">Chef Metal</a>の紹介／デモ（DockerやMongoDBで）</li>
-<li><a href="http://www.getchef.com/blog/2014/04/15/chef-development-kit/">ChefDK (Chef Development Kit)</a>の紹介</li>
-</ul>
-
-
-<h3>Hunting the DevOps Whale in Large Enterprises</h3>
-
-<ul>
-<li>大企業でのDevOpsの話</li>
-<li>かなり抽象的でメタファー引用多数</li>
-<li>Scrumfall (Scrum + Waterfall)という悪い冗談のような本当にあった怖い話</li>
-</ul>
-
-
-<h3>Spice up your recipes with Chef Sugar</h3>
-
-<p>ChefSpec、Test Kitchen、BerkshelfのコアコミッターであるSeth Vargoによる<a href="https://github.com/sethvargo/chef-sugar"><strong>Chef Sugar</strong></a>の紹介。コードをよりrubyっぽく、より美しくする為のsyntax sugar</p>
-
-<h3>The Berkshelf Vision</h3>
-
-<ul>
-<li><a href="http://berkshelf.com/">Berkshelf</a>の原作者であるJamie WinsorによるBerkshelf 3.0の紹介</li>
-<li><a href="http://www.getchef.com/blog/2014/04/15/chef-development-kit/">ChefDK</a>でのインストールを推奨</li>
-<li>推奨されるべき新しいワークフロー管理や手法について</li>
-<li>その補助ツールである<a href="https://github.com/reset/berkflow">Berkflow</a>の説明</li>
-<li>このセッションが一番面白かったのでyoutubeに上がったらまた見るべし！</li>
-<li><a href="http://www.slideshare.net/resetexistence/chef-conf2014">スライド</a></li>
-</ul>
-
-
-<h3>Implementing Continuous Delivery in Chef</h3>
-
-<p>継続デリバリーのお話。発表者がつまらなかったので、お仕事してた。</p>
-
-<h3>Chef and Docker</h3>
-
-<ul>
-<li>Dockerの紹介やロードマップ</li>
-<li>実装方法</li>
-<li>Chefとの組み合わせ方</li>
-<li>2014 2QのDockerConで1.0が発表されるかも</li>
-<li>監視に関して突っ込んで質問したら、夏以降に出るであろう監視用コンテナに期待とな</li>
-<li>ついでにTシャツもらった</li>
-</ul>
-
-
-<h3>BoF - Chef on AWS</h3>
-
-<ul>
-<li>AWS上でのChef利用に関してBoF (Birds of Feather)形式のディスカッション</li>
-<li>Cloudformation、Autoscaling、Opsworks、Ohai等</li>
-<li>特にOpsworksの使い勝手の悪さを熱く議論してきた</li>
-<li>また、OhaiはIAM roleの情報をキャッシュするのでChef Serverとの組み合わせが悪い</li>
-<li><a href="https://github.com/balanced-cookbooks/citadel">Citadel</a>というので回避してる人も</li>
-</ul>
-
-
-<h2>Day 3</h2>
-
-<h3>Keynote</h3>
-
-<p>Adam Jacob CTOによるChef社の歴史、思想や方向性やDevOps Cultureについて</p>
-
-<h3>Get Up Again (Over and Over): Learning and Relearning with Chef</h3>
-
-<p>変化への対応、リファクタリング、実験的コードの組み立て方等</p>
-
-<h3>Foreman and Chef Integration</h3>
-
-<p>Red HatによるForemanの発表。あんまり聞いてなかった</p>
-
-<h3>DevOps Culture And Practices To Create Flow</h3>
-
-<ul>
-<li>ThoughtworksのJez Humbleによる発表</li>
-<li>自動化や継続デリバリーによるリーンな開発手法</li>
-<li>トヨタやHPの事例</li>
-<li>社内カルチャーの話</li>
-<li>Jesse&#8217;s rule - &#8220;Don&#8217;t fight stupid. Make awesome&#8221;</li>
-<li>なかなか良いスピーカーであった</li>
-</ul>
-
-
-<h3>その他</h3>
-
-<ul>
-<li>アメリカのクライアントやリモートでの仕事仲間と初顔合わせ</li>
-<li>ランチで会った人は同じくCassandra構築に苦労してて盛り上がった</li>
-<li>Chef Zeroの作者と会って中の動きについてお話した</li>
-<li>mizzy氏を発見。立ち話を少々</li>
-</ul>
-
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[AWS Game Day Japan 2014春を開催してきた]]></title>
-    <link href="http://ijin.github.io/blog/2014/03/14/aws-game-day-japan-2014-spring/"/>
-    <updated>2014-03-14T23:11:00+09:00</updated>
-    <id>http://ijin.github.io/blog/2014/03/14/aws-game-day-japan-2014-spring</id>
-    <content type="html"><![CDATA[<p>過去に2度参加した事（東京・ラスベガス）がある<a href="http://ijin.github.io/blog/2013/06/10/aws-game-day-tokyo-2013/">Game Day</a>に今回は運営側に周りました。3/15に行われる<a href="http://jawsdays2014.jaws-ug.jp/">JAWS Days 2014</a>の前夜祭という位置づけです。</p>
-
-<p>日本では前回、東京のみだったけど<a href="http://jaws-days.doorkeeper.jp/events/8945">今回</a>は東京・大阪・名古屋・仙台と4都市同時開催。</p>
-
-<h2>お題</h2>
-
-<p>前回と全く一緒。。SQSを使った疎結合でオートスケーリングする画像変換処理システム（ｻｰｾﾝ）。まあ、1年前と比べてAWSの機能やできる事も大分変わったので2回目の人もいろいろ工夫のしようがあったかと。</p>
-
-<h2>チーム</h2>
-
-<p>1チーム3〜4人に別れて計14チームとなりました。</p>
-
-<p><strong>東京</strong></p>
-
-<ul>
-<li>Cookie Devil</li>
-<li>Bluescreens</li>
-<li>沖縄</li>
-<li>Blue Light of Death</li>
-<li>時計じかけのオレンジ</li>
-<li>I am みどり</li>
-</ul>
-
-
-<p><strong>名古屋</strong></p>
-
-<ul>
-<li>Shachihoko</li>
-<li>ななちゃんだがや</li>
-<li>ゴーゴーひつまぶし</li>
-</ul>
-
-
-<p><strong>大阪</strong></p>
-
-<ul>
-<li>大都会</li>
-<li>AWS学坊や</li>
-<li>初心者</li>
-</ul>
-
-
-<p><strong>仙台</strong></p>
-
-<ul>
-<li>Zao</li>
-<li>八重の桜</li>
-</ul>
-
-
-<h2>内容</h2>
-
-<p>当日の迫力ある詳しい内容は参加者の方がきっとブログに書いてくれるはず！その代わり、運営側で評価用に使っていた攻撃・修復内容のまとめを公開して欲しいというツィートを頂いたので下記に表示しておきます。</p>
-
-<div class='embed tweet'><blockquote class="twitter-tweet"><p>Gameday楽しめました。運営ありがとうございました。攻撃のサマリシート翻訳は誰?と思ってましたが恐縮です。あのシート何らかの形で公開頂けるとありがたいです。 QT <a href="https://twitter.com/ijin">@ijin</a>: 14チームのGoogleスプレッドシートのリアルタイム翻訳は結構ギリギリだった。</p>&mdash; Ryo Suzuki (@suzryo) <a href="https://twitter.com/suzryo/statuses/444450014627000320">March 14, 2014</a></blockquote>
-<script async src="http://ijin.github.io//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
-
-
-<p></p>
-
-<p>（実は今回もイベントオーナーのMiles Wardが来日していたので、Google Spreadsheetに書き込まれていた内容を運営側で逐一翻訳していました）</p>
-
-<iframe src="https://docs.google.com/spreadsheets/d/16-qSbw_XQGgl_4bYqy9REL-nq15yOVj2f1HBJvMy_qM/pubhtml?widget=true&amp;headers=false" height="500" width="750"></iframe>
-
-
-<p>個人的にはs3の「Requester Payオプション有効化」がお気に入りでしたね。</p>
-
-<h2>結果</h2>
-
-<p>総合優勝はチーム<strong>「AWS学坊や」</strong>の優勝となりました。おめでとうございます！
-（地方賞はすみません、総合結果評議中で聞けてませんでした）</p>
-
-<p>今回、運営側のトラブルで攻撃対象が重複してしまう等いろいろ問題がありましたが、開催する側としても楽しかったです。次回はさらにチャレンジングな内容にしていきたいと思っています。</p>
-
-<h2>JAWS DAYS</h2>
-
-<p>明日の<a href="http://jawsdays2014.jaws-ug.jp/">JAWS DAYS 2014</a>はスタッフとしていろいろ動くので今回は手短に。</p>
 ]]></content>
   </entry>
   

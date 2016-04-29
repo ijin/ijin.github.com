@@ -4,7 +4,7 @@
   <title><![CDATA[Category: study | @ijin]]></title>
   <link href="http://ijin.github.io/blog/categories/study/atom.xml" rel="self"/>
   <link href="http://ijin.github.io/"/>
-  <updated>2016-02-19T09:41:36+09:00</updated>
+  <updated>2016-04-29T12:18:19+09:00</updated>
   <id>http://ijin.github.io/</id>
   <author>
     <name><![CDATA[Michael H. Oshita]]></name>
@@ -94,8 +94,7 @@
 
 <p>それをtwitter上で嘆いていたら、<a href="https://twitter.com/kenjiskywalker">@kenjiskywalker</a>さんから救いの手が！</p>
 
-<p><div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr"><a href="https://twitter.com/ijin">@ijin</a> Tシャツ付きの前売り券購入したのですが、スピーカー枠で参加できそうなのでお譲りしましょうか？</p>&mdash; kenjiskywalker (@kenjiskywalker) <a href="https://twitter.com/kenjiskywalker/status/619079064880463872">July 9, 2015</a></blockquote>
-<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div></p>
+<p>{% tweet https://twitter.com/kenjiskywalker/status/619079064880463872 %}</p>
 
 <p>感謝！</p>
 
@@ -137,8 +136,7 @@ CPUやB+ Treeの気持ちになって考える事が大事。</p>
 
 <p> <br /></p>
 
-<p><div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">突然目の前に無線APが生えてきた <a href="https://twitter.com/hashtag/yapcasia?src=hash">#yapcasia</a> <a href="http://t.co/UWcSzvRv08">pic.twitter.com/UWcSzvRv08</a></p>&mdash; ぷりんたいは求職中です、 (@spacepro_be) <a href="https://twitter.com/spacepro_be/status/635004222291902464">August 22, 2015</a></blockquote>
-<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div></p>
+<p>{% tweet https://twitter.com/spacepro_be/status/635004222291902464 %}</p>
 
 <p>いやー、非常に楽しめました。運営の皆様、ありがとうございました！！</p>
 
@@ -201,11 +199,11 @@ innodb_flush_log_at_trx_commit = 1
 
 <p>スコアの推移はこんな感じ。データセットが小さい分、スコアは大きめ。</p>
 
-<p><img src="https://docs.google.com/spreadsheets/d/1zm6-THRYR_EcLoHgacRScxlhSzeQAkbJ0RXiAI4fiRU/pubchart?oid=1067951178&amp;format=image"></p>
+<p>{% img https://docs.google.com/spreadsheets/d/1zm6-THRYR_EcLoHgacRScxlhSzeQAkbJ0RXiAI4fiRU/pubchart?oid=1067951178&amp;format=image %}</p>
 
 <p>終盤になってやっと本番に近いデータセットや実行時感で細かいチューニング。</p>
 
-<p><img src="https://docs.google.com/spreadsheets/d/1zm6-THRYR_EcLoHgacRScxlhSzeQAkbJ0RXiAI4fiRU/pubchart?oid=2026636320&amp;format=image"></p>
+<p>{% img https://docs.google.com/spreadsheets/d/1zm6-THRYR_EcLoHgacRScxlhSzeQAkbJ0RXiAI4fiRU/pubchart?oid=2026636320&amp;format=image %}</p>
 
 <p>最終的にローカルでのベストスコアは<strong>53420.332 TpmC</strong>でした。</p>
 
@@ -294,8 +292,7 @@ renice -n19 -p `ps auxf | grep mackerel | grep -v grep | awk ‘{print $2}’`
 
 <p>賞品として3DマッサージピローとSSDを頂きました！</p>
 
-<p><div class='embed tweet'><blockquote class="twitter-tweet"><p>3DマッサージピローとSSDをもらった。 <a href="https://twitter.com/hashtag/%E3%82%B5%E3%83%90%E3%83%95%E3%82%A7%E3%82%B9?src=hash">#サバフェス</a> <a href="http://t.co/mKczn9mflZ">pic.twitter.com/mKczn9mflZ</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/581048257171820544">March 26, 2015</a></blockquote>
-<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div></p>
+<p>{% tweet https://twitter.com/ijin/status/581048257171820544 %}</p>
 
 <p>個人敵には飛び込みLTした人がもらったDroneの方が良さそうだったけど、ピローは家族に好評でした。</p>
 ]]></content>
@@ -367,7 +364,7 @@ renice -n19 -p `ps auxf | grep mackerel | grep -v grep | awk ‘{print $2}’`
 
 <p>不正ログイン防止の為にアクセスの失敗回数に応じてログインロックをかけるシステム。実に今風なオンラインバンキングサービス「いすこん銀行」w 最後はjsonのレポートが出力。</p>
 
-<p><img src="https://lh5.googleusercontent.com/-XjuyJ-r62YE/VETj3ySpGkI/AAAAAAAABAo/2Q2yi6YWJUk/w622-h373-no/isucon4q-bank.png"></p>
+<p>{% img https://lh5.googleusercontent.com/-XjuyJ-r62YE/VETj3ySpGkI/AAAAAAAABAo/2Q2yi6YWJUk/w622-h373-no/isucon4q-bank.png %}</p>
 
 <h3>前半戦</h3>
 
@@ -483,7 +480,7 @@ renice -n19 -p `ps auxf | grep mackerel | grep -v grep | awk ‘{print $2}’`
 
 <p><strong>戦いの軌跡</strong></p>
 
-<p><img src="https://lh6.googleusercontent.com/VDc46K_BClolTXevFw5IH4W9sS5Z6akC6FIpIAcJhTM=w925-h328-no"></p>
+<p>{% img https://lh6.googleusercontent.com/VDc46K_BClolTXevFw5IH4W9sS5Z6akC6FIpIAcJhTM=w925-h328-no %}</p>
 
 <h3>振り返り</h3>
 

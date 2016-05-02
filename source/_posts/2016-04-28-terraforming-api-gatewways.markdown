@@ -343,5 +343,5 @@ Issueはこの前上げたので（[#6092](https://github.com/hashicorp/terrafor
 
 - Infrastructure as Code
 
-API Gatewayは`resource`, `method`, `integration`, `method response`、`integration response`等を記述しないといけないので、どうしてもコードが多くになってしまう。場合によってはSwaggerでやった方が楽だったりするかも。その場合は**Infrastructure as YAML**になってしまう。。また、YAMLは整形してからimportする必要があったりするので、その辺はトレードオフかな。
+API Gatewayは`resource`, `method`, `integration`, `method response`、`integration response`等を記述しないといけないので、どうしてもコードが多くになってしまう事からSwaggerでやった方が楽だったりするかも。ただ、その場合は**Infrastructure as YAML**になってしまうけど。。また、YAMLは整形してからimportする必要があったりするので、その辺は諸々トレードオフかなぁ。
 

@@ -4,7 +4,7 @@
   <title><![CDATA[Category: aws | @ijin]]></title>
   <link href="http://ijin.github.io/blog/categories/aws/atom.xml" rel="self"/>
   <link href="http://ijin.github.io/"/>
-  <updated>2016-04-29T12:18:19+09:00</updated>
+  <updated>2016-05-02T13:07:49+09:00</updated>
   <id>http://ijin.github.io/</id>
   <author>
     <name><![CDATA[Michael H. Oshita]]></name>
@@ -43,7 +43,9 @@ Terraform v0.6.16-dev - 5cd27c2
 
 <p>API GWのterraform化はこんな感じで。</p>
 
-<p>{% gist db027846fefb339187e3f2833fe2d034 %}</p>
+<p><div><script src='https://gist.github.com/db027846fefb339187e3f2833fe2d034.js?file='></script>
+<noscript><pre><code></code></pre></noscript></div>
+</p>
 
 <p>(*) permissionはlambda作成後に許可</p>
 
@@ -346,7 +348,7 @@ aws apigateway update-integration-response --rest-api-id $rest_id --resource-id 
 </ul>
 
 
-<p>API Gatewayは<code>resource</code>, <code>method</code>, <code>integration</code>, <code>method response</code>、<code>integration response</code>等を記述しないといけないので、どうしてもコードが多くになってしまう。場合によってはSwaggerでやった方が楽だったりするかも。その場合は<strong>Infrastructure as YAML</strong>になってしまう。。また、YAMLは整形してからimportする必要があったりするので、その辺はトレードオフかな。</p>
+<p>API Gatewayは<code>resource</code>, <code>method</code>, <code>integration</code>, <code>method response</code>、<code>integration response</code>等を記述しないといけないので、どうしてもコードが多くになってしまう事からSwaggerでやった方が楽だったりするかも。ただ、その場合は<strong>Infrastructure as YAML</strong>になってしまうけど。。また、YAMLは整形してからimportする必要があったりするので、その辺は諸々トレードオフかなぁ。</p>
 ]]></content>
   </entry>
   
@@ -370,7 +372,9 @@ aws apigateway update-integration-response --rest-api-id $rest_id --resource-id 
 </ul>
 
 
-<p>{% gist 26afca1e9b03ecaf4d8e %}</p>
+<p><div><script src='https://gist.github.com/26afca1e9b03ecaf4d8e.js?file='></script>
+<noscript><pre><code></code></pre></noscript></div>
+</p>
 
 <h2>Git</h2>
 
@@ -380,7 +384,9 @@ aws apigateway update-integration-response --rest-api-id $rest_id --resource-id 
 
 <p>以下はprivate repositoryをclone後、別branchに新規ファイルを追加後にcommitし、githubへpushする例。</p>
 
-<p>{% gist 080822d2c7859b528631 %}</p>
+<p><div><script src='https://gist.github.com/080822d2c7859b528631.js?file='></script>
+<noscript><pre><code></code></pre></noscript></div>
+</p>
 
 <p>それでは、良いLambdaライフを！</p>
 ]]></content>
@@ -414,12 +420,12 @@ aws apigateway update-integration-response --rest-api-id $rest_id --resource-id 
 
 <p>Designerではこんな感じ。心なしか、jsonの苦痛が多少楽になったような。。後、Propertyの補完機能は良いけどショートカットが<code>Cmd+Space</code>なのでSpotlightさんがぁ。</p>
 
-<p>{%img https://lh3.googleusercontent.com/CLHrqYHPDKPxABDkWdrl0FYbEEC9enKmbOaK75TqhqL5tPnQ8oRjA3_f3N3iJoD5cSanPbbvt9lT=w880-h586-no %}</p>
+<p><img src="https://lh3.googleusercontent.com/CLHrqYHPDKPxABDkWdrl0FYbEEC9enKmbOaK75TqhqL5tPnQ8oRjA3_f3N3iJoD5cSanPbbvt9lT=w880-h586-no"></p>
 
 <p>s3からtemplateを指定。
 template urlは<code>https://s3-ap-northeast-1.amazonaws.com/ijin/aws/lambda/check_lambda_capacity/check_lambda_capacity.template</code></p>
 
-<p>{%img https://lh3.googleusercontent.com/XeF-yQk1cxy8z8KnHTJS3mP-onExoYmbJ7-OYISmLd3NYxO4fVCQnqAxygAEu6zdMtzEy16641C-=w826-h268-no %}</p>
+<p><img src="https://lh3.googleusercontent.com/XeF-yQk1cxy8z8KnHTJS3mP-onExoYmbJ7-OYISmLd3NYxO4fVCQnqAxygAEu6zdMtzEy16641C-=w826-h268-no"></p>
 
 <p>Parameterとしては以下が指定可能</p>
 
@@ -429,11 +435,11 @@ template urlは<code>https://s3-ap-northeast-1.amazonaws.com/ijin/aws/lambda/che
 </ul>
 
 
-<p>{%img https://lh3.googleusercontent.com/vX0JiEE_me3Wn6__PbNysmSYVkGiOs4jbqivZm7lOoq18kZpyrV9lj01kL9-rDMCX1JAS7BHVmI4=w902-h509-no %}</p>
+<p><img src="https://lh3.googleusercontent.com/vX0JiEE_me3Wn6__PbNysmSYVkGiOs4jbqivZm7lOoq18kZpyrV9lj01kL9-rDMCX1JAS7BHVmI4=w902-h509-no"></p>
 
 <p>Stackを作成すると、諸々のリソースが数分で出来上がり。</p>
 
-<p>{%img https://lh3.googleusercontent.com/rQy-Any2cmz9I7YxuGD-Pi8_4VB9dGKFnCbAxWHH4QPjRMF7Y9nKAi2sZPY2HogoL2vpcc8ABy4E=w1050-h260-no %}</p>
+<p><img src="https://lh3.googleusercontent.com/rQy-Any2cmz9I7YxuGD-Pi8_4VB9dGKFnCbAxWHH4QPjRMF7Y9nKAi2sZPY2HogoL2vpcc8ABy4E=w1050-h260-no"></p>
 
 <h3>Manual Labor</h3>
 
@@ -441,20 +447,20 @@ template urlは<code>https://s3-ap-northeast-1.amazonaws.com/ijin/aws/lambda/che
 
 <p>(*) <code>2016/1/26</code> 追記：この記事の翌日に発表された <a href="http://docs.aws.amazon.com/AmazonCloudWatch/latest/DeveloperGuide/WhatIsCloudWatchEvents.html"><code>CloudWatch Events</code></a> の <a href="http://docs.aws.amazon.com/AmazonCloudWatch/latest/DeveloperGuide/ScheduledEvents.html"><code>scheduling</code> 機能</a> によって出来るようになりました。なんというタイミング。</p>
 
-<p>{%img https://lh3.googleusercontent.com/2pedymzqDYHJ30u7VglVv-7_6IpFhpOnRdnE4-QxjuIdX1fep2FwtoyDNr1Kl5yEqT1rtjoLDLZx=w581-h238-no %}</p>
+<p><img src="https://lh3.googleusercontent.com/2pedymzqDYHJ30u7VglVv-7_6IpFhpOnRdnE4-QxjuIdX1fep2FwtoyDNr1Kl5yEqT1rtjoLDLZx=w581-h238-no"></p>
 
-<p>{%img https://lh3.googleusercontent.com/hcLpNX45gIQZQUQGvsyyIXfOH3s9yDpNLIZJN8TU-RUZDdMGdrsNXAb_NRupjWF9Hf4QrK4y6lXO=w864-h441-no %}</p>
+<p><img src="https://lh3.googleusercontent.com/hcLpNX45gIQZQUQGvsyyIXfOH3s9yDpNLIZJN8TU-RUZDdMGdrsNXAb_NRupjWF9Hf4QrK4y6lXO=w864-h441-no"></p>
 
 <p>最小頻度が5分毎
-{%img https://lh3.googleusercontent.com/lzuWtzvkK1A5pUSPyShVaFzzOQ13cD8PFVfCAz3rxSYkn5sKirWnhq-4PlKyhuesMlCQtrfH57yx=w862-h507-no %}</p>
+<img src="https://lh3.googleusercontent.com/lzuWtzvkK1A5pUSPyShVaFzzOQ13cD8PFVfCAz3rxSYkn5sKirWnhq-4PlKyhuesMlCQtrfH57yx=w862-h507-no"></p>
 
 <h3>Graph</h3>
 
 <p>これで、グラフが取れて閾値を超えたらアラートが飛ぶようになる</p>
 
-<p>{%img https://lh3.googleusercontent.com/yzswstqCbaTzpkYfy5MlRS2I9ur5Is3hI8Eii-o27twq-fYA_6o8SY5Rrn0DbyZEn8UJarGhh_9L=w570-h270-no %}</p>
+<p><img src="https://lh3.googleusercontent.com/yzswstqCbaTzpkYfy5MlRS2I9ur5Is3hI8Eii-o27twq-fYA_6o8SY5Rrn0DbyZEn8UJarGhh_9L=w570-h270-no"></p>
 
-<p>{%img https://lh3.googleusercontent.com/NE43x1KQW76QO7b4TMIjjcEYrpQ07B9SNOb-9L-wEnNKc8oC-69HpgzWiVABnQwBSNGtDz4ayeTR=w286-h221-no %}</p>
+<p><img src="https://lh3.googleusercontent.com/NE43x1KQW76QO7b4TMIjjcEYrpQ07B9SNOb-9L-wEnNKc8oC-69HpgzWiVABnQwBSNGtDz4ayeTR=w286-h221-no"></p>
 
 <h2>Code</h2>
 
@@ -482,13 +488,15 @@ template urlは<code>https://s3-ap-northeast-1.amazonaws.com/ijin/aws/lambda/che
 
 <p>イメージはこんな感じ。</p>
 
-<p>{%img https://lh3.googleusercontent.com/A1fsUgw4m52Db4UeOqR3xaQHIGF940MsbA1tchFkF8Pul-ixO6E=w563-h445-no %}</p>
+<p><img src="https://lh3.googleusercontent.com/A1fsUgw4m52Db4UeOqR3xaQHIGF940MsbA1tchFkF8Pul-ixO6E=w563-h445-no"></p>
 
 <p>ログはCloudWatch logsに溜まるのでsubscriptionさえ出来れば、別にソースはLambdaじゃなくても良いんですけどね。</p>
 
 <h2>Lambda</h2>
 
-<p>{%gist 917193e443ff41cdf98b %}</p>
+<p><div><script src='https://gist.github.com/917193e443ff41cdf98b.js?file='></script>
+<noscript><pre><code></code></pre></noscript></div>
+</p>
 
 <p>CloudWatch logsのイベントをparseして、日付の色付けやタイムゾーン変換等ちょっこっと加工してメッセージと共に指定の<code>#channel</code>に飛ばすようにし、別のSlack通知用lambda functionをinvokeしているだけですね。
 （Slack用のlambdaは<a href="/blog/2015/08/06/github-to-lambda-to-slack/">以前のエントリ</a>を参照）</p>
@@ -519,8 +527,8 @@ aws --region ap-northeast-1 logs put-subscription-filter \
 
 <p>これでlambda functionが実行されると、Slackにログが通知されます。</p>
 
-<p>{%img https://lh3.googleusercontent.com/-PgkSA7jGbVTf3w1Eq5CZuvUAN4_bkKpR811Vcij5MlLam22C10=w706-h396-no %}
-{%img https://lh3.googleusercontent.com/JKU31Qsd6cOSWe011m8UJaBYljDrXwz08ym0ff79DngGMxDL_y0=w705-h234-no %}</p>
+<p><img src="https://lh3.googleusercontent.com/-PgkSA7jGbVTf3w1Eq5CZuvUAN4_bkKpR811Vcij5MlLam22C10=w706-h396-no">
+<img src="https://lh3.googleusercontent.com/JKU31Qsd6cOSWe011m8UJaBYljDrXwz08ym0ff79DngGMxDL_y0=w705-h234-no"></p>
 
 <p>うん、見やすい。</p>
 
@@ -553,7 +561,7 @@ aws --region ap-northeast-1 logs put-subscription-filter \
 
 <p>そこで、API GatewayとLambdaでinstanceのpublic ipを返却するエンドポイントを作り、SSH configを設定すれば誰でもアクセスできるようにしてみました。</p>
 
-<p>{% img https://lh3.googleusercontent.com/vqW8J9ASHnvZSjAZnwS-_4BMxUo37m6FJ3snn1c2j1dgbX1SVybDaz9TN0mG-fVLqKRUGDtUBO4uDbL2L_QILPXYNbKFCaCmG5Au4Ar8mNacZATEX3FjT2L08T-K4-JWwIXRvsd5SM1iwPu6az7ABb28N2ezTM5wp4-B4rB7tIHFzx8ZWCq9EvZQJGFnqVZpZxXEbdGc2edk6J4dd-QgrZRAmzx2XHXSK4oWnWCkbTB1VS-LGIk0ShMbqn1wjj8AugSoHozG1hsufsuEyeNxBN8-6lQowH_O8JWRdJc28ffNtEaQeGr6Xrj66DjjxYZmO_NdS9hnlgFzUAP4t9iWt1cRAVzDHHVXfqeROmtdXc1ogYLwQY3EOMpd42l-YDNzKbp_bi4H4YJ-Mr-pmF91szERTw2avQmc2MGYcUcsOATYxnyz47mNW1f6alfbzeUf1sFwlUZ1FqS3if6CWiaKnqNjRPvHHs8ccV7magouBQ0Qm3_DOgSKsuosLYXZzNYEuPZl1WYv-m2Hnz0pMglMUA42V_7zrl6lY-cleeY=w605-h431-no %}</p>
+<p><img src="https://lh3.googleusercontent.com/vqW8J9ASHnvZSjAZnwS-_4BMxUo37m6FJ3snn1c2j1dgbX1SVybDaz9TN0mG-fVLqKRUGDtUBO4uDbL2L_QILPXYNbKFCaCmG5Au4Ar8mNacZATEX3FjT2L08T-K4-JWwIXRvsd5SM1iwPu6az7ABb28N2ezTM5wp4-B4rB7tIHFzx8ZWCq9EvZQJGFnqVZpZxXEbdGc2edk6J4dd-QgrZRAmzx2XHXSK4oWnWCkbTB1VS-LGIk0ShMbqn1wjj8AugSoHozG1hsufsuEyeNxBN8-6lQowH_O8JWRdJc28ffNtEaQeGr6Xrj66DjjxYZmO_NdS9hnlgFzUAP4t9iWt1cRAVzDHHVXfqeROmtdXc1ogYLwQY3EOMpd42l-YDNzKbp_bi4H4YJ-Mr-pmF91szERTw2avQmc2MGYcUcsOATYxnyz47mNW1f6alfbzeUf1sFwlUZ1FqS3if6CWiaKnqNjRPvHHs8ccV7magouBQ0Qm3_DOgSKsuosLYXZzNYEuPZl1WYv-m2Hnz0pMglMUA42V_7zrl6lY-cleeY=w605-h431-no"></p>
 
 <h2>前提条件</h2>
 
@@ -571,7 +579,9 @@ aws --region ap-northeast-1 logs put-subscription-filter \
 
 <p>せっかくなので新しくサポートされたPythonで記述。</p>
 
-<p>{% gist bf735efbec42e1f96d4b %}</p>
+<p><div><script src='https://gist.github.com/bf735efbec42e1f96d4b.js?file='></script>
+<noscript><pre><code></code></pre></noscript></div>
+</p>
 
 <p>当然、LambdaのIAM roleで<code>ec2:Describe*</code>のAction許可も必要。</p>
 
@@ -581,7 +591,9 @@ aws --region ap-northeast-1 logs put-subscription-filter \
 
 <p>編集しながらドキュメントも見れる<a href="http://editor.swagger.io/#/">online editor</a>が結構便利。</p>
 
-<p>{% gist a41059039937ffc8dada %}</p>
+<p><div><script src='https://gist.github.com/a41059039937ffc8dada.js?file='></script>
+<noscript><pre><code></code></pre></noscript></div>
+</p>
 
 <h2>API Gateway</h2>
 
@@ -622,17 +634,17 @@ reading from swagger.json
 
 <p>これでAPI Gateway上に階層が出来上がり。</p>
 
-<p>{% img https://lh3.googleusercontent.com/cM7s04iaMWI73VwJcH3C9lsnFjrrFpw0qqnUCM4hkmKWZiB3Pp0idjace8rxQYPCVwYzpucRKJep1j3CN9rDQ4uG0xJa4iXM_ua_lLo6LjxCus_lXV9aPCanWS17Ab6eVfgzH3wMDS1YvUhBq_6aLl3JmGmQVlZPFAUrOjcT-Xwra2o4VRKgaTbE5LQCvoBkzkylYhe6JECBu-lqBW0T9CnyhEsbJ1KTUwnIvLLTYtvTPtG6xEqoBMiCo26QLrASGg_k5fXW66jB-SH3fK-W-2TlYHwGdvlJunbuJp__AN2RUAhU64IPTQmZS-PfBTknMF273wF0DyqoL4UsS4HCmAMytc4LBx4s3iJdxFlPkMHPQ5eM9Q6REK92yP1a9FUqXKGF15FD9M6njOGvXFQYH8BsDruCa-HvxY7l6J0oj7PjyWwgq3_Jpd13F27rQkAcK13ni-sSB17wTRi-la8Tgu5ZMvnpUYBK-ARup3vHz791VQW-LVcdecok2Sao2wG4sUiUi5pMSOUabX02OMORVCu5OSxCdw-GxGSzikM=w350-h280-no %}</p>
+<p><img src="https://lh3.googleusercontent.com/cM7s04iaMWI73VwJcH3C9lsnFjrrFpw0qqnUCM4hkmKWZiB3Pp0idjace8rxQYPCVwYzpucRKJep1j3CN9rDQ4uG0xJa4iXM_ua_lLo6LjxCus_lXV9aPCanWS17Ab6eVfgzH3wMDS1YvUhBq_6aLl3JmGmQVlZPFAUrOjcT-Xwra2o4VRKgaTbE5LQCvoBkzkylYhe6JECBu-lqBW0T9CnyhEsbJ1KTUwnIvLLTYtvTPtG6xEqoBMiCo26QLrASGg_k5fXW66jB-SH3fK-W-2TlYHwGdvlJunbuJp__AN2RUAhU64IPTQmZS-PfBTknMF273wF0DyqoL4UsS4HCmAMytc4LBx4s3iJdxFlPkMHPQ5eM9Q6REK92yP1a9FUqXKGF15FD9M6njOGvXFQYH8BsDruCa-HvxY7l6J0oj7PjyWwgq3_Jpd13F27rQkAcK13ni-sSB17wTRi-la8Tgu5ZMvnpUYBK-ARup3vHz791VQW-LVcdecok2Sao2wG4sUiUi5pMSOUabX02OMORVCu5OSxCdw-GxGSzikM=w350-h280-no"></p>
 
 <p>後は各<code>GET method</code>でLambdaへの関連付けをし、<code>Integration Request</code>と<code>Integration Response</code>の<code>mapping template</code>でパラメータやレスポンスを設定。（多分、この手順もswaggerで定義できるとは思うけど）</p>
 
 <h3>integration request</h3>
 
-<p>{% img https://lh3.googleusercontent.com/JtD50KDCwP5ggylHzSuD7WiM-fr1QvVkZFpGFKD0efPbe_wvJPR0HbaTihe8wSlBNJzFYHAAwN9ZvKS1-R1WVGqbWT-t5PCdlptIVgJkk8xjDF0HJTRXeFEjF6F5Z2sp5wfY3BMgKZnyAM0CL6Ax5WtLNxCENl1SskcqajLDAapVQP8bj0UMlxUhsATwg9wh6zbS-jKp6tjf8YlkDD3PDFV_jhE2oVnzytNTlKBb5sU_kwMRFOGfQiUIpwgsrPq11af4ETcdFiU99lxa2ey1fgwxIaoEddLNOgMyObSd7LV0ISNY_kbZj0aRi2PFFmUfnQmYfc0UTajjAejDRms08vn6oy0-6kwGRjcKMq8zDSLFMCxgaSU4_2m2zh4T1zo54DJCHRm8ilXg_r3Z2u4IdBBHf4xYdvvs2J0p4ZT6GOQy6tMT0cNAFN5XUQiC6zDVutj2Ia1OQSlhUFRvnXwtivqGdMvpOIyUqoyuJ5RHLhO3hWP90SsW_DuILy6eXAHkSMHHpDPu5uemVBD29KfKsf67GS1bmJPwu5_9gX4=w836-h208-no %}</p>
+<p><img src="https://lh3.googleusercontent.com/JtD50KDCwP5ggylHzSuD7WiM-fr1QvVkZFpGFKD0efPbe_wvJPR0HbaTihe8wSlBNJzFYHAAwN9ZvKS1-R1WVGqbWT-t5PCdlptIVgJkk8xjDF0HJTRXeFEjF6F5Z2sp5wfY3BMgKZnyAM0CL6Ax5WtLNxCENl1SskcqajLDAapVQP8bj0UMlxUhsATwg9wh6zbS-jKp6tjf8YlkDD3PDFV_jhE2oVnzytNTlKBb5sU_kwMRFOGfQiUIpwgsrPq11af4ETcdFiU99lxa2ey1fgwxIaoEddLNOgMyObSd7LV0ISNY_kbZj0aRi2PFFmUfnQmYfc0UTajjAejDRms08vn6oy0-6kwGRjcKMq8zDSLFMCxgaSU4_2m2zh4T1zo54DJCHRm8ilXg_r3Z2u4IdBBHf4xYdvvs2J0p4ZT6GOQy6tMT0cNAFN5XUQiC6zDVutj2Ia1OQSlhUFRvnXwtivqGdMvpOIyUqoyuJ5RHLhO3hWP90SsW_DuILy6eXAHkSMHHpDPu5uemVBD29KfKsf67GS1bmJPwu5_9gX4=w836-h208-no"></p>
 
 <h3>integration response</h3>
 
-<p>{% img https://lh3.googleusercontent.com/-MuJyoH_nLN5jbjrcTsDW9qfsFUhDt6nHq_gNlYwMhVNZJqYL3C5qrgPwXLrPRXL0oRICG8xGpBVJpsLKIC3KhhFL4eHyo5LPZRVMbCXQ20UfT-tMV-Pt72-Rr7AKkhXDSzLcBANpRyJgioD5VlLb6YfqcnDLpczt1gnCOvnLHeWuuIf8NTa6q8hoGZXKyBo79Xapag_xvzbqco8AzSqu_yUxR6MXArEpp_we0JGhkJJHrve41LXNDX27QfC-Fj84feKgXY9CTgB1ytHWWDT_71gU05NwMdMisuQnAZPg9kRnoze55OBXu6c8TtzN5Idvdgmc9dbeKKxFG0f4bn_pt4lN6ZzOJ0ptOteVl-EpMDPk6M9_kwKerOc1GQbH47MEEYmQTXmoMeUp9ECJwhYdxdqu_LEB6ZxrjOC3VBPP6rE8sxBZJG8od_adtClp4UYU5-LBPm9_DYsde5hThh2su9PVBph8fbk42WE8I6o3BoOSciA1G9eIwfaa99OQh-4NZhJRVIGs7M4uMHVyUnDQk0RqtjFjf7TlCkeRC4=w811-h210-no %}</p>
+<p><img src="https://lh3.googleusercontent.com/-MuJyoH_nLN5jbjrcTsDW9qfsFUhDt6nHq_gNlYwMhVNZJqYL3C5qrgPwXLrPRXL0oRICG8xGpBVJpsLKIC3KhhFL4eHyo5LPZRVMbCXQ20UfT-tMV-Pt72-Rr7AKkhXDSzLcBANpRyJgioD5VlLb6YfqcnDLpczt1gnCOvnLHeWuuIf8NTa6q8hoGZXKyBo79Xapag_xvzbqco8AzSqu_yUxR6MXArEpp_we0JGhkJJHrve41LXNDX27QfC-Fj84feKgXY9CTgB1ytHWWDT_71gU05NwMdMisuQnAZPg9kRnoze55OBXu6c8TtzN5Idvdgmc9dbeKKxFG0f4bn_pt4lN6ZzOJ0ptOteVl-EpMDPk6M9_kwKerOc1GQbH47MEEYmQTXmoMeUp9ECJwhYdxdqu_LEB6ZxrjOC3VBPP6rE8sxBZJG8od_adtClp4UYU5-LBPm9_DYsde5hThh2su9PVBph8fbk42WE8I6o3BoOSciA1G9eIwfaa99OQh-4NZhJRVIGs7M4uMHVyUnDQk0RqtjFjf7TlCkeRC4=w811-h210-no"></p>
 
 <p>参考：</p>
 

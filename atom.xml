@@ -4,7 +4,7 @@
   <title><![CDATA[@ijin]]></title>
   <link href="http://ijin.github.io/atom.xml" rel="self"/>
   <link href="http://ijin.github.io/"/>
-  <updated>2016-04-29T12:18:11+09:00</updated>
+  <updated>2016-05-02T13:07:49+09:00</updated>
   <id>http://ijin.github.io/</id>
   <author>
     <name><![CDATA[Michael H. Oshita]]></name>
@@ -645,7 +645,7 @@
 </ul>
 
 
-<p>API Gatewayは<code>resource</code>, <code>method</code>, <code>integration</code>, <code>method response</code>、<code>integration response</code>等を記述しないといけないので、どうしてもコードが多くになってしまう。場合によってはSwaggerでやった方が楽だったりするかも。その場合は<strong>Infrastructure as YAML</strong>になってしまう。。また、YAMLは整形してからimportする必要があったりするので、その辺はトレードオフかな。</p>
+<p>API Gatewayは<code>resource</code>, <code>method</code>, <code>integration</code>, <code>method response</code>、<code>integration response</code>等を記述しないといけないので、どうしてもコードが多くになってしまう事からSwaggerでやった方が楽だったりするかも。ただ、その場合は<strong>Infrastructure as YAML</strong>になってしまうけど。。また、YAMLは整形してからimportする必要があったりするので、その辺は諸々トレードオフかなぁ。</p>
 ]]></content>
   </entry>
   

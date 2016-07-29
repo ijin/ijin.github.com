@@ -4,7 +4,7 @@
   <title><![CDATA[Category: aws | @ijin]]></title>
   <link href="http://ijin.github.io/blog/categories/aws/atom.xml" rel="self"/>
   <link href="http://ijin.github.io/"/>
-  <updated>2016-05-02T13:07:49+09:00</updated>
+  <updated>2016-07-29T18:03:52+09:00</updated>
   <id>http://ijin.github.io/</id>
   <author>
     <name><![CDATA[Michael H. Oshita]]></name>
@@ -12,6 +12,175 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[AWS GameDay Japan 2016を開催してきた]]></title>
+    <link href="http://ijin.github.io/blog/2016/07/29/aws-gameday-japan-2016/"/>
+    <updated>2016-07-29T15:41:00+09:00</updated>
+    <id>http://ijin.github.io/blog/2016/07/29/aws-gameday-japan-2016</id>
+    <content type="html"><![CDATA[<p>過去に何回も参加・開催両方を経験した事がある<a href="http://gameday-japan.connpass.com/event/33531/">AWS GameDay</a>に、またしても運営側として関わりました。</p>
+
+<p>お題は基本的に<a href="/blog/2015/10/26/aws-re-invent-2015/">去年のre:Inventでやった</a>のを若干チューニングしたやつ。
+詳細は今後また別のところで開催される可能性があるので、その時の参加者の為に伏せておきます。</p>
+
+<h3>当日</h3>
+
+<p>競技中はそれぞれのチームのスコアがリアルタイムで見れるダッシュボードがあって白熱した様子が伝わってました。</p>
+
+<p>{% tweet https://twitter.com/ijin/status/756717339312164864?lang=ja %}</p>
+
+<p>これはこれで楽しいんですが、何かが足りない感じ。。。</p>
+
+<br >
+
+
+<br >
+
+
+<br >
+
+
+<br >
+
+
+<br >
+
+
+<p>そう、<strong>グラフ</strong>です！!</p>
+
+<br >
+
+
+<br >
+
+
+<br >
+
+
+<br >
+
+
+<br >
+
+
+<p>参加チームの白熱したバトル（順位の入れ替え等）を時系列で表示し、戦いの軌跡をビジュアライズするアレです。ISUCONでもよく見慣れたあの遷移するグラフがなかったのです！</p>
+
+<h1>なので、作りました</h1>
+
+<h2>Graphing premiere</h2>
+
+<p>ダッシュボードの作りを見てみると <code>jQuery</code> と <code>React.js</code> を使っている模様。ならば、どこかでendpointを叩いてjsonを取得しているはずなので、いろいろ探したところ、それらしいのがありました。</p>
+
+<p>```javascript
+  getScores: function() {</p>
+
+<pre><code>$.ajax({
+  url: 'https://xxxxxxxxx.execute-api.us-west-2.amazonaws.com/prod/scores',
+  dataType: 'json',
+  cache: false,
+  success: function(data) {
+    this.setState({data: data});
+  }.bind(this),
+  error: function(xhr, status, err) {
+    console.error("scores", status, err.toString());
+  }.bind(this)
+});
+</code></pre>
+
+<p>  },
+```</p>
+
+<p>こうなれば話は簡単で後は返却されるjsonを解析して、定期的にcallしてplotしていけば良いだけです。</p>
+
+<h3>データ送信</h3>
+
+<p>グラフを描画するサーバを用意するのはしんどいので、カスタムメトリックスが作成できる監視サービスを使いました。
+最初は<a href="https://mackerel.io">Mackerel</a>をと思ったけど、独自グラフを一般公開する設定がなさそうだったので<a href="https://www.datadoghq.com">Datadog</a>を採用。</p>
+
+<p>Datadogでカスタムメトリックスを送るにはAPIを直接叩くよりは、<a href="http://docs.datadoghq.com/guides/metrics/">StatsD経由で送信</a>した方が楽なのでrubyでサクっと適当に記述。</p>
+
+<p><code>ruby gameday.rb
+statsd.batch do |s|
+  s.gauge('gameday2016', scores[0]['Profit']*100, :tags =&gt; ["team:" + scores[0]['Team']])
+  s.gauge('gameday2016', scores[1]['Profit']*100, :tags =&gt; ["team:" + scores[1]['Team']])
+  s.gauge('gameday2016', scores[2]['Profit']*100, :tags =&gt; ["team:" + scores[2]['Team']])
+  # etc
+end
+</code></p>
+
+<h3>グラフ描画</h3>
+
+<p>公開ダッシュボードを作成するには <code>TimeBoard</code> ではなく <code>ScreenBoard</code> を選択し、後は必要そうなグラフを追加していくだけ。</p>
+
+<p>グラフ自体はGUIで作っても良いし、jsonで記述可能なので結構柔軟で素敵です。</p>
+
+<p>``` json profits.json
+{
+  "viz": "timeseries",
+  "requests": [</p>
+
+<pre><code>{
+  "q": "avg:gameday2016{*} by {team}",
+  "aggregator": "avg",
+  "conditional_formats": [],
+  "type": "line"
+}
+</code></pre>
+
+<p>  ]
+}
+```</p>
+
+<p>``` json ranking.json
+{
+  "viz": "toplist",
+  "requests": [</p>
+
+<pre><code>{
+  "q": "top(avg:gameday2016{*} by {team}, 20, 'last', 'desc')",
+  "style": {
+    "palette": "dog_classic"
+  },
+  "conditional_formats": [
+    {
+      "palette": "white_on_green",
+      "comparator": "&gt;=",
+      "value": 0
+    },
+    {
+      "palette": "white_on_red",
+      "comparator": "&lt;",
+      "value": 0
+    }
+  ]
+}
+</code></pre>
+
+<p>  ]
+}
+```</p>
+
+<p>できあがったグラフはこんな感じ。
+高負荷発生等のイベント時の対応との比較もできて見やすいと思います。</p>
+
+<p>{% img https://lh3.googleusercontent.com/XoNcTN3HQIlFDHvaSe8uNlcCP8FYRijZNsPVdrnrsmNvEF3XoW6IUDKnU63JDLL7X6W3Ed3mCLaF=w742-h394-no %}</p>
+
+<p>これで各チームのポジション等を伝えやすくなりました。</p>
+
+<p>{% tweet https://twitter.com/ijin/status/756756052192792576?lang=ja %}
+{% tweet https://twitter.com/ijin/status/756766379341025281?lang=ja %}
+{% tweet https://twitter.com/ijin/status/756778321749225472?lang=ja %}</p>
+
+<p>というわけで優勝した<a href="http://inokara.hateblo.jp/entry/2016/07/24/095228">チーム初老丸</a>、おめでとうございます！</p>
+
+<h3>終わりに</h3>
+
+<p>今回は競技の途中から実装しちゃったので次回は最初から用意しておきたいと思います。</p>
+
+<p>{% tweet https://twitter.com/sora_h/status/660379055867334656?lang=ja %}
+（※）実は去年のISUCONの時も似たような事をやってましたね。。</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[TerraformでAPI Gatewway]]></title>
@@ -43,9 +212,7 @@ Terraform v0.6.16-dev - 5cd27c2
 
 <p>API GWのterraform化はこんな感じで。</p>
 
-<p><div><script src='https://gist.github.com/db027846fefb339187e3f2833fe2d034.js?file='></script>
-<noscript><pre><code></code></pre></noscript></div>
-</p>
+<p>{% gist db027846fefb339187e3f2833fe2d034 %}</p>
 
 <p>(*) permissionはlambda作成後に許可</p>
 
@@ -372,9 +539,7 @@ aws apigateway update-integration-response --rest-api-id $rest_id --resource-id 
 </ul>
 
 
-<p><div><script src='https://gist.github.com/26afca1e9b03ecaf4d8e.js?file='></script>
-<noscript><pre><code></code></pre></noscript></div>
-</p>
+<p>{% gist 26afca1e9b03ecaf4d8e %}</p>
 
 <h2>Git</h2>
 
@@ -384,9 +549,7 @@ aws apigateway update-integration-response --rest-api-id $rest_id --resource-id 
 
 <p>以下はprivate repositoryをclone後、別branchに新規ファイルを追加後にcommitし、githubへpushする例。</p>
 
-<p><div><script src='https://gist.github.com/080822d2c7859b528631.js?file='></script>
-<noscript><pre><code></code></pre></noscript></div>
-</p>
+<p>{% gist 080822d2c7859b528631 %}</p>
 
 <p>それでは、良いLambdaライフを！</p>
 ]]></content>
@@ -420,12 +583,12 @@ aws apigateway update-integration-response --rest-api-id $rest_id --resource-id 
 
 <p>Designerではこんな感じ。心なしか、jsonの苦痛が多少楽になったような。。後、Propertyの補完機能は良いけどショートカットが<code>Cmd+Space</code>なのでSpotlightさんがぁ。</p>
 
-<p><img src="https://lh3.googleusercontent.com/CLHrqYHPDKPxABDkWdrl0FYbEEC9enKmbOaK75TqhqL5tPnQ8oRjA3_f3N3iJoD5cSanPbbvt9lT=w880-h586-no"></p>
+<p>{%img https://lh3.googleusercontent.com/CLHrqYHPDKPxABDkWdrl0FYbEEC9enKmbOaK75TqhqL5tPnQ8oRjA3_f3N3iJoD5cSanPbbvt9lT=w880-h586-no %}</p>
 
 <p>s3からtemplateを指定。
 template urlは<code>https://s3-ap-northeast-1.amazonaws.com/ijin/aws/lambda/check_lambda_capacity/check_lambda_capacity.template</code></p>
 
-<p><img src="https://lh3.googleusercontent.com/XeF-yQk1cxy8z8KnHTJS3mP-onExoYmbJ7-OYISmLd3NYxO4fVCQnqAxygAEu6zdMtzEy16641C-=w826-h268-no"></p>
+<p>{%img https://lh3.googleusercontent.com/XeF-yQk1cxy8z8KnHTJS3mP-onExoYmbJ7-OYISmLd3NYxO4fVCQnqAxygAEu6zdMtzEy16641C-=w826-h268-no %}</p>
 
 <p>Parameterとしては以下が指定可能</p>
 
@@ -435,11 +598,11 @@ template urlは<code>https://s3-ap-northeast-1.amazonaws.com/ijin/aws/lambda/che
 </ul>
 
 
-<p><img src="https://lh3.googleusercontent.com/vX0JiEE_me3Wn6__PbNysmSYVkGiOs4jbqivZm7lOoq18kZpyrV9lj01kL9-rDMCX1JAS7BHVmI4=w902-h509-no"></p>
+<p>{%img https://lh3.googleusercontent.com/vX0JiEE_me3Wn6__PbNysmSYVkGiOs4jbqivZm7lOoq18kZpyrV9lj01kL9-rDMCX1JAS7BHVmI4=w902-h509-no %}</p>
 
 <p>Stackを作成すると、諸々のリソースが数分で出来上がり。</p>
 
-<p><img src="https://lh3.googleusercontent.com/rQy-Any2cmz9I7YxuGD-Pi8_4VB9dGKFnCbAxWHH4QPjRMF7Y9nKAi2sZPY2HogoL2vpcc8ABy4E=w1050-h260-no"></p>
+<p>{%img https://lh3.googleusercontent.com/rQy-Any2cmz9I7YxuGD-Pi8_4VB9dGKFnCbAxWHH4QPjRMF7Y9nKAi2sZPY2HogoL2vpcc8ABy4E=w1050-h260-no %}</p>
 
 <h3>Manual Labor</h3>
 
@@ -447,20 +610,20 @@ template urlは<code>https://s3-ap-northeast-1.amazonaws.com/ijin/aws/lambda/che
 
 <p>(*) <code>2016/1/26</code> 追記：この記事の翌日に発表された <a href="http://docs.aws.amazon.com/AmazonCloudWatch/latest/DeveloperGuide/WhatIsCloudWatchEvents.html"><code>CloudWatch Events</code></a> の <a href="http://docs.aws.amazon.com/AmazonCloudWatch/latest/DeveloperGuide/ScheduledEvents.html"><code>scheduling</code> 機能</a> によって出来るようになりました。なんというタイミング。</p>
 
-<p><img src="https://lh3.googleusercontent.com/2pedymzqDYHJ30u7VglVv-7_6IpFhpOnRdnE4-QxjuIdX1fep2FwtoyDNr1Kl5yEqT1rtjoLDLZx=w581-h238-no"></p>
+<p>{%img https://lh3.googleusercontent.com/2pedymzqDYHJ30u7VglVv-7_6IpFhpOnRdnE4-QxjuIdX1fep2FwtoyDNr1Kl5yEqT1rtjoLDLZx=w581-h238-no %}</p>
 
-<p><img src="https://lh3.googleusercontent.com/hcLpNX45gIQZQUQGvsyyIXfOH3s9yDpNLIZJN8TU-RUZDdMGdrsNXAb_NRupjWF9Hf4QrK4y6lXO=w864-h441-no"></p>
+<p>{%img https://lh3.googleusercontent.com/hcLpNX45gIQZQUQGvsyyIXfOH3s9yDpNLIZJN8TU-RUZDdMGdrsNXAb_NRupjWF9Hf4QrK4y6lXO=w864-h441-no %}</p>
 
 <p>最小頻度が5分毎
-<img src="https://lh3.googleusercontent.com/lzuWtzvkK1A5pUSPyShVaFzzOQ13cD8PFVfCAz3rxSYkn5sKirWnhq-4PlKyhuesMlCQtrfH57yx=w862-h507-no"></p>
+{%img https://lh3.googleusercontent.com/lzuWtzvkK1A5pUSPyShVaFzzOQ13cD8PFVfCAz3rxSYkn5sKirWnhq-4PlKyhuesMlCQtrfH57yx=w862-h507-no %}</p>
 
 <h3>Graph</h3>
 
 <p>これで、グラフが取れて閾値を超えたらアラートが飛ぶようになる</p>
 
-<p><img src="https://lh3.googleusercontent.com/yzswstqCbaTzpkYfy5MlRS2I9ur5Is3hI8Eii-o27twq-fYA_6o8SY5Rrn0DbyZEn8UJarGhh_9L=w570-h270-no"></p>
+<p>{%img https://lh3.googleusercontent.com/yzswstqCbaTzpkYfy5MlRS2I9ur5Is3hI8Eii-o27twq-fYA_6o8SY5Rrn0DbyZEn8UJarGhh_9L=w570-h270-no %}</p>
 
-<p><img src="https://lh3.googleusercontent.com/NE43x1KQW76QO7b4TMIjjcEYrpQ07B9SNOb-9L-wEnNKc8oC-69HpgzWiVABnQwBSNGtDz4ayeTR=w286-h221-no"></p>
+<p>{%img https://lh3.googleusercontent.com/NE43x1KQW76QO7b4TMIjjcEYrpQ07B9SNOb-9L-wEnNKc8oC-69HpgzWiVABnQwBSNGtDz4ayeTR=w286-h221-no %}</p>
 
 <h2>Code</h2>
 
@@ -488,15 +651,13 @@ template urlは<code>https://s3-ap-northeast-1.amazonaws.com/ijin/aws/lambda/che
 
 <p>イメージはこんな感じ。</p>
 
-<p><img src="https://lh3.googleusercontent.com/A1fsUgw4m52Db4UeOqR3xaQHIGF940MsbA1tchFkF8Pul-ixO6E=w563-h445-no"></p>
+<p>{%img https://lh3.googleusercontent.com/A1fsUgw4m52Db4UeOqR3xaQHIGF940MsbA1tchFkF8Pul-ixO6E=w563-h445-no %}</p>
 
 <p>ログはCloudWatch logsに溜まるのでsubscriptionさえ出来れば、別にソースはLambdaじゃなくても良いんですけどね。</p>
 
 <h2>Lambda</h2>
 
-<p><div><script src='https://gist.github.com/917193e443ff41cdf98b.js?file='></script>
-<noscript><pre><code></code></pre></noscript></div>
-</p>
+<p>{%gist 917193e443ff41cdf98b %}</p>
 
 <p>CloudWatch logsのイベントをparseして、日付の色付けやタイムゾーン変換等ちょっこっと加工してメッセージと共に指定の<code>#channel</code>に飛ばすようにし、別のSlack通知用lambda functionをinvokeしているだけですね。
 （Slack用のlambdaは<a href="/blog/2015/08/06/github-to-lambda-to-slack/">以前のエントリ</a>を参照）</p>
@@ -527,8 +688,8 @@ aws --region ap-northeast-1 logs put-subscription-filter \
 
 <p>これでlambda functionが実行されると、Slackにログが通知されます。</p>
 
-<p><img src="https://lh3.googleusercontent.com/-PgkSA7jGbVTf3w1Eq5CZuvUAN4_bkKpR811Vcij5MlLam22C10=w706-h396-no">
-<img src="https://lh3.googleusercontent.com/JKU31Qsd6cOSWe011m8UJaBYljDrXwz08ym0ff79DngGMxDL_y0=w705-h234-no"></p>
+<p>{%img https://lh3.googleusercontent.com/-PgkSA7jGbVTf3w1Eq5CZuvUAN4_bkKpR811Vcij5MlLam22C10=w706-h396-no %}
+{%img https://lh3.googleusercontent.com/JKU31Qsd6cOSWe011m8UJaBYljDrXwz08ym0ff79DngGMxDL_y0=w705-h234-no %}</p>
 
 <p>うん、見やすい。</p>
 
@@ -547,197 +708,6 @@ aws --region ap-northeast-1 logs put-subscription-filter \
 <ul>
 <li><a href="http://docs.aws.amazon.com/AmazonCloudWatch/latest/DeveloperGuide/Subscriptions.html#LambdaFunctionExample">http://docs.aws.amazon.com/AmazonCloudWatch/latest/DeveloperGuide/Subscriptions.html#LambdaFunctionExample</a></li>
 <li><a href="http://inokara.hateblo.jp/entry/2015/10/18/201212">http://inokara.hateblo.jp/entry/2015/10/18/201212</a></li>
-</ul>
-
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Elastic Beanstalkへの簡単ssh]]></title>
-    <link href="http://ijin.github.io/blog/2015/11/04/elastic-beanstalk-easy-ssh/"/>
-    <updated>2015-11-04T08:43:00+09:00</updated>
-    <id>http://ijin.github.io/blog/2015/11/04/elastic-beanstalk-easy-ssh</id>
-    <content type="html"><![CDATA[<p>AWS Elastic Beanstalk上で管理されているinstanceにsshするには<code>eb ssh</code>コマンドを使えば割りと簡単に接続できますが、アクセスキーの設定が必要で、開発者が多い場合にそれを発行してばら撒いて管理するのはかなり面倒です（IAM user/roleの割当にしても）。特に極稀にしか接続する必要がない場合。</p>
-
-<p>そこで、API GatewayとLambdaでinstanceのpublic ipを返却するエンドポイントを作り、SSH configを設定すれば誰でもアクセスできるようにしてみました。</p>
-
-<p><img src="https://lh3.googleusercontent.com/vqW8J9ASHnvZSjAZnwS-_4BMxUo37m6FJ3snn1c2j1dgbX1SVybDaz9TN0mG-fVLqKRUGDtUBO4uDbL2L_QILPXYNbKFCaCmG5Au4Ar8mNacZATEX3FjT2L08T-K4-JWwIXRvsd5SM1iwPu6az7ABb28N2ezTM5wp4-B4rB7tIHFzx8ZWCq9EvZQJGFnqVZpZxXEbdGc2edk6J4dd-QgrZRAmzx2XHXSK4oWnWCkbTB1VS-LGIk0ShMbqn1wjj8AugSoHozG1hsufsuEyeNxBN8-6lQowH_O8JWRdJc28ffNtEaQeGr6Xrj66DjjxYZmO_NdS9hnlgFzUAP4t9iWt1cRAVzDHHVXfqeROmtdXc1ogYLwQY3EOMpd42l-YDNzKbp_bi4H4YJ-Mr-pmF91szERTw2avQmc2MGYcUcsOATYxnyz47mNW1f6alfbzeUf1sFwlUZ1FqS3if6CWiaKnqNjRPvHHs8ccV7magouBQ0Qm3_DOgSKsuosLYXZzNYEuPZl1WYv-m2Hnz0pMglMUA42V_7zrl6lY-cleeY=w605-h431-no"></p>
-
-<h2>前提条件</h2>
-
-<ul>
-<li>instanceにはログインユーザーのssh keyが登録積み（.ebextensions等で）</li>
-<li>ssh localhost可能である</li>
-<li>Elastic Beanstalkのenvironment名は数値で終わらない</li>
-<li>Auto ScalingのTermination Policyが<code>NewestInstance</code></li>
-</ul>
-
-
-<h2>Lambda</h2>
-
-<p>やってる事は単純で自動的に付与される<code>elasticbeanstalk:environment-name</code>タグのついたinstanceのipを（パラメータに応じて）返却するだけ。複数ある場合は、起動した順で。</p>
-
-<p>せっかくなので新しくサポートされたPythonで記述。</p>
-
-<p><div><script src='https://gist.github.com/bf735efbec42e1f96d4b.js?file='></script>
-<noscript><pre><code></code></pre></noscript></div>
-</p>
-
-<p>当然、LambdaのIAM roleで<code>ec2:Describe*</code>のAction許可も必要。</p>
-
-<h2>Swagger</h2>
-
-<p>API Gatewayのresourceをコンソールでポチポチ作るのがイヤだったのでAPIの状態を<a href="http://swagger.io/">Swagger</a>で定義してみた。awscliは<a href="http://dev.classmethod.jp/cloud/aws/getting-started-with-api-gateway-lambda-integration/">生REST APIが辛い</a>。</p>
-
-<p>編集しながらドキュメントも見れる<a href="http://editor.swagger.io/#/">online editor</a>が結構便利。</p>
-
-<p><div><script src='https://gist.github.com/a41059039937ffc8dada.js?file='></script>
-<noscript><pre><code></code></pre></noscript></div>
-</p>
-
-<h2>API Gateway</h2>
-
-<p>Swagger上でYAMLで作成した定義書はjsonとしてexportし、<a href="https://github.com/awslabs/aws-apigateway-importer">aws-apigateway-importer</a>でAPIのresourceやmethodやらを生成する。</p>
-
-<h3>import処理</h3>
-
-<p><code>
-$ ./aws-api-import.sh -c swagger.json
-2015-11-04 02:23:18,507 INFO - Attempting to create API from Swagger definition. Swagger file: swagger.json
-reading from swagger.json
-2015-11-04 02:23:18,649 INFO - Parsed Swagger with 2 paths
-2015-11-04 02:23:18,655 INFO - Creating API with name EB API
-2015-11-04 02:23:19,417 INFO - Removing default model Error
-2015-11-04 02:23:19,634 INFO - Removing default model Empty
-2015-11-04 02:23:19,872 INFO - Creating model for api id nx3r6d6yhh with name IP
-2015-11-04 02:23:20,114 INFO - Generated json-schema for model IP: {"type":"object","properties":{"ip":{"type":"string","description":"IP address."}},"definitions":{}}
-2015-11-04 02:23:20,329 INFO - Creating model for api id nx3r6d6yhh with name Error
-2015-11-04 02:23:20,338 INFO - Generated json-schema for model Error: {"type":"object","properties":{"code":{"type":"integer","format":"int32"},"message":{"type":"string"},"fields":{"type":"string"}},"definitions":{}}
-2015-11-04 02:23:20,770 INFO - Creating resource 'eb' on bd5pqsq37h
-2015-11-04 02:23:21,420 INFO - Creating resource '{env_name}' on 8rjsbt
-2015-11-04 02:23:22,079 INFO - Creating resource 'ip' on 4cg26s
-2015-11-04 02:23:22,931 INFO - Creating method response for api nx3r6d6yhh and method GET and status 200
-2015-11-04 02:23:23,144 INFO - Creating new model referenced from response: IPaddresses
-2015-11-04 02:23:23,144 INFO - Creating model for api id nx3r6d6yhh with name IPaddresses
-2015-11-04 02:23:23,153 INFO - Generated json-schema for model IPaddresses: {"type":"string","definitions":{}}
-2015-11-04 02:23:23,770 WARN - Default response not supported, skipping
-2015-11-04 02:23:23,772 INFO - Creating method parameter for api nx3r6d6yhh and method GET with name method.request.path.env_name
-2015-11-04 02:23:23,998 INFO - Creating method for api id nx3r6d6yhh and resource id md6qcm with method get
-2015-11-04 02:23:24,822 INFO - Creating resource '{server_num}' on qmd6mc
-2015-11-04 02:23:25,689 INFO - Creating method response for api nx3r6d6yhh and method GET and status 200
-2015-11-04 02:23:25,896 INFO - Found reference to existing model IPaddresses
-2015-11-04 02:23:26,306 WARN - Default response not supported, skipping
-2015-11-04 02:23:26,306 INFO - Creating method parameter for api nx3r6d6yhh and method GET with name method.request.path.env_name
-2015-11-04 02:23:26,525 INFO - Creating method parameter for api nx3r6d6yhh and method GET with name method.request.path.server_number
-2015-11-04 02:23:26,764 INFO - Creating method for api id nx3r6d6yhh and resource id 5udxeo with method get
-</code></p>
-
-<p>これでAPI Gateway上に階層が出来上がり。</p>
-
-<p><img src="https://lh3.googleusercontent.com/cM7s04iaMWI73VwJcH3C9lsnFjrrFpw0qqnUCM4hkmKWZiB3Pp0idjace8rxQYPCVwYzpucRKJep1j3CN9rDQ4uG0xJa4iXM_ua_lLo6LjxCus_lXV9aPCanWS17Ab6eVfgzH3wMDS1YvUhBq_6aLl3JmGmQVlZPFAUrOjcT-Xwra2o4VRKgaTbE5LQCvoBkzkylYhe6JECBu-lqBW0T9CnyhEsbJ1KTUwnIvLLTYtvTPtG6xEqoBMiCo26QLrASGg_k5fXW66jB-SH3fK-W-2TlYHwGdvlJunbuJp__AN2RUAhU64IPTQmZS-PfBTknMF273wF0DyqoL4UsS4HCmAMytc4LBx4s3iJdxFlPkMHPQ5eM9Q6REK92yP1a9FUqXKGF15FD9M6njOGvXFQYH8BsDruCa-HvxY7l6J0oj7PjyWwgq3_Jpd13F27rQkAcK13ni-sSB17wTRi-la8Tgu5ZMvnpUYBK-ARup3vHz791VQW-LVcdecok2Sao2wG4sUiUi5pMSOUabX02OMORVCu5OSxCdw-GxGSzikM=w350-h280-no"></p>
-
-<p>後は各<code>GET method</code>でLambdaへの関連付けをし、<code>Integration Request</code>と<code>Integration Response</code>の<code>mapping template</code>でパラメータやレスポンスを設定。（多分、この手順もswaggerで定義できるとは思うけど）</p>
-
-<h3>integration request</h3>
-
-<p><img src="https://lh3.googleusercontent.com/JtD50KDCwP5ggylHzSuD7WiM-fr1QvVkZFpGFKD0efPbe_wvJPR0HbaTihe8wSlBNJzFYHAAwN9ZvKS1-R1WVGqbWT-t5PCdlptIVgJkk8xjDF0HJTRXeFEjF6F5Z2sp5wfY3BMgKZnyAM0CL6Ax5WtLNxCENl1SskcqajLDAapVQP8bj0UMlxUhsATwg9wh6zbS-jKp6tjf8YlkDD3PDFV_jhE2oVnzytNTlKBb5sU_kwMRFOGfQiUIpwgsrPq11af4ETcdFiU99lxa2ey1fgwxIaoEddLNOgMyObSd7LV0ISNY_kbZj0aRi2PFFmUfnQmYfc0UTajjAejDRms08vn6oy0-6kwGRjcKMq8zDSLFMCxgaSU4_2m2zh4T1zo54DJCHRm8ilXg_r3Z2u4IdBBHf4xYdvvs2J0p4ZT6GOQy6tMT0cNAFN5XUQiC6zDVutj2Ia1OQSlhUFRvnXwtivqGdMvpOIyUqoyuJ5RHLhO3hWP90SsW_DuILy6eXAHkSMHHpDPu5uemVBD29KfKsf67GS1bmJPwu5_9gX4=w836-h208-no"></p>
-
-<h3>integration response</h3>
-
-<p><img src="https://lh3.googleusercontent.com/-MuJyoH_nLN5jbjrcTsDW9qfsFUhDt6nHq_gNlYwMhVNZJqYL3C5qrgPwXLrPRXL0oRICG8xGpBVJpsLKIC3KhhFL4eHyo5LPZRVMbCXQ20UfT-tMV-Pt72-Rr7AKkhXDSzLcBANpRyJgioD5VlLb6YfqcnDLpczt1gnCOvnLHeWuuIf8NTa6q8hoGZXKyBo79Xapag_xvzbqco8AzSqu_yUxR6MXArEpp_we0JGhkJJHrve41LXNDX27QfC-Fj84feKgXY9CTgB1ytHWWDT_71gU05NwMdMisuQnAZPg9kRnoze55OBXu6c8TtzN5Idvdgmc9dbeKKxFG0f4bn_pt4lN6ZzOJ0ptOteVl-EpMDPk6M9_kwKerOc1GQbH47MEEYmQTXmoMeUp9ECJwhYdxdqu_LEB6ZxrjOC3VBPP6rE8sxBZJG8od_adtClp4UYU5-LBPm9_DYsde5hThh2su9PVBph8fbk42WE8I6o3BoOSciA1G9eIwfaa99OQh-4NZhJRVIGs7M4uMHVyUnDQk0RqtjFjf7TlCkeRC4=w811-h210-no"></p>
-
-<p>参考：</p>
-
-<ul>
-<li><a href="http://qiita.com/yuyakato/items/89fcef9746afbf48977a">Amazon API GatewayでAWS Lambda関数にクエリ文字列をパラメータとして渡す</a></li>
-<li><a href="http://qiita.com/ijin/items/6edafc1f351a9de49b54">Amazon API Gatewayで文字列をクォーテーションなしで返却する</a></li>
-</ul>
-
-
-<h3>endpoint</h3>
-
-<p>Deployすれば、以下のAPIでipが取得可能。</p>
-
-<p><code>/$API_ENDPOINT/prod/eb/$EB_ENV_NAME/ip/[n]</code></p>
-
-<p>instance ip一覧</p>
-
-<p><code>
-$ curl -s https://altvsxa2kj.execute-api.ap-northeast-1.amazonaws.com/prod/eb/my-ebenv-production/ip
-54.189.149.5
-54.189.168.83
-</code></p>
-
-<p>特定のinstance ip</p>
-
-<p><code>
-$ curl -s https://altvsxa2kj.execute-api.ap-northeast-1.amazonaws.com/prod/eb/my-ebenv-production/ip/1
-54.189.149.5
-</code></p>
-
-<p>ipの部分だけ、PATHじゃなくquery paramterにした方がAPI Gatewayの設定がシンプルだったけど、少しでもRESTfulにしたかったもので。（まあ、そもそもjson返してないけど）</p>
-
-<h2>SSH Config</h2>
-
-<p>さて、ここからがキモです。</p>
-
-<p>~/.ssh/config</p>
-
-<p><code>
-Host my-ebenv-production*
-  User ec2-user
-  StrictHostKeyChecking no
-  ProxyCommand ssh -A localhost -W `N=$(grep -o '[0-9]\+$' &lt;&lt;&lt; %h || echo 1); E=$(perl -pe 's/\d+$//' &lt;&lt;&lt; %h); curl -s https://altvsxa2kj.execute-api.ap-northeast-1.amazonaws.com/prod/eb/$E/ip/$N`:%p
-</code></p>
-
-<p>上記の設定で<code>ssh $EB_ENV_NAME[n]</code>で指定したサーバに接続できるようになります。</p>
-
-<p>仕組みとしては、ホスト名をparseしAPI Gatewayに適切なリクエストを行い、返却されるpublic ipにローカル端末自身を踏み台としてsshする<code>ProxyCommand</code>の設定です。</p>
-
-<p>例えば、2番目（に起動した）のサーバに接続する場合は</p>
-
-<p>```
-$ ssh my-ebenv-production2
-Last login: Wed Nov  4 01:19:14 2015 from ndx6-ppp413.tokyo.sannet.ne.jp</p>
-
-<hr />
-
-<p>| <em><em><strong>| | </strong> _ </em>__| |</em>(<em>) </em><strong>| </strong> )  <em><strong>  </strong> _ _ <strong>  </strong></em>| |<em> __ </em>| | | <strong>
-|  <em>| | |/ </em><code>/ __| __| |/ __|  _ \ / _ \/ _</code> | '_ \/ </strong>| <strong>/ <em>` | | |/ /
-| |</em></strong>| | (<em>| _</em> \ |<em>| | (__| |</em>) |  <strong>/ (<em>| | | | _</em> \ || (<em>| | |   &lt;
-|</em></strong><strong>|<em>|_</em>,<em>|</em></strong>/_<em>|</em>|_<strong>|</strong><strong>/ _</strong>|_<em>,</em>|<em>| |</em>|<em><em><em>/_</em>_</em>,</em>|<em>|</em>|_\</p>
-
-<pre><code>                                   Amazon Linux AMI
-</code></pre>
-
-<p>This EC2 instance is managed by AWS Elastic Beanstalk. Changes made via SSH
-WILL BE LOST if the instance is replaced by auto-scaling. For more information
-on customizing your Elastic Beanstalk environment, see our documentation here:
-http://docs.aws.amazon.com/elasticbeanstalk/latest/dg/customize-containers-ec2.html
-```</p>
-
-<p>1番目の場合は明示的に指定する必要はありません。</p>
-
-<p><code>
-$ ssh my-ebenv-production
-</code></p>
-
-<p>また、Auto Scalingでinstanceが増減せずに1台のみの場合はもっとシンプルに記述できます。</p>
-
-<p><code>
-  ProxyCommand ssh -A localhost -W `curl -s https://altvsxa2kj.execute-api.ap-northeast-1.amazonaws.com/prod/eb/$E/ip`:%p
-</code></p>
-
-<p>簡単！</p>
-
-<p>でも、よくよく考えたら普通のAuto Scalingの場合でも利用できる事に気付きました。</p>
-
-<h2>まとめ</h2>
-
-<ul>
-<li>Swaggerなかなか面白い</li>
-<li>API GatewayとLambda便利</li>
-<li>Lambda pythonも良い。けど、rubyサポートも早う。。</li>
 </ul>
 
 ]]></content>

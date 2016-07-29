@@ -9,8 +9,7 @@
   <meta name="author" content="Michael H. Oshita">
 
   
-  <meta name="description" content="San Franciscoで行われた#ChefConfに参加してきました。
-忘れないうちに忘備録的に少しメモっておく。 Day 1 Awesome Postmortems by Dave Zwieback システム障害に対して素晴らしいPost Mortem（振り返り／報告書） &hellip;">
+  <meta name="description" content="そういえば、3回目の参加となるISUCONの第4回目の予選を通過してました。 結果は185チーム中、19位というなんと微妙な結果で本戦にいける事に。 事前準備 今年も@cadsと@fruweでお馴染みのメンバーで「Mr. Frank &amp; Co: A New Hope」として登録。 &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -88,6 +87,331 @@ document.write = function(html) {
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/10/20/isucon4-qualifier/">ISUCON4の予選を通過したんだった</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-10-20T15:38:00+09:00" pubdate data-updated="true">Oct 20<span>th</span>, 2014</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>そういえば、3回目の参加となる<a href="http://isucon.net/">ISUCON</a>の第4回目の予選を通過してました。</p>
+
+<p><a href="http://isucon.net/archives/40576269.html">結果</a>は185チーム中、<strong>19位</strong>というなんと微妙な結果で本戦にいける事に。</p>
+
+<h3>事前準備</h3>
+
+<p>今年も<a href="https://twitter.com/cads">@cads</a>と<a href="https://twitter.com/fruwe">@fruwe</a>でお馴染みのメンバーで「Mr. Frank &amp; Co: A New Hope」として登録。</p>
+
+<p>前日までこんな感じの打ち合わせや予習を実地。</p>
+
+<ul>
+<li>選択言語はruby</li>
+<li>効率化・自動化の為にansible playbookを用意
+
+<ul>
+<li>ssh keys</li>
+<li>dotfiles</li>
+<li>rubyの複数バージョン</li>
+<li>各種ミドルウェア</li>
+</ul>
+</li>
+<li>sidekiq等のバックグラウンドワーカーやキャッシュ周りの仮組み</li>
+<li>redisの復習</li>
+<li>去年やったエントリを読む</li>
+<li>当日の流れの確認</li>
+<li>コミュニケーションツールとして最近仕事で活躍してる<strong>Slack</strong>を導入</li>
+</ul>
+
+
+<p>役割としては他の二人がコード実装に集中できるように、私がインフラ周り、コードレビュー、ファシリテーターを務める。</p>
+
+<h3>お題発表</h3>
+
+<p>不正ログイン防止の為にアクセスの失敗回数に応じてログインロックをかけるシステム。実に今風なオンラインバンキングサービス「いすこん銀行」w 最後はjsonのレポートが出力。</p>
+
+<p><img src="https://lh5.googleusercontent.com/-XjuyJ-r62YE/VETj3ySpGkI/AAAAAAAABAo/2Q2yi6YWJUk/w622-h373-no/isucon4q-bank.png"></p>
+
+<h3>前半戦</h3>
+
+<p>まずは今までの経験からいきなりチューニングをせず、じっくりとアプリ挙動を把握し、計測し、コード解析に専念。レギュレーションもしっかり読む。この辺の衝動のコントロールはうまくなって来た感触。</p>
+
+<p>アプリ自体は例年の作りによく似ていて、まあそこそこ高速化はできるだろうけど、その分他のチームも同様だろうと予想。</p>
+
+<p>コードを3人で読みつつ、前日までに用意していたansibleを流したり、git化したり、計測を淡々と実地。</p>
+
+<p>言語をいくつか参考値として計測した初期スコア</p>
+
+<table>
+<thead>
+<tr>
+<th>language </th>
+<th> score </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ruby     </td>
+<td> 1236 </td>
+</tr>
+<tr>
+<td>go       </td>
+<td> 1733 </td>
+</tr>
+<tr>
+<td>perl     </td>
+<td> 1662 </td>
+</tr>
+</tbody>
+</table>
+
+
+<ul>
+<li>Web側は各リスエストの比率やレスポンスタイム等を解析</li>
+<li>DB周りは幸いMySQLだったので全ログ出力してpt-query-digestで解析<br />
+（Postgresだったらどうしたんだろう）</li>
+<li>OS周りはdstatやhtop等でリソースの利用具合を観測</li>
+</ul>
+
+
+<p>計測やコードの理解が出来た時点で新アーキテクチャの設計を3人でディスカッションし、戦略立案。</p>
+
+<p>タイムリミットをいくつか設け、いざ開始！（この時点ではまだ1行も変更してない）</p>
+
+<p>基本戦略としてはMySQLのRedisへの置き換えし、アプリの処理自体を減らしていく方向。チームメイトの2人には実装を担当してもらい、その間に私が既存のMySQLバージョンのチューニングを施し、地味にスコアを上げていく。</p>
+
+<ul>
+<li>INDEX追加</li>
+<li>MySQL parameter tuning</li>
+<li>stylesheetsやjavascriptの直接配信</li>
+<li>TCP tuning</li>
+<li>File Descriptor上限緩和</li>
+<li>unix domain socketの利用</li>
+</ul>
+
+
+<p>合間合間に声をかけ、実装具合や残り時間をチェックし、テンポをとる。</p>
+
+<p>予め決めていた期限である14:00（ソフトリミット）に到達した時点で進捗を確認し、15:00（ハードリミット）までには間に合いそうだったのでそのまま続行を決定。</p>
+
+<p>14:31にredis版が仕上がる！</p>
+
+<p><strong>実装方法</strong></p>
+
+<ul>
+<li>初期化スクリプトでMySQLからRedisへ変換</li>
+<li>失敗ログインはINCRでカウント</li>
+<li>lockとban時にはSADDでSETに追加</li>
+<li>SISMEMBERでlock/banの確認</li>
+<li>ユーザ個別の履歴はHMSET/HMGETでハッシュ化</li>
+<li>/reportはSMEMBERSで出力</li>
+</ul>
+
+
+<h3>後半戦</h3>
+
+<p>Redis版のgit branchに私のコミットをマージし計測。MySQL版よりは多少良いスコア。</p>
+
+<p>mysql version</p>
+
+<pre><code>tag:benchmarker type:score      success:82910   fail:0  score:17910
+</code></pre>
+
+<p>redis version</p>
+
+<pre><code>tag:benchmarker type:score      success:87810   fail:318  score:18969
+</code></pre>
+
+<p>CPU消費がアプリに移っていたので、後はいかにrubyに処理をさせないかの勝負となる。</p>
+
+<p>ここからやったのは</p>
+
+<ul>
+<li>worker loadの最適値模索</li>
+<li>パスワードを初期化スクリプト時にオンメモリで持つように改造</li>
+<li>パスワードのハッシュ計算除外（ハッシュ計算のスキップは結果的にスコアには影響せず）</li>
+<li>トップページのエラーリダイレクトをクエリパラメータ化し、nginxで静的キャッシュ</li>
+<li>ログイン部分のlua実装（間に合わず）</li>
+</ul>
+
+
+<p>最後のlua実装は取り掛かったものの、期限までには時間が足りないと判断し断念。かわりに失格とならないように再起動後の正常動作する事を入念に確認。</p>
+
+<p>結局、ハイスコアは<strong>39243</strong>で終了</p>
+
+<pre><code>tag:benchmarker    type:score    success:181670    fail:0    score:39243
+</code></pre>
+
+<p>後で気づいたのが最高スコアではなく、最終提出スコアが最終結果となるので誤差により若干下がってしまった。。</p>
+
+<p><strong>戦いの軌跡</strong></p>
+
+<p><img src="https://lh6.googleusercontent.com/VDc46K_BClolTXevFw5IH4W9sS5Z6akC6FIpIAcJhTM=w925-h328-no"></p>
+
+<h3>振り返り</h3>
+
+<ul>
+<li>戦略と遂行は概ね正しかったかと</li>
+<li>タイムキープ大事</li>
+<li>実装は段階的に作ったので大きなバグがなかった</li>
+<li>ansible便利（自動化で効率化）</li>
+<li>Slackが非常に良かった（特にgithub連携）</li>
+<li>VarnishのTシャツ着てたのに使わなかった</li>
+<li>access_logを切るのを忘れてた！（offで試した41594だった）</li>
+<li>多くのチームが失格となっていたので最終チェックは大事</li>
+<li>今回は基本実装が余裕で間に合ったので確実に上達していると実感</li>
+</ul>
+
+
+<h3>復習</h3>
+
+<p>予選終了後、最後に断念したlua化を一人で実装してみた。</p>
+
+<p>/login実装でスコアは<strong>5万超</strong>、/mypageまでやって<strong>6万超</strong>でした。</p>
+
+<pre><code>tag:benchmarker type:report     count:banned ips        value:1043
+tag:benchmarker type:report     count:locked users      value:5290
+tag:worker      type:fail       reason:Response code should be 201, got 403     method:POST     uri:/results
+tag:benchmarker type:fail       message: Score sending failed   reason:Response code should be 201, got 403     method:POST     uri:/results
+tag:benchmarker type:score      success:278260  fail:0  score:60108
+</code></pre>
+
+<p>その後に、競技中には思いつなかったimageやcssをUser Agent判定で切って（DOM構造は変えずに）みたら<strong>15万超え</strong></p>
+
+<pre><code>tag:benchmarker type:report     count:banned ips        value:3115
+tag:benchmarker type:report     count:locked users      value:10426
+tag:worker      type:fail       reason:Response code should be 201, got 403     method:POST     uri:/results
+tag:benchmarker type:fail       message: Score sending failed   reason:Response code should be 201, got 403     method:POST     uri:/results
+tag:benchmarker type:score      success:210324  fail:0  score:155272
+</code></pre>
+
+<p>この辺が限界。</p>
+
+<p>うーむ。山形組の<a href="http://nihen.hatenablog.com/entry/2014/10/01/092938">30万超え</a>には程遠いなぁ。恐ろしや。</p>
+
+<h3>最後に</h3>
+
+<p>運営の皆様、ベンチマークツールの<a href="http://isucon.net/archives/40434032.html">不具合</a>やインスタンスガチャの問題等ありましたが、対応方針は非常に納得のいくものでした。引き続き、本戦を楽しみにしています。ありがとうございました！</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/07/11/mysql-failover-with-consul/">ConsulによるMySQLフェールオーバー</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-07-11T10:12:00+09:00" pubdate data-updated="true">Jul 11<span>th</span>, 2014</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>先日(6/22/14)、6月なのにどういう分けか早めに開催された<a href="http://2014.techfesta.jp/">July Tech Festa 2014</a>でConsulについて<a href="http://2014.techfesta.jp/p/program.html?m=1#c43">発表</a>してきた。そのユースケースの一つとしてMySQL failoverをちょっとだけ紹介したので、ここに詳しく書いておく。</p>
+
+<h2>MHA</h2>
+
+<p>MySQLレプリケーションの障害時にフェールオーバーしたい場合、MHAを使うの結構ポピュラー（日本では）だと思います。MHAは最新binlogの適用、Slaveの昇格とレプリケーションの張替えまではやってくれますが、実際のフェールオーバーの部分はユーザに委ねられていて、master_ip_failover_scriptのテンプレートをカスタマイズするか独自実装する必要があり、一般的な実現方法としてはカタログデータベースの更新かVirtual IPの切替等があります。</p>
+
+<p>Virtual IPだと居残りセッションの問題や切替の保証難しかったり、そもそも環境によっては使えなかったりするので、私はあんまり好きじゃありません。また以前、後者的アプローチとしてAWSのVPC内であればrouting tableを変更する事によってこの挙動に似た実現方法を<a href="/blog/2013/05/21/custom-non-rds-multi-az-mysql-replication/">紹介</a>した事がありますが、一番の問題点はAPI backplaneがSPoFになってて、ここが落ちたらそもそも動かない；また、APIのrate limitに達して呼び出しさえ出来ないという結構痛い目に会ったりします。</p>
+
+<p>そこで前者的なアプローチとしてmasterの情報を管理するカタログデータベースの更新部分にConsulを使ってみました。</p>
+
+<h2>CONSUL</h2>
+
+<p>ConsulとはHTTP APIとDNSで操作ができる分散型クラスタで、VagrantやSerf等を開発しているHashicorpの新プロダクトです。Key featureは以下のとおり。</p>
+
+<ul>
+<li>Service Discovery</li>
+<li>Failure Detection</li>
+<li>Multi Datacenter</li>
+<li>Key/Value Store</li>
+</ul>
+
+
+<h3>ConsulのConsistencyについて</h3>
+
+<p>ConsulはCAP定理でいうCPという特性をもっており、Consistency（一貫性）に重きをおいてあります。Paxosを由来とするRaftをベースにしたconsensus protocolで実現していて、ピアセット内の各サーバノードでlog entryの書き込みがquorumで決定された後にcommitされたと見なされ、FSMに書き込まれます。よって、書き込みに関してはStrongly Consistentな処理となります。読み込みに関しては、パフォーマンス要求に応じてConsistencyレベルをクエリータイプによって調整可能（まるでCassandraのように！）で、Usually Consistent, Strongly Consistent, Staleから選択可能です。DNSベースのクエリーはデフォルトで単一のリーダーノードが返答するのでStrongly Consistentな処理となっています。（Staleにする事も可能）</p>
+
+<h2>ConsulとMHAの連携概要</h2>
+
+<ul>
+<li>Consulを内部DNSとして使い、clientはDNSベースでmasterに接続</li>
+<li>MySQL masterはAPIで予めサービス名（alias DNS）を登録しておく</li>
+<li>mysql_failover_scriptで旧情報の削除と新情報の登録をやる
+
+<ul>
+<li>旧master IPを無効化する部分でConsulのCatalog endpointを使ってderegister (/v1/catalog/deregister)</li>
+<li>新master ipを登録する部分でConsulのCatalog endpointを使ってregister (/v1/catalog/register)</li>
+<li>成功しない限り進まない（exit code check）</li>
+</ul>
+</li>
+<li>削除、及び登録はconsulのconsistency modelによって一貫性は保証される</li>
+</ul>
+
+
+<h2>DEMO</h2>
+
+<div class="embed-video-container"><iframe src="http://www.youtube.com/embed/rA4hyJ-pccU "></iframe></div>
+
+
+<h2>Notes</h2>
+
+<p>DNSは最新のv0.3.0になってからTTLを設定できるようになったので、Amazon RDSっぽい感じのフェールオーバーも可能ですが、v0.2系に比べて格段にパフォーマンスが向上（スライド参照）したので、デフォルトのTTL 0でも問題ない範囲になってる感じです。また、もうちょっと詳しい内容は今度の<a href="http://connpass.com/event/7322/">#hbstudy</a>で話す予定です。</p>
+
+<h2>スライド</h2>
+
+<p>以下、July Tech Festa 2014で発表した時のスライドです。</p>
+
+<script async="true" class="speakerdeck-embed" data-id="e07317d0dc040131a0982229a5c1e016" src="//speakerdeck.com/assets/embed.js"> </script>
+
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -1468,317 +1792,6 @@ Score:    14694.2
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2013/05/21/custom-non-rds-multi-az-mysql-replication/">Non-RDSなオレオレMulti-AZ MySQL Replication</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-05-21T18:03:00+09:00" pubdate data-updated="true">May 21<span>st</span>, 2013</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>先日（5/17/13）<a href="http://www.zusaar.com/event/668006">cloudpack night #6 - Re:Generate -</a>に参加してきました。</p>
-
-<p>当日の様子はcloudpack<a href="https://twitter.com/yoshidashingo">吉田</a>さんの以下のレポートで。<br />
-<a href="http://d.hatena.ne.jp/yoshidashingo/20130518/1368853720">cloudpack Night #6 - re:Generate - を開催しました</a></p>
-
-<p>私はDJを少々とLTで参加させて頂いたのでその内容になります。</p>
-
-<h2>オレオレMulti-AZのススメ</h2>
-
-<p>AWS上でMySQLを使う場合、RDSはてっとり早くて良いんですが、たまにもうちょっと柔軟性が欲しい時があります。
-例えば別のストーレジエンジンやディストリビューションを使ったり（Percona Server, MariaDB, TokuDB, Mronnga等）、RDSでは使えないインスタンスファミリー（hi1, m3, c1系）を使ったり、OSレベルでのチューニングができたり、スレーブのバッファプールを予め温めておいたり。等々。</p>
-
-<p>しかし、RDSにはAvailability Zone (AZ)をまたいでフェールオーバーするMulti-AZ機能があり、AWSで設計するにはAZ障害を考慮した方が推奨されます。</p>
-
-<p>そこで、MHAとVPCを組み合わせて柔軟性をもったMulti-AZ環境を実現します。
-（ちなみに私の場合はhi1.4xlargeでPercona Serverを冗長化をする必要があったから）</p>
-
-<h3>MHA</h3>
-
-<p><a href="https://code.google.com/p/mysql-master-ha/">MHA</a>とはFacebookの<a href="http://yoshinorimatsunobu.blogspot.jp/">松信</a>さんがDeNA時代に作ったMySQLの自動フェールオーバーしてくれうナイスなツールです。Master障害時にbinlog同期とSlaveの昇格を全自動でやってくれます。昇格時にはカタログデータベースに更新をかけて新DB構成のIPの情報を更新するか、Virtual IPを切り替えるかをする必要（この担当部分はmaster_ip_failover_scriptで対応）があるけど、今回は後者的なアプローチになります。</p>
-
-<h3>VPC</h3>
-
-<p>ENIを使えばVirtual IP的な使い方はできるけどAZは超えられないので、source/dest. checkを無効化した上でrouting tableによって擬似Virtual IPを実現する<a href="http://aws.clouddesignpattern.org/index.php/CDP:Routing-Based_HA%E3%83%91%E3%82%BF%E3%83%BC%E3%83%B3">Routing-Based HAパターン</a>（CDP 2.0候補）を使います。ADSJ<a href="https://twitter.com/c9katayama">片山</a>さんの<a href="http://d.hatena.ne.jp/c9katayama/20111225/1324837509">エントリ</a>が発端ですね。</p>
-
-<h2>Demo</h2>
-
-<p>以下、LT時に見せたデモ動画</p>
-
-<div class="embed-video-container"><iframe src="http://www.youtube.com/embed/tovb29K6ddc "></iframe></div>
-
-
-<p>擬似Virtual IPに対してそれぞれread/writeを行いつつMasterのプロセスをkillすると、通信できなくエラーが出続けるが20秒以内に自動フェールオーバーが完了しread/write共に再開します。pingも平均0.5msから2.0msに変わった事からAZが移った事が確認できます。</p>
-
-<p>RDSのMulti-AZの場合、フェールオーバーには3-6分かかるので、かなり短時間で復旧が可能です。
-また、RDSはCNAME切替によるDNSベースに対して、MHA+VPC構成の場合はIP指定することができます。そうするとアプリからのresolveが不要になり、去年起こった内部DNSが引けない障害が起きても問題ありません。</p>
-
-<h2>注意点</h2>
-
-<ul>
-<li>RDSな自動バックアップがない
-
-<ul>
-<li>Xtrabackupとbinlogの定期s3保存で対応</li>
-</ul>
-</li>
-<li>Point in Timeリカバリー
-
-<ul>
-<li>Chef等で自動化しましょう</li>
-</ul>
-</li>
-<li>Read Replicaの作成
-
-<ul>
-<li>Chefで頑張りましょう</li>
-</ul>
-</li>
-<li>学習曲線
-
-<ul>
-<li>勉強しましょう</li>
-</ul>
-</li>
-<li>API backplaneがSPoF
-
-<ul>
-<li>AWSに祈りましょう</li>
-</ul>
-</li>
-</ul>
-
-
-<p>特に一番の懸念点は最後のAPI backplane。AWSの今までの大規模障害状況を見ていると、皆が同時に復旧をしようとしAPIへのリクエストが大量に集中してそこがボトルネックになり、リソースの操作不能に陥るという悲惨な事象が何回かありました。まあ、その場合はRDSでも同じような気はしますが、ここは当時の障害を経験にキャパシティが増加されている事を信じておくしかありませんね。。</p>
-
-<h2>おわりに</h2>
-
-<p>とまあ、こんなLTをしたわけですが、この後に続いたCookpadの<a href="https://twitter.com/sgwr_dts">菅原</a>さんの<a href="http://www.slideshare.net/winebarrel/ec2keepalivedlvsdsr">LT</a>の方が盛り上がって自分のは余興に終わってしまいました。</p>
-
-<p>あ、ついでにその日はcpniteの資料作成やDJの選曲であんまり寝てなかったにもかかわらず、無事AWSソリューションアーキテクト（Associate）の認定試験に受かりました！</p>
-
-<p><img src="https://lh5.googleusercontent.com/-d_HVsb6DgBc/UZs39XB1KGI/AAAAAAAAAuw/ntgPp33hcOI/w294-h120-no/Solutions-Architect-Associate.png"></p>
-
-<h2>LTスライド</h2>
-
-<div class="embed-ss-container"><iframe src="http://www.slideshare.net/slideshow/embed_code/21341276 "></iframe></div>
-
-
-
-</div>
-  
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2013/04/03/accelerating-cross-region-data-transfer/">リージョン間高速データ転送</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-04-03T09:05:00+09:00" pubdate data-updated="true">Apr 3<span>rd</span>, 2013</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>先日の<a href="http://jaws-ug.jp/jawsdays2013/">JAWS DAYS</a>のセッション<a href="http://www.publickey1.jp/blog/13/obama_for_america.html">「Behind the scenes of Presidential Campaign」</a>でリージョン間のデータ転送を高速化するツールとして<a href="http://tsunami-udp.sourceforge.net">tsunami udp</a>と<a href="http://www.cloudopt.com">cloudopt</a>を使った話が出てたので試してみました。</p>
-
-<p>通常、遠距離のサーバはRTTが大きくなるのでスループットが下がり、巨大なデータ転送には苦労しますが、なんと27TBを9時間で転送したとのこと！実際はマシンを並列にして同時転送したらしいので1台での実験です。</p>
-
-<h3>前提</h3>
-
-<ul>
-<li>東京(server1) -> アメリカ西海岸(server2)</li>
-<li>RTT: 120msぐらい</li>
-<li>EC2 instance type: m1.large</li>
-<li>OS: Ubuntu 12.04</li>
-</ul>
-
-
-<h3>ベーステスト</h3>
-
-<p>10Gファイルの作成</p>
-
-<pre><code>server1$ mkdir _tmp; cd _tmp
-server1$ dd if=/dev/zero of=10G count=1 bs=1 seek=10G
-</code></pre>
-
-<p>転送</p>
-
-<pre><code>server1$ scp -rp 10G server2:
-10G     100%   10GB  11.1MB/s   15:22
-</code></pre>
-
-<p>だいたい、90Mbpsぐらい。</p>
-
-<h3>Tsunami UDP</h3>
-
-<p>インストールは両サーバで</p>
-
-<pre><code>sudo apt-get install make gcc autoconf
-wget http://downloads.sourceforge.net/project/tsunami-udp/tsunami-udp/tsunami-v1.1-cvsbuild42/tsunami-v1.1-cvsbuild42.tar.gz
-tar xvfz tsunami-v1.1-cvsbuild42.tar.gz
-cd tsunami-udp-v11-b42
-make
-sudo make install
-</code></pre>
-
-<p>tsunami udpはfetch型の作りなので、送信側のサーバ（server1）で対象ファイルのあるディレクトリに移動してサービス起動</p>
-
-<pre><code>server1$ cd _tmp
-server1$ tsunamid *
-</code></pre>
-
-<p>で、クライアント(server2)からファイルをfetch</p>
-
-<pre><code>server2$ tsunami connect ec2-xx-x-xx-x-x get 10G quit
-</code></pre>
-
-<p>本当はftp-likeは対話型クライアントだけど、ワンライナーでも可能。  <br/>
-転送が完了するとクライアント側で情報が出力されます。</p>
-
-<pre><code>Transfer complete. Flushing to disk and signaling server to stop...
-!!!!
-PC performance figure : 224947 packets dropped (if high this indicates receiving PC overload)
-Transfer duration     : 419.32 seconds
-Total packet data     : 183339.18 Mbit
-Goodput data          : 181958.17 Mbit
-File data             : 81920.00 Mbit
-Throughput            : 437.23 Mbps
-Goodput w/ restarts   : 433.93 Mbps
-Final file rate       : 195.36 Mbps
-Transfer mode         : lossless
-</code></pre>
-
-<p>おお、確かに速い！スループットもセッションでも言ってた476Mbpsに近いし。</p>
-
-<p>サーバ側では</p>
-
-<pre><code>Server 1 transferred 10737418241 bytes in 419.33 seconds (195.4 Mbps)
-</code></pre>
-
-<p>ファイル自身の実際の転送レートはFinal file rateである<strong>195.4Mbps</strong>。
-多分、パラメータチューニングやより速いディスクを使うとスループットはさらに向上すると予想。</p>
-
-<h3>cloudopt</h3>
-
-<p>次は圧縮、TCP最適化、data deduplication等、様々な技術を用いてWANを高速化する<a href="http://www.cloudopt.com">cloudopt</a>の実験。こちらは有料で、ソフトウェアをインストールしてライセンスを購入（15日間のお試しあり）して使う方法とAmazon Marketplaceでセットアップ済みの課金型AMIを起動する方法がとれます。今回はてっとり早く後者で。</p>
-
-<p>AMIはMarketplaceでCloudoptを検索し、各リージョンで1台づつ起動。</p>
-
-<p><img src="https://lh5.googleusercontent.com/-7PWSb_8ClIo/UVuL_bzBeAI/AAAAAAAAAtc/8Lw_bDnaPVE/s665/cloudopt_marketplace_+2013-03-30+at+2.08.07+PM.png"></p>
-
-<p>Ubuntuベースなのが良いですね。</p>
-
-<p>まずscpから呼べるcloudcopyを使っての転送</p>
-
-<pre><code>server1$ scp -rp -S cloudcopy 10G server2:
-10G                 100%   10GB  41.5MB/s   04:07     
-CloudCopy transferred 17.22 MB, saving 99.8% of bandwidth by sending 9.983 fewer GB 
-</code></pre>
-
-<p>お、速い。しかしよく見てみると17.22MBしか転送されてません。どうやらファイル自体が全てゼロ埋めなので圧縮とdeduplicationが最大限効いているみたい。</p>
-
-<p>では、今度は実際のDBのバックアップで転送実験（容量14GB）</p>
-
-<pre><code>server1$ scp -rp -S cloudcopy dbbackup.tar server2:
-dbbackup.tar                100%   14GB  11.2MB/s   20:42   
-CloudCopy transferred 6.041 GB, saving 55.5% of bandwidth by sending 7.528 fewer GB
-</code></pre>
-
-<p>スループットはほぼ一緒だけど、転送容量が削減できてます。</p>
-
-<p>一度転送したファイルはbyte cacheされるので、次に転送する時は差分だけ送るので高速化されます。</p>
-
-<pre><code>server2$ rm dbbackup.tar 
-
-server1$ tar rvf dbbackup.tar file
-server1$ scp -rp -S cloudcopy dbbackup.tar server2:
-dbbackup.tar                100%   14GB  20.0MB/s   11:35  
-CloudCopy transferred 59.57 MB, saving 99.6% of bandwidth by sending 13.511 fewer GB
-</code></pre>
-
-<h3>リージョン間レプリケーション</h3>
-
-<p>次はMySQLのレプリケーション実験。</p>
-
-<p>各インスタンスでのピア設定</p>
-
-<pre><code>server1$ sudo cloudconfig peer_add server2 server2_local_ip(10.x.x.x)
-server2$ sudo cloudconfig peer_add server1 server1_local_ip(10.x.x.x)
-</code></pre>
-
-<p>これでcloudoptを使ったサーバ間のトンネルが確立されます。MySQLのレプリケーションはprivate ipでの設定が必要。
-一通りレプリケーションが出来き、スレーブIOを停止した状態でマスターにしばらく書き込んだのちに再開すると、binlogが転送されるのでcloudstatsコマンドで統計が見れます。</p>
-
-<pre><code>Component - cloudoptimizer
-------------------------------------------------------------
-           Number of connections:                    1
-              Original data size:            111.96 MB
-           Transferred data size:             52.44 MB
-
-            Bandwidth Saving:             59.51 MB (53.2%)
-</code></pre>
-
-<p><strong>53.2%</strong>の転送容量削減！</p>
-
-<h3>結論</h3>
-
-<p>以上を組み合わせれば、新たなCDP候補である「<strong>リージョン間レプリケーションパターン (Cross-Region Replication Pattern)</strong>」が実現できます。</p>
-
-<ul>
-<li>巨大データをリージョン間で転送するにはtsunami udpが有効そう</li>
-<li>リージョン間での差分バックアップやレプリケーション向けにはcloudoptで高速化</li>
-<li>普通のHTTP通信とかも使えるかも</li>
-<li>s3へのアップロード高速化も対応しているのでいずれ試してみたい</li>
-</ul>
-
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/blog/page/4/">&larr; Older</a>
@@ -1794,6 +1807,14 @@ server2$ sudo cloudconfig peer_add server1 server1_local_ip(10.x.x.x)
     <section>
   <h1>Recent Posts</h1>
   <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2016/07/29/aws-gameday-japan-2016/">AWS GameDay Japan 2016を開催してきた</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2016/06/28/dockercon-2016/">DockerCon 2016に参加してきた</a>
+      </li>
     
       <li class="post">
         <a href="/blog/2016/04/28/terraforming-api-gatewways/">TerraformでAPI Gatewway</a>
@@ -1825,14 +1846,6 @@ server2$ sudo cloudconfig peer_add server1 server1_local_ip(10.x.x.x)
     
       <li class="post">
         <a href="/blog/2015/10/26/aws-re-invent-2015/">AWS re:Invent 2015に参加してきた</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2015/09/30/hashiconf-2015/">#HashiConf 2015に参加してきた</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2015/09/27/isucon5-qualifier/">ISUCON5の予選に記念参加してきた</a>
       </li>
     
   </ul>

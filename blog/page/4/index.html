@@ -9,7 +9,8 @@
   <meta name="author" content="Michael H. Oshita">
 
   
-  <meta name="description" content="（※ 追記しました - 5/19/13） 巷ではMySQL 5.6 GAが出て騒がしいですが、ちょっと前に5.5系でAWSのSSDインスタンス（hi1.4xlarge）に載せ替える案件があったので、その時に取ったベンチマークを公表します。以前Fusion-IO (ioDrive Duo) &hellip;">
+  <meta name="description" content="先日（5/17/13）cloudpack night #6 - Re:Generate -に参加してきました。 当日の様子はcloudpack吉田さんの以下のレポートで。
+cloudpack Night #6 - re:Generate - を開催しました &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -87,6 +88,317 @@ document.write = function(html) {
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2013/05/21/custom-non-rds-multi-az-mysql-replication/">Non-RDSなオレオレMulti-AZ MySQL Replication</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-05-21T18:03:00+09:00" pubdate data-updated="true">May 21<span>st</span>, 2013</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>先日（5/17/13）<a href="http://www.zusaar.com/event/668006">cloudpack night #6 - Re:Generate -</a>に参加してきました。</p>
+
+<p>当日の様子はcloudpack<a href="https://twitter.com/yoshidashingo">吉田</a>さんの以下のレポートで。<br />
+<a href="http://d.hatena.ne.jp/yoshidashingo/20130518/1368853720">cloudpack Night #6 - re:Generate - を開催しました</a></p>
+
+<p>私はDJを少々とLTで参加させて頂いたのでその内容になります。</p>
+
+<h2>オレオレMulti-AZのススメ</h2>
+
+<p>AWS上でMySQLを使う場合、RDSはてっとり早くて良いんですが、たまにもうちょっと柔軟性が欲しい時があります。
+例えば別のストーレジエンジンやディストリビューションを使ったり（Percona Server, MariaDB, TokuDB, Mronnga等）、RDSでは使えないインスタンスファミリー（hi1, m3, c1系）を使ったり、OSレベルでのチューニングができたり、スレーブのバッファプールを予め温めておいたり。等々。</p>
+
+<p>しかし、RDSにはAvailability Zone (AZ)をまたいでフェールオーバーするMulti-AZ機能があり、AWSで設計するにはAZ障害を考慮した方が推奨されます。</p>
+
+<p>そこで、MHAとVPCを組み合わせて柔軟性をもったMulti-AZ環境を実現します。
+（ちなみに私の場合はhi1.4xlargeでPercona Serverを冗長化をする必要があったから）</p>
+
+<h3>MHA</h3>
+
+<p><a href="https://code.google.com/p/mysql-master-ha/">MHA</a>とはFacebookの<a href="http://yoshinorimatsunobu.blogspot.jp/">松信</a>さんがDeNA時代に作ったMySQLの自動フェールオーバーしてくれうナイスなツールです。Master障害時にbinlog同期とSlaveの昇格を全自動でやってくれます。昇格時にはカタログデータベースに更新をかけて新DB構成のIPの情報を更新するか、Virtual IPを切り替えるかをする必要（この担当部分はmaster_ip_failover_scriptで対応）があるけど、今回は後者的なアプローチになります。</p>
+
+<h3>VPC</h3>
+
+<p>ENIを使えばVirtual IP的な使い方はできるけどAZは超えられないので、source/dest. checkを無効化した上でrouting tableによって擬似Virtual IPを実現する<a href="http://aws.clouddesignpattern.org/index.php/CDP:Routing-Based_HA%E3%83%91%E3%82%BF%E3%83%BC%E3%83%B3">Routing-Based HAパターン</a>（CDP 2.0候補）を使います。ADSJ<a href="https://twitter.com/c9katayama">片山</a>さんの<a href="http://d.hatena.ne.jp/c9katayama/20111225/1324837509">エントリ</a>が発端ですね。</p>
+
+<h2>Demo</h2>
+
+<p>以下、LT時に見せたデモ動画</p>
+
+<div class="embed-video-container"><iframe src="http://www.youtube.com/embed/tovb29K6ddc "></iframe></div>
+
+
+<p>擬似Virtual IPに対してそれぞれread/writeを行いつつMasterのプロセスをkillすると、通信できなくエラーが出続けるが20秒以内に自動フェールオーバーが完了しread/write共に再開します。pingも平均0.5msから2.0msに変わった事からAZが移った事が確認できます。</p>
+
+<p>RDSのMulti-AZの場合、フェールオーバーには3-6分かかるので、かなり短時間で復旧が可能です。
+また、RDSはCNAME切替によるDNSベースに対して、MHA+VPC構成の場合はIP指定することができます。そうするとアプリからのresolveが不要になり、去年起こった内部DNSが引けない障害が起きても問題ありません。</p>
+
+<h2>注意点</h2>
+
+<ul>
+<li>RDSな自動バックアップがない
+
+<ul>
+<li>Xtrabackupとbinlogの定期s3保存で対応</li>
+</ul>
+</li>
+<li>Point in Timeリカバリー
+
+<ul>
+<li>Chef等で自動化しましょう</li>
+</ul>
+</li>
+<li>Read Replicaの作成
+
+<ul>
+<li>Chefで頑張りましょう</li>
+</ul>
+</li>
+<li>学習曲線
+
+<ul>
+<li>勉強しましょう</li>
+</ul>
+</li>
+<li>API backplaneがSPoF
+
+<ul>
+<li>AWSに祈りましょう</li>
+</ul>
+</li>
+</ul>
+
+
+<p>特に一番の懸念点は最後のAPI backplane。AWSの今までの大規模障害状況を見ていると、皆が同時に復旧をしようとしAPIへのリクエストが大量に集中してそこがボトルネックになり、リソースの操作不能に陥るという悲惨な事象が何回かありました。まあ、その場合はRDSでも同じような気はしますが、ここは当時の障害を経験にキャパシティが増加されている事を信じておくしかありませんね。。</p>
+
+<h2>おわりに</h2>
+
+<p>とまあ、こんなLTをしたわけですが、この後に続いたCookpadの<a href="https://twitter.com/sgwr_dts">菅原</a>さんの<a href="http://www.slideshare.net/winebarrel/ec2keepalivedlvsdsr">LT</a>の方が盛り上がって自分のは余興に終わってしまいました。</p>
+
+<p>あ、ついでにその日はcpniteの資料作成やDJの選曲であんまり寝てなかったにもかかわらず、無事AWSソリューションアーキテクト（Associate）の認定試験に受かりました！</p>
+
+<p><img src="https://lh5.googleusercontent.com/-d_HVsb6DgBc/UZs39XB1KGI/AAAAAAAAAuw/ntgPp33hcOI/w294-h120-no/Solutions-Architect-Associate.png"></p>
+
+<h2>LTスライド</h2>
+
+<div class="embed-ss-container"><iframe src="http://www.slideshare.net/slideshow/embed_code/21341276 "></iframe></div>
+
+
+
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2013/04/03/accelerating-cross-region-data-transfer/">リージョン間高速データ転送</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-04-03T09:05:00+09:00" pubdate data-updated="true">Apr 3<span>rd</span>, 2013</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>先日の<a href="http://jaws-ug.jp/jawsdays2013/">JAWS DAYS</a>のセッション<a href="http://www.publickey1.jp/blog/13/obama_for_america.html">「Behind the scenes of Presidential Campaign」</a>でリージョン間のデータ転送を高速化するツールとして<a href="http://tsunami-udp.sourceforge.net">tsunami udp</a>と<a href="http://www.cloudopt.com">cloudopt</a>を使った話が出てたので試してみました。</p>
+
+<p>通常、遠距離のサーバはRTTが大きくなるのでスループットが下がり、巨大なデータ転送には苦労しますが、なんと27TBを9時間で転送したとのこと！実際はマシンを並列にして同時転送したらしいので1台での実験です。</p>
+
+<h3>前提</h3>
+
+<ul>
+<li>東京(server1) -> アメリカ西海岸(server2)</li>
+<li>RTT: 120msぐらい</li>
+<li>EC2 instance type: m1.large</li>
+<li>OS: Ubuntu 12.04</li>
+</ul>
+
+
+<h3>ベーステスト</h3>
+
+<p>10Gファイルの作成</p>
+
+<pre><code>server1$ mkdir _tmp; cd _tmp
+server1$ dd if=/dev/zero of=10G count=1 bs=1 seek=10G
+</code></pre>
+
+<p>転送</p>
+
+<pre><code>server1$ scp -rp 10G server2:
+10G     100%   10GB  11.1MB/s   15:22
+</code></pre>
+
+<p>だいたい、90Mbpsぐらい。</p>
+
+<h3>Tsunami UDP</h3>
+
+<p>インストールは両サーバで</p>
+
+<pre><code>sudo apt-get install make gcc autoconf
+wget http://downloads.sourceforge.net/project/tsunami-udp/tsunami-udp/tsunami-v1.1-cvsbuild42/tsunami-v1.1-cvsbuild42.tar.gz
+tar xvfz tsunami-v1.1-cvsbuild42.tar.gz
+cd tsunami-udp-v11-b42
+make
+sudo make install
+</code></pre>
+
+<p>tsunami udpはfetch型の作りなので、送信側のサーバ（server1）で対象ファイルのあるディレクトリに移動してサービス起動</p>
+
+<pre><code>server1$ cd _tmp
+server1$ tsunamid *
+</code></pre>
+
+<p>で、クライアント(server2)からファイルをfetch</p>
+
+<pre><code>server2$ tsunami connect ec2-xx-x-xx-x-x get 10G quit
+</code></pre>
+
+<p>本当はftp-likeは対話型クライアントだけど、ワンライナーでも可能。  <br/>
+転送が完了するとクライアント側で情報が出力されます。</p>
+
+<pre><code>Transfer complete. Flushing to disk and signaling server to stop...
+!!!!
+PC performance figure : 224947 packets dropped (if high this indicates receiving PC overload)
+Transfer duration     : 419.32 seconds
+Total packet data     : 183339.18 Mbit
+Goodput data          : 181958.17 Mbit
+File data             : 81920.00 Mbit
+Throughput            : 437.23 Mbps
+Goodput w/ restarts   : 433.93 Mbps
+Final file rate       : 195.36 Mbps
+Transfer mode         : lossless
+</code></pre>
+
+<p>おお、確かに速い！スループットもセッションでも言ってた476Mbpsに近いし。</p>
+
+<p>サーバ側では</p>
+
+<pre><code>Server 1 transferred 10737418241 bytes in 419.33 seconds (195.4 Mbps)
+</code></pre>
+
+<p>ファイル自身の実際の転送レートはFinal file rateである<strong>195.4Mbps</strong>。
+多分、パラメータチューニングやより速いディスクを使うとスループットはさらに向上すると予想。</p>
+
+<h3>cloudopt</h3>
+
+<p>次は圧縮、TCP最適化、data deduplication等、様々な技術を用いてWANを高速化する<a href="http://www.cloudopt.com">cloudopt</a>の実験。こちらは有料で、ソフトウェアをインストールしてライセンスを購入（15日間のお試しあり）して使う方法とAmazon Marketplaceでセットアップ済みの課金型AMIを起動する方法がとれます。今回はてっとり早く後者で。</p>
+
+<p>AMIはMarketplaceでCloudoptを検索し、各リージョンで1台づつ起動。</p>
+
+<p><img src="https://lh5.googleusercontent.com/-7PWSb_8ClIo/UVuL_bzBeAI/AAAAAAAAAtc/8Lw_bDnaPVE/s665/cloudopt_marketplace_+2013-03-30+at+2.08.07+PM.png"></p>
+
+<p>Ubuntuベースなのが良いですね。</p>
+
+<p>まずscpから呼べるcloudcopyを使っての転送</p>
+
+<pre><code>server1$ scp -rp -S cloudcopy 10G server2:
+10G                 100%   10GB  41.5MB/s   04:07     
+CloudCopy transferred 17.22 MB, saving 99.8% of bandwidth by sending 9.983 fewer GB 
+</code></pre>
+
+<p>お、速い。しかしよく見てみると17.22MBしか転送されてません。どうやらファイル自体が全てゼロ埋めなので圧縮とdeduplicationが最大限効いているみたい。</p>
+
+<p>では、今度は実際のDBのバックアップで転送実験（容量14GB）</p>
+
+<pre><code>server1$ scp -rp -S cloudcopy dbbackup.tar server2:
+dbbackup.tar                100%   14GB  11.2MB/s   20:42   
+CloudCopy transferred 6.041 GB, saving 55.5% of bandwidth by sending 7.528 fewer GB
+</code></pre>
+
+<p>スループットはほぼ一緒だけど、転送容量が削減できてます。</p>
+
+<p>一度転送したファイルはbyte cacheされるので、次に転送する時は差分だけ送るので高速化されます。</p>
+
+<pre><code>server2$ rm dbbackup.tar 
+
+server1$ tar rvf dbbackup.tar file
+server1$ scp -rp -S cloudcopy dbbackup.tar server2:
+dbbackup.tar                100%   14GB  20.0MB/s   11:35  
+CloudCopy transferred 59.57 MB, saving 99.6% of bandwidth by sending 13.511 fewer GB
+</code></pre>
+
+<h3>リージョン間レプリケーション</h3>
+
+<p>次はMySQLのレプリケーション実験。</p>
+
+<p>各インスタンスでのピア設定</p>
+
+<pre><code>server1$ sudo cloudconfig peer_add server2 server2_local_ip(10.x.x.x)
+server2$ sudo cloudconfig peer_add server1 server1_local_ip(10.x.x.x)
+</code></pre>
+
+<p>これでcloudoptを使ったサーバ間のトンネルが確立されます。MySQLのレプリケーションはprivate ipでの設定が必要。
+一通りレプリケーションが出来き、スレーブIOを停止した状態でマスターにしばらく書き込んだのちに再開すると、binlogが転送されるのでcloudstatsコマンドで統計が見れます。</p>
+
+<pre><code>Component - cloudoptimizer
+------------------------------------------------------------
+           Number of connections:                    1
+              Original data size:            111.96 MB
+           Transferred data size:             52.44 MB
+
+            Bandwidth Saving:             59.51 MB (53.2%)
+</code></pre>
+
+<p><strong>53.2%</strong>の転送容量削減！</p>
+
+<h3>結論</h3>
+
+<p>以上を組み合わせれば、新たなCDP候補である「<strong>リージョン間レプリケーションパターン (Cross-Region Replication Pattern)</strong>」が実現できます。</p>
+
+<ul>
+<li>巨大データをリージョン間で転送するにはtsunami udpが有効そう</li>
+<li>リージョン間での差分バックアップやレプリケーション向けにはcloudoptで高速化</li>
+<li>普通のHTTP通信とかも使えるかも</li>
+<li>s3へのアップロード高速化も対応しているのでいずれ試してみたい</li>
+</ul>
+
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -1090,6 +1402,14 @@ Varnishの<a href="https://www.varnish-software.com/static/book/_images/vcl.png"
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2016/07/29/aws-gameday-japan-2016/">AWS GameDay Japan 2016を開催してきた</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2016/06/28/dockercon-2016/">DockerCon 2016に参加してきた</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2016/04/28/terraforming-api-gatewways/">TerraformでAPI Gatewway</a>
       </li>
     
@@ -1119,14 +1439,6 @@ Varnishの<a href="https://www.varnish-software.com/static/book/_images/vcl.png"
     
       <li class="post">
         <a href="/blog/2015/10/26/aws-re-invent-2015/">AWS re:Invent 2015に参加してきた</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2015/09/30/hashiconf-2015/">#HashiConf 2015に参加してきた</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2015/09/27/isucon5-qualifier/">ISUCON5の予選に記念参加してきた</a>
       </li>
     
   </ul>

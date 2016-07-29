@@ -4,7 +4,7 @@
   <title><![CDATA[Category: event | @ijin]]></title>
   <link href="http://ijin.github.io/blog/categories/event/atom.xml" rel="self"/>
   <link href="http://ijin.github.io/"/>
-  <updated>2016-05-02T13:07:49+09:00</updated>
+  <updated>2016-07-29T18:03:52+09:00</updated>
   <id>http://ijin.github.io/</id>
   <author>
     <name><![CDATA[Michael H. Oshita]]></name>
@@ -24,8 +24,7 @@
 
 <p>それをtwitter上で嘆いていたら、<a href="https://twitter.com/kenjiskywalker">@kenjiskywalker</a>さんから救いの手が！</p>
 
-<p><div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr"><a href="https://twitter.com/ijin">@ijin</a> Tシャツ付きの前売り券購入したのですが、スピーカー枠で参加できそうなのでお譲りしましょうか？</p>&mdash; kenjiskywalker (@kenjiskywalker) <a href="https://twitter.com/kenjiskywalker/status/619079064880463872">July 9, 2015</a></blockquote>
-<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div></p>
+<p>{% tweet https://twitter.com/kenjiskywalker/status/619079064880463872 %}</p>
 
 <p>感謝！</p>
 
@@ -67,8 +66,7 @@ CPUやB+ Treeの気持ちになって考える事が大事。</p>
 
 <p> <br /></p>
 
-<p><div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">突然目の前に無線APが生えてきた <a href="https://twitter.com/hashtag/yapcasia?src=hash">#yapcasia</a> <a href="http://t.co/UWcSzvRv08">pic.twitter.com/UWcSzvRv08</a></p>&mdash; ぷりんたいは求職中です、 (@spacepro_be) <a href="https://twitter.com/spacepro_be/status/635004222291902464">August 22, 2015</a></blockquote>
-<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div></p>
+<p>{% tweet https://twitter.com/spacepro_be/status/635004222291902464 %}</p>
 
 <p>いやー、非常に楽しめました。運営の皆様、ありがとうございました！！</p>
 

@@ -4,7 +4,7 @@
   <title><![CDATA[@ijin]]></title>
   <link href="http://ijin.github.io/atom.xml" rel="self"/>
   <link href="http://ijin.github.io/"/>
-  <updated>2016-05-02T13:07:49+09:00</updated>
+  <updated>2016-07-29T18:03:43+09:00</updated>
   <id>http://ijin.github.io/</id>
   <author>
     <name><![CDATA[Michael H. Oshita]]></name>
@@ -12,6 +12,581 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[AWS GameDay Japan 2016を開催してきた]]></title>
+    <link href="http://ijin.github.io/blog/2016/07/29/aws-gameday-japan-2016/"/>
+    <updated>2016-07-29T15:41:00+09:00</updated>
+    <id>http://ijin.github.io/blog/2016/07/29/aws-gameday-japan-2016</id>
+    <content type="html"><![CDATA[<p>過去に何回も参加・開催両方を経験した事がある<a href="http://gameday-japan.connpass.com/event/33531/">AWS GameDay</a>に、またしても運営側として関わりました。</p>
+
+<p>お題は基本的に<a href="http://ijin.github.io/blog/2015/10/26/aws-re-invent-2015/">去年のre:Inventでやった</a>のを若干チューニングしたやつ。
+詳細は今後また別のところで開催される可能性があるので、その時の参加者の為に伏せておきます。</p>
+
+<h3>当日</h3>
+
+<p>競技中はそれぞれのチームのスコアがリアルタイムで見れるダッシュボードがあって白熱した様子が伝わってました。</p>
+
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">みんないろいろ実験中 <a href="https://twitter.com/hashtag/AWSGameDayJapan?src=hash">#AWSGameDayJapan</a> <a href="https://t.co/D2rIlhRV5T">pic.twitter.com/D2rIlhRV5T</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/756717339312164864">July 23, 2016</a></blockquote>
+<script async src="http://ijin.github.io//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
+
+
+<p>これはこれで楽しいんですが、何かが足りない感じ。。。</p>
+
+<br >
+
+
+<br >
+
+
+<br >
+
+
+<br >
+
+
+<br >
+
+
+<p>そう、<strong>グラフ</strong>です！!</p>
+
+<br >
+
+
+<br >
+
+
+<br >
+
+
+<br >
+
+
+<br >
+
+
+<p>参加チームの白熱したバトル（順位の入れ替え等）を時系列で表示し、戦いの軌跡をビジュアライズするアレです。ISUCONでもよく見慣れたあの遷移するグラフがなかったのです！</p>
+
+<h1>なので、作りました</h1>
+
+<h2>Graphing premiere</h2>
+
+<p>ダッシュボードの作りを見てみると <code>jQuery</code> と <code>React.js</code> を使っている模様。ならば、どこかでendpointを叩いてjsonを取得しているはずなので、いろいろ探したところ、それらしいのがありました。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'>  <span class="nx">getScores</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">$</span><span class="p">.</span><span class="nx">ajax</span><span class="p">({</span>
+</span><span class='line'>      <span class="nx">url</span><span class="o">:</span> <span class="s1">&#39;https://xxxxxxxxx.execute-api.us-west-2.amazonaws.com/prod/scores&#39;</span><span class="p">,</span>
+</span><span class='line'>      <span class="nx">dataType</span><span class="o">:</span> <span class="s1">&#39;json&#39;</span><span class="p">,</span>
+</span><span class='line'>      <span class="nx">cache</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span>
+</span><span class='line'>      <span class="nx">success</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">data</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="k">this</span><span class="p">.</span><span class="nx">setState</span><span class="p">({</span><span class="nx">data</span><span class="o">:</span> <span class="nx">data</span><span class="p">});</span>
+</span><span class='line'>      <span class="p">}.</span><span class="nx">bind</span><span class="p">(</span><span class="k">this</span><span class="p">),</span>
+</span><span class='line'>      <span class="nx">error</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">xhr</span><span class="p">,</span> <span class="nx">status</span><span class="p">,</span> <span class="nx">err</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="nx">console</span><span class="p">.</span><span class="nx">error</span><span class="p">(</span><span class="s2">&quot;scores&quot;</span><span class="p">,</span> <span class="nx">status</span><span class="p">,</span> <span class="nx">err</span><span class="p">.</span><span class="nx">toString</span><span class="p">());</span>
+</span><span class='line'>      <span class="p">}.</span><span class="nx">bind</span><span class="p">(</span><span class="k">this</span><span class="p">)</span>
+</span><span class='line'>    <span class="p">});</span>
+</span><span class='line'>  <span class="p">},</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>こうなれば話は簡単で後は返却されるjsonを解析して、定期的にcallしてplotしていけば良いだけです。</p>
+
+<h3>データ送信</h3>
+
+<p>グラフを描画するサーバを用意するのはしんどいので、カスタムメトリックスが作成できる監視サービスを使いました。
+最初は<a href="https://mackerel.io">Mackerel</a>をと思ったけど、独自グラフを一般公開する設定がなさそうだったので<a href="https://www.datadoghq.com">Datadog</a>を採用。</p>
+
+<p>Datadogでカスタムメトリックスを送るにはAPIを直接叩くよりは、<a href="http://docs.datadoghq.com/guides/metrics/">StatsD経由で送信</a>した方が楽なのでrubyでサクっと適当に記述。</p>
+
+<figure class='code'><figcaption><span>gameday.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">statsd</span><span class="o">.</span><span class="n">batch</span> <span class="k">do</span> <span class="o">|</span><span class="n">s</span><span class="o">|</span>
+</span><span class='line'>  <span class="n">s</span><span class="o">.</span><span class="n">gauge</span><span class="p">(</span><span class="s1">&#39;gameday2016&#39;</span><span class="p">,</span> <span class="n">scores</span><span class="o">[</span><span class="mi">0</span><span class="o">][</span><span class="s1">&#39;Profit&#39;</span><span class="o">]*</span><span class="mi">100</span><span class="p">,</span> <span class="ss">:tags</span> <span class="o">=&gt;</span> <span class="o">[</span><span class="s2">&quot;team:&quot;</span> <span class="o">+</span> <span class="n">scores</span><span class="o">[</span><span class="mi">0</span><span class="o">][</span><span class="s1">&#39;Team&#39;</span><span class="o">]]</span><span class="p">)</span>
+</span><span class='line'>  <span class="n">s</span><span class="o">.</span><span class="n">gauge</span><span class="p">(</span><span class="s1">&#39;gameday2016&#39;</span><span class="p">,</span> <span class="n">scores</span><span class="o">[</span><span class="mi">1</span><span class="o">][</span><span class="s1">&#39;Profit&#39;</span><span class="o">]*</span><span class="mi">100</span><span class="p">,</span> <span class="ss">:tags</span> <span class="o">=&gt;</span> <span class="o">[</span><span class="s2">&quot;team:&quot;</span> <span class="o">+</span> <span class="n">scores</span><span class="o">[</span><span class="mi">1</span><span class="o">][</span><span class="s1">&#39;Team&#39;</span><span class="o">]]</span><span class="p">)</span>
+</span><span class='line'>  <span class="n">s</span><span class="o">.</span><span class="n">gauge</span><span class="p">(</span><span class="s1">&#39;gameday2016&#39;</span><span class="p">,</span> <span class="n">scores</span><span class="o">[</span><span class="mi">2</span><span class="o">][</span><span class="s1">&#39;Profit&#39;</span><span class="o">]*</span><span class="mi">100</span><span class="p">,</span> <span class="ss">:tags</span> <span class="o">=&gt;</span> <span class="o">[</span><span class="s2">&quot;team:&quot;</span> <span class="o">+</span> <span class="n">scores</span><span class="o">[</span><span class="mi">2</span><span class="o">][</span><span class="s1">&#39;Team&#39;</span><span class="o">]]</span><span class="p">)</span>
+</span><span class='line'>  <span class="c1"># etc</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>グラフ描画</h3>
+
+<p>公開ダッシュボードを作成するには <code>TimeBoard</code> ではなく <code>ScreenBoard</code> を選択し、後は必要そうなグラフを追加していくだけ。</p>
+
+<p>グラフ自体はGUIで作っても良いし、jsonで記述可能なので結構柔軟で素敵です。</p>
+
+<figure class='code'><figcaption><span>profits.json</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='json'><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="nt">&quot;viz&quot;</span><span class="p">:</span> <span class="s2">&quot;timeseries&quot;</span><span class="p">,</span>
+</span><span class='line'>  <span class="nt">&quot;requests&quot;</span><span class="p">:</span> <span class="p">[</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>      <span class="nt">&quot;q&quot;</span><span class="p">:</span> <span class="s2">&quot;avg:gameday2016{*} by {team}&quot;</span><span class="p">,</span>
+</span><span class='line'>      <span class="nt">&quot;aggregator&quot;</span><span class="p">:</span> <span class="s2">&quot;avg&quot;</span><span class="p">,</span>
+</span><span class='line'>      <span class="nt">&quot;conditional_formats&quot;</span><span class="p">:</span> <span class="p">[],</span>
+</span><span class='line'>      <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;line&quot;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>  <span class="p">]</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><figcaption><span>ranking.json</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+</pre></td><td class='code'><pre><code class='json'><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="nt">&quot;viz&quot;</span><span class="p">:</span> <span class="s2">&quot;toplist&quot;</span><span class="p">,</span>
+</span><span class='line'>  <span class="nt">&quot;requests&quot;</span><span class="p">:</span> <span class="p">[</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>      <span class="nt">&quot;q&quot;</span><span class="p">:</span> <span class="s2">&quot;top(avg:gameday2016{*} by {team}, 20, &#39;last&#39;, &#39;desc&#39;)&quot;</span><span class="p">,</span>
+</span><span class='line'>      <span class="nt">&quot;style&quot;</span><span class="p">:</span> <span class="p">{</span>
+</span><span class='line'>        <span class="nt">&quot;palette&quot;</span><span class="p">:</span> <span class="s2">&quot;dog_classic&quot;</span>
+</span><span class='line'>      <span class="p">},</span>
+</span><span class='line'>      <span class="nt">&quot;conditional_formats&quot;</span><span class="p">:</span> <span class="p">[</span>
+</span><span class='line'>        <span class="p">{</span>
+</span><span class='line'>          <span class="nt">&quot;palette&quot;</span><span class="p">:</span> <span class="s2">&quot;white_on_green&quot;</span><span class="p">,</span>
+</span><span class='line'>          <span class="nt">&quot;comparator&quot;</span><span class="p">:</span> <span class="s2">&quot;&gt;=&quot;</span><span class="p">,</span>
+</span><span class='line'>          <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="mi">0</span>
+</span><span class='line'>        <span class="p">},</span>
+</span><span class='line'>        <span class="p">{</span>
+</span><span class='line'>          <span class="nt">&quot;palette&quot;</span><span class="p">:</span> <span class="s2">&quot;white_on_red&quot;</span><span class="p">,</span>
+</span><span class='line'>          <span class="nt">&quot;comparator&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;&quot;</span><span class="p">,</span>
+</span><span class='line'>          <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="mi">0</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>      <span class="p">]</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>  <span class="p">]</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>できあがったグラフはこんな感じ。
+高負荷発生等のイベント時の対応との比較もできて見やすいと思います。</p>
+
+<p><img src="https://lh3.googleusercontent.com/XoNcTN3HQIlFDHvaSe8uNlcCP8FYRijZNsPVdrnrsmNvEF3XoW6IUDKnU63JDLL7X6W3Ed3mCLaF=w742-h394-no"></p>
+
+<p>これで各チームのポジション等を伝えやすくなりました。</p>
+
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">お、チームshoroumaruが逆転！ <a href="https://twitter.com/hashtag/AWSGameDayJapan?src=hash">#AWSGameDayJapan</a> <a href="https://t.co/kr0oSRgcIj">pic.twitter.com/kr0oSRgcIj</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/756756052192792576">July 23, 2016</a></blockquote>
+<script async src="http://ijin.github.io//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
+
+
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">チームshorumaruが独走中 <a href="https://twitter.com/hashtag/AWSGameDayJapan?src=hash">#AWSGameDayJapan</a> <a href="https://t.co/0HPTJk6Myh">pic.twitter.com/0HPTJk6Myh</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/756766379341025281">July 23, 2016</a></blockquote>
+<script async src="http://ijin.github.io//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
+
+
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">スコアとグラフ <a href="https://twitter.com/ijin">@ijin</a> チームshoroumaruが圧倒的な差をつけて優勝！ <a href="https://twitter.com/hashtag/AWSGameDayJapan?src=hash">#AWSGameDayJapan</a> <a href="https://t.co/Cs1xd506oE">pic.twitter.com/Cs1xd506oE</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/756778321749225472">July 23, 2016</a></blockquote>
+<script async src="http://ijin.github.io//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
+
+
+<p>というわけで優勝した<a href="http://inokara.hateblo.jp/entry/2016/07/24/095228">チーム初老丸</a>、おめでとうございます！</p>
+
+<h3>終わりに</h3>
+
+<p>今回は競技の途中から実装しちゃったので次回は最初から用意しておきたいと思います。</p>
+
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">isuconの試合途中結果を勝手にdatadogに流してるやつwwwwwwwwwwwww <a href="https://t.co/CXDO15vV68">https://t.co/CXDO15vV68</a> <a href="https://twitter.com/hashtag/isucon?src=hash">#isucon</a></p>&mdash; そらは (@sora_h) <a href="https://twitter.com/sora_h/status/660379055867334656">October 31, 2015</a></blockquote>
+<script async src="http://ijin.github.io//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
+
+
+<p>（※）実は去年のISUCONの時も似たような事をやってましたね。。</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[DockerCon 2016に参加してきた]]></title>
+    <link href="http://ijin.github.io/blog/2016/06/28/dockercon-2016/"/>
+    <updated>2016-06-28T10:17:00+09:00</updated>
+    <id>http://ijin.github.io/blog/2016/06/28/dockercon-2016</id>
+    <content type="html"><![CDATA[<p>先日、<a href="http://2016.dockercon.com/">DockerCon 2016</a>に参加してきたので、そのメモ。</p>
+
+<h2>To DockerCon you go!</h2>
+
+<script async="true" class="speakerdeck-embed" data-id="dd1706017844461583368f3aec9e49b5" src="http://ijin.github.io//speakerdeck.com/assets/embed.js"> </script>
+
+
+<p>ちなみに行く事になった経緯は後日の<a href="http://qiita.com/t-sato/items/b7d33ac38205fe5d2997">JAWS-UGおコンテナ支部 #5</a>でLTしてきました。</p>
+
+<p>パッション大事！</p>
+
+<p>以下、トゥギャッター風に。</p>
+
+<h2>Day 0</h2>
+
+<h3>Pre-Registration &amp; Welcome Party</h3>
+
+<p><img src="https://lh3.googleusercontent.com/EbICBfukR41-rSVc75vfqKH1FW2-tjRofVSSohIEgD4iQMFZImz7wmZc7j6mihcVavhwFStPFKGr=w455-h606-no"></p>
+
+<p>場所はシアトルのWashington State Convention Center。何気にこの地に訪れるのは初。</p>
+
+<p><img src="https://lh3.googleusercontent.com/gcFQaHyxe0yqMvFKpAyMuF0Ht7_NSq4MwIysYy_pkbk6XKhSgme1uCA_h0aBAewWq1LTqEkUv_Lu=w455-h606-no"></p>
+
+<p>Welcome to DockerCon 2016!</p>
+
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="en" dir="ltr">Moby Dock! <a href="https://twitter.com/hashtag/DockerCon?src=hash">#DockerCon</a> <a href="https://t.co/cNwtOeLxlI">pic.twitter.com/cNwtOeLxlI</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/744699319534575616">June 20, 2016</a></blockquote>
+<script async src="http://ijin.github.io//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
+
+
+<p><img src="https://lh3.googleusercontent.com/pQvzcaHk0EzEjoHTUwENIzW25Mou2QfQ9DiVZXflPalOgvG7B9S9ZCFVyq6W7lRPSBdU746_6-I7=w808-h606-no"></p>
+
+<p>企業ブース</p>
+
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">20時なのにすごい明るい。 <a href="https://t.co/bjdAPk9PKo">pic.twitter.com/bjdAPk9PKo</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/744729346259070976">June 20, 2016</a></blockquote>
+<script async src="http://ijin.github.io//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
+
+
+<p><img src="https://lh3.googleusercontent.com/UhiotzEzNdpO855q4fqariqpi7yzQyMVunDPAbuTW6QwgvgtI55zuJx8R2ox9siM8AuR-2oHeWIw=w808-h606-no"></p>
+
+<p>Welcome Party</p>
+
+<p><img src="https://lh3.googleusercontent.com/X3cd_omPYz3s1oHy5gbowLj7HZG3uwnotMA9WY3UF5qS5PlZ9tiYkoX3FHi0N68E-GoMbmiWi1A_=w793-h595-no"></p>
+
+<p>Bar</p>
+
+<h2>Day 1</h2>
+
+<h3>Highlights</h3>
+
+<ul>
+<li>Docker 1.12 (orchestration built-in)
+
+<ul>
+<li>swarm mode</li>
+<li>serice api</li>
+<li>cryptographic node identity</li>
+<li>build-in routing mesh</li>
+</ul>
+</li>
+<li>Experimental Distributed Application Bundles (DAB)</li>
+<li>Docker for AWS &amp; Azure (beta)</li>
+<li>Docker for Mac &amp; Windows (public beta)</li>
+</ul>
+
+
+<p><img src="https://lh3.googleusercontent.com/S1EdQrzioZdPZ5B4xpcHefQOIXnCeQgeRDXA2nm-Rwx5rDLNQrIHV7GaoG6OlYh_WTEVmfLZK5qa=w455-h606-no"></p>
+
+<p>ぞろぞろ</p>
+
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">これは。。 <a href="https://twitter.com/hashtag/DockerCon?src=hash">#DockerCon</a> <a href="https://t.co/rB563DXO5P">pic.twitter.com/rB563DXO5P</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/744923494589202432">June 20, 2016</a></blockquote>
+<script async src="http://ijin.github.io//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
+
+
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">広い。 <a href="https://twitter.com/hashtag/DockerCon?src=hash">#DockerCon</a> <a href="https://t.co/WJbjh4olWJ">pic.twitter.com/WJbjh4olWJ</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/744923505871839233">June 20, 2016</a></blockquote>
+<script async src="http://ijin.github.io//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
+
+
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="en" dir="ltr">2014 - 500 attendees<br>2015 - 2000 attendees<br>2016 - 4000 attendees<a href="https://twitter.com/hashtag/DockerCon?src=hash">#DockerCon</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/744928052858126338">June 20, 2016</a></blockquote>
+<script async src="http://ijin.github.io//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
+
+
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="en" dir="ltr">Cats shooting lasers. So random. <a href="https://twitter.com/hashtag/DockerCon?src=hash">#DockerCon</a> <a href="https://t.co/uuiQBHLell">pic.twitter.com/uuiQBHLell</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/744928124815577088">June 20, 2016</a></blockquote>
+<script async src="http://ijin.github.io//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
+
+
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="en" dir="ltr">Live de-bugging inside a container with <a href="https://twitter.com/docker">@docker</a> for Mac and Windows by <a href="https://twitter.com/AanandPrasad">@AanandPrasad</a> <a href="https://twitter.com/hashtag/dockercon?src=hash">#dockercon</a> <a href="https://t.co/zAUvVUOEc5">pic.twitter.com/zAUvVUOEc5</a></p>&mdash; Betty Junod (@BettyJunod) <a href="https://twitter.com/BettyJunod/status/744935919673708544">June 20, 2016</a></blockquote>
+<script async src="http://ijin.github.io//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
+
+
+
+
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="en" dir="ltr">Docker 1.12<br>- Swarm mode<br>- Cryptographic node identity<br>- Service API<br>- Built-in routing mesh<a href="https://twitter.com/hashtag/DockerCon?src=hash">#DockerCon</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/744941579647913984">June 20, 2016</a></blockquote>
+<script async src="http://ijin.github.io//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
+
+
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="en" dir="ltr">Distributed Application Bundle <a href="https://twitter.com/hashtag/DockerCon?src=hash">#DockerCon</a> <a href="https://t.co/IKhFIdx9Pf">pic.twitter.com/IKhFIdx9Pf</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/744950295835217920">June 20, 2016</a></blockquote>
+<script async src="http://ijin.github.io//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
+
+
+<h3>Sessions</h3>
+
+<ul>
+<li>The Golden Ticket: Docker and High Security Microservices</li>
+<li>Microservices + Events + Docker = A Perfect Trio</li>
+<li>Thinking Inside the Container: A Continuous Delivery Story</li>
+<li>Docker in Production, Look No Hands!</li>
+</ul>
+
+
+<p><strong>The Golden Ticket: Docker and High Security Microservices</strong></p>
+
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="en" dir="ltr">apparmor example on golang+docker <a href="https://twitter.com/hashtag/DockerCon?src=hash">#DockerCon</a> <a href="https://t.co/rwuzMYdpIF">pic.twitter.com/rwuzMYdpIF</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/744973236203446272">June 20, 2016</a></blockquote>
+<script async src="http://ijin.github.io//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
+
+
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">Sysdig 便利そう。 <a href="https://twitter.com/hashtag/DockerCon?src=hash">#DockerCon</a> <a href="https://t.co/9a0ruRZK9w">pic.twitter.com/9a0ruRZK9w</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/744975496308359168">June 20, 2016</a></blockquote>
+<script async src="http://ijin.github.io//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
+
+
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="en" dir="ltr">Seccomp pro tips for Docker/runC <a href="https://twitter.com/hashtag/DockerCon?src=hash">#DockerCon</a> <a href="https://t.co/4n4w4lNlxO">pic.twitter.com/4n4w4lNlxO</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/744976420074446849">June 20, 2016</a></blockquote>
+<script async src="http://ijin.github.io//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
+
+
+<p><strong>Microservices + Events + Docker = A Perfect Trio</strong></p>
+
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="en" dir="ltr">Microservices + Events + Docker = A Perfect Trio <a href="https://twitter.com/hashtag/DockerCon?src=hash">#DockerCon</a> <a href="https://t.co/MnbK8FO7OL">pic.twitter.com/MnbK8FO7OL</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/744999360421732352">June 20, 2016</a></blockquote>
+<script async src="http://ijin.github.io//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
+
+
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="en" dir="ltr">The Art of Scalability <a href="https://twitter.com/hashtag/DockerCon?src=hash">#DockerCon</a> <a href="https://t.co/aX3MhHiwAO">pic.twitter.com/aX3MhHiwAO</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/745000882610274304">June 20, 2016</a></blockquote>
+<script async src="http://ijin.github.io//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
+
+
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="en" dir="ltr">How to atomically update database and publish an event - use event-sourcing. <a href="https://twitter.com/hashtag/DockerCon?src=hash">#DockerCon</a> <a href="https://t.co/cOoCA9N15m">pic.twitter.com/cOoCA9N15m</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/745004762962223104">June 20, 2016</a></blockquote>
+<script async src="http://ijin.github.io//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
+
+
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="und" dir="ltr"><a href="https://t.co/udEVJFzxSM">https://t.co/udEVJFzxSM</a> <a href="https://twitter.com/hashtag/DockerCon?src=hash">#DockerCon</a> <a href="https://t.co/zFpQbTLvLA">pic.twitter.com/zFpQbTLvLA</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/745009602677248000">June 20, 2016</a></blockquote>
+<script async src="http://ijin.github.io//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
+
+
+<p><strong>Thinking Inside the Container: A Continuous Delivery Story</strong></p>
+
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="en" dir="ltr">Thinking Inside the Container: A Continuous Delivery Story <a href="https://twitter.com/hashtag/DockerCon?src=hash">#DockerCon</a> <a href="https://t.co/5Mr6ijoXYF">pic.twitter.com/5Mr6ijoXYF</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/745012607329906688">June 20, 2016</a></blockquote>
+<script async src="http://ijin.github.io//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
+
+
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="en" dir="ltr">10,000-14,000 containers a week.  <a href="https://twitter.com/hashtag/DockerCon?src=hash">#DockerCon</a> <a href="https://t.co/MXtu23Eg7G">pic.twitter.com/MXtu23Eg7G</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/745013610032803840">June 20, 2016</a></blockquote>
+<script async src="http://ijin.github.io//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
+
+
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="en" dir="ltr">The reality&#8230; <a href="https://twitter.com/hashtag/DockerCon?src=hash">#DockerCon</a> <a href="https://t.co/huScMIX8Ce">pic.twitter.com/huScMIX8Ce</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/745014086392381440">June 20, 2016</a></blockquote>
+<script async src="http://ijin.github.io//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
+
+
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="en" dir="ltr">So simple! <a href="https://twitter.com/hashtag/DockerCon?src=hash">#DockerCon</a> <a href="https://t.co/ZfIzpHEQKm">pic.twitter.com/ZfIzpHEQKm</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/745019391960481792">June 20, 2016</a></blockquote>
+<script async src="http://ijin.github.io//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
+
+
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="fr" dir="ltr">Garbage Collection <a href="https://twitter.com/hashtag/DockerCon?src=hash">#DockerCon</a> <a href="https://t.co/qUYqmr0TpY">pic.twitter.com/qUYqmr0TpY</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/745019998523908100">June 20, 2016</a></blockquote>
+<script async src="http://ijin.github.io//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
+
+
+<h3>DockerCon party @ Space Needle</h3>
+
+<p>最後はシアトルの名所（？）、<a href="http://www.spaceneedle.com">Space Needle</a>での貸切パーティー</p>
+
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="en" dir="ltr"><a href="https://twitter.com/hashtag/DockerCon?src=hash">#DockerCon</a> party! <a href="https://t.co/EIl3FoNUZd">pic.twitter.com/EIl3FoNUZd</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/745097049478045696">June 21, 2016</a></blockquote>
+<script async src="http://ijin.github.io//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
+
+
+<p><img src="https://lh3.googleusercontent.com/k_fJmctUgvWrWhlHNFsf1taBDn68iRM9fDDOIEZKkmvaPD03bY1bD4Wd_JGOw8f4pRygew0rKx08=w455-h606-no"></p>
+
+<p>中でもワイワイ</p>
+
+<h2>Day 2</h2>
+
+<h3>Highlights</h3>
+
+<ul>
+<li>Docker Datacenter</li>
+<li>AWS Quickstart</li>
+<li>Azure Marcketplace Templates</li>
+<li>Docker Store (private beta)</li>
+</ul>
+
+
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="und" dir="ltr">Day 2! <a href="https://twitter.com/hashtag/DockerCon?src=hash">#DockerCon</a> <a href="https://t.co/jVobmfYqEO">pic.twitter.com/jVobmfYqEO</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/745288065803968512">June 21, 2016</a></blockquote>
+<script async src="http://ijin.github.io//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
+
+
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">今日のテーマは&quot;Democratizing Docker for the Enterprise&quot; <a href="https://twitter.com/hashtag/DockerCon?src=hash">#DockerCon</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/745288586803613696">June 21, 2016</a></blockquote>
+<script async src="http://ijin.github.io//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
+
+
+<p>個人的には、とある企業でのDockerのユースケースを演じる漫才が面白かった。</p>
+
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">Enterprise Opsの日常。まずredditで狐の動画を見る。 <a href="https://twitter.com/hashtag/DockerCon?src=hash">#DockerCon</a> <a href="https://t.co/PtBhwieitx">pic.twitter.com/PtBhwieitx</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/745294134190170112">June 21, 2016</a></blockquote>
+<script async src="http://ijin.github.io//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
+
+
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">昨日のデモは猫vs犬の投票システムだったけど、今日のエンプラ版はISOの投票になってる。9000 vs 9001 <a href="https://twitter.com/hashtag/DockerCon?src=hash">#DockerCon</a> <a href="https://t.co/5Cm8jPsUWy">pic.twitter.com/5Cm8jPsUWy</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/745294892423745536">June 21, 2016</a></blockquote>
+<script async src="http://ijin.github.io//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
+
+
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="en" dir="ltr">&quot;I&#39;m going to Burning Man&quot; <a href="https://twitter.com/hashtag/DockerCon?src=hash">#DockerCon</a> <a href="https://t.co/B6vnsZfnDX">pic.twitter.com/B6vnsZfnDX</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/745295726700224513">June 21, 2016</a></blockquote>
+<script async src="http://ijin.github.io//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
+
+
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="en" dir="ltr">Oh no, Nosebleed!! <a href="https://twitter.com/hashtag/DockerCon?src=hash">#DockerCon</a> <a href="https://t.co/9FjwpBXNCd">pic.twitter.com/9FjwpBXNCd</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/745296068259123201">June 21, 2016</a></blockquote>
+<script async src="http://ijin.github.io//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
+
+
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="en" dir="ltr">“The Nosebleed OpenSSL Bug” <a href="https://twitter.com/hashtag/DockCon?src=hash">#DockCon</a> <a href="https://t.co/HqHJl6sNM4">https://t.co/HqHJl6sNM4</a></p>&mdash; Marius Ducea (@mariusducea) <a href="https://twitter.com/mariusducea/status/745296465094860802">June 21, 2016</a></blockquote>
+<script async src="http://ijin.github.io//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
+
+
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="en" dir="ltr">&quot;I brought you some  coffee. It doesn&#39;t have all the substances you might have gotten at Burning Man&quot; <a href="https://twitter.com/hashtag/DockerCon?src=hash">#DockerCon</a> <a href="https://t.co/7mTHpBCDMC">pic.twitter.com/7mTHpBCDMC</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/745297941535981569">June 21, 2016</a></blockquote>
+<script async src="http://ijin.github.io//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
+
+
+<p>AzureのCTO</p>
+
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="eu" dir="ltr">Azure CTO <a href="https://twitter.com/hashtag/DockerCon?src=hash">#DockerCon</a> <a href="https://t.co/6DHOavOAU4">pic.twitter.com/6DHOavOAU4</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/745300074528333824">June 21, 2016</a></blockquote>
+<script async src="http://ijin.github.io//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
+
+
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">AzureのCTOがMacとChromeでデモしてる。</p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/745300681104359424">June 21, 2016</a></blockquote>
+<script async src="http://ijin.github.io//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
+
+
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">MacのVisual Studio CodeでC#出来るよアピールか。 <a href="https://twitter.com/hashtag/DockerCon?src=hash">#DockerCon</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/745301503926165504">June 21, 2016</a></blockquote>
+<script async src="http://ijin.github.io//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
+
+
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">デモ失敗w <a href="https://twitter.com/hashtag/DockerCon?src=hash">#DockerCon</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/745302570936086528">June 21, 2016</a></blockquote>
+<script async src="http://ijin.github.io//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
+
+
+<p>ADPのCTO</p>
+
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">巨漢。 <a href="https://twitter.com/hashtag/DockerCon?src=hash">#DockerCon</a> <a href="https://t.co/LbXqA01J2o">pic.twitter.com/LbXqA01J2o</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/745305740873633792">June 21, 2016</a></blockquote>
+<script async src="http://ijin.github.io//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
+
+
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">鼻息がwww <a href="https://twitter.com/hashtag/dockercon?src=hash">#dockercon</a></p>&mdash; Keisuke Nishitani (@Keisuke69) <a href="https://twitter.com/Keisuke69/status/745305275972759552">June 21, 2016</a></blockquote>
+<script async src="http://ijin.github.io//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
+
+
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">いや、良い事言ってるんだけど、どうしても鼻息の方が気になるw</p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/745306231712022528">June 21, 2016</a></blockquote>
+<script async src="http://ijin.github.io//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
+
+
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="en" dir="ltr">&quot;Microservices are like chicken nuggets, but we have chickens&quot; <a href="https://twitter.com/hashtag/DockerCon?src=hash">#DockerCon</a> <a href="https://t.co/AZLfOyKgQ7">pic.twitter.com/AZLfOyKgQ7</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/745308374997184512">June 21, 2016</a></blockquote>
+<script async src="http://ijin.github.io//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
+
+
+<h3>Sessions</h3>
+
+<ul>
+<li>Making Friendly Microservices</li>
+<li>Sharding Containers: Make Go Apps Computer-Friendly Again</li>
+<li>Closing General Session: Moby Dock&#8217;s Cool Hacks</li>
+</ul>
+
+
+<p><strong>Making Friendly Microservices</strong></p>
+
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="en" dir="ltr">Friendly microservices <a href="https://twitter.com/hashtag/DockerCon?src=hash">#DockerCon</a> <a href="https://t.co/onL94wSudp">pic.twitter.com/onL94wSudp</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/745353738508853248">June 21, 2016</a></blockquote>
+<script async src="http://ijin.github.io//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
+
+
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">お、Atlasが出てきた。 <a href="https://twitter.com/hashtag/DockerCon?src=hash">#DockerCon</a> <a href="https://t.co/rqzoOfLvbY">pic.twitter.com/rqzoOfLvbY</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/745357805347999745">June 21, 2016</a></blockquote>
+<script async src="http://ijin.github.io//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
+
+
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">Zipkin知らんかった。 microservices 向けの分散追跡システムらしい。 <a href="https://twitter.com/hashtag/DockerCon?src=hash">#DockerCon</a> <a href="https://t.co/cSfQPXImFG">pic.twitter.com/cSfQPXImFG</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/745357873098567683">June 21, 2016</a></blockquote>
+<script async src="http://ijin.github.io//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
+
+
+<p><strong>Sharding Containers: Make Go Apps Computer-Friendly Again</strong></p>
+
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">wrkでベンチマーク。 <a href="https://twitter.com/hashtag/DockerCon?src=hash">#DockerCon</a> <a href="https://t.co/vxmAUK7U5B">pic.twitter.com/vxmAUK7U5B</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/745398037497806849">June 21, 2016</a></blockquote>
+<script async src="http://ijin.github.io//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
+
+
+<p><strong>Closing General Session: Moby Dock&#8217;s Cool Hacks</strong></p>
+
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="en" dir="ltr">Jeff Nickoloff taking about Services. <a href="https://twitter.com/hashtag/DockerCon?src=hash">#DockerCon</a> <a href="https://t.co/DjHBYBw4dp">pic.twitter.com/DjHBYBw4dp</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/745405126408450050">June 21, 2016</a></blockquote>
+<script async src="http://ijin.github.io//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
+
+
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="en" dir="ltr">Demo on Entropy - a failure orchestration microservicen for Docker platforms <a href="https://twitter.com/hashtag/DockerCon?src=hash">#DockerCon</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/745406128679333890">June 22, 2016</a></blockquote>
+<script async src="http://ijin.github.io//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
+
+
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">Docker用の chaos monkeyみたいなやつか。 <a href="https://twitter.com/hashtag/DockerCon?src=hash">#DockerCon</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/745406672416342016">June 22, 2016</a></blockquote>
+<script async src="http://ijin.github.io//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
+
+
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="en" dir="ltr">latency injection <a href="https://twitter.com/hashtag/DockerCon?src=hash">#DockerCon</a> <a href="https://t.co/xseLsGyaGH">pic.twitter.com/xseLsGyaGH</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/745407885035724800">June 22, 2016</a></blockquote>
+<script async src="http://ijin.github.io//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
+
+
+<p>Serverless Dockerが面白かった。</p>
+
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="de" dir="ltr">Serverless Docker!? <a href="https://twitter.com/hashtag/DockerCon?src=hash">#DockerCon</a> <a href="https://t.co/rVxbSelFkq">pic.twitter.com/rVxbSelFkq</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/745408340319051781">June 22, 2016</a></blockquote>
+<script async src="http://ijin.github.io//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
+
+
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">Docker内のコードからDocker Swarm上で コンテナを実行して Serverlessを実現。なるほど。 <a href="https://twitter.com/hashtag/DockerCon?src=hash">#DockerCon</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/745410551778410496">June 22, 2016</a></blockquote>
+<script async src="http://ijin.github.io//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
+
+
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="en" dir="ltr">How to run Serverless Docker <a href="https://twitter.com/hashtag/DockerCon?src=hash">#DockerCon</a> <a href="https://t.co/QjNQzpTk7q">pic.twitter.com/QjNQzpTk7q</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/745410776848990208">June 22, 2016</a></blockquote>
+<script async src="http://ijin.github.io//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
+
+
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="en" dir="ltr">Get involved! <a href="https://t.co/fjFuAACXZR">https://t.co/fjFuAACXZR</a> <a href="https://twitter.com/hashtag/DockerCon?src=hash">#DockerCon</a> <a href="https://twitter.com/hashtag/serverlessdocker?src=hash">#serverlessdocker</a> <a href="https://t.co/ro4XuBWLVw">pic.twitter.com/ro4XuBWLVw</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/745411486625861633">June 22, 2016</a></blockquote>
+<script async src="http://ijin.github.io//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
+
+
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">Lambda内でも docker実行出来たら良いな。</p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/745411898510704640">June 22, 2016</a></blockquote>
+<script async src="http://ijin.github.io//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
+
+
+<p>Docker on Drones</p>
+
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">飛行中のドローンに搭載してる dockerをライブアップデート。すごい。 <a href="https://twitter.com/hashtag/DockerCon?src=hash">#DockerCon</a> <a href="https://t.co/RKWjExgTtu">pic.twitter.com/RKWjExgTtu</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/745412950551212034">June 22, 2016</a></blockquote>
+<script async src="http://ijin.github.io//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
+
+
+<h2>終わりに</h2>
+
+<p>世界各国のエンジニアと話せて、Dockerに対する熱量や動向を肌感覚で感じとれて非常に有意義な旅でした。以前の<a href="http://ijin.github.io/blog/2014/04/21/chefconf-2014/">ChefConf</a>や<a href="http://ijin.github.io/blog/2015/09/30/hashiconf-2015/">HashiConf</a>もそうだけど、気になる技術やトレンドがあればTechカンファレンスに直接乗り込んで見るのが一番効率的なので、今後も継続してどこかに参加するようにしたいです。</p>
+
+<p>Thank you!</p>
+
+<p><img src="https://lh3.googleusercontent.com/yPy0EnK1ewU3HbrQyT6pSxR-G--QAHZ2fmwLJ09Jh14sw9yju2q1DQd3pIin-AXJ0ohAJeRqxhAE=w455-h606-no"></p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[TerraformでAPI Gatewway]]></title>
@@ -3188,277 +3763,6 @@ exports.handler = function(event, context) {
 <p>Lambdaと組み合わせる事によってSNS通知によるELBを使わないレスポンシブなAuto Scalingの自動復旧が実現できました。</p>
 
 <p>折角のサーバいらずのLambdaの良さが全く活かされてないけど。。早くSNSにも対応して欲しいものです。</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[ISUCON4の予選を通過したんだった]]></title>
-    <link href="http://ijin.github.io/blog/2014/10/20/isucon4-qualifier/"/>
-    <updated>2014-10-20T15:38:00+09:00</updated>
-    <id>http://ijin.github.io/blog/2014/10/20/isucon4-qualifier</id>
-    <content type="html"><![CDATA[<p>そういえば、3回目の参加となる<a href="http://isucon.net/">ISUCON</a>の第4回目の予選を通過してました。</p>
-
-<p><a href="http://isucon.net/archives/40576269.html">結果</a>は185チーム中、<strong>19位</strong>というなんと微妙な結果で本戦にいける事に。</p>
-
-<h3>事前準備</h3>
-
-<p>今年も<a href="https://twitter.com/cads">@cads</a>と<a href="https://twitter.com/fruwe">@fruwe</a>でお馴染みのメンバーで「Mr. Frank &amp; Co: A New Hope」として登録。</p>
-
-<p>前日までこんな感じの打ち合わせや予習を実地。</p>
-
-<ul>
-<li>選択言語はruby</li>
-<li>効率化・自動化の為にansible playbookを用意
-
-<ul>
-<li>ssh keys</li>
-<li>dotfiles</li>
-<li>rubyの複数バージョン</li>
-<li>各種ミドルウェア</li>
-</ul>
-</li>
-<li>sidekiq等のバックグラウンドワーカーやキャッシュ周りの仮組み</li>
-<li>redisの復習</li>
-<li>去年やったエントリを読む</li>
-<li>当日の流れの確認</li>
-<li>コミュニケーションツールとして最近仕事で活躍してる<strong>Slack</strong>を導入</li>
-</ul>
-
-
-<p>役割としては他の二人がコード実装に集中できるように、私がインフラ周り、コードレビュー、ファシリテーターを務める。</p>
-
-<h3>お題発表</h3>
-
-<p>不正ログイン防止の為にアクセスの失敗回数に応じてログインロックをかけるシステム。実に今風なオンラインバンキングサービス「いすこん銀行」w 最後はjsonのレポートが出力。</p>
-
-<p><img src="https://lh5.googleusercontent.com/-XjuyJ-r62YE/VETj3ySpGkI/AAAAAAAABAo/2Q2yi6YWJUk/w622-h373-no/isucon4q-bank.png"></p>
-
-<h3>前半戦</h3>
-
-<p>まずは今までの経験からいきなりチューニングをせず、じっくりとアプリ挙動を把握し、計測し、コード解析に専念。レギュレーションもしっかり読む。この辺の衝動のコントロールはうまくなって来た感触。</p>
-
-<p>アプリ自体は例年の作りによく似ていて、まあそこそこ高速化はできるだろうけど、その分他のチームも同様だろうと予想。</p>
-
-<p>コードを3人で読みつつ、前日までに用意していたansibleを流したり、git化したり、計測を淡々と実地。</p>
-
-<p>言語をいくつか参考値として計測した初期スコア</p>
-
-<table>
-<thead>
-<tr>
-<th>language </th>
-<th> score </th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>ruby     </td>
-<td> 1236 </td>
-</tr>
-<tr>
-<td>go       </td>
-<td> 1733 </td>
-</tr>
-<tr>
-<td>perl     </td>
-<td> 1662 </td>
-</tr>
-</tbody>
-</table>
-
-
-<ul>
-<li>Web側は各リスエストの比率やレスポンスタイム等を解析</li>
-<li>DB周りは幸いMySQLだったので全ログ出力してpt-query-digestで解析<br />
-（Postgresだったらどうしたんだろう）</li>
-<li>OS周りはdstatやhtop等でリソースの利用具合を観測</li>
-</ul>
-
-
-<p>計測やコードの理解が出来た時点で新アーキテクチャの設計を3人でディスカッションし、戦略立案。</p>
-
-<p>タイムリミットをいくつか設け、いざ開始！（この時点ではまだ1行も変更してない）</p>
-
-<p>基本戦略としてはMySQLのRedisへの置き換えし、アプリの処理自体を減らしていく方向。チームメイトの2人には実装を担当してもらい、その間に私が既存のMySQLバージョンのチューニングを施し、地味にスコアを上げていく。</p>
-
-<ul>
-<li>INDEX追加</li>
-<li>MySQL parameter tuning</li>
-<li>stylesheetsやjavascriptの直接配信</li>
-<li>TCP tuning</li>
-<li>File Descriptor上限緩和</li>
-<li>unix domain socketの利用</li>
-</ul>
-
-
-<p>合間合間に声をかけ、実装具合や残り時間をチェックし、テンポをとる。</p>
-
-<p>予め決めていた期限である14:00（ソフトリミット）に到達した時点で進捗を確認し、15:00（ハードリミット）までには間に合いそうだったのでそのまま続行を決定。</p>
-
-<p>14:31にredis版が仕上がる！</p>
-
-<p><strong>実装方法</strong></p>
-
-<ul>
-<li>初期化スクリプトでMySQLからRedisへ変換</li>
-<li>失敗ログインはINCRでカウント</li>
-<li>lockとban時にはSADDでSETに追加</li>
-<li>SISMEMBERでlock/banの確認</li>
-<li>ユーザ個別の履歴はHMSET/HMGETでハッシュ化</li>
-<li>/reportはSMEMBERSで出力</li>
-</ul>
-
-
-<h3>後半戦</h3>
-
-<p>Redis版のgit branchに私のコミットをマージし計測。MySQL版よりは多少良いスコア。</p>
-
-<p>mysql version</p>
-
-<pre><code>tag:benchmarker type:score      success:82910   fail:0  score:17910
-</code></pre>
-
-<p>redis version</p>
-
-<pre><code>tag:benchmarker type:score      success:87810   fail:318  score:18969
-</code></pre>
-
-<p>CPU消費がアプリに移っていたので、後はいかにrubyに処理をさせないかの勝負となる。</p>
-
-<p>ここからやったのは</p>
-
-<ul>
-<li>worker loadの最適値模索</li>
-<li>パスワードを初期化スクリプト時にオンメモリで持つように改造</li>
-<li>パスワードのハッシュ計算除外（ハッシュ計算のスキップは結果的にスコアには影響せず）</li>
-<li>トップページのエラーリダイレクトをクエリパラメータ化し、nginxで静的キャッシュ</li>
-<li>ログイン部分のlua実装（間に合わず）</li>
-</ul>
-
-
-<p>最後のlua実装は取り掛かったものの、期限までには時間が足りないと判断し断念。かわりに失格とならないように再起動後の正常動作する事を入念に確認。</p>
-
-<p>結局、ハイスコアは<strong>39243</strong>で終了</p>
-
-<pre><code>tag:benchmarker    type:score    success:181670    fail:0    score:39243
-</code></pre>
-
-<p>後で気づいたのが最高スコアではなく、最終提出スコアが最終結果となるので誤差により若干下がってしまった。。</p>
-
-<p><strong>戦いの軌跡</strong></p>
-
-<p><img src="https://lh6.googleusercontent.com/VDc46K_BClolTXevFw5IH4W9sS5Z6akC6FIpIAcJhTM=w925-h328-no"></p>
-
-<h3>振り返り</h3>
-
-<ul>
-<li>戦略と遂行は概ね正しかったかと</li>
-<li>タイムキープ大事</li>
-<li>実装は段階的に作ったので大きなバグがなかった</li>
-<li>ansible便利（自動化で効率化）</li>
-<li>Slackが非常に良かった（特にgithub連携）</li>
-<li>VarnishのTシャツ着てたのに使わなかった</li>
-<li>access_logを切るのを忘れてた！（offで試した41594だった）</li>
-<li>多くのチームが失格となっていたので最終チェックは大事</li>
-<li>今回は基本実装が余裕で間に合ったので確実に上達していると実感</li>
-</ul>
-
-
-<h3>復習</h3>
-
-<p>予選終了後、最後に断念したlua化を一人で実装してみた。</p>
-
-<p>/login実装でスコアは<strong>5万超</strong>、/mypageまでやって<strong>6万超</strong>でした。</p>
-
-<pre><code>tag:benchmarker type:report     count:banned ips        value:1043
-tag:benchmarker type:report     count:locked users      value:5290
-tag:worker      type:fail       reason:Response code should be 201, got 403     method:POST     uri:/results
-tag:benchmarker type:fail       message: Score sending failed   reason:Response code should be 201, got 403     method:POST     uri:/results
-tag:benchmarker type:score      success:278260  fail:0  score:60108
-</code></pre>
-
-<p>その後に、競技中には思いつなかったimageやcssをUser Agent判定で切って（DOM構造は変えずに）みたら<strong>15万超え</strong></p>
-
-<pre><code>tag:benchmarker type:report     count:banned ips        value:3115
-tag:benchmarker type:report     count:locked users      value:10426
-tag:worker      type:fail       reason:Response code should be 201, got 403     method:POST     uri:/results
-tag:benchmarker type:fail       message: Score sending failed   reason:Response code should be 201, got 403     method:POST     uri:/results
-tag:benchmarker type:score      success:210324  fail:0  score:155272
-</code></pre>
-
-<p>この辺が限界。</p>
-
-<p>うーむ。山形組の<a href="http://nihen.hatenablog.com/entry/2014/10/01/092938">30万超え</a>には程遠いなぁ。恐ろしや。</p>
-
-<h3>最後に</h3>
-
-<p>運営の皆様、ベンチマークツールの<a href="http://isucon.net/archives/40434032.html">不具合</a>やインスタンスガチャの問題等ありましたが、対応方針は非常に納得のいくものでした。引き続き、本戦を楽しみにしています。ありがとうございました！</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[ConsulによるMySQLフェールオーバー]]></title>
-    <link href="http://ijin.github.io/blog/2014/07/11/mysql-failover-with-consul/"/>
-    <updated>2014-07-11T10:12:00+09:00</updated>
-    <id>http://ijin.github.io/blog/2014/07/11/mysql-failover-with-consul</id>
-    <content type="html"><![CDATA[<p>先日(6/22/14)、6月なのにどういう分けか早めに開催された<a href="http://2014.techfesta.jp/">July Tech Festa 2014</a>でConsulについて<a href="http://2014.techfesta.jp/p/program.html?m=1#c43">発表</a>してきた。そのユースケースの一つとしてMySQL failoverをちょっとだけ紹介したので、ここに詳しく書いておく。</p>
-
-<h2>MHA</h2>
-
-<p>MySQLレプリケーションの障害時にフェールオーバーしたい場合、MHAを使うの結構ポピュラー（日本では）だと思います。MHAは最新binlogの適用、Slaveの昇格とレプリケーションの張替えまではやってくれますが、実際のフェールオーバーの部分はユーザに委ねられていて、master_ip_failover_scriptのテンプレートをカスタマイズするか独自実装する必要があり、一般的な実現方法としてはカタログデータベースの更新かVirtual IPの切替等があります。</p>
-
-<p>Virtual IPだと居残りセッションの問題や切替の保証難しかったり、そもそも環境によっては使えなかったりするので、私はあんまり好きじゃありません。また以前、後者的アプローチとしてAWSのVPC内であればrouting tableを変更する事によってこの挙動に似た実現方法を<a href="http://ijin.github.io/blog/2013/05/21/custom-non-rds-multi-az-mysql-replication/">紹介</a>した事がありますが、一番の問題点はAPI backplaneがSPoFになってて、ここが落ちたらそもそも動かない；また、APIのrate limitに達して呼び出しさえ出来ないという結構痛い目に会ったりします。</p>
-
-<p>そこで前者的なアプローチとしてmasterの情報を管理するカタログデータベースの更新部分にConsulを使ってみました。</p>
-
-<h2>CONSUL</h2>
-
-<p>ConsulとはHTTP APIとDNSで操作ができる分散型クラスタで、VagrantやSerf等を開発しているHashicorpの新プロダクトです。Key featureは以下のとおり。</p>
-
-<ul>
-<li>Service Discovery</li>
-<li>Failure Detection</li>
-<li>Multi Datacenter</li>
-<li>Key/Value Store</li>
-</ul>
-
-
-<h3>ConsulのConsistencyについて</h3>
-
-<p>ConsulはCAP定理でいうCPという特性をもっており、Consistency（一貫性）に重きをおいてあります。Paxosを由来とするRaftをベースにしたconsensus protocolで実現していて、ピアセット内の各サーバノードでlog entryの書き込みがquorumで決定された後にcommitされたと見なされ、FSMに書き込まれます。よって、書き込みに関してはStrongly Consistentな処理となります。読み込みに関しては、パフォーマンス要求に応じてConsistencyレベルをクエリータイプによって調整可能（まるでCassandraのように！）で、Usually Consistent, Strongly Consistent, Staleから選択可能です。DNSベースのクエリーはデフォルトで単一のリーダーノードが返答するのでStrongly Consistentな処理となっています。（Staleにする事も可能）</p>
-
-<h2>ConsulとMHAの連携概要</h2>
-
-<ul>
-<li>Consulを内部DNSとして使い、clientはDNSベースでmasterに接続</li>
-<li>MySQL masterはAPIで予めサービス名（alias DNS）を登録しておく</li>
-<li>mysql_failover_scriptで旧情報の削除と新情報の登録をやる
-
-<ul>
-<li>旧master IPを無効化する部分でConsulのCatalog endpointを使ってderegister (/v1/catalog/deregister)</li>
-<li>新master ipを登録する部分でConsulのCatalog endpointを使ってregister (/v1/catalog/register)</li>
-<li>成功しない限り進まない（exit code check）</li>
-</ul>
-</li>
-<li>削除、及び登録はconsulのconsistency modelによって一貫性は保証される</li>
-</ul>
-
-
-<h2>DEMO</h2>
-
-<div class="embed-video-container"><iframe src="http://www.youtube.com/embed/rA4hyJ-pccU "></iframe></div>
-
-
-<h2>Notes</h2>
-
-<p>DNSは最新のv0.3.0になってからTTLを設定できるようになったので、Amazon RDSっぽい感じのフェールオーバーも可能ですが、v0.2系に比べて格段にパフォーマンスが向上（スライド参照）したので、デフォルトのTTL 0でも問題ない範囲になってる感じです。また、もうちょっと詳しい内容は今度の<a href="http://connpass.com/event/7322/">#hbstudy</a>で話す予定です。</p>
-
-<h2>スライド</h2>
-
-<p>以下、July Tech Festa 2014で発表した時のスライドです。</p>
-
-<script async="true" class="speakerdeck-embed" data-id="e07317d0dc040131a0982229a5c1e016" src="http://ijin.github.io//speakerdeck.com/assets/embed.js"> </script>
-
 ]]></content>
   </entry>
   

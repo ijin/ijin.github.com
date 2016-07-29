@@ -4,7 +4,7 @@
   <title><![CDATA[Category: events | @ijin]]></title>
   <link href="http://ijin.github.io/blog/categories/events/atom.xml" rel="self"/>
   <link href="http://ijin.github.io/"/>
-  <updated>2016-05-02T13:07:49+09:00</updated>
+  <updated>2016-07-29T18:03:52+09:00</updated>
   <id>http://ijin.github.io/</id>
   <author>
     <name><![CDATA[Michael H. Oshita]]></name>
@@ -12,6 +12,380 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[AWS GameDay Japan 2016を開催してきた]]></title>
+    <link href="http://ijin.github.io/blog/2016/07/29/aws-gameday-japan-2016/"/>
+    <updated>2016-07-29T15:41:00+09:00</updated>
+    <id>http://ijin.github.io/blog/2016/07/29/aws-gameday-japan-2016</id>
+    <content type="html"><![CDATA[<p>過去に何回も参加・開催両方を経験した事がある<a href="http://gameday-japan.connpass.com/event/33531/">AWS GameDay</a>に、またしても運営側として関わりました。</p>
+
+<p>お題は基本的に<a href="/blog/2015/10/26/aws-re-invent-2015/">去年のre:Inventでやった</a>のを若干チューニングしたやつ。
+詳細は今後また別のところで開催される可能性があるので、その時の参加者の為に伏せておきます。</p>
+
+<h3>当日</h3>
+
+<p>競技中はそれぞれのチームのスコアがリアルタイムで見れるダッシュボードがあって白熱した様子が伝わってました。</p>
+
+<p>{% tweet https://twitter.com/ijin/status/756717339312164864?lang=ja %}</p>
+
+<p>これはこれで楽しいんですが、何かが足りない感じ。。。</p>
+
+<br >
+
+
+<br >
+
+
+<br >
+
+
+<br >
+
+
+<br >
+
+
+<p>そう、<strong>グラフ</strong>です！!</p>
+
+<br >
+
+
+<br >
+
+
+<br >
+
+
+<br >
+
+
+<br >
+
+
+<p>参加チームの白熱したバトル（順位の入れ替え等）を時系列で表示し、戦いの軌跡をビジュアライズするアレです。ISUCONでもよく見慣れたあの遷移するグラフがなかったのです！</p>
+
+<h1>なので、作りました</h1>
+
+<h2>Graphing premiere</h2>
+
+<p>ダッシュボードの作りを見てみると <code>jQuery</code> と <code>React.js</code> を使っている模様。ならば、どこかでendpointを叩いてjsonを取得しているはずなので、いろいろ探したところ、それらしいのがありました。</p>
+
+<p>```javascript
+  getScores: function() {</p>
+
+<pre><code>$.ajax({
+  url: 'https://xxxxxxxxx.execute-api.us-west-2.amazonaws.com/prod/scores',
+  dataType: 'json',
+  cache: false,
+  success: function(data) {
+    this.setState({data: data});
+  }.bind(this),
+  error: function(xhr, status, err) {
+    console.error("scores", status, err.toString());
+  }.bind(this)
+});
+</code></pre>
+
+<p>  },
+```</p>
+
+<p>こうなれば話は簡単で後は返却されるjsonを解析して、定期的にcallしてplotしていけば良いだけです。</p>
+
+<h3>データ送信</h3>
+
+<p>グラフを描画するサーバを用意するのはしんどいので、カスタムメトリックスが作成できる監視サービスを使いました。
+最初は<a href="https://mackerel.io">Mackerel</a>をと思ったけど、独自グラフを一般公開する設定がなさそうだったので<a href="https://www.datadoghq.com">Datadog</a>を採用。</p>
+
+<p>Datadogでカスタムメトリックスを送るにはAPIを直接叩くよりは、<a href="http://docs.datadoghq.com/guides/metrics/">StatsD経由で送信</a>した方が楽なのでrubyでサクっと適当に記述。</p>
+
+<p><code>ruby gameday.rb
+statsd.batch do |s|
+  s.gauge('gameday2016', scores[0]['Profit']*100, :tags =&gt; ["team:" + scores[0]['Team']])
+  s.gauge('gameday2016', scores[1]['Profit']*100, :tags =&gt; ["team:" + scores[1]['Team']])
+  s.gauge('gameday2016', scores[2]['Profit']*100, :tags =&gt; ["team:" + scores[2]['Team']])
+  # etc
+end
+</code></p>
+
+<h3>グラフ描画</h3>
+
+<p>公開ダッシュボードを作成するには <code>TimeBoard</code> ではなく <code>ScreenBoard</code> を選択し、後は必要そうなグラフを追加していくだけ。</p>
+
+<p>グラフ自体はGUIで作っても良いし、jsonで記述可能なので結構柔軟で素敵です。</p>
+
+<p>``` json profits.json
+{
+  "viz": "timeseries",
+  "requests": [</p>
+
+<pre><code>{
+  "q": "avg:gameday2016{*} by {team}",
+  "aggregator": "avg",
+  "conditional_formats": [],
+  "type": "line"
+}
+</code></pre>
+
+<p>  ]
+}
+```</p>
+
+<p>``` json ranking.json
+{
+  "viz": "toplist",
+  "requests": [</p>
+
+<pre><code>{
+  "q": "top(avg:gameday2016{*} by {team}, 20, 'last', 'desc')",
+  "style": {
+    "palette": "dog_classic"
+  },
+  "conditional_formats": [
+    {
+      "palette": "white_on_green",
+      "comparator": "&gt;=",
+      "value": 0
+    },
+    {
+      "palette": "white_on_red",
+      "comparator": "&lt;",
+      "value": 0
+    }
+  ]
+}
+</code></pre>
+
+<p>  ]
+}
+```</p>
+
+<p>できあがったグラフはこんな感じ。
+高負荷発生等のイベント時の対応との比較もできて見やすいと思います。</p>
+
+<p>{% img https://lh3.googleusercontent.com/XoNcTN3HQIlFDHvaSe8uNlcCP8FYRijZNsPVdrnrsmNvEF3XoW6IUDKnU63JDLL7X6W3Ed3mCLaF=w742-h394-no %}</p>
+
+<p>これで各チームのポジション等を伝えやすくなりました。</p>
+
+<p>{% tweet https://twitter.com/ijin/status/756756052192792576?lang=ja %}
+{% tweet https://twitter.com/ijin/status/756766379341025281?lang=ja %}
+{% tweet https://twitter.com/ijin/status/756778321749225472?lang=ja %}</p>
+
+<p>というわけで優勝した<a href="http://inokara.hateblo.jp/entry/2016/07/24/095228">チーム初老丸</a>、おめでとうございます！</p>
+
+<h3>終わりに</h3>
+
+<p>今回は競技の途中から実装しちゃったので次回は最初から用意しておきたいと思います。</p>
+
+<p>{% tweet https://twitter.com/sora_h/status/660379055867334656?lang=ja %}
+（※）実は去年のISUCONの時も似たような事をやってましたね。。</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[DockerCon 2016に参加してきた]]></title>
+    <link href="http://ijin.github.io/blog/2016/06/28/dockercon-2016/"/>
+    <updated>2016-06-28T10:17:00+09:00</updated>
+    <id>http://ijin.github.io/blog/2016/06/28/dockercon-2016</id>
+    <content type="html"><![CDATA[<p>先日、<a href="http://2016.dockercon.com/">DockerCon 2016</a>に参加してきたので、そのメモ。</p>
+
+<h2>To DockerCon you go!</h2>
+
+<p>{% speakerdeck dd1706017844461583368f3aec9e49b5 %}</p>
+
+<p>ちなみに行く事になった経緯は後日の<a href="http://qiita.com/t-sato/items/b7d33ac38205fe5d2997">JAWS-UGおコンテナ支部 #5</a>でLTしてきました。</p>
+
+<p>パッション大事！</p>
+
+<p>以下、トゥギャッター風に。</p>
+
+<h2>Day 0</h2>
+
+<h3>Pre-Registration &amp; Welcome Party</h3>
+
+<p>{% img https://lh3.googleusercontent.com/EbICBfukR41-rSVc75vfqKH1FW2-tjRofVSSohIEgD4iQMFZImz7wmZc7j6mihcVavhwFStPFKGr=w455-h606-no %}</p>
+
+<p>場所はシアトルのWashington State Convention Center。何気にこの地に訪れるのは初。</p>
+
+<p>{% img https://lh3.googleusercontent.com/gcFQaHyxe0yqMvFKpAyMuF0Ht7_NSq4MwIysYy_pkbk6XKhSgme1uCA_h0aBAewWq1LTqEkUv_Lu=w455-h606-no %}</p>
+
+<p>Welcome to DockerCon 2016!</p>
+
+<p>{% tweet https://twitter.com/ijin/status/744699319534575616 %}</p>
+
+<p>{% img https://lh3.googleusercontent.com/pQvzcaHk0EzEjoHTUwENIzW25Mou2QfQ9DiVZXflPalOgvG7B9S9ZCFVyq6W7lRPSBdU746_6-I7=w808-h606-no %}</p>
+
+<p>企業ブース</p>
+
+<p>{% tweet https://twitter.com/ijin/status/744729346259070976 %}</p>
+
+<p>{% img https://lh3.googleusercontent.com/UhiotzEzNdpO855q4fqariqpi7yzQyMVunDPAbuTW6QwgvgtI55zuJx8R2ox9siM8AuR-2oHeWIw=w808-h606-no %}</p>
+
+<p>Welcome Party</p>
+
+<p>{% img https://lh3.googleusercontent.com/X3cd_omPYz3s1oHy5gbowLj7HZG3uwnotMA9WY3UF5qS5PlZ9tiYkoX3FHi0N68E-GoMbmiWi1A_=w793-h595-no %}</p>
+
+<p>Bar</p>
+
+<h2>Day 1</h2>
+
+<h3>Highlights</h3>
+
+<ul>
+<li>Docker 1.12 (orchestration built-in)
+
+<ul>
+<li>swarm mode</li>
+<li>serice api</li>
+<li>cryptographic node identity</li>
+<li>build-in routing mesh</li>
+</ul>
+</li>
+<li>Experimental Distributed Application Bundles (DAB)</li>
+<li>Docker for AWS &amp; Azure (beta)</li>
+<li>Docker for Mac &amp; Windows (public beta)</li>
+</ul>
+
+
+<p>{% img https://lh3.googleusercontent.com/S1EdQrzioZdPZ5B4xpcHefQOIXnCeQgeRDXA2nm-Rwx5rDLNQrIHV7GaoG6OlYh_WTEVmfLZK5qa=w455-h606-no %}</p>
+
+<p>ぞろぞろ</p>
+
+<p>{% tweet https://twitter.com/ijin/status/744923494589202432?lang=ja %}
+{% tweet https://twitter.com/ijin/status/744923505871839233?lang=ja %}
+{% tweet https://twitter.com/ijin/status/744928052858126338?lang=ja %}
+{% tweet https://twitter.com/ijin/status/744928124815577088?lang=ja %}
+{% tweet https://twitter.com/BettyJunod/status/744935919673708544?lang=ja  %}</p>
+
+<p>{% tweet https://twitter.com/ijin/status/744941579647913984?lang=ja %}
+{% tweet https://twitter.com/ijin/status/744950295835217920?lang=ja %}</p>
+
+<h3>Sessions</h3>
+
+<ul>
+<li>The Golden Ticket: Docker and High Security Microservices</li>
+<li>Microservices + Events + Docker = A Perfect Trio</li>
+<li>Thinking Inside the Container: A Continuous Delivery Story</li>
+<li>Docker in Production, Look No Hands!</li>
+</ul>
+
+
+<p><strong>The Golden Ticket: Docker and High Security Microservices</strong></p>
+
+<p>{% tweet https://twitter.com/ijin/status/744973236203446272?lang=ja %}
+{% tweet https://twitter.com/ijin/status/744975496308359168?lang=ja %}
+{% tweet https://twitter.com/ijin/status/744976420074446849?lang=ja %}</p>
+
+<p><strong>Microservices + Events + Docker = A Perfect Trio</strong></p>
+
+<p>{% tweet https://twitter.com/ijin/status/744999360421732352?lang=ja %}
+{% tweet https://twitter.com/ijin/status/745000882610274304?lang=ja %}
+{% tweet https://twitter.com/ijin/status/745004762962223104?lang=ja %}
+{% tweet https://twitter.com/ijin/status/745009602677248000?lang=ja %}</p>
+
+<p><strong>Thinking Inside the Container: A Continuous Delivery Story</strong></p>
+
+<p>{% tweet https://twitter.com/ijin/status/745012607329906688?lang=ja %}
+{% tweet https://twitter.com/ijin/status/745013610032803840?lang=ja %}
+{% tweet https://twitter.com/ijin/status/745014086392381440?lang=ja %}
+{% tweet https://twitter.com/ijin/status/745019391960481792?lang=ja %}
+{% tweet https://twitter.com/ijin/status/745019998523908100?lang=ja %}</p>
+
+<h3>DockerCon party @ Space Needle</h3>
+
+<p>最後はシアトルの名所（？）、<a href="http://www.spaceneedle.com">Space Needle</a>での貸切パーティー</p>
+
+<p>{% tweet https://twitter.com/ijin/status/745097049478045696?lang=ja %}</p>
+
+<p>{% img https://lh3.googleusercontent.com/k_fJmctUgvWrWhlHNFsf1taBDn68iRM9fDDOIEZKkmvaPD03bY1bD4Wd_JGOw8f4pRygew0rKx08=w455-h606-no %}</p>
+
+<p>中でもワイワイ</p>
+
+<h2>Day 2</h2>
+
+<h3>Highlights</h3>
+
+<ul>
+<li>Docker Datacenter</li>
+<li>AWS Quickstart</li>
+<li>Azure Marcketplace Templates</li>
+<li>Docker Store (private beta)</li>
+</ul>
+
+
+<p>{% tweet https://twitter.com/ijin/status/745288065803968512?lang=ja %}
+{% tweet https://twitter.com/ijin/status/745288586803613696?lang=ja %}</p>
+
+<p>個人的には、とある企業でのDockerのユースケースを演じる漫才が面白かった。</p>
+
+<p>{% tweet https://twitter.com/ijin/status/745294134190170112?lang=ja %}
+{% tweet https://twitter.com/ijin/status/745294892423745536?lang=ja %}
+{% tweet https://twitter.com/ijin/status/745295726700224513?lang=ja %}
+{% tweet https://twitter.com/ijin/status/745296068259123201?lang=ja %}
+{% tweet https://twitter.com/mariusducea/status/745296465094860802?lang=ja %}
+{% tweet https://twitter.com/ijin/status/745297941535981569 %}</p>
+
+<p>AzureのCTO</p>
+
+<p>{% tweet https://twitter.com/ijin/status/745300074528333824?lang=ja %}
+{% tweet https://twitter.com/ijin/status/745300681104359424?lang=ja %}
+{% tweet https://twitter.com/ijin/status/745301503926165504?lang=ja %}
+{% tweet https://twitter.com/ijin/status/745302570936086528?lang=ja %}</p>
+
+<p>ADPのCTO</p>
+
+<p>{% tweet https://twitter.com/ijin/status/745305740873633792?lang=ja %}
+{% tweet https://twitter.com/Keisuke69/status/745305275972759552?lang=ja %}
+{% tweet https://twitter.com/ijin/status/745306231712022528?lang=ja %}
+{% tweet https://twitter.com/ijin/status/745308374997184512?lang=ja %}</p>
+
+<h3>Sessions</h3>
+
+<ul>
+<li>Making Friendly Microservices</li>
+<li>Sharding Containers: Make Go Apps Computer-Friendly Again</li>
+<li>Closing General Session: Moby Dock's Cool Hacks</li>
+</ul>
+
+
+<p><strong>Making Friendly Microservices</strong></p>
+
+<p>{% tweet https://twitter.com/ijin/status/745353738508853248?lang=ja %}
+{% tweet https://twitter.com/ijin/status/745357805347999745?lang=ja %}
+{% tweet https://twitter.com/ijin/status/745357873098567683?lang=ja %}</p>
+
+<p><strong>Sharding Containers: Make Go Apps Computer-Friendly Again</strong></p>
+
+<p>{% tweet https://twitter.com/ijin/status/745398037497806849?lang=ja %}</p>
+
+<p><strong>Closing General Session: Moby Dock's Cool Hacks</strong></p>
+
+<p>{% tweet https://twitter.com/ijin/status/745405126408450050?lang=ja %}
+{% tweet https://twitter.com/ijin/status/745406128679333890?lang=ja %}
+{% tweet https://twitter.com/ijin/status/745406672416342016?lang=ja %}
+{% tweet https://twitter.com/ijin/status/745407885035724800?lang=ja %}</p>
+
+<p>Serverless Dockerが面白かった。</p>
+
+<p>{% tweet https://twitter.com/ijin/status/745408340319051781?lang=ja %}
+{% tweet https://twitter.com/ijin/status/745410551778410496?lang=ja %}
+{% tweet https://twitter.com/ijin/status/745410776848990208?lang=ja %}
+{% tweet https://twitter.com/ijin/status/745411486625861633?lang=ja %}
+{% tweet https://twitter.com/ijin/status/745411898510704640?lang=ja %}</p>
+
+<p>Docker on Drones</p>
+
+<p>{% tweet https://twitter.com/ijin/status/745412950551212034?lang=ja %}</p>
+
+<h2>終わりに</h2>
+
+<p>世界各国のエンジニアと話せて、Dockerに対する熱量や動向を肌感覚で感じとれて非常に有意義な旅でした。以前の<a href="/blog/2014/04/21/chefconf-2014/">ChefConf</a>や<a href="/blog/2015/09/30/hashiconf-2015/">HashiConf</a>もそうだけど、気になる技術やトレンドがあればTechカンファレンスに直接乗り込んで見るのが一番効率的なので、今後も継続してどこかに参加するようにしたいです。</p>
+
+<p>Thank you!</p>
+
+<p>{% img https://lh3.googleusercontent.com/yPy0EnK1ewU3HbrQyT6pSxR-G--QAHZ2fmwLJ09Jh14sw9yju2q1DQd3pIin-AXJ0ohAJeRqxhAE=w455-h606-no %}</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[AWS re:Invent 2015に参加してきた]]></title>
@@ -33,15 +407,13 @@
 
 <p>結果、48チーム中で<strong>6位</strong>。（上位2チームはチートで失格となったので<strong>実質は4位</strong>）</p>
 
-<p><img src="https://lh3.googleusercontent.com/H8zoy7lrftuIo9ZQTN_LsUC3KsiGsNkOJbPzuW4vAxy4o6IOAH8=w547-h298-no"></p>
+<p>{% img https://lh3.googleusercontent.com/H8zoy7lrftuIo9ZQTN_LsUC3KsiGsNkOJbPzuW4vAxy4o6IOAH8=w547-h298-no %}</p>
 
-<p><div class='embed tweet'><blockquote class="twitter-tweet"><p lang="en" dir="ltr"><a href="https://twitter.com/ijin">@ijin</a> <a href="https://twitter.com/AWSreInvent">@AWSreInvent</a> the rabbit icon was awarded to the team with the fastest response time to a request.0.0005s is not too shabby!</p>&mdash; Kyle Lichtenberg (@KyleLichtenberg) <a href="https://twitter.com/KyleLichtenberg/status/651573816301219840">October 7, 2015</a></blockquote>
-<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div></p>
+<p>{% tweet https://twitter.com/KyleLichtenberg/status/651573816301219840 %}</p>
 
 <p>ちなみに最速レスポンスタイムはうちのチームが叩きだした。</p>
 
-<p><div class='embed tweet'><blockquote class="twitter-tweet"><p lang="en" dir="ltr">Our team - &quot;Ubercon&quot;! <a href="https://twitter.com/hashtag/reinvent?src=hash">#reinvent</a> <a href="https://twitter.com/hashtag/AWSGameDay?src=hash">#AWSGameDay</a> <a href="http://t.co/dpRu1vicgM">pic.twitter.com/dpRu1vicgM</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/651544851620700160">October 6, 2015</a></blockquote>
-<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div></p>
+<p>{% tweet https://twitter.com/ijin/status/651544851620700160 %}</p>
 
 <p>詳細は今度日本で開催されるかも知れないので控えておくが、非常に楽しめたので次回は運営側に回って手伝おうかと思います！</p>
 
@@ -63,7 +435,7 @@
 </ul>
 
 
-<p><img src="https://lh3.googleusercontent.com/SSI_hMC3cjzUSvGPxT49FD26VBeY_QYt_qGoTLDPo8nBLwdmglM=w493-h544-no"></p>
+<p>{% img https://lh3.googleusercontent.com/SSI_hMC3cjzUSvGPxT49FD26VBeY_QYt_qGoTLDPo8nBLwdmglM=w493-h544-no %}</p>
 
 <p><del>Oracle</del>からの自由、解放！</p>
 
@@ -73,14 +445,13 @@
 かつてjawsugで主催を手伝ったワールドカフェ形式とほぼ同じだったので、チームメンバーを先導してCacooでさくさく構成図を起こしていく。
 他のチームが模造紙にラフスケッチで発表する中、我らは綺麗に正本して、プロジェクターで登壇しながら発表。</p>
 
-<p><div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">ワークショップはうちらのチームだけCacooで図を書いたので制覇した感がある。 <a href="https://twitter.com/hashtag/reinvent?src=hash">#reinvent</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/651869691699425281">October 7, 2015</a></blockquote>
-<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div></p>
+<p>{% tweet https://twitter.com/ijin/status/651869691699425281 %}</p>
 
 <p>最後に実際にどう移行したかというAWSチームからの回答。まず、移行フェーズを段階的に分け、最初はシステムをほぼそのままクラウド上に乗せた後に部分的に最適化してコンポーネントを置き換えて行ったという話。最後にLambdaになっていた部分があったのが興味深かった。</p>
 
 <p>早く新サービスに対応したAWS Simple Iconsのアップデートが待たれるところ。</p>
 
-<p><img src="https://lh3.googleusercontent.com/IVrSN7g0MnAfVa6pB4ajQWUZYPmpFMOH6Ych-FedX1HqxCfEHtc=w583-h346-no"></p>
+<p>{% img https://lh3.googleusercontent.com/IVrSN7g0MnAfVa6pB4ajQWUZYPmpFMOH6Ych-FedX1HqxCfEHtc=w583-h346-no %}</p>
 
 <p>今回提案した内容。</p>
 
@@ -91,11 +462,11 @@
 <p>機能拡張の為に実装が必要なので、設計しながらチーム内で作業分担し、コードをせっせと書いていく。
 ゾンビ出現のアラート通知、ヒートマップ描画、アンデッドカウンター、緊急食料倉庫の位置情報配信等、面白い機能要求が盛り沢山。</p>
 
-<p><img src="https://lh3.googleusercontent.com/-UStcIzDdtS42SZTgt657iKvYHWlbcfktbvuCq3-LIioBfrBzgI=w600-h346-no"></p>
+<p>{% img https://lh3.googleusercontent.com/-UStcIzDdtS42SZTgt657iKvYHWlbcfktbvuCq3-LIioBfrBzgI=w600-h346-no %}</p>
 
 <p>ささっとSlack部屋を作り、githubでコードを共有しながらのチームワーク作業。多分、うちらのチームが一番多く実装できた感触。</p>
 
-<p><img src="https://lh3.googleusercontent.com/WZ7nUMvRhoNzixWqjEdCFJ1wJqNH-BqjV4M4cq93mBXBnJ8UPOk=w493-h544-no"></p>
+<p>{% img https://lh3.googleusercontent.com/WZ7nUMvRhoNzixWqjEdCFJ1wJqNH-BqjV4M4cq93mBXBnJ8UPOk=w493-h544-no %}</p>
 
 <p>このワークショップはかなりの人気で、開始30分前にすでに長蛇の列が。
 運良くぎりぎり最後の参加者として入れたけど、皆どれだけゾンビが好きなんだ。。</p>
@@ -125,7 +496,7 @@
 </ul>
 
 
-<p><img src="https://lh3.googleusercontent.com/A4p3UvP0JiMxjpZF7L0zxdMFkU96aOYtZ-BExM2zFERDsebakXw=w493-h543-no"></p>
+<p>{% img https://lh3.googleusercontent.com/A4p3UvP0JiMxjpZF7L0zxdMFkU96aOYtZ-BExM2zFERDsebakXw=w493-h543-no %}</p>
 
 <p>前日にAndyが7つの自由を語って、当日はWernerが7つの法則を語る。</p>
 
@@ -137,25 +508,21 @@
 
 <p>新品のEchoを開封して使ったので、最後に貰える物かとささやかに期待したものの、$15のAWSクーポン配布のみ。さすが<del>ケチ</del>FrugalなAmazonさん。</p>
 
-<p><div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">Alexaとlambdaが連携してEchoが喋った！ <a href="https://twitter.com/hashtag/reinvent?src=hash">#reinvent</a> <a href="http://t.co/V6QpNyj3tK">pic.twitter.com/V6QpNyj3tK</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/652234646231646208">October 8, 2015</a></blockquote>
-<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div></p>
+<p>{% tweet https://twitter.com/ijin/status/652234646231646208 %}</p>
 
-<p><div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">Alexは今ユーザ駆動にしか対応してないけど、awsのイベント駆動はtop priorityとの事。そのうち例えばbilling alertを音声で通知できるようになるなぁ。楽しみだ。 <a href="https://twitter.com/hashtag/reinvent?src=hash">#reinvent</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/652239936968654848">October 8, 2015</a></blockquote>
-<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div></p>
+<p>{% tweet https://twitter.com/ijin/status/652239936968654848 %}</p>
 
 <h3>re:Play</h3>
 
 <p>EDMの若きプリンスDJ、Zeddをシークレットゲストとして呼んでのアフター。</p>
 
-<p><div class='embed tweet'><blockquote class="twitter-tweet"><p lang="en" dir="ltr">What a view for this secret <a href="https://twitter.com/Zedd">@zedd</a> show, this crowd does not end! <a href="https://twitter.com/hashtag/vegas?src=hash">#vegas</a> <a href="http://t.co/0Itv012o0k">pic.twitter.com/0Itv012o0k</a></p>&mdash; Rukes (@rukes) <a href="https://twitter.com/rukes/status/652400784353595392">October 9, 2015</a></blockquote>
-<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div></p>
+<p>{% tweet https://twitter.com/rukes/status/652400784353595392 %}</p>
 
 <p>もう完全にWernerのパーティー。</p>
 
-<p><div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">昨夜の <a href="https://twitter.com/hashtag/replay?src=hash">#replay</a> でこの積み上がったコンテナを見て、Docker Swarm を連想した人はさぞ多かったに違いない。 <a href="http://t.co/QxF2MkbHTi">pic.twitter.com/QxF2MkbHTi</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/652681828441063425">October 10, 2015</a></blockquote>
-<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div></p>
+<p>{% tweet https://twitter.com/ijin/status/652681828441063425 %}</p>
 
-<p><div class="embed-video-container"><iframe src="http://www.youtube.com/embed/cT676BMT7A8 "></iframe></div></p>
+<p>{% youtube cT676BMT7A8 %}</p>
 
 <p>Zeldaのremixが良かった。</p>
 
@@ -180,13 +547,13 @@
 <p>Founder &amp; CEOのMitchell Hashimotoが登壇。
 今までのHashiCorpプロダクトを紹介した上で、新プロダクトの紹介！</p>
 
-<p><img src="https://lh3.googleusercontent.com/kV2iR87ZYBN9LuPjMxGmuPxg1t1xzZLlcgi5LV_y8TwzSvsIOVE=w479-h638-no"></p>
+<p>{% img https://lh3.googleusercontent.com/kV2iR87ZYBN9LuPjMxGmuPxg1t1xzZLlcgi5LV_y8TwzSvsIOVE=w479-h638-no %}</p>
 
 <p><a href="https://nomadproject.io">Nomad</a></p>
 
 <p>コンテナスケジューラ。ちょうどあるサービスの一部のDocker化でスケジューリング方法を考えていたので、グッドタイミング。</p>
 
-<p><img src="https://lh3.googleusercontent.com/PaK-SUH-tybvL7ILwZFFXrYVdylvzw1cu0bFR8rKDadbIRgA8cA=w479-h638-no"></p>
+<p>{% img https://lh3.googleusercontent.com/PaK-SUH-tybvL7ILwZFFXrYVdylvzw1cu0bFR8rKDadbIRgA8cA=w479-h638-no %}</p>
 
 <p><a href="https://ottoproject.io">Otto</a></p>
 
@@ -249,7 +616,7 @@
 
 <p>HashiCorpの哲学とAtlasの説明（2日目は新製品の発表はなし）</p>
 
-<p><img src="https://lh3.googleusercontent.com/XzbJrBKpfWU73lMGv5tVFmfV90Uvyec7WWiizweiv_uTbZEEusY=w619-h465-no"></p>
+<p>{% img https://lh3.googleusercontent.com/XzbJrBKpfWU73lMGv5tVFmfV90Uvyec7WWiizweiv_uTbZEEusY=w619-h465-no %}</p>
 
 <h3>Dockerizing all the Things</h3>
 
@@ -333,7 +700,7 @@
 </ul>
 
 
-<p><img src="https://lh3.googleusercontent.com/50dhedo-8s4QS_7Chw6v1U6Ow58b4d53HHYlVQGQ6hwwuN6CT7c=w427-h320-no"></p>
+<p>{% img https://lh3.googleusercontent.com/50dhedo-8s4QS_7Chw6v1U6Ow58b4d53HHYlVQGQ6hwwuN6CT7c=w427-h320-no %}</p>
 
 <p>さて、来週はre:Inventだ！</p>
 ]]></content>
@@ -406,187 +773,6 @@
 <h3>おまけ</h3>
 
 <p>現在はHashiConfに向けての飛行機の中だけど、悔しいので機内で復習しておきます！</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[サバフェス！2015に参加してきた]]></title>
-    <link href="http://ijin.github.io/blog/2015/03/27/serverfesta-2015-spring/"/>
-    <updated>2015-03-27T12:56:00+09:00</updated>
-    <id>http://ijin.github.io/blog/2015/03/27/serverfesta-2015-spring</id>
-    <content type="html"><![CDATA[<p><a href="http://connpass.com/event/11571/">サバフェス！2015 Spring</a>に参加してきました。
-やった内容を少々。</p>
-
-<p><a href="/blog/2013/12/13/serverfesta-2013-autumn">前回</a>と同じくチーム@ijinとして1人で参戦して、順位は「<strong>4位</strong>」。</p>
-
-<p>スコアは<strong>44988.867 TpmC</strong>でした。</p>
-
-<h2>お題</h2>
-
-<p>Mysql on ioDriveでtpcc-mysqlベンチマークのtransaction throughput競争。</p>
-
-<p>第1陣と第2陣に分かれていて、今回は後者での参戦。</p>
-
-<h2>はじめに</h2>
-
-<p>競技期間は5日間あったものの、第1陣で<a href="http://netmark.jp/2015/03/svfes-2.html">結構な地雷があった</a>のと、Fusion-IO（現SanDisk）のioDriveとtpcc-mysqlは2年前に<a href="/blog/2013/02/22/mysql-benchmarks-on-aws-ssd-vs-fusion-io/">触った</a>ので最初はあんまりやる気が起きなくて困ってました。後は前回と違って施せる施策がかなり限定されるというので、正直5日間は長過ぎるのではないかという印象でした。（結果的に第1陣のトラブルとかを鑑みると長さ的には良かったのかも知れないけど）</p>
-
-<p>という事で初日はログインとベンチで基準値を取るだけして終了。</p>
-
-<p>その後、最近のMySQLやioDrive周りの情報収集を軽ーくして数日が経過。。</p>
-
-<p>そして最終日の夜中になって、なんとか本腰を入れてチューニング開始。まあ、やりだしたら楽しいんですけどね。</p>
-
-<h2>マシンスペック</h2>
-
-<ul>
-<li>CentOS 6.4</li>
-<li>Intel(R) Xeon(R) CPU E5-2650 v2 @ 2.60GHz x 32</li>
-<li>32GB RAM</li>
-<li>40G HDD</li>
-<li>320GB ioDrive</li>
-</ul>
-
-
-<h2>制限</h2>
-
-<pre><code>innodb_doublewrite = 1
-innodb_flush_log_at_trx_commit = 1
-</code></pre>
-
-<p>その他レギューレーションは<a href="https://2015spring.serverfesta.info/?page_id=299">こちら</a></p>
-
-<h2>方針</h2>
-
-<p>今までのtwitterの<a href="https://twitter.com/search?q=%23%E3%82%B5%E3%83%90%E3%83%95%E3%82%A7%E3%82%B9">タイムライン</a>からして、どうもベンチをウェブ画面から要求しても並列実行の数とキューイング、及び非常に長い実行時間からして1時間に一回実行できるかどうかも怪しかったのでローカルでこまめに回す方向に。</p>
-
-<p>本番データはtpccの1000 warehouse（70GB+）、16GB Buffer Pool、900sの実行時間だったのでそれを250 warehouse, 4GB Buffer Poolと縮小し120sと短めに設定。こうすることによってローカルでのデータコピー時間やベンチ実行時感が短縮され、時間がない中での細かいパラメータのチューニングに専念できる。Buffer Poolはどうせ一番効くと分かりきってるので、あえて後回し。DBは6年前（MySQL 5.0時代）から手に滲んで愛用しているPercona Serverの5.6版を選択。</p>
-
-<p>スコアの推移はこんな感じ。データセットが小さい分、スコアは大きめ。</p>
-
-<p><img src="https://docs.google.com/spreadsheets/d/1zm6-THRYR_EcLoHgacRScxlhSzeQAkbJ0RXiAI4fiRU/pubchart?oid=1067951178&amp;format=image"></p>
-
-<p>終盤になってやっと本番に近いデータセットや実行時感で細かいチューニング。</p>
-
-<p><img src="https://docs.google.com/spreadsheets/d/1zm6-THRYR_EcLoHgacRScxlhSzeQAkbJ0RXiAI4fiRU/pubchart?oid=2026636320&amp;format=image"></p>
-
-<p>最終的にローカルでのベストスコアは<strong>53420.332 TpmC</strong>でした。</p>
-
-<h2>設定ファイル</h2>
-
-<script src="https://gist.github.com/ijin/341bab7569e372e1addb.js"></script>
-
-
-<h2>効果があったもの</h2>
-
-<p>細かいおまじないレベルでのパラメータも他にいくつあったけど、割と効いたのをピックアップ。また、既に設定されていたパラメータは除外（innodb_io_capacity等）</p>
-
-<p>mysql</p>
-
-<pre><code>datadir=/fioa/mysql
-tmpdir=/fioa/tmp
-sync_binlog=0
-innodb_buffer_pool_size = 28150M
-innodb_buffer_pool_instances=16
-innodb_log_file_size=4G
-innodb_log_files_in_group=3
-innodb_log_group_home_dir=/var/log/mysql
-innodb_log_buffer_size=64M
-innodb_data_file_path=ibdata1:76M;../../var/log/mysql/ibdata2:500M:autoextend
-innodb_checksum_algorithm=0
-innodb_max_dirty_pages_pct=90
-innodb_lru_scan_depth=2000
-numa_interleave=1
-flush_caches
-malloc-lib=/usr/lib64/libjemalloc.so.1
-</code></pre>
-
-<p>etc</p>
-
-<pre><code>vm.swappiness=1
-mount option (noatime,nodiratime,  max_batch_time=0,nobarrier,discard)
-cache warmup
-</code></pre>
-
-<p>基本的にはioDriveにIOをなるべく発生させない、もしくは遅延させる関連のパラメータが効いた感じ。この辺は割と正統なチューニング方法。一つ、若干工夫したのは、doublewrite buffer fileの指定方法。シーケンシャルなIOが発生するログ周りの処理はHDDに逃がした方がioDrive/SSD的には負荷低減になるけど、Percona 5.5までは<strong>innodb_doublewrite_file</strong>というパラメータでいつも指定していたのが、5.6ではなんと未実装！なのでベンチマーク前にコピーされるibdata1の予めのサイズを計っておいて、以降の書き込みをHDD側へ逃がすように<strong>innodb_data_file_path</strong>で調整。</p>
-
-<p>他はNUMAによるメモリの偏り調整とmallocライブラリを使う指定。この辺もPerconaやMariaDB専用オプション。</p>
-
-<p>後は一応初動のスコアをちょっとだけ稼ぐためにmysqlのstartup script内にてテーブルをcount(*)してindexをbuffer poolに乗せたぐらい。</p>
-
-<h2>効果が微妙だったもの</h2>
-
-<p>mysql</p>
-
-<pre><code>innodb_flush_method=ALL_O_DIRECT
-innodb_support_xa=0
-innodb_thread_concurrency=N
-innodb_flush_neighbors=0
-query_cache_size=0
-large-pages
-</code></pre>
-
-<p>etc</p>
-
-<pre><code>echo 'noop' &gt; /sys/block/fioa/queue/scheduler
-echo 4096 &gt; /sys/block/fioa/queue/nr_requests
-echo 2 &gt; /sys/block/fioa/queue/rq_affinity
-renice -n19 -p `ps auxf | grep mackerel | grep -v grep | awk ‘{print $2}’`
-</code></pre>
-
-<p>large-pagesでページサイズを大きく設定すればメモリ効率は向上するはずが、少なくともベンチマークにおいては効果なし。また、スケジューラをnoopやdeadlineと変えたり、nr_requestsやrq_affinityを調整してみたけど、デフォルトのOS bypass設定と比べてあまり変化なし。</p>
-
-<h2>試したかったもの</h2>
-
-<ul>
-<li>ioDrvieのblock sizeのリサイズ</li>
-<li>C0 state（CPUのC stateを制御して変動させずにioDriveの処理向上の期待）</li>
-<li>numa_node_forced_local（IO処理をメモリに一番近接しているCPUで行う）</li>
-<li>IRQ pinning（ioDriveのIRQを固定）</li>
-<li>network tuning</li>
-</ul>
-
-
-<p>この中で最後やることリストに乗っけていながらやらなかったネットワーク周りのチューニング。多分、これが敗因。（1位のチームzzz(<a href="https://twitter.com/ttkzw">@ttkzwさん</a>)はローカルベンチマークで51000ぐらいだったので）もっとリモートからベンチが実行される事に意識を向ければ良かったのかもしれないですね。とはいえ、最後はキュー待ちが8チームだったり、結果が不具合で見れなかったりと、バダバタしてたのでそっちに気を取られたのもまた事実。まあ、半日ちょいのチューニングにしてはそこそこ行った感じでしょうか。</p>
-
-<h2>終わりに</h2>
-
-<p>最初は運営側が「目下実装中です！」といいながら<strong>#トラしゅ</strong>をしているような感じでちょっと不安でしたが、最後は（第2陣という事もあり）それなりに楽しめました。ベンチマーク時間の短縮と並列実行数がもうちょっと増やせたらよかったですかね。運営側の皆様、大変お疲れさまでした！</p>
-
-<h2>おまけ</h2>
-
-<p>賞品として3DマッサージピローとSSDを頂きました！</p>
-
-<p><div class='embed tweet'><blockquote class="twitter-tweet"><p>3DマッサージピローとSSDをもらった。 <a href="https://twitter.com/hashtag/%E3%82%B5%E3%83%90%E3%83%95%E3%82%A7%E3%82%B9?src=hash">#サバフェス</a> <a href="http://t.co/mKczn9mflZ">pic.twitter.com/mKczn9mflZ</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/581048257171820544">March 26, 2015</a></blockquote>
-<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div></p>
-
-<p>個人敵には飛び込みLTした人がもらったDroneの方が良さそうだったけど、ピローは家族に好評でした。</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[ISUCON4の本戦の思い出]]></title>
-    <link href="http://ijin.github.io/blog/2014/12/31/isucon4-final/"/>
-    <updated>2014-12-31T20:52:00+09:00</updated>
-    <id>http://ijin.github.io/blog/2014/12/31/isucon4-final</id>
-    <content type="html"><![CDATA[<p>ISUCON4の本戦の直後にそのままAWS re:Inventへ行ったきりエントリを書いてなかったので思い出だけでも年内に書いておく。</p>
-
-<p>内容の<a href="http://isucon.net/archives/41252218.html">エントリ</a>はたくさんあるので、詳しい内容なそちらに任せます。</p>
-
-<p>結果は予選よりちょい上の<strong>15位</strong>。まあ、中間層は結構団子状態だったので誤差の範囲とも言えますが。。</p>
-
-<h2>Cache-Control</h2>
-
-<p>結局はCache-Controlヘッダーに気づくかどうかという点にかかっていて、達成したのは<a href="http://isucon.net/archives/41634734.html">2チーム</a>のみ。優勝チームのモリスさんが「頭から煙が出る程考えて」やっと直前に答えにたどり着いた事を考えると、ベンチマークツールの挙動が若干不思議な実装になっていたとはいえ、思慮深さが足りなかったと反省。</p>
-
-<h2>冒険しすぎた</h2>
-
-<p>今回はrubyとGoのハイブリッド構成でもろもろチューニング。が、しばらくして帯域が頭打ちに。。
-また、その間にメンバーの一人の<a href="https://twitter.com/fruwe">@fruwe</a>に<a href="http://undertow.io/">Undertow</a>というjavaのフレームワークでチャレンジしてもらうものの（事前の技術検証では結構期待できそうだった）、実装完走にはいたらず。この辺は冒険し過ぎたかな。。振り返ってみれば、結局2位のチームがブレークスルーをしたのを見て、全作業を一旦ストップしてでも皆で考えなおす行動を取れば良かったのかもしれないですね。ただ、当時は予選でのベンチマークツールがいささか不安定だった事と運営側もリアルタイムでバグフィックスをしてたという事情もあり、きっとバグか何かだろうとあまり気にしてなかったのも確か。</p>
-
-<h2>最後に</h2>
-
-<p>とまあ、不完全燃焼だったけど、なんだかんだで面白かったです。運営＆参加者の皆様お疲れ様でした。来年またあるか分からないけど、楽しみにしています。</p>
 ]]></content>
   </entry>
   

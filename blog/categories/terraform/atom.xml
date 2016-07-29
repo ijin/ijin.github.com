@@ -4,7 +4,7 @@
   <title><![CDATA[Category: terraform | @ijin]]></title>
   <link href="http://ijin.github.io/blog/categories/terraform/atom.xml" rel="self"/>
   <link href="http://ijin.github.io/"/>
-  <updated>2016-05-02T13:07:49+09:00</updated>
+  <updated>2016-07-29T18:03:52+09:00</updated>
   <id>http://ijin.github.io/</id>
   <author>
     <name><![CDATA[Michael H. Oshita]]></name>
@@ -43,9 +43,7 @@ Terraform v0.6.16-dev - 5cd27c2
 
 <p>API GWのterraform化はこんな感じで。</p>
 
-<p><div><script src='https://gist.github.com/db027846fefb339187e3f2833fe2d034.js?file='></script>
-<noscript><pre><code></code></pre></noscript></div>
-</p>
+<p>{% gist db027846fefb339187e3f2833fe2d034 %}</p>
 
 <p>(*) permissionはlambda作成後に許可</p>
 

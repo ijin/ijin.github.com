@@ -4,7 +4,7 @@
   <title><![CDATA[@ijin]]></title>
   <link href="http://ijin.github.io/atom.xml" rel="self"/>
   <link href="http://ijin.github.io/"/>
-  <updated>2016-07-29T18:03:43+09:00</updated>
+  <updated>2016-07-29T21:20:18+09:00</updated>
   <id>http://ijin.github.io/</id>
   <author>
     <name><![CDATA[Michael H. Oshita]]></name>
@@ -67,7 +67,9 @@
 
 <p>参加チームの白熱したバトル（順位の入れ替え等）を時系列で表示し、戦いの軌跡をビジュアライズするアレです。ISUCONでもよく見慣れたあの遷移するグラフがなかったのです！</p>
 
-<h1>なので、作りました</h1>
+<p>開始してから気づきました。。</p>
+
+<h1>なので作りました</h1>
 
 <h2>Graphing premiere</h2>
 

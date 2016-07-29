@@ -40,7 +40,7 @@ categories:
 
 開始してから気づきました。。
 
-# なので、即席で作りました #
+# なので作りました #
 
 ## Graphing premiere ##
 

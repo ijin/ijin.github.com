@@ -4,7 +4,7 @@
   <title><![CDATA[Category: aws | @ijin]]></title>
   <link href="http://ijin.github.io/blog/categories/aws/atom.xml" rel="self"/>
   <link href="http://ijin.github.io/"/>
-  <updated>2016-11-09T17:04:11+09:00</updated>
+  <updated>2016-12-31T23:58:46+09:00</updated>
   <id>http://ijin.github.io/</id>
   <author>
     <name><![CDATA[Michael H. Oshita]]></name>
@@ -12,6 +12,101 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[AWS re:Invent 2016に参加してきた]]></title>
+    <link href="http://ijin.github.io/blog/2016/12/31/aws-re-invent-2016/"/>
+    <updated>2016-12-31T23:20:00+09:00</updated>
+    <id>http://ijin.github.io/blog/2016/12/31/aws-re-invent-2016</id>
+    <content type="html"><![CDATA[<p>4度目となるAWS re:Inventに参加したので、記録を。</p>
+
+<p>今年は例年より開催が1ヶ月遅く、且つ期間が長め（11/28〜12/2）でした。</p>
+
+<p>帰国直後にJAWS-UG横浜支部で体験談を発表。</p>
+
+<p><script async="true" class="speakerdeck-embed" data-id="https://speakerdeck.com/ijin/fastest-aws-re-invent-2016-story-in-the-galaxy" src="//speakerdeck.com/assets/embed.js"> </script></p>
+
+<h2>Day 0</h2>
+
+<h3>Game Day</h3>
+
+<p>お題は去年のUnicorn企業のシナリオを拡張したけど、テーマは今年の流行りを反映した内容。
+運用コストやパフォーマンスが加味され、チーム感でスコアを競うんだけど今年は新たにボーナスステージが用意されたりして全体的にいろいろ最適化されてた。</p>
+
+<p>80チーム以上で過去最大規模。奇しくもGame Day初回参加時に同じチームメンバーで友人となった人とチームに！</p>
+
+<p>ちなみにオンライン登録が間に合わなくて、当日飛び込み参加だけどなんとかギリギリ最後の一人では入れた。</p>
+
+<h2>Day 1</h2>
+
+<h3>Tuesday Night Live with James Hamilton</h3>
+
+<h2>Day 2</h2>
+
+<h3>Keynote</h3>
+
+<p>Andy Jessy (AWS CEO)により発表。テーマは「**Superpower##」</p>
+
+<ul>
+<li>new EC2 instances (t2.xlarge, t2.2xlarge, c5, r4, f1, i3)</li>
+<li>Amazon Lightsail</li>
+<li>Amazon Athena</li>
+<li>Amazon AI (Rekognition, Polly, Lex)</li>
+<li>Amazon Aurora for Postgres</li>
+<li>AWS Lambda@Edge</li>
+<li>AWS Greengrass</li>
+<li>AWS Snowball Edge</li>
+<li>AWS Snowmobile</li>
+</ul>
+
+
+<h2>Day 3</h2>
+
+<h3>Werner Vogels</h3>
+
+<p>Werner Vogels (AWS CTO)による発表。テーマは「<strong>Transformation</strong>」</p>
+
+<ul>
+<li>AWS CodeBuild</li>
+<li>AWS X-ray</li>
+<li>AWS Sheild</li>
+<li>Amazon Pinpoint</li>
+<li>AWS Glue</li>
+<li>AWS Batch</li>
+<li>AWS Step Functions</li>
+<li>AWS Lambda for C#</li>
+<li>Blox</li>
+</ul>
+
+
+<p>Lambdaのrubyかgo対応を期待してたのに、ちょっとがっかり。。</p>
+
+<h3>SVR 309 Wild Rydes Takes Off - The Dawn of a New Unicorn</h3>
+
+<p>サーバーレスをお題にしたワークショップ。コピペだけでちょっと面白みがなかった。。</p>
+
+<p>詳しくは<a href="http://qiita.com/ijin/items/9d97115585c54befd3bd">こちら</a></p>
+
+<h3>AWS re:Play</h3>
+
+<p>2016年EDMのベストDJに選ばれた若手のMartin Garrix。また金積んだな〜。</p>
+
+<h2>Day 4</h2>
+
+<p>のんびり</p>
+
+<h2>Certification Tests</h2>
+
+<p>暇だったのでベータ試験を全部受けた。</p>
+
+<ul>
+<li>Advanced Networking</li>
+<li>Security</li>
+<li>Big Data</li>
+</ul>
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[AWS GameDay Japan 2016を開催してきた]]></title>
@@ -648,83 +743,6 @@ template urlは<code>https://s3-ap-northeast-1.amazonaws.com/ijin/aws/lambda/che
 <p>元気があれば、そのうちnode版も書こうかな。。</p>
 
 <p>GitHubのリポジトリは<a href="https://github.com/ijin/check_lambda_capacity">こちらから</a>。</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[LambdaのログをSlackで見よう]]></title>
-    <link href="http://ijin.github.io/blog/2015/12/10/post-lambda-logs-to-slack/"/>
-    <updated>2015-12-10T00:56:00+09:00</updated>
-    <id>http://ijin.github.io/blog/2015/12/10/post-lambda-logs-to-slack</id>
-    <content type="html"><![CDATA[<p><a href="http://qiita.com/advent-calendar/2015/lambda">今年もやるよ！AWS Lambda縛り Advent Calendar 2015</a>の10日分です。</p>
-
-<h2>背景</h2>
-
-<p>AWS Lambdaで開発してるとちょこちょこ実行ログを見たりします。cliであれば、<a href="https://twitter.com/sgwr_dts">@sgwr_dts</a>さんの<a href="https://github.com/winebarrel/lambchop">lambchop</a>が<code>tail</code>的に使えて素敵なんだけど、後で見返したり、検索したりするので、最近ではログをSlackに通知するようにしているのでその紹介を。</p>
-
-<p>イメージはこんな感じ。</p>
-
-<p><img src="https://lh3.googleusercontent.com/A1fsUgw4m52Db4UeOqR3xaQHIGF940MsbA1tchFkF8Pul-ixO6E=w563-h445-no"></p>
-
-<p>ログはCloudWatch logsに溜まるのでsubscriptionさえ出来れば、別にソースはLambdaじゃなくても良いんですけどね。</p>
-
-<h2>Lambda</h2>
-
-<p><div><script src='https://gist.github.com/917193e443ff41cdf98b.js?file='></script>
-<noscript><pre><code></code></pre></noscript></div>
-</p>
-
-<p>CloudWatch logsのイベントをparseして、日付の色付けやタイムゾーン変換等ちょっこっと加工してメッセージと共に指定の<code>#channel</code>に飛ばすようにし、別のSlack通知用lambda functionをinvokeしているだけですね。
-（Slack用のlambdaは<a href="/blog/2015/08/06/github-to-lambda-to-slack/">以前のエントリ</a>を参照）</p>
-
-<p>何故Slackの部分を別functionにしてるかというと、最小単位の機能の切り出しによる<strong>portability</strong>とcross-account間のinvokeが可能となる<strong>reusability</strong>からです。</p>
-
-<h2>紐付け</h2>
-
-<h3>cloudwatch logsにlambda呼び出しの権限設定</h3>
-
-<p><code>
-aws --region ap-northeast-1 lambda add-permission --function-name "cloudwatch_logs" \
-  --statement-id "logs-my_lambda" --principal "logs.ap-northeast-1.amazonaws.com" \
-  --action "lambda:InvokeFunction" --source-account "123456789012" --source-arn \
-  "arn:aws:logs:ap-northeast-1:123456789012:log-group:/aws/lambda/my_lambda:*"
-</code></p>
-
-<h3>subscription filterの作成</h3>
-
-<p><code>
-aws --region ap-northeast-1 logs put-subscription-filter \
-  --log-group-name "/aws/lambda/my_lambda" --filter-name logs-my_lambda \
-  --filter-pattern ""
-  --destination-arn arn:aws:lambda:ap-northeast-1:123456789012:function:cloudwatch_logs`
-</code></p>
-
-<h2>実行</h2>
-
-<p>これでlambda functionが実行されると、Slackにログが通知されます。</p>
-
-<p><img src="https://lh3.googleusercontent.com/-PgkSA7jGbVTf3w1Eq5CZuvUAN4_bkKpR811Vcij5MlLam22C10=w706-h396-no">
-<img src="https://lh3.googleusercontent.com/JKU31Qsd6cOSWe011m8UJaBYljDrXwz08ym0ff79DngGMxDL_y0=w705-h234-no"></p>
-
-<p>うん、見やすい。</p>
-
-<h2>問題点</h2>
-
-<p>これでログが飛ぶようになったのは良いですが、Lambdaが実行されてからSlackへの通知まで10数秒とやや長めの時間がかかってしまうのが現在の難点です。（Immediate Feedbackはないものの履歴や検索用途には十分だけど）</p>
-
-<p>調べてみるとLambdaからCloudWatch logsへの書き出しが一番時間がかかっているのが判明。Logsへ書き出されたら、そこからの処理時間は1〜2秒とちょっと前に<a href="https://aws.amazon.com/about-aws/whats-new/2015/09/near-real-time-processing-of-amazon-cloudwatch-logs-with-aws-lambda/">発表された</a>CloudWatch logsの<em>near realtime processing</em>の通りなので、早く<code>Lambda -&gt; CloudWatch logs</code>も同じような処理時間を実現して欲しいものです。</p>
-
-<p>まあ、別にCloudWatch logsにさえ入れば早いので、lambda logに限らずいろいろ応用できそうですが。</p>
-
-<p>では、Happy Lambda Life!</p>
-
-<p>参考</p>
-
-<ul>
-<li><a href="http://docs.aws.amazon.com/AmazonCloudWatch/latest/DeveloperGuide/Subscriptions.html#LambdaFunctionExample">http://docs.aws.amazon.com/AmazonCloudWatch/latest/DeveloperGuide/Subscriptions.html#LambdaFunctionExample</a></li>
-<li><a href="http://inokara.hateblo.jp/entry/2015/10/18/201212">http://inokara.hateblo.jp/entry/2015/10/18/201212</a></li>
-</ul>
-
 ]]></content>
   </entry>
   

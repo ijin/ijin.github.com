@@ -4,7 +4,7 @@
   <title><![CDATA[@ijin]]></title>
   <link href="http://ijin.github.io/atom.xml" rel="self"/>
   <link href="http://ijin.github.io/"/>
-  <updated>2016-11-09T17:04:11+09:00</updated>
+  <updated>2016-12-31T23:58:46+09:00</updated>
   <id>http://ijin.github.io/</id>
   <author>
     <name><![CDATA[Michael H. Oshita]]></name>
@@ -12,6 +12,102 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[AWS re:Invent 2016に参加してきた]]></title>
+    <link href="http://ijin.github.io/blog/2016/12/31/aws-re-invent-2016/"/>
+    <updated>2016-12-31T23:20:00+09:00</updated>
+    <id>http://ijin.github.io/blog/2016/12/31/aws-re-invent-2016</id>
+    <content type="html"><![CDATA[<p>4度目となるAWS re:Inventに参加したので、記録を。</p>
+
+<p>今年は例年より開催が1ヶ月遅く、且つ期間が長め（11/28〜12/2）でした。</p>
+
+<p>帰国直後にJAWS-UG横浜支部で体験談を発表。</p>
+
+<script async="true" class="speakerdeck-embed" data-id="https://speakerdeck.com/ijin/fastest-aws-re-invent-2016-story-in-the-galaxy" src="http://ijin.github.io//speakerdeck.com/assets/embed.js"> </script>
+
+
+<h2>Day 0</h2>
+
+<h3>Game Day</h3>
+
+<p>お題は去年のUnicorn企業のシナリオを拡張したけど、テーマは今年の流行りを反映した内容。
+運用コストやパフォーマンスが加味され、チーム感でスコアを競うんだけど今年は新たにボーナスステージが用意されたりして全体的にいろいろ最適化されてた。</p>
+
+<p>80チーム以上で過去最大規模。奇しくもGame Day初回参加時に同じチームメンバーで友人となった人とチームに！</p>
+
+<p>ちなみにオンライン登録が間に合わなくて、当日飛び込み参加だけどなんとかギリギリ最後の一人では入れた。</p>
+
+<h2>Day 1</h2>
+
+<h3>Tuesday Night Live with James Hamilton</h3>
+
+<h2>Day 2</h2>
+
+<h3>Keynote</h3>
+
+<p>Andy Jessy (AWS CEO)により発表。テーマは「**Superpower##」</p>
+
+<ul>
+<li>new EC2 instances (t2.xlarge, t2.2xlarge, c5, r4, f1, i3)</li>
+<li>Amazon Lightsail</li>
+<li>Amazon Athena</li>
+<li>Amazon AI (Rekognition, Polly, Lex)</li>
+<li>Amazon Aurora for Postgres</li>
+<li>AWS Lambda@Edge</li>
+<li>AWS Greengrass</li>
+<li>AWS Snowball Edge</li>
+<li>AWS Snowmobile</li>
+</ul>
+
+
+<h2>Day 3</h2>
+
+<h3>Werner Vogels</h3>
+
+<p>Werner Vogels (AWS CTO)による発表。テーマは「<strong>Transformation</strong>」</p>
+
+<ul>
+<li>AWS CodeBuild</li>
+<li>AWS X-ray</li>
+<li>AWS Sheild</li>
+<li>Amazon Pinpoint</li>
+<li>AWS Glue</li>
+<li>AWS Batch</li>
+<li>AWS Step Functions</li>
+<li>AWS Lambda for C#</li>
+<li>Blox</li>
+</ul>
+
+
+<p>Lambdaのrubyかgo対応を期待してたのに、ちょっとがっかり。。</p>
+
+<h3>SVR 309 Wild Rydes Takes Off - The Dawn of a New Unicorn</h3>
+
+<p>サーバーレスをお題にしたワークショップ。コピペだけでちょっと面白みがなかった。。</p>
+
+<p>詳しくは<a href="http://qiita.com/ijin/items/9d97115585c54befd3bd">こちら</a></p>
+
+<h3>AWS re:Play</h3>
+
+<p>2016年EDMのベストDJに選ばれた若手のMartin Garrix。また金積んだな〜。</p>
+
+<h2>Day 4</h2>
+
+<p>のんびり</p>
+
+<h2>Certification Tests</h2>
+
+<p>暇だったのでベータ試験を全部受けた。</p>
+
+<ul>
+<li>Advanced Networking</li>
+<li>Security</li>
+<li>Big Data</li>
+</ul>
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[ServerlessConf London 2016に参加してきた。]]></title>
@@ -3600,32 +3696,6 @@ renice -n19 -p `ps auxf | grep mackerel | grep -v grep | awk ‘{print $2}’`
 
 
 <p>個人敵には飛び込みLTした人がもらったDroneの方が良さそうだったけど、ピローは家族に好評でした。</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[ISUCON4の本戦の思い出]]></title>
-    <link href="http://ijin.github.io/blog/2014/12/31/isucon4-final/"/>
-    <updated>2014-12-31T20:52:00+09:00</updated>
-    <id>http://ijin.github.io/blog/2014/12/31/isucon4-final</id>
-    <content type="html"><![CDATA[<p>ISUCON4の本戦の直後にそのままAWS re:Inventへ行ったきりエントリを書いてなかったので思い出だけでも年内に書いておく。</p>
-
-<p>内容の<a href="http://isucon.net/archives/41252218.html">エントリ</a>はたくさんあるので、詳しい内容なそちらに任せます。</p>
-
-<p>結果は予選よりちょい上の<strong>15位</strong>。まあ、中間層は結構団子状態だったので誤差の範囲とも言えますが。。</p>
-
-<h2>Cache-Control</h2>
-
-<p>結局はCache-Controlヘッダーに気づくかどうかという点にかかっていて、達成したのは<a href="http://isucon.net/archives/41634734.html">2チーム</a>のみ。優勝チームのモリスさんが「頭から煙が出る程考えて」やっと直前に答えにたどり着いた事を考えると、ベンチマークツールの挙動が若干不思議な実装になっていたとはいえ、思慮深さが足りなかったと反省。</p>
-
-<h2>冒険しすぎた</h2>
-
-<p>今回はrubyとGoのハイブリッド構成でもろもろチューニング。が、しばらくして帯域が頭打ちに。。
-また、その間にメンバーの一人の<a href="https://twitter.com/fruwe">@fruwe</a>に<a href="http://undertow.io/">Undertow</a>というjavaのフレームワークでチャレンジしてもらうものの（事前の技術検証では結構期待できそうだった）、実装完走にはいたらず。この辺は冒険し過ぎたかな。。振り返ってみれば、結局2位のチームがブレークスルーをしたのを見て、全作業を一旦ストップしてでも皆で考えなおす行動を取れば良かったのかもしれないですね。ただ、当時は予選でのベンチマークツールがいささか不安定だった事と運営側もリアルタイムでバグフィックスをしてたという事情もあり、きっとバグか何かだろうとあまり気にしてなかったのも確か。</p>
-
-<h2>最後に</h2>
-
-<p>とまあ、不完全燃焼だったけど、なんだかんだで面白かったです。運営＆参加者の皆様お疲れ様でした。来年またあるか分からないけど、楽しみにしています。</p>
 ]]></content>
   </entry>
   

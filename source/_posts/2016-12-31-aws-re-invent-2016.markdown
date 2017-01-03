@@ -1,0 +1,167 @@
+---
+layout: post
+title: "AWS re:Invent 2016に参加してきた"
+date: 2016-12-31 23:20
+comments: true
+categories:
+- events
+- aws
+---
+
+4度目となるAWS re:Inventに参加したので、記録を。
+
+帰国直後にJAWS-UG横浜支部で体験談を発表したのですっかり忘れてた。。
+
+{% speakerdeck 1c7e6641288445e9970318d92a4c78af %}
+
+　
+
+今年は例年より開催が1ヶ月遅く、且つ期間が長め（11/28〜12/2）でした。
+参加人数は過去最大規模で32,000人。PalazzoとVenetianのホテルに収まらなくて、新たにちょっと離れたMirageも借りることに。また、今年から登録制の運用が厳格になったので、飛び込みは行列に並ぶ必要がありました。
+
+{% tweet https://twitter.com/ijin/status/804122742312169472 %}
+
+## Day 0 ##
+
+### Game Day ###
+
+{% tweet https://twitter.com/ijin/status/803353436850778112 %}
+
+お題は去年のUnicorn企業のシナリオを拡張したけど、テーマは今年の流行りを反映した内容。
+運用コストやパフォーマンスが加味され、チーム感でスコアを競うんだけど今年は新たにボーナスステージが用意されたりして全体的にいろいろ最適化されてた。
+
+80チーム以上で過去最大規模。また、奇しくもGame Day初回参加時に同じチームメンバーで友人となった人とチームに！
+
+{% tweet https://twitter.com/ijin/status/803468342409342976 %}
+8時間の長丁場だったけど、もうこれだけで大変満足して後はもういいやって気分に。
+
+{% tweet https://twitter.com/ijin/status/803350706807676928 %}
+ちなみにオンライン登録が間に合わなくて、当日飛び込み参加だけどなんとかギリギリ最後の一人では入れた。
+
+## Day 1 ##
+
+### Tuesday Night Live with James Hamilton ###
+
+{% tweet https://twitter.com/ijin/status/803813887476781056 %}
+
+AWS Vice PresidentのJames Hamilton氏によるデータセンターの詳細が話された。初公開情報が多く、パッションが強くて聞いてて飽きなかった。
+
+{% tweet https://twitter.com/ijin/status/803815598106898432 %}
+{% tweet https://twitter.com/ijin/status/803817093065895937 %}
+{% tweet https://twitter.com/ijin/status/803818226270355456 %}
+{% tweet https://twitter.com/ijin/status/803819449547534336 %}
+{% tweet https://twitter.com/ijin/status/803819958106996736 %}
+{% tweet https://twitter.com/ijin/status/803820572853628928 %}
+{% tweet https://twitter.com/ijin/status/803821331829653504 %}
+{% tweet https://twitter.com/ijin/status/803822550786699264 %}
+{% tweet https://twitter.com/ijin/status/803823207727955975 %}
+{% tweet https://twitter.com/ijin/status/803823906809376768 %}
+
+新サービスもちょこっと。
+
+- NASA MARS for Alexa
+- [Deep Learning Benchmark](https://github.com/awslabs/deeplearning-benchmark)
+
+{% tweet https://twitter.com/ijin/status/803830533037969408 %}
+{% tweet https://twitter.com/ijin/status/803834613172998145 %}
+
+## Day 2 ##
+
+### Keynote ###
+
+Andy Jessy (AWS CEO)により発表。テーマは「**Superpower**」
+
+- new EC2 instances (t2.xlarge, t2.2xlarge, r4, i3, c5, f1 (FPGA))
+- Elastic GPU's for EC2
+- Amazon Lightsail
+- Amazon Athena
+- Amazon AI (Rekognition, Polly, Lex)
+- PostgreSQL for Amazon Aurora 
+- AWS Greengrass
+- AWS Snowball Edge
+- AWS Snowmobile
+
+{% tweet https://twitter.com/ijin/status/804000002599165952 %}
+{% tweet https://twitter.com/ijin/status/804002050363297792 %}
+{% tweet https://twitter.com/ijin/status/804003470680489985 %}
+{% tweet https://twitter.com/ijin/status/804006625187074048 %}
+{% tweet https://twitter.com/ijin/status/804019128356970496 %}
+{% tweet https://twitter.com/ijin/status/804024035726106624 %}
+{% tweet https://twitter.com/ijin/status/804025734788321280 %}
+{% tweet https://twitter.com/ijin/status/804027411847204864 %}
+
+
+## Day 3 ##
+
+### Werner Vogels ###
+
+Werner Vogels (AWS CTO)による発表。テーマは「**Transformation**」
+
+{% tweet https://twitter.com/ijin/status/804362950790160384 %}
+
+- AWS OpsWorks for Chef Automate
+- Amazon EC2 Systems Manager
+- AWS CodeBuild
+- AWS X-ray
+- AWS Personal Health Dashboard
+- AWS Sheild
+- Amazon Pinpoint
+- AWS Glue
+- AWS Batch
+- Blox
+- AWS Lambda for C#
+- AWS Lambda@Edge
+- AWS Step Functions
+
+{% tweet https://twitter.com/ijin/status/804370640245399552 %}
+{% tweet https://twitter.com/ijin/status/804370991186968576 %}
+{% tweet https://twitter.com/ijin/status/804371665027092483 %}
+{% tweet https://twitter.com/ijin/status/804372921703481344 %}
+{% tweet https://twitter.com/ijin/status/804374390435520512 %}
+{% tweet https://twitter.com/ijin/status/804375684005044224 %}
+{% tweet https://twitter.com/toricls/status/804380305754726400 %}
+{% tweet https://twitter.com/ijin/status/804385530460835840 %}
+{% tweet https://twitter.com/ijin/status/804388650519695360 %}
+{% tweet https://twitter.com/ijin/status/804391256235208705 %}
+{% tweet https://twitter.com/ijin/status/804393326493331456 %}
+{% tweet https://twitter.com/ijin/status/804393582677278720 %}
+{% tweet https://twitter.com/ijin/status/804394818642153472 %}
+
+Lambdaのrubyかgo対応を期待してたのに、ちょっとがっかり。。
+
+### SVR 309 Wild Rydes Takes Off - The Dawn of a New Unicorn ###
+
+サーバーレスをお題にしたワークショップ。コピペだけでちょっと面白みがなかった。。
+
+詳しくは[こちら](http://qiita.com/ijin/items/9d97115585c54befd3bd)
+
+{% tweet https://twitter.com/ijin/status/804434589628272640 %}
+### AWS re:Play ###
+
+2016年EDMのベストDJに選ばれた若手のMartin Garrix。また金積んだな〜。
+
+{% tweet https://twitter.com/ijin/status/804396800400506880 %}
+
+## Day 4 ##
+
+のんびり
+
+## Beta Certification Tests ##
+
+暇だったのでベータ試験を全部受けた。
+
+- Advanced Networking
+- Security
+- Big Data
+
+途中、開始トラブルがあって、担当マネージャからテスト問題誕生秘話を聞いたり、クーポンもらったりした。
+
+## 最後に ##
+
+- 今年も結局Sessionは参加せずにGame Dayやワークショップをやった。
+- Available Nowなサービスが多くて、最近のVaporware体質から脱却した模様。
+- ベータ試験受けたのは暇だったで何かチャレンジしたかったから！
+
+{% tweet https://twitter.com/ijin/status/804395914483773440 %}
+
+

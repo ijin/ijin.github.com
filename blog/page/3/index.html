@@ -9,7 +9,8 @@
   <meta name="author" content="Michael H. Oshita">
 
   
-  <meta name="description" content="ISUCON4の本戦の直後にそのままAWS re:Inventへ行ったきりエントリを書いてなかったので思い出だけでも年内に書いておく。 内容のエントリはたくさんあるので、詳しい内容なそちらに任せます。 結果は予選よりちょい上の15位。まあ、中間層は結構団子状態だったので誤差の範囲とも言えますが &hellip;">
+  <meta name="description" content="サバフェス！2015 Springに参加してきました。
+やった内容を少々。 前回と同じくチーム@ijinとして1人で参戦して、順位は「4位」。 スコアは44988.867 TpmCでした。 お題 Mysql on ioDriveでtpcc-mysqlベンチマークのtransaction &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -87,6 +88,189 @@ document.write = function(html) {
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2015/03/27/serverfesta-2015-spring/">サバフェス！2015に参加してきた</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2015-03-27T12:56:00+09:00" pubdate data-updated="true">Mar 27<span>th</span>, 2015</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p><a href="http://connpass.com/event/11571/">サバフェス！2015 Spring</a>に参加してきました。
+やった内容を少々。</p>
+
+<p><a href="/blog/2013/12/13/serverfesta-2013-autumn">前回</a>と同じくチーム@ijinとして1人で参戦して、順位は「<strong>4位</strong>」。</p>
+
+<p>スコアは<strong>44988.867 TpmC</strong>でした。</p>
+
+<h2>お題</h2>
+
+<p>Mysql on ioDriveでtpcc-mysqlベンチマークのtransaction throughput競争。</p>
+
+<p>第1陣と第2陣に分かれていて、今回は後者での参戦。</p>
+
+<h2>はじめに</h2>
+
+<p>競技期間は5日間あったものの、第1陣で<a href="http://netmark.jp/2015/03/svfes-2.html">結構な地雷があった</a>のと、Fusion-IO（現SanDisk）のioDriveとtpcc-mysqlは2年前に<a href="/blog/2013/02/22/mysql-benchmarks-on-aws-ssd-vs-fusion-io/">触った</a>ので最初はあんまりやる気が起きなくて困ってました。後は前回と違って施せる施策がかなり限定されるというので、正直5日間は長過ぎるのではないかという印象でした。（結果的に第1陣のトラブルとかを鑑みると長さ的には良かったのかも知れないけど）</p>
+
+<p>という事で初日はログインとベンチで基準値を取るだけして終了。</p>
+
+<p>その後、最近のMySQLやioDrive周りの情報収集を軽ーくして数日が経過。。</p>
+
+<p>そして最終日の夜中になって、なんとか本腰を入れてチューニング開始。まあ、やりだしたら楽しいんですけどね。</p>
+
+<h2>マシンスペック</h2>
+
+<ul>
+<li>CentOS 6.4</li>
+<li>Intel(R) Xeon(R) CPU E5-2650 v2 @ 2.60GHz x 32</li>
+<li>32GB RAM</li>
+<li>40G HDD</li>
+<li>320GB ioDrive</li>
+</ul>
+
+
+<h2>制限</h2>
+
+<pre><code>innodb_doublewrite = 1
+innodb_flush_log_at_trx_commit = 1
+</code></pre>
+
+<p>その他レギューレーションは<a href="https://2015spring.serverfesta.info/?page_id=299">こちら</a></p>
+
+<h2>方針</h2>
+
+<p>今までのtwitterの<a href="https://twitter.com/search?q=%23%E3%82%B5%E3%83%90%E3%83%95%E3%82%A7%E3%82%B9">タイムライン</a>からして、どうもベンチをウェブ画面から要求しても並列実行の数とキューイング、及び非常に長い実行時間からして1時間に一回実行できるかどうかも怪しかったのでローカルでこまめに回す方向に。</p>
+
+<p>本番データはtpccの1000 warehouse（70GB+）、16GB Buffer Pool、900sの実行時間だったのでそれを250 warehouse, 4GB Buffer Poolと縮小し120sと短めに設定。こうすることによってローカルでのデータコピー時間やベンチ実行時感が短縮され、時間がない中での細かいパラメータのチューニングに専念できる。Buffer Poolはどうせ一番効くと分かりきってるので、あえて後回し。DBは6年前（MySQL 5.0時代）から手に滲んで愛用しているPercona Serverの5.6版を選択。</p>
+
+<p>スコアの推移はこんな感じ。データセットが小さい分、スコアは大きめ。</p>
+
+<p><img src="https://docs.google.com/spreadsheets/d/1zm6-THRYR_EcLoHgacRScxlhSzeQAkbJ0RXiAI4fiRU/pubchart?oid=1067951178&amp;format=image"></p>
+
+<p>終盤になってやっと本番に近いデータセットや実行時感で細かいチューニング。</p>
+
+<p><img src="https://docs.google.com/spreadsheets/d/1zm6-THRYR_EcLoHgacRScxlhSzeQAkbJ0RXiAI4fiRU/pubchart?oid=2026636320&amp;format=image"></p>
+
+<p>最終的にローカルでのベストスコアは<strong>53420.332 TpmC</strong>でした。</p>
+
+<h2>設定ファイル</h2>
+
+<script src="https://gist.github.com/ijin/341bab7569e372e1addb.js"></script>
+
+
+<h2>効果があったもの</h2>
+
+<p>細かいおまじないレベルでのパラメータも他にいくつあったけど、割と効いたのをピックアップ。また、既に設定されていたパラメータは除外（innodb_io_capacity等）</p>
+
+<p>mysql</p>
+
+<pre><code>datadir=/fioa/mysql
+tmpdir=/fioa/tmp
+sync_binlog=0
+innodb_buffer_pool_size = 28150M
+innodb_buffer_pool_instances=16
+innodb_log_file_size=4G
+innodb_log_files_in_group=3
+innodb_log_group_home_dir=/var/log/mysql
+innodb_log_buffer_size=64M
+innodb_data_file_path=ibdata1:76M;../../var/log/mysql/ibdata2:500M:autoextend
+innodb_checksum_algorithm=0
+innodb_max_dirty_pages_pct=90
+innodb_lru_scan_depth=2000
+numa_interleave=1
+flush_caches
+malloc-lib=/usr/lib64/libjemalloc.so.1
+</code></pre>
+
+<p>etc</p>
+
+<pre><code>vm.swappiness=1
+mount option (noatime,nodiratime,  max_batch_time=0,nobarrier,discard)
+cache warmup
+</code></pre>
+
+<p>基本的にはioDriveにIOをなるべく発生させない、もしくは遅延させる関連のパラメータが効いた感じ。この辺は割と正統なチューニング方法。一つ、若干工夫したのは、doublewrite buffer fileの指定方法。シーケンシャルなIOが発生するログ周りの処理はHDDに逃がした方がioDrive/SSD的には負荷低減になるけど、Percona 5.5までは<strong>innodb_doublewrite_file</strong>というパラメータでいつも指定していたのが、5.6ではなんと未実装！なのでベンチマーク前にコピーされるibdata1の予めのサイズを計っておいて、以降の書き込みをHDD側へ逃がすように<strong>innodb_data_file_path</strong>で調整。</p>
+
+<p>他はNUMAによるメモリの偏り調整とmallocライブラリを使う指定。この辺もPerconaやMariaDB専用オプション。</p>
+
+<p>後は一応初動のスコアをちょっとだけ稼ぐためにmysqlのstartup script内にてテーブルをcount(*)してindexをbuffer poolに乗せたぐらい。</p>
+
+<h2>効果が微妙だったもの</h2>
+
+<p>mysql</p>
+
+<pre><code>innodb_flush_method=ALL_O_DIRECT
+innodb_support_xa=0
+innodb_thread_concurrency=N
+innodb_flush_neighbors=0
+query_cache_size=0
+large-pages
+</code></pre>
+
+<p>etc</p>
+
+<pre><code>echo 'noop' &gt; /sys/block/fioa/queue/scheduler
+echo 4096 &gt; /sys/block/fioa/queue/nr_requests
+echo 2 &gt; /sys/block/fioa/queue/rq_affinity
+renice -n19 -p `ps auxf | grep mackerel | grep -v grep | awk ‘{print $2}’`
+</code></pre>
+
+<p>large-pagesでページサイズを大きく設定すればメモリ効率は向上するはずが、少なくともベンチマークにおいては効果なし。また、スケジューラをnoopやdeadlineと変えたり、nr_requestsやrq_affinityを調整してみたけど、デフォルトのOS bypass設定と比べてあまり変化なし。</p>
+
+<h2>試したかったもの</h2>
+
+<ul>
+<li>ioDrvieのblock sizeのリサイズ</li>
+<li>C0 state（CPUのC stateを制御して変動させずにioDriveの処理向上の期待）</li>
+<li>numa_node_forced_local（IO処理をメモリに一番近接しているCPUで行う）</li>
+<li>IRQ pinning（ioDriveのIRQを固定）</li>
+<li>network tuning</li>
+</ul>
+
+
+<p>この中で最後やることリストに乗っけていながらやらなかったネットワーク周りのチューニング。多分、これが敗因。（1位のチームzzz(<a href="https://twitter.com/ttkzw">@ttkzwさん</a>)はローカルベンチマークで51000ぐらいだったので）もっとリモートからベンチが実行される事に意識を向ければ良かったのかもしれないですね。とはいえ、最後はキュー待ちが8チームだったり、結果が不具合で見れなかったりと、バダバタしてたのでそっちに気を取られたのもまた事実。まあ、半日ちょいのチューニングにしてはそこそこ行った感じでしょうか。</p>
+
+<h2>終わりに</h2>
+
+<p>最初は運営側が「目下実装中です！」といいながら<strong>#トラしゅ</strong>をしているような感じでちょっと不安でしたが、最後は（第2陣という事もあり）それなりに楽しめました。ベンチマーク時間の短縮と並列実行数がもうちょっと増やせたらよかったですかね。運営側の皆様、大変お疲れさまでした！</p>
+
+<h2>おまけ</h2>
+
+<p>賞品として3DマッサージピローとSSDを頂きました！</p>
+
+<div class='embed tweet'><blockquote class="twitter-tweet"><p>3DマッサージピローとSSDをもらった。 <a href="https://twitter.com/hashtag/%E3%82%B5%E3%83%90%E3%83%95%E3%82%A7%E3%82%B9?src=hash">#サバフェス</a> <a href="http://t.co/mKczn9mflZ">pic.twitter.com/mKczn9mflZ</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/581048257171820544">March 26, 2015</a></blockquote>
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
+
+
+<p>個人敵には飛び込みLTした人がもらったDroneの方が良さそうだったけど、ピローは家族に好評でした。</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -1835,111 +2019,6 @@ CDP的には「<a href="http://aws.clouddesignpattern.org/index.php/CDP:Server_S
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2013/11/11/isucon3-final/">ISUCON3の本戦に参加してきた</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-11-11T11:27:00+09:00" pubdate data-updated="true">Nov 11<span>th</span>, 2013</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>先月の<a href="http://ijin.github.io/blog/2013/10/07/isucon3-preliminary/">予選に通過したの</a>で、<a href="http://isucon.net/">ISUCON3</a>の本戦に参加してきました。</p>
-
-<p>完敗。</p>
-
-<h3>お題発表</h3>
-
-<p>画像版twitter。投稿する画像の公開レベルをpublic, private, followers onlyに設定できるシステムが1台のVPS（2コア、4GB RAM）で動いている状態。プレスを打った為、大量アクセスがくる18時までに別途用意された4台のサーバを使ってスケールせよという使命を与えられる。</p>
-
-<h3>流れ</h3>
-
-<p>画像データが1万点・約3GBあったので、まず失敗しても戻れるようにバックアップ取得を開始。それと平行して他のサーバへのsshキー登録したり、hosts書いたり、もろもろ下準備。</p>
-
-<p>デフォルトのperlのスコアは<strong>1206.8</strong></p>
-
-<p>言語はrubyと決めていたので、supervisorで立ち上げてみるが起動失敗。よくよく調べてみるとforemanが入ってなくてGemfileに追加してbundle。</p>
-
-<p>この時のスコアが<strong>1180.8</strong></p>
-
-<p>次にデータベースを見てみるものの、レコード数も比較的少なく、総容量が2MBもないのでできる事は限定されていると判断。クエリーをさらっと見た後にentriesのimageカラムに対してインデックスを張ったぐらい。</p>
-
-<p>アクセスログにレスポンスタイムを出力するようにして1回ベンチを走らせログを解析。</p>
-
-<p>ブラウザ上の挙動を確認しつつ、ソースコードを読んで結局画像変換のconvert処理が一番重そうだったのでそこから着手することに。</p>
-
-<p>予選の時も外部プログラムを呼んでいるところが改善ポイントの一つだったので、まずfastimage_resizeを使って置き換えてみるものの、処理速度はそんなに上がらず、スコアもほぼ横ばい。</p>
-
-<p>その間に、ロングポーリングの処理を変更してみるけど、</p>
-
-<pre><code> "message": "2013-11-09T14:48:17 [36898] [CRITICAL] timeline refrection timeout"
-</code></pre>
-
-<p>タイムラインの反映がうまくいってない模様。
-（ちなみにエラーメッセージのrefrectionはreflectionのスペルミスですね）</p>
-
-<p>次に画像変換処理の部分で毎回リクエストがくる度に実行されるリンクをredisにてキャッシュ。これは効果があり、スコアは<strong>6634.2</strong>で暫定3位。</p>
-
-<p>その間にVarnishやHaproxy + nfsを軽ーく試してみるものの、スコアは伸びず。</p>
-
-<p>この辺でリンクだけではなく、画像自体をredisに突っ込んで全サーバで処理するアーキテクチャを決定。<a href="https://twitter.com/acidlemon">@acidlemon</a>さんと似た<a href="http://beatsync.net/main/log20131110.html">構成</a>ですね。ただ違うのはPOST後のsidekiqを使って処理を裏のワーカーに任せるという事。</p>
-
-<p>sidekiqが動作するところまではでき、全画像の変換を試みるがredisサーバのメモリが溢れてたので、最初にアクセスされる直近30件、アクセス比率が高いサイズsと、新規画像のみに注力。スコアは徐々に上がる。</p>
-
-<p>その後はただひたすらに、もくもく実装とデバッグ。</p>
-
-<p>残り3-40分ぐらいのところで、生ハムチームでブレークスルーが起こり、彼らが一気にトップへ踊り出る。我々も1台構成であれば5位ぐらいにはなれただろうけど、スケールアウトしなければ全く勝負にならないので最後の最後まで果敢に挑戦するもあえなくタイムアップ。</p>
-
-<p>結果、FAIL。</p>
-
-<h3>感想</h3>
-
-<p>今回はサーバが5台もあったので、スケールアウトしなければならないのは明白で、実装を真っ先に着手するべきでしたね。前半で1台だけチューニングして後でスケールしようと思ったのが戦略上の致命的ミス。時間切れで終わったので実装が間に合っていたらそれなりのスコアが出たはずかと。優勝した生ハムチームが結構ギリギリまでかかったのを考えると、やはり見極めたポイントは重要で、さすがとしか言いようがないです。また、一番時間のかかった画像配信に関しては普段AWSを使っている身としてはs3へ画像を突っ込むのが当然だと考えていたので、なかなか新鮮で違う脳を使う感じで楽しめました。</p>
-
-<h3>その他</h3>
-
-<ul>
-<li>途中ディスカッションをすれば良かった（予選は上々でも本戦で焦ってしまった）</li>
-<li>落ち着いて俯瞰して見るべし。見極め大事</li>
-<li>予選とかの先入観が邪魔したのでまっさらの状態で考えるべき</li>
-<li>ベンチマークツールはFAILしても再実行に2分待たされるのがどうしてももどかしかった</li>
-<li>ベンチマークツールの他のサーバへの実行切替がバグってて時間をロスった</li>
-<li>チーム名のRevengeが果たせなかったので、来年はチーム名どうしようかな。。</li>
-<li>ドヤモリスが満面の笑みで幸せそうだった</li>
-</ul>
-
-
-<p>ISUCONのレベルも毎回毎回レベルが上がっていき、運営側の苦労が伺えます。本当にお疲れ様でした！また来年にも期待しています！</p>
-
-<h3>おまけ</h3>
-
-<p>さて。1年間待ち望んだイベントがあっという間に終わってしまって消失感・焦燥感を味わいつつも、気を取り直して次はAWS re:InventのGAMEDAYに日本から唯一（多分）の参加者として参戦します！</p>
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/blog/page/4/">&larr; Older</a>
@@ -1955,6 +2034,10 @@ CDP的には「<a href="http://aws.clouddesignpattern.org/index.php/CDP:Server_S
     <section>
   <h1>Recent Posts</h1>
   <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2017/03/27/ruboty-github-pr-release/">ruboty-github_pr_releaseを作った</a>
+      </li>
     
       <li class="post">
         <a href="/blog/2016/12/31/aws-re-invent-2016/">AWS re:Invent 2016に参加してきた</a>
@@ -2010,10 +2093,6 @@ CDP的には「<a href="http://aws.clouddesignpattern.org/index.php/CDP:Server_S
     
       <li class="post">
         <a href="/blog/2015/09/27/isucon5-qualifier/">ISUCON5の予選に記念参加してきた</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2015/08/23/yapc-asia-tokyo-2015/">YAPC::Asia Tokyo 2015に参加してきた</a>
       </li>
     
   </ul>

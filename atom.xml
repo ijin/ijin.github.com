@@ -4,7 +4,7 @@
   <title><![CDATA[@ijin]]></title>
   <link href="http://ijin.github.io/atom.xml" rel="self"/>
   <link href="http://ijin.github.io/"/>
-  <updated>2017-01-01T00:43:45+09:00</updated>
+  <updated>2017-03-27T11:31:55+09:00</updated>
   <id>http://ijin.github.io/</id>
   <author>
     <name><![CDATA[Michael H. Oshita]]></name>
@@ -12,6 +12,101 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[ruboty-github_pr_releaseを作った]]></title>
+    <link href="http://ijin.github.io/blog/2017/03/27/ruboty-github-pr-release/"/>
+    <updated>2017-03-27T03:23:00+09:00</updated>
+    <id>http://ijin.github.io/blog/2017/03/27/ruboty-github-pr-release</id>
+    <content type="html"><![CDATA[<p>よくプロジェクトで<strong>staging</strong>や<strong>production</strong>ブランチにリリース用のpull requestを送ってmergeする事でCircleCIが走って自動デプロイするような仕組みを入れているんだけど、いちいちGitHub上でポチポチ画面を押すのが面倒くさいのと、久しぶりにやると<code>base</code>や<code>compare</code>とで混乱しそうになるので、ChatOpsを導入して効率化してみました。</p>
+
+<p>Slackと連携できるボットには<a href="https://github.com/r7kamura/ruboty">ruboty</a>を選択。</p>
+
+<p>プラグイン周りでは<a href="https://github.com/r7kamura/ruboty-github">ruboty-github</a>があるけど、微妙に要求に応えれなかったので少し拡張した<a href="https://github.com/ijin/ruboty-github_pr_release">ruboty-github_pr_release</a>を作りました。久々のgme公開。</p>
+
+<h2>Install</h2>
+
+<figure class='code'><figcaption><span>Gemfile</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">gem</span> <span class="s1">&#39;ruboty-github_pr_release&#39;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>Release pull request</h2>
+
+<h3>create</h3>
+
+<p>pull requestを作成。それまでmergeしたfeature branch等のタイトルが集約される</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>ruboty release from &lt;org/repo:from_branch&gt; to &lt;org/repo:to_branch&gt;
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><img src="https://lh3.googleusercontent.com/Maeofoz1VcZ_l4dHbiFC9UESHCYg_oJ7NQYgyzsSkDMTTgjm3wFXOpxYMbJCfJ5smE4xOZ1ibTBLIlftaehZP9vAAxiCONthjxq_-g83bVSWpi7-GygWY0V-5_n4F59w5BQYTETWPdR3uOg02uHf-YC4ZywaVoslTtA_TjpmzbOgD83uyWbEp50fv5K4opeMZ5Izxxlln_00PE3SLTw9S_mv47oOrTYejPr1pBBS-AT4j7uTFe-8ttvm4OxLq2r6D7G6XFPQYkeJPv5GmHEUIYzNJRITussv5v9Mrg21cDHojiasmZIZ-dW_Zp84kegBza8_BmqicXIPdiofe8T7BD6bqalWYhL2nZikQR1mCRqCSCFFLAFsBFgCMTNrwQuiGCjMF7jbu9knab3SY0pTDU-_daW90yh-1fH6C61IbaMlrcL1Zz3QH-63s61Psdi50ULKieXgS0H9L0dv_hf6VjdnNO3EqxHsxRLmDkvH6w93IXaa925pFSF8pKQbFwPxmo5xilZT2QA48JDMiBPjOhes1ECAn7gsqdbAVE4Qjbjwjo2DMdrpAwcBUTk_XHtI5tKmXtsOH9Ux-9PeCqyKhYV8ovcZpVUIE0p4GUhSe12Ubz7vvpyJdtk3cAhduKLWAlbTkQvCsiyng7iTDVVoGEgP0Lf0PCSHBUgV=w690-h341-no"></p>
+
+<p><img src="https://lh3.googleusercontent.com/k9nSfgSE2UGJdSmbYFwFiA3c2_hfdFQeVH2ODGuGz_a8n55jn7KQF6PHAAbYVIA9UO9CJz4PCBJMcP5nqC7TIsAW7TpUgy95DfrdlCsGgpT0bmH8WVKN-wBQgkQbV4g5GyJSCnUYQtXMZ68KQ2-742cHZjD71ZvzSWmCQVIcpDetVcYVvAMvvZmAq6bYAHL2mrsdLaPhA8ghLe-yQBa5mzU93Z-9F4JlsIZJnDDVKweOdnbVb0Hvz2_LKmtFIAZVuitG-FIYpHlipFspT9A7cxgmoUsun_bk1sjz6G62ME47yJ8TreJXgy541VubqorxNpw_oxh7fmY4yfHV-NPee6ir_Gh8XiBUUfwnwmJlcH9XakKYJIiSG2N4rNO4IQEruJGbGF3xtZBbLr6B-FS1i6Hbyu3b00Oll9gOpMe4-3lVjhdLj_mvSXnsqEfFAZiFxxsCZMzRVf1EaaZz4pnJESH8I-jsDhvPbZjG17URM462tDrKhPPMqxLlIIrvToOfOm6WE6VgmaRamU9qNvkNkdbT7D40QMZtNv6oQPefCCi3sGvVupA9rRYMgSjkxIsjB54143O4neWF0i8m-3b_DDUhSSENbcY65JsfpjeN69QoQc1m_6xYMwyUZrLSlgjKUU9WGbEF_JuKf4vlJjyl5iEw7S-eSqPFXyVE=w788-h323-no"></p>
+
+<h3>update</h3>
+
+<p>pull request作成後に新たなコミットを取り込む時やタイトルを変更したい時</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>ruboty update release from &lt;org/repo:from_branch&gt; to &lt;org/repo:to_branch&gt; as <span class="s2">&quot;new title&quot;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><img src="https://lh3.googleusercontent.com/lBtqLfDzm-i0Fx2gmgFLf5kqCLggaHcoWYIHz3Gc8V-gkEAVAHnYUqUHPyD3qIrZDPf0aqK_iMooTu1lqqNodLO48Kz-4TINxSjJ55odD2D2efC5Q7FKp7F1hf9ZsUqg3lwjRe0SXZjqpn_tdGU6Aj8sT6dFHneCwGLdvpIk4CeeMvqpMCK1jcVMIg2bIexqzL2WXB8UqCnUN7X5guuYXOiwujAqpMHcR7ksTAkCJQ-jqlgN2J__HsA_nAZRmkraosxx6wedZW6__xfoFE0pKeqYMAKxLFKyZf-KNHqeu6929EiBNlMYjJbvzQcSP8LFS274EhbvJj9kEgVZ_b9q0n9wRatYS9l4riIwXJUpJu4LqAadR9RPg57t_o1Gk6bCOP0--QHcAwii7VahP8pJGfqE-AWU3BKvCi9CWHhtbFjfXIMgNJVVjuH7NiskyO2Gv-Q5Nw2XsJOOwNZpcFGBgBIgmimOvbgP65AMCNRTwCuM4cHWBksEdxHDYtIKKyZgHxbNfpZ96bbWimVatU03b3rp9-v7NNnfGpo3dYFfLmkzyoxht80N6PrY-z9eWIXAluqNPHL0Hoo6GpyZ_DPJQDGV3fgLpFa5qq6G-bAU6CoOy-PTMdwLfk1mT-X2Qb4cFkTkP5_fam-K-a7648ieTLesk6u-tO3shqSO=w716-h173-no"></p>
+
+<h3>deploy</h3>
+
+<p>pull requestをmergeしてデプロイ</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>ruboty update release from &lt;org/repo:from_branch&gt; to &lt;org/repo:to_branch&gt;
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><img src="https://lh3.googleusercontent.com/3FgcgasCewgjRRRVwbFyxqTAaLyjmVR0R0pJEg7j6YmG00AIuvfvWLb86XptuQrPf2WvKcgmWZASqNJXhRvyW2Pwe60MSDlIFX-RLVKfw5VsTOJdvZ1skig0n5xLlr5RvkLjxCNRvaa9EHQwp78olWdlL4UIL5z1YJswu4UVFQrG1AAaP_neCEwckXzEV68kU4p0J-OSYiH2w-69_x2-46Rpdo-mgwaHsq8gMYU7E6N2pv5lIGnFjQVWXBMh6Ct4zq5XsDQ_Y59pf29TXujZwrRm960DcbYWG2_eEW4A73jLhLfZOBJja-wBnzdi-lHtj_cbGKyfZ2uyKZMuZ1hZOgtXV9WraCYZltMBR1Rx_aU9Aeod-FFh_z223N4Yv77G76rylZBb-KPJ9yoXDPMq4bvpYp64ovcsaeP1BzACOHwNtExXxmj33KDW5U_OhBTTAVSnmiv9jHPwyJvjbtaPHHWZCBACOmgY9U4kSWHyMvzlEmDucq84CVEZiAAbUt_Q8BCluz22qOvuJ0b7LYQj3vMnoYFXg43Qlzgegmc1LNtaApAqIXEao4H8u7KM-iAUhL65DfrMGwhM4uqIKJ-IFOZ-6Yq5R5JX2khonzSbb82gbjLRyOwaCVipOZAYgBoJRphEBV1n3duHWZR0DLU3rlro2BdSAqLUJp7h=w661-h329-no"></p>
+
+<h3>alias</h3>
+
+<p><a href="https://github.com/r7kamura/ruboty-alias">ruboty-alias</a>や<a href="https://github.com/zeny-io/ruboty-scoped_alias">ruboty-scoped_alias</a>を使うとさらにコマンドを短縮して便利です。scopedにすると部屋毎にプロジェクトを割り当てたりも可能。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>ruboty scoped <span class="nb">alias </span>release production -&gt; release from ijin/test:staging to ijin/test:production
+</span><span class='line'>ruboty scoped <span class="nb">alias </span>deploy production -&gt; deploy release from ijin/test:staging to ijin/test:production
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><img src="https://lh3.googleusercontent.com/o-8Ft9YoejCyQC6xtFH1B49rE9Ch9c0eDnV0Ax8YbbG3yn7GQ-vsXu_9spPY8r_kWK3edUSqmFWcmOuMopiAy4WX20Hx50_phtBNUC0CR3ojEF2Vl1ylagOUp0rPb10N0JLIH3Bg3a5A2aXliL_SOcVoHBvjK7tgwJFMrBtOomzmDrA9mvlwLplNgoQq_00siqasIVU4uyHexrHCLx5iB1bHsIMJQS1f_gkFYyWHjho8lBGKH8xBoayrkRv2APmTXfwYkPGFnSAwnc9XnNI_ABx64rQzHgIWTYMPt_1Bn-VDNlVtlo0Zg0ew7ZWS1zn1wHHNfb6oNxStMAI9dfPeQLZTkBxOPxkwWIvByYUEq_C6J63VZwYkG511DSMYPxfgC7AKDTU3CPKadcER5lkK7V5hmIRe1ZivzZsTXi3leJyAslQMYem1GPBGD8DbEddrldt6S8uLq2L8cDiDMGh7j9_y-Ctb3TwruuN5512TEmCyToLUsDOszrj9ByjSQ0jup2e8_QMIkb9OWFzozyUX-lAesx57ZXf42JiD2HGELkJ5ko-iQWNLjoUIbRnJJZ--laTB55dTdGYHIAmE6rJhq1T8AtTqNKLdrL8GLN5I9Wu4bs_Jzc4HZj2cTx5Onw3_8MCM8UXO9M_Sxsq75KsoEUNNvAq-IIF5afkm=w681-h343-no"></p>
+
+<p><img src="https://lh3.googleusercontent.com/AkKCJiYbkN2l0vDZ_YxZzisxTbq3z-hXWpZ1OOdR7g6WVQKs9X9CYAZv3yoYBACPcWPpumaIkE_q9enlrag9HoPk9tiR1XjsxTLRZarcldX9QXdgSYwXUdvugVn1oVphGvYxiw63HnsvjUiQM76Sywq8DGMCTEVb4U0GvW99vQ-D9M18jNmf-wbUeZifM_UpFRIDADuWpxzEr_rcBfv5DkElBfQagz9iYO1Aw5KttM4P6PHA0qowrWnkjBTku47rkgitxgRLHGpb4CFJAfSu2IT1ICxOLEfEB-coo97U6aAWInSHIut3RWCVB0B8lzYq466l9XlqY3dcNEOHfQVTUZvuRsPBwBFVdELGvcKjeVsQl1Fxw_p0bpWrti2W3xmaKSWylcFGPc6f6ag2T6Vn8bc26TA7OWO7lGRZTMsCeJJ1q3nKcaUNzP1SvCVn2Y_9oW_mZc7wtRnalnxt-eYnzv6jDt1c2ryzhWTNLXFEVlRfuaPd7SNx0eYZdHBs0dK9dTjeu5UUDDkSJbxx2SHcv7ok5LsheYuO481Hk4q_61RYjCfKWlC2qtSYOTnHkYZ88doCipbkAsshRWmBzu_RTXHv5WibEP36WZ1NucCNiemtin1Ze7qRYuRX9mzPxIs5Pz2uP9Omg-xUqfpZALxaZqwiVVX7bhZmckFP=w658-h334-no"></p>
+
+<p>簡単！</p>
+
+<h2>注意</h2>
+
+<ul>
+<li>開発branchにmergeされたサマリーを作成するのでGit/GitHub flow等が前提（直接branchにコミットしない）</li>
+<li>mergeをrevertしてしまうと、branch間の差分が取れなくなるので開発branch（develop等）から修正fixを新たにpull requestとして送る必要がある</li>
+<li>ruboty-githubは個々人で認証をしているので、チャネルではなく、rubotyに対してDMで認証するべき（remember my github token xxx）</li>
+</ul>
+
+
+<h2>参考</h2>
+
+<ul>
+<li><a href="https://github.com/motemen/git-pr-release">git-pr-release</a></li>
+<li><a href="https://github.com/rockuapps/hubot-deploy-builder">hubot-deploy-builder</a></li>
+</ul>
+
+
+<h2>おまけ</h2>
+
+<p>ほとんど作り終えたところでほぼ同じ機能を持った<a href="https://github.com/increments/ruboty-qiita-github">increments/ruboty-qiita-github</a>に気づいたけど、気にせずリリースしちゃった。一応merge周りはこっちの方が若干楽なので。。</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[AWS re:Invent 2016に参加してきた]]></title>
@@ -3740,162 +3835,6 @@ Hive Queryのread処理は<a href="http://hipsterdevblog.com/blog/2015/05/30/ana
 <p>ちなみに今回はinstanceやSNSは東京リージョン（ap-northeast-1）、Lambdaはオレゴンリージョン（us-west-2）というリージョンを跨いだ連携も可能という事が分かりました。まだ東京に来てないけど、既にproduction readyなのでもう普通に使っていけます。</p>
 
 <p>いやー。SNS連携によって夢は広がりますねぇ。</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[サバフェス！2015に参加してきた]]></title>
-    <link href="http://ijin.github.io/blog/2015/03/27/serverfesta-2015-spring/"/>
-    <updated>2015-03-27T12:56:00+09:00</updated>
-    <id>http://ijin.github.io/blog/2015/03/27/serverfesta-2015-spring</id>
-    <content type="html"><![CDATA[<p><a href="http://connpass.com/event/11571/">サバフェス！2015 Spring</a>に参加してきました。
-やった内容を少々。</p>
-
-<p><a href="http://ijin.github.io/blog/2013/12/13/serverfesta-2013-autumn">前回</a>と同じくチーム@ijinとして1人で参戦して、順位は「<strong>4位</strong>」。</p>
-
-<p>スコアは<strong>44988.867 TpmC</strong>でした。</p>
-
-<h2>お題</h2>
-
-<p>Mysql on ioDriveでtpcc-mysqlベンチマークのtransaction throughput競争。</p>
-
-<p>第1陣と第2陣に分かれていて、今回は後者での参戦。</p>
-
-<h2>はじめに</h2>
-
-<p>競技期間は5日間あったものの、第1陣で<a href="http://netmark.jp/2015/03/svfes-2.html">結構な地雷があった</a>のと、Fusion-IO（現SanDisk）のioDriveとtpcc-mysqlは2年前に<a href="http://ijin.github.io/blog/2013/02/22/mysql-benchmarks-on-aws-ssd-vs-fusion-io/">触った</a>ので最初はあんまりやる気が起きなくて困ってました。後は前回と違って施せる施策がかなり限定されるというので、正直5日間は長過ぎるのではないかという印象でした。（結果的に第1陣のトラブルとかを鑑みると長さ的には良かったのかも知れないけど）</p>
-
-<p>という事で初日はログインとベンチで基準値を取るだけして終了。</p>
-
-<p>その後、最近のMySQLやioDrive周りの情報収集を軽ーくして数日が経過。。</p>
-
-<p>そして最終日の夜中になって、なんとか本腰を入れてチューニング開始。まあ、やりだしたら楽しいんですけどね。</p>
-
-<h2>マシンスペック</h2>
-
-<ul>
-<li>CentOS 6.4</li>
-<li>Intel(R) Xeon(R) CPU E5-2650 v2 @ 2.60GHz x 32</li>
-<li>32GB RAM</li>
-<li>40G HDD</li>
-<li>320GB ioDrive</li>
-</ul>
-
-
-<h2>制限</h2>
-
-<pre><code>innodb_doublewrite = 1
-innodb_flush_log_at_trx_commit = 1
-</code></pre>
-
-<p>その他レギューレーションは<a href="https://2015spring.serverfesta.info/?page_id=299">こちら</a></p>
-
-<h2>方針</h2>
-
-<p>今までのtwitterの<a href="https://twitter.com/search?q=%23%E3%82%B5%E3%83%90%E3%83%95%E3%82%A7%E3%82%B9">タイムライン</a>からして、どうもベンチをウェブ画面から要求しても並列実行の数とキューイング、及び非常に長い実行時間からして1時間に一回実行できるかどうかも怪しかったのでローカルでこまめに回す方向に。</p>
-
-<p>本番データはtpccの1000 warehouse（70GB+）、16GB Buffer Pool、900sの実行時間だったのでそれを250 warehouse, 4GB Buffer Poolと縮小し120sと短めに設定。こうすることによってローカルでのデータコピー時間やベンチ実行時感が短縮され、時間がない中での細かいパラメータのチューニングに専念できる。Buffer Poolはどうせ一番効くと分かりきってるので、あえて後回し。DBは6年前（MySQL 5.0時代）から手に滲んで愛用しているPercona Serverの5.6版を選択。</p>
-
-<p>スコアの推移はこんな感じ。データセットが小さい分、スコアは大きめ。</p>
-
-<p><img src="https://docs.google.com/spreadsheets/d/1zm6-THRYR_EcLoHgacRScxlhSzeQAkbJ0RXiAI4fiRU/pubchart?oid=1067951178&amp;format=image"></p>
-
-<p>終盤になってやっと本番に近いデータセットや実行時感で細かいチューニング。</p>
-
-<p><img src="https://docs.google.com/spreadsheets/d/1zm6-THRYR_EcLoHgacRScxlhSzeQAkbJ0RXiAI4fiRU/pubchart?oid=2026636320&amp;format=image"></p>
-
-<p>最終的にローカルでのベストスコアは<strong>53420.332 TpmC</strong>でした。</p>
-
-<h2>設定ファイル</h2>
-
-<script src="https://gist.github.com/ijin/341bab7569e372e1addb.js"></script>
-
-
-<h2>効果があったもの</h2>
-
-<p>細かいおまじないレベルでのパラメータも他にいくつあったけど、割と効いたのをピックアップ。また、既に設定されていたパラメータは除外（innodb_io_capacity等）</p>
-
-<p>mysql</p>
-
-<pre><code>datadir=/fioa/mysql
-tmpdir=/fioa/tmp
-sync_binlog=0
-innodb_buffer_pool_size = 28150M
-innodb_buffer_pool_instances=16
-innodb_log_file_size=4G
-innodb_log_files_in_group=3
-innodb_log_group_home_dir=/var/log/mysql
-innodb_log_buffer_size=64M
-innodb_data_file_path=ibdata1:76M;../../var/log/mysql/ibdata2:500M:autoextend
-innodb_checksum_algorithm=0
-innodb_max_dirty_pages_pct=90
-innodb_lru_scan_depth=2000
-numa_interleave=1
-flush_caches
-malloc-lib=/usr/lib64/libjemalloc.so.1
-</code></pre>
-
-<p>etc</p>
-
-<pre><code>vm.swappiness=1
-mount option (noatime,nodiratime,  max_batch_time=0,nobarrier,discard)
-cache warmup
-</code></pre>
-
-<p>基本的にはioDriveにIOをなるべく発生させない、もしくは遅延させる関連のパラメータが効いた感じ。この辺は割と正統なチューニング方法。一つ、若干工夫したのは、doublewrite buffer fileの指定方法。シーケンシャルなIOが発生するログ周りの処理はHDDに逃がした方がioDrive/SSD的には負荷低減になるけど、Percona 5.5までは<strong>innodb_doublewrite_file</strong>というパラメータでいつも指定していたのが、5.6ではなんと未実装！なのでベンチマーク前にコピーされるibdata1の予めのサイズを計っておいて、以降の書き込みをHDD側へ逃がすように<strong>innodb_data_file_path</strong>で調整。</p>
-
-<p>他はNUMAによるメモリの偏り調整とmallocライブラリを使う指定。この辺もPerconaやMariaDB専用オプション。</p>
-
-<p>後は一応初動のスコアをちょっとだけ稼ぐためにmysqlのstartup script内にてテーブルをcount(*)してindexをbuffer poolに乗せたぐらい。</p>
-
-<h2>効果が微妙だったもの</h2>
-
-<p>mysql</p>
-
-<pre><code>innodb_flush_method=ALL_O_DIRECT
-innodb_support_xa=0
-innodb_thread_concurrency=N
-innodb_flush_neighbors=0
-query_cache_size=0
-large-pages
-</code></pre>
-
-<p>etc</p>
-
-<pre><code>echo 'noop' &gt; /sys/block/fioa/queue/scheduler
-echo 4096 &gt; /sys/block/fioa/queue/nr_requests
-echo 2 &gt; /sys/block/fioa/queue/rq_affinity
-renice -n19 -p `ps auxf | grep mackerel | grep -v grep | awk ‘{print $2}’`
-</code></pre>
-
-<p>large-pagesでページサイズを大きく設定すればメモリ効率は向上するはずが、少なくともベンチマークにおいては効果なし。また、スケジューラをnoopやdeadlineと変えたり、nr_requestsやrq_affinityを調整してみたけど、デフォルトのOS bypass設定と比べてあまり変化なし。</p>
-
-<h2>試したかったもの</h2>
-
-<ul>
-<li>ioDrvieのblock sizeのリサイズ</li>
-<li>C0 state（CPUのC stateを制御して変動させずにioDriveの処理向上の期待）</li>
-<li>numa_node_forced_local（IO処理をメモリに一番近接しているCPUで行う）</li>
-<li>IRQ pinning（ioDriveのIRQを固定）</li>
-<li>network tuning</li>
-</ul>
-
-
-<p>この中で最後やることリストに乗っけていながらやらなかったネットワーク周りのチューニング。多分、これが敗因。（1位のチームzzz(<a href="https://twitter.com/ttkzw">@ttkzwさん</a>)はローカルベンチマークで51000ぐらいだったので）もっとリモートからベンチが実行される事に意識を向ければ良かったのかもしれないですね。とはいえ、最後はキュー待ちが8チームだったり、結果が不具合で見れなかったりと、バダバタしてたのでそっちに気を取られたのもまた事実。まあ、半日ちょいのチューニングにしてはそこそこ行った感じでしょうか。</p>
-
-<h2>終わりに</h2>
-
-<p>最初は運営側が「目下実装中です！」といいながら<strong>#トラしゅ</strong>をしているような感じでちょっと不安でしたが、最後は（第2陣という事もあり）それなりに楽しめました。ベンチマーク時間の短縮と並列実行数がもうちょっと増やせたらよかったですかね。運営側の皆様、大変お疲れさまでした！</p>
-
-<h2>おまけ</h2>
-
-<p>賞品として3DマッサージピローとSSDを頂きました！</p>
-
-<div class='embed tweet'><blockquote class="twitter-tweet"><p>3DマッサージピローとSSDをもらった。 <a href="https://twitter.com/hashtag/%E3%82%B5%E3%83%90%E3%83%95%E3%82%A7%E3%82%B9?src=hash">#サバフェス</a> <a href="http://t.co/mKczn9mflZ">pic.twitter.com/mKczn9mflZ</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/581048257171820544">March 26, 2015</a></blockquote>
-<script async src="http://ijin.github.io//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
-
-
-<p>個人敵には飛び込みLTした人がもらったDroneの方が良さそうだったけど、ピローは家族に好評でした。</p>
 ]]></content>
   </entry>
   

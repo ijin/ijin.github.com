@@ -4,7 +4,7 @@
   <title><![CDATA[Category: opensource | @ijin]]></title>
   <link href="http://ijin.github.io/blog/categories/opensource/atom.xml" rel="self"/>
   <link href="http://ijin.github.io/"/>
-  <updated>2017-03-27T11:31:55+09:00</updated>
+  <updated>2017-06-16T04:48:46+09:00</updated>
   <id>http://ijin.github.io/</id>
   <author>
     <name><![CDATA[Michael H. Oshita]]></name>
@@ -22,7 +22,7 @@
 
 <p>Slackと連携できるボットには<a href="https://github.com/r7kamura/ruboty">ruboty</a>を選択。</p>
 
-<p>プラグイン周りでは<a href="https://github.com/r7kamura/ruboty-github">ruboty-github</a>があるけど、微妙に要求に応えれなかったので少し拡張した<a href="https://github.com/ijin/ruboty-github_pr_release">ruboty-github_pr_release</a>を作りました。久々のgme公開。</p>
+<p>プラグイン周りでは<a href="https://github.com/r7kamura/ruboty-github">ruboty-github</a>があるけど、微妙に要求に応えれなかったので少し拡張した<a href="https://github.com/ijin/ruboty-github_pr_release">ruboty-github_pr_release</a>を作りました。久々のgem公開。</p>
 
 <h2>Install</h2>
 

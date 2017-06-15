@@ -4,7 +4,7 @@
   <title><![CDATA[@ijin]]></title>
   <link href="http://ijin.github.io/atom.xml" rel="self"/>
   <link href="http://ijin.github.io/"/>
-  <updated>2017-06-16T04:48:46+09:00</updated>
+  <updated>2017-06-16T04:58:21+09:00</updated>
   <id>http://ijin.github.io/</id>
   <author>
     <name><![CDATA[Michael H. Oshita]]></name>
@@ -62,7 +62,7 @@
 <p>pull requestをmergeしてデプロイ</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>ruboty update release from &lt;org/repo:from_branch&gt; to &lt;org/repo:to_branch&gt;
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>ruboty deploy release from &lt;org/repo:from_branch&gt; to &lt;org/repo:to_branch&gt;
 </span></code></pre></td></tr></table></div></figure>
 
 

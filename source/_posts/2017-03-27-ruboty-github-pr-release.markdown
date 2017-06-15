@@ -13,7 +13,7 @@ categories:
 
 Slackと連携できるボットには[ruboty](https://github.com/r7kamura/ruboty)を選択。
 
-プラグイン周りでは[ruboty-github](https://github.com/r7kamura/ruboty-github)があるけど、微妙に要求に応えれなかったので少し拡張した[ruboty-github_pr_release](https://github.com/ijin/ruboty-github_pr_release)を作りました。久々のgme公開。
+プラグイン周りでは[ruboty-github](https://github.com/r7kamura/ruboty-github)があるけど、微妙に要求に応えれなかったので少し拡張した[ruboty-github_pr_release](https://github.com/ijin/ruboty-github_pr_release)を作りました。久々のgem公開。
 
 ## Install ##
 

@@ -50,7 +50,7 @@ ruboty update release from <org/repo:from_branch> to <org/repo:to_branch> as "ne
 pull requestをmergeしてデプロイ
 
 ``` bash
-ruboty update release from <org/repo:from_branch> to <org/repo:to_branch>
+ruboty deploy release from <org/repo:from_branch> to <org/repo:to_branch>
 ```
 
 {% img https://lh3.googleusercontent.com/3FgcgasCewgjRRRVwbFyxqTAaLyjmVR0R0pJEg7j6YmG00AIuvfvWLb86XptuQrPf2WvKcgmWZASqNJXhRvyW2Pwe60MSDlIFX-RLVKfw5VsTOJdvZ1skig0n5xLlr5RvkLjxCNRvaa9EHQwp78olWdlL4UIL5z1YJswu4UVFQrG1AAaP_neCEwckXzEV68kU4p0J-OSYiH2w-69_x2-46Rpdo-mgwaHsq8gMYU7E6N2pv5lIGnFjQVWXBMh6Ct4zq5XsDQ_Y59pf29TXujZwrRm960DcbYWG2_eEW4A73jLhLfZOBJja-wBnzdi-lHtj_cbGKyfZ2uyKZMuZ1hZOgtXV9WraCYZltMBR1Rx_aU9Aeod-FFh_z223N4Yv77G76rylZBb-KPJ9yoXDPMq4bvpYp64ovcsaeP1BzACOHwNtExXxmj33KDW5U_OhBTTAVSnmiv9jHPwyJvjbtaPHHWZCBACOmgY9U4kSWHyMvzlEmDucq84CVEZiAAbUt_Q8BCluz22qOvuJ0b7LYQj3vMnoYFXg43Qlzgegmc1LNtaApAqIXEao4H8u7KM-iAUhL65DfrMGwhM4uqIKJ-IFOZ-6Yq5R5JX2khonzSbb82gbjLRyOwaCVipOZAYgBoJRphEBV1n3duHWZR0DLU3rlro2BdSAqLUJp7h=w661-h329-no %}

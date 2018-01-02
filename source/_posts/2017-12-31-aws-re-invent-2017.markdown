@@ -1,0 +1,104 @@
+---
+layout: post
+title: "AWS re:Invent 2017に参加してきた"
+date: 2017-12-31 23:50
+comments: true
+categories: 
+- events
+- aws
+---
+
+AWS re:Inventに5回目の参加記録。
+
+例によって、帰国直後の体験談の発表
+
+{% speakerdeck 68dc84cbb44d44cebc608c31aca10b9a %}
+
+{% img https://lh3.googleusercontent.com/V14NgOarSqa6dSAj2hvppJuVQsFGm7EU07dWXCY2vUox09ysgJ9vdM8_Y4y6uNWH0iioyoKKrGocPT27QIRpTNtg5kVT5AZezM4aLh5s_Ob-LwmdToh9Rh6Q9CWN1ts6VfAOo3bUIA=w473-h630-no %}
+
+## Game Day ##
+
+まず、何よりもGame Day！もはやこれに出れれば8割型満足。。内容としてはいろんなサービスを使うようになってて結構凝ってた。
+
+{% img https://lh3.googleusercontent.com/ZntKtGaloc3dWKmu1roAm3J0lyqArnkc7RmMxUIv4reySM1puFffYU9Tc_HO54S9NTdfoOvfMwfPpTjJyMybH_K6sj4OEfPDfKJPhGWHQ9CcrxtHlBKjKazuYdBbpYqdenkX4Aqxjw=w1050-h787-no %}
+
+去年の運営チームとは別になったらしいので中身も毛色が少し違ってた。
+
+{% img https://lh3.googleusercontent.com/HRURknhesNClVInP9hIU1XLDcyVMHxlvCr47TPMXMVPYcqgUIyDO0UyzE2WZ73sZa7UBmh3ULw_saq2rPnEhA_j_CYeQcALEzs4joBjlRO8gsCvA_ATcXRV8v8B0ZnSSChL9N5iuFA=w591-h787-no %}
+
+## Keynote by Andy Jassy ##
+
+今年は部屋でゆったりと。
+
+{% img https://lh3.googleusercontent.com/qjbdhgOgzzvykTsUJtz_ZbCWF4hBj3mfEEw9R6BwQKg_sPf6FyO8F2b2xHZLk2JZFdLyV8SU7IWg1WYK0fqEzjNF5kIe8ry9JVvZlZwROZLpGjSnNeXzdDrhQTq-h5kknwLTnvZwhQ=w1122-h842-no %}
+
+怒涛のリリースラッシュ！
+
+{% tweet https://twitter.com/mariusducea/status/935904367990861825 %}
+{% tweet https://twitter.com/ijin/status/935909063363194880 %}
+{% tweet https://twitter.com/ijin/status/935909778009702401 %}
+{% tweet https://twitter.com/ijin/status/935912830284439552 %}
+{% tweet https://twitter.com/ijin/status/935913661276626949 %}
+{% tweet https://twitter.com/ijin/status/935914517694857217 %}
+{% tweet https://twitter.com/ijin/status/935914943995510784 %}
+{% tweet https://twitter.com/ijin/status/935915727248277504 %}
+{% tweet https://twitter.com/ijin/status/935921615967207424 %}
+{% tweet https://twitter.com/ijin/status/935921912240209922 %}
+{% tweet https://twitter.com/ijin/status/935924977290723328 %}
+{% tweet https://twitter.com/ijin/status/935927159998226433 %}
+{% tweet https://twitter.com/ijin/status/935931635928674304 %}
+{% tweet https://twitter.com/ijin/status/935932086455746562 %}
+{% tweet https://twitter.com/ijin/status/935932557853573121 %}
+{% tweet https://twitter.com/ijin/status/935933124621381632 %}
+{% tweet https://twitter.com/ijin/status/935939366404333568 %}
+{% tweet https://twitter.com/ijin/status/935939678561173504 %}
+{% tweet https://twitter.com/ijin/status/935940580152033280 %}
+{% tweet https://twitter.com/ijin/status/935941862111690752 %}
+
+
+## DeepLens Workshop ##
+{% tweet https://twitter.com/ijin/status/936069758834716673 %}
+{% tweet https://twitter.com/ijin/status/936091987194679296 %}
+{% tweet https://twitter.com/ijin/status/936112237835567105 %}
+
+
+## Keynote by Werner Vogels ##
+
+前日に引き続き、リリースラッシュを構えていたのにちょっとだけ発表してWernerの熱い想いを語る独壇場だった。。
+
+{% tweet https://twitter.com/mariusducea/status/936271664844644353 %}
+{% tweet https://twitter.com/ijin/status/936279030734626816 %}
+{% tweet https://twitter.com/ijin/status/936285778052759552 %}
+{% tweet https://twitter.com/ijin/status/936286654955896832 %}
+{% tweet https://twitter.com/ijin/status/936290503854735360 %}
+{% tweet https://twitter.com/ijin/status/936301561583583232 %}
+{% tweet https://twitter.com/ijin/status/936301841972731904 %}
+{% tweet https://twitter.com/ijin/status/936305707007098880 %}
+
+## Hackathon - ALL-in JAM ##
+
+いろんな要素やサービスが詰まったハッカソン。初めて触るサービスもあって楽しかった。
+
+{% tweet https://twitter.com/ijin/status/936324291594928128 %}
+{% tweet https://twitter.com/ijin/status/936329057439858688 %}
+
+## 会場 ##
+
+VenitienからAriaまでの道のり。。長い。
+
+{% youtube Kd2HMe02DYg %}
+
+## re:Play ##
+
+メインDJはDJ Snake。プレイ自体は30分ぐらいは楽しめたかな。。好み違った。
+
+{% tweet https://twitter.com/ijin/status/936480800165343232 %}
+
+## まとめ ##
+- Fargateもっと早く欲しかった
+- DeepLensもらえた。何作ろう
+- 今年もlambdaにrubyが来なかった
+- Cloud9でEC2自前で立てるのはコレジャナイ感
+- 会場広すぎでしょ
+
+{% tweet https://twitter.com/bukaz54/status/937659284384395266 %}

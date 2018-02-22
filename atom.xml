@@ -4,7 +4,7 @@
   <title><![CDATA[@ijin]]></title>
   <link href="http://ijin.github.io/atom.xml" rel="self"/>
   <link href="http://ijin.github.io/"/>
-  <updated>2017-06-16T04:58:21+09:00</updated>
+  <updated>2018-02-22T19:39:16+09:00</updated>
   <id>http://ijin.github.io/</id>
   <author>
     <name><![CDATA[Michael H. Oshita]]></name>
@@ -12,6 +12,368 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[AWS re:Invent 2017に参加してきた]]></title>
+    <link href="http://ijin.github.io/blog/2017/12/31/aws-re-invent-2017/"/>
+    <updated>2017-12-31T23:50:00+09:00</updated>
+    <id>http://ijin.github.io/blog/2017/12/31/aws-re-invent-2017</id>
+    <content type="html"><![CDATA[<p>AWS re:Inventに5回目の参加記録。</p>
+
+<p>例によって、帰国直後の体験談の発表</p>
+
+<script async="true" class="speakerdeck-embed" data-id="68dc84cbb44d44cebc608c31aca10b9a" src="http://ijin.github.io//speakerdeck.com/assets/embed.js"> </script>
+
+
+<p><img src="https://lh3.googleusercontent.com/V14NgOarSqa6dSAj2hvppJuVQsFGm7EU07dWXCY2vUox09ysgJ9vdM8_Y4y6uNWH0iioyoKKrGocPT27QIRpTNtg5kVT5AZezM4aLh5s_Ob-LwmdToh9Rh6Q9CWN1ts6VfAOo3bUIA=w473-h630-no"></p>
+
+<h2>Game Day</h2>
+
+<p>まず、何よりもGame Day！もはやこれに出れれば8割型満足。。内容としてはいろんなサービスを使うようになってて結構凝ってた。</p>
+
+<p><img src="https://lh3.googleusercontent.com/ZntKtGaloc3dWKmu1roAm3J0lyqArnkc7RmMxUIv4reySM1puFffYU9Tc_HO54S9NTdfoOvfMwfPpTjJyMybH_K6sj4OEfPDfKJPhGWHQ9CcrxtHlBKjKazuYdBbpYqdenkX4Aqxjw=w1050-h787-no"></p>
+
+<p>去年の運営チームとは別になったらしいので中身も毛色が少し違ってた。</p>
+
+<p><img src="https://lh3.googleusercontent.com/HRURknhesNClVInP9hIU1XLDcyVMHxlvCr47TPMXMVPYcqgUIyDO0UyzE2WZ73sZa7UBmh3ULw_saq2rPnEhA_j_CYeQcALEzs4joBjlRO8gsCvA_ATcXRV8v8B0ZnSSChL9N5iuFA=w591-h787-no"></p>
+
+<h2>Keynote by Andy Jassy</h2>
+
+<p>今年は部屋でゆったりと。</p>
+
+<p><img src="https://lh3.googleusercontent.com/qjbdhgOgzzvykTsUJtz_ZbCWF4hBj3mfEEw9R6BwQKg_sPf6FyO8F2b2xHZLk2JZFdLyV8SU7IWg1WYK0fqEzjNF5kIe8ry9JVvZlZwROZLpGjSnNeXzdDrhQTq-h5kknwLTnvZwhQ=w1122-h842-no"></p>
+
+<p>怒涛のリリースラッシュ！</p>
+
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="en" dir="ltr">The list of current AWS services barely fits on this huge stage slide <a href="https://twitter.com/hashtag/reinvent?src=hash&amp;ref_src=twsrc%5Etfw">#reinvent</a> <a href="https://t.co/RxZHpCKbtl">pic.twitter.com/RxZHpCKbtl</a></p>&mdash; Marius Ducea (@mariusducea) <a href="https://twitter.com/mariusducea/status/935904367990861825?ref_src=twsrc%5Etfw">November 29, 2017</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+
+
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="et" dir="ltr">EKS (ECS for Kubernetes)きた。 <a href="https://twitter.com/hashtag/reinvent?src=hash&amp;ref_src=twsrc%5Etfw">#reinvent</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/935909063363194880?ref_src=twsrc%5Etfw">November 29, 2017</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+
+
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">AWS Fargate、2年前に欲しかったやつだ。 <a href="https://twitter.com/hashtag/reinvent?src=hash&amp;ref_src=twsrc%5Etfw">#reinvent</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/935909778009702401?ref_src=twsrc%5Etfw">November 29, 2017</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+
+
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="es" dir="ltr">Aurora Multi-Master! <a href="https://twitter.com/hashtag/reinvent?src=hash&amp;ref_src=twsrc%5Etfw">#reinvent</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/935912830284439552?ref_src=twsrc%5Etfw">November 29, 2017</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+
+
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">Aurora Serverless&#8230;そのネーミングはちょっと。。 <a href="https://twitter.com/hashtag/reinvent?src=hash&amp;ref_src=twsrc%5Etfw">#reinvent</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/935913661276626949?ref_src=twsrc%5Etfw">November 29, 2017</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+
+
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">DynamoDB Global Tables&#8230; Spannerっぽいやつか。 <a href="https://twitter.com/hashtag/reinvent?src=hash&amp;ref_src=twsrc%5Etfw">#reinvent</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/935914517694857217?ref_src=twsrc%5Etfw">November 29, 2017</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+
+
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">DynamoDB backup &amp; restore! もうDatapipelineで疲弊しなくて良いのか。 <a href="https://twitter.com/hashtag/reinvent?src=hash&amp;ref_src=twsrc%5Etfw">#reinvent</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/935914943995510784?ref_src=twsrc%5Etfw">November 29, 2017</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+
+
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="en" dir="ltr">Amazon Neptune. Graph databaseか。 <a href="https://twitter.com/hashtag/reinvent?src=hash&amp;ref_src=twsrc%5Etfw">#reinvent</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/935915727248277504?ref_src=twsrc%5Etfw">November 29, 2017</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+
+
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">S3 Select&#8230;Athenaとどう違うんだ。 <a href="https://twitter.com/hashtag/reinvent?src=hash&amp;ref_src=twsrc%5Etfw">#reinvent</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/935921615967207424?ref_src=twsrc%5Etfw">November 29, 2017</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+
+
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="en" dir="ltr">Glacier Select&#8230;w <a href="https://twitter.com/hashtag/reinvent?src=hash&amp;ref_src=twsrc%5Etfw">#reinvent</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/935921912240209922?ref_src=twsrc%5Etfw">November 29, 2017</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+
+
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="en" dir="ltr">Amazon Sagemaker! <a href="https://twitter.com/hashtag/reinvent?src=hash&amp;ref_src=twsrc%5Etfw">#reinvent</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/935924977290723328?ref_src=twsrc%5Etfw">November 29, 2017</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+
+
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">AWS DeepLens. Greengrass入りだ。<a href="https://twitter.com/hashtag/reinvent?src=hash&amp;ref_src=twsrc%5Etfw">#reinvent</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/935927159998226433?ref_src=twsrc%5Etfw">November 29, 2017</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+
+
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">Rekognition VideoにKinesis Video Streams。すごいな。 <a href="https://twitter.com/hashtag/reInvent?src=hash&amp;ref_src=twsrc%5Etfw">#reInvent</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/935931635928674304?ref_src=twsrc%5Etfw">November 29, 2017</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+
+
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">Amazon Transcribe。便利そう <a href="https://twitter.com/hashtag/reInvent?src=hash&amp;ref_src=twsrc%5Etfw">#reInvent</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/935932086455746562?ref_src=twsrc%5Etfw">November 29, 2017</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+
+
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="en" dir="ltr">Amazon Translate!  <a href="https://twitter.com/hashtag/reInvent?src=hash&amp;ref_src=twsrc%5Etfw">#reInvent</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/935932557853573121?ref_src=twsrc%5Etfw">November 29, 2017</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+
+
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="en" dir="ltr">Amazon Comprehend! <a href="https://twitter.com/hashtag/reInvent?src=hash&amp;ref_src=twsrc%5Etfw">#reInvent</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/935933124621381632?ref_src=twsrc%5Etfw">November 29, 2017</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+
+
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="en" dir="ltr">AWS IoT 1clickにIoT Device Management <a href="https://twitter.com/hashtag/reInvent?src=hash&amp;ref_src=twsrc%5Etfw">#reInvent</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/935939366404333568?ref_src=twsrc%5Etfw">November 29, 2017</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+
+
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="en" dir="ltr">AWS IoT Device Defender <a href="https://twitter.com/hashtag/reInvent?src=hash&amp;ref_src=twsrc%5Etfw">#reInvent</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/935939678561173504?ref_src=twsrc%5Etfw">November 29, 2017</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+
+
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="en" dir="ltr">AWS IoT Analytics <a href="https://twitter.com/hashtag/reInvent?src=hash&amp;ref_src=twsrc%5Etfw">#reInvent</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/935940580152033280?ref_src=twsrc%5Etfw">November 29, 2017</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+
+
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="es" dir="ltr">Amazon FreeRTOS <a href="https://twitter.com/hashtag/reInvent?src=hash&amp;ref_src=twsrc%5Etfw">#reInvent</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/935941862111690752?ref_src=twsrc%5Etfw">November 29, 2017</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+
+
+<h2>DeepLens Workshop</h2>
+
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">わーい。DeepLens Workshopに入れた！マシンはUbuntu <a href="https://twitter.com/hashtag/reinvent?src=hash&amp;ref_src=twsrc%5Etfw">#reinvent</a> <a href="https://t.co/kIVSqnQxL8">pic.twitter.com/kIVSqnQxL8</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/936069758834716673?ref_src=twsrc%5Etfw">November 30, 2017</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+
+
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">SqueezeNetというCNNモデルをSagemakerでJupiter notebook上でトレーニングしてDeepLensにデプロイ、推測はlambdaに任せるように設定するとさっきもらった🌭 の判定がリアルタイムで出来た！<a href="https://twitter.com/hashtag/reinvent?src=hash&amp;ref_src=twsrc%5Etfw">#reinvent</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/936091987194679296?ref_src=twsrc%5Etfw">November 30, 2017</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+
+
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">ゲット！ <a href="https://twitter.com/hashtag/reinvent?src=hash&amp;ref_src=twsrc%5Etfw">#reinvent</a> <a href="https://t.co/YqnKo9qkE9">pic.twitter.com/YqnKo9qkE9</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/936112237835567105?ref_src=twsrc%5Etfw">November 30, 2017</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+
+
+<h2>Keynote by Werner Vogels</h2>
+
+<p>前日に引き続き、リリースラッシュを構えていたのにちょっとだけ発表してWernerの熱い想いを語る独壇場だった。。</p>
+
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="en" dir="ltr">And <a href="https://twitter.com/Werner?ref_src=twsrc%5Etfw">@Werner</a> is on the stage <a href="https://twitter.com/hashtag/reinvent?src=hash&amp;ref_src=twsrc%5Etfw">#reinvent</a> <a href="https://t.co/UtpuhDgPtM">pic.twitter.com/UtpuhDgPtM</a></p>&mdash; Marius Ducea (@mariusducea) <a href="https://twitter.com/mariusducea/status/936271664844644353?ref_src=twsrc%5Etfw">November 30, 2017</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+
+
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">Alexa for Business。ユーザやスキル等のマネージメントをしてくれる <a href="https://twitter.com/hashtag/reinvent?src=hash&amp;ref_src=twsrc%5Etfw">#reinvent</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/936279030734626816?ref_src=twsrc%5Etfw">November 30, 2017</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+
+
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">AWS Cloud9！まんまだw <a href="https://twitter.com/hashtag/reInvent?src=hash&amp;ref_src=twsrc%5Etfw">#reInvent</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/936285778052759552?ref_src=twsrc%5Etfw">November 30, 2017</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+
+
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">Vim modeもあるぜ！ってのが太字だw（emacsは普通文字） <a href="https://t.co/2MwmHFrrHp">https://t.co/2MwmHFrrHp</a> <a href="https://twitter.com/hashtag/reInvent?src=hash&amp;ref_src=twsrc%5Etfw">#reInvent</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/936286654955896832?ref_src=twsrc%5Etfw">November 30, 2017</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+
+
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">Cloud9使うのにEC2なんて起動したくないよ。。 <a href="https://twitter.com/hashtag/reInvent?src=hash&amp;ref_src=twsrc%5Etfw">#reInvent</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/936290503854735360?ref_src=twsrc%5Etfw">November 30, 2017</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+
+
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="en" dir="ltr">Lambda features: API GW VPC integration, Concurrency control, 3GB memory, .NET Core 2.0, Go <a href="https://twitter.com/hashtag/reInvent?src=hash&amp;ref_src=twsrc%5Etfw">#reInvent</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/936301561583583232?ref_src=twsrc%5Etfw">November 30, 2017</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+
+
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="en" dir="ltr">AWS Serverless Application Repository、ほう。 <a href="https://twitter.com/hashtag/reInvent?src=hash&amp;ref_src=twsrc%5Etfw">#reInvent</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/936301841972731904?ref_src=twsrc%5Etfw">November 30, 2017</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+
+
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">冒頭で言った通り、今日のKeynoteは発表ほとんどないな。昨日の怒涛のリリースラッシュみたいなのを待ち構えていたけど。 <a href="https://twitter.com/hashtag/reInvent?src=hash&amp;ref_src=twsrc%5Etfw">#reInvent</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/936305707007098880?ref_src=twsrc%5Etfw">November 30, 2017</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+
+
+<h2>Hackathon - ALL-in JAM</h2>
+
+<p>いろんな要素やサービスが詰まったハッカソン。初めて触るサービスもあって楽しかった。</p>
+
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">UIがかっこいい <a href="https://twitter.com/hashtag/reInvent?src=hash&amp;ref_src=twsrc%5Etfw">#reInvent</a> <a href="https://t.co/j62Px7WfAN">pic.twitter.com/j62Px7WfAN</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/936324291594928128?ref_src=twsrc%5Etfw">November 30, 2017</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+
+
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">始まった。BGMはMatrixのClubbed to Death <a href="https://twitter.com/hashtag/reInvent?src=hash&amp;ref_src=twsrc%5Etfw">#reInvent</a> <a href="https://t.co/Ha86JAO0k8">pic.twitter.com/Ha86JAO0k8</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/936329057439858688?ref_src=twsrc%5Etfw">November 30, 2017</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+
+
+<h2>会場</h2>
+
+<p>VenitienからAriaまでの道のり。。長い。</p>
+
+<div class="embed-video-container"><iframe src="http://www.youtube.com/embed/Kd2HMe02DYg "></iframe></div>
+
+
+<h2>re:Play</h2>
+
+<p>メインDJはDJ Snake。プレイ自体は30分ぐらいは楽しめたかな。。好み違った。</p>
+
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="und" dir="ltr"><a href="https://twitter.com/hashtag/rePlay?src=hash&amp;ref_src=twsrc%5Etfw">#rePlay</a> <a href="https://twitter.com/hashtag/reInvent?src=hash&amp;ref_src=twsrc%5Etfw">#reInvent</a> <a href="https://t.co/ece6W02ba0">pic.twitter.com/ece6W02ba0</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/936480800165343232?ref_src=twsrc%5Etfw">December 1, 2017</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+
+
+<h2>まとめ</h2>
+
+<ul>
+<li>Fargateもっと早く欲しかった</li>
+<li>DeepLensもらえた。何作ろう</li>
+<li>今年もlambdaにrubyが来なかった</li>
+<li>Cloud9でEC2自前で立てるのはコレジャナイ感</li>
+<li>会場広すぎでしょ</li>
+</ul>
+
+
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">JAWS-UG 横浜 re:Invent recap めっちゃ楽しかったーみなさんお疲れ様でしたー<br>最後  <a href="https://twitter.com/ijin?ref_src=twsrc%5Etfw">@ijin</a> さんが言ってた「情報にキャッチアップするなら doc 読めばいい。現地行って workshopとか参加しようぜ」ですね。</p>&mdash; Toshihiko Nozaki (@bukaz54) <a href="https://twitter.com/bukaz54/status/937659284384395266?ref_src=twsrc%5Etfw">December 4, 2017</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[ServerlessConf Austin 2017に参加してきた]]></title>
+    <link href="http://ijin.github.io/blog/2017/04/30/serverlessconf-austin-2017/"/>
+    <updated>2017-04-30T17:40:00+09:00</updated>
+    <id>http://ijin.github.io/blog/2017/04/30/serverlessconf-austin-2017</id>
+    <content type="html"><![CDATA[<p><a href="https://austin.serverlessconf.io/">ServerlessConf Austin 2017</a>に参加したので、端的なメモ。</p>
+
+<p>Day 1の終わりに着いて、ほぼDay 2のみ</p>
+
+<p><img src="https://lh3.googleusercontent.com/PU0qf-q97mQXg0frh0vEyY_yzmiTrUUIISKS3Lr4hrqMvimTogqZEge-lg3N76kvUqS-4XnlW23ATuuguLNqGkDcODQOn393OKl2XZtpDsnXjxUSKfeDn1r12OI15QFiec36CPO8ag=w1122-h842-no"></p>
+
+<h3>Self Replicating Serverless Function -  Michael Adda</h3>
+
+<p><a href="https://en.wikipedia.org/wiki/Quine_(computing">Quine</a>おじさんによるウロボロス的lambda実装のお話。思考実験としては面白かった。</p>
+
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">quineおじさん  <a href="https://twitter.com/hashtag/ServerlessConf?src=hash&amp;ref_src=twsrc%5Etfw">#ServerlessConf</a> <a href="https://t.co/FOisTd9AUD">pic.twitter.com/FOisTd9AUD</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/857961545015242752?ref_src=twsrc%5Etfw">April 28, 2017</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+
+
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">ウロボロス！  <a href="https://twitter.com/hashtag/ServerlessConf?src=hash&amp;ref_src=twsrc%5Etfw">#ServerlessConf</a> <a href="https://t.co/hSmps3fWKj">pic.twitter.com/hSmps3fWKj</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/857962397281144832?ref_src=twsrc%5Etfw">April 28, 2017</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+
+
+<h3>Harmonizing Serverless &amp; Traditional Applications - Ryan Brown</h3>
+
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="fr" dir="ltr">Queueueueueuing! <a href="https://twitter.com/hashtag/ServerlessConf?src=hash&amp;ref_src=twsrc%5Etfw">#ServerlessConf</a> <a href="https://t.co/mL67Gt9UU9">pic.twitter.com/mL67Gt9UU9</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/857965198698835968?ref_src=twsrc%5Etfw">April 28, 2017</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+
+
+<h3>Serverless Security: What’s Left To Protect? - Guy Podjarny</h3>
+
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">元Akami CTOによるサーバーレスセキュリティのセッション <a href="https://twitter.com/hashtag/ServerlessConf?src=hash&amp;ref_src=twsrc%5Etfw">#ServerlessConf</a> <a href="https://t.co/nGYiTuYys8">pic.twitter.com/nGYiTuYys8</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/858005309104693248?ref_src=twsrc%5Etfw">April 28, 2017</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+
+
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">今はSnykというセキュリティ・監視サービスをやってる。後で見てみよう。 <a href="https://t.co/u91czC6gPE">https://t.co/u91czC6gPE</a> <a href="https://twitter.com/hashtag/ServerlessConf?src=hash&amp;ref_src=twsrc%5Etfw">#ServerlessConf</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/858005655960961026?ref_src=twsrc%5Etfw">April 28, 2017</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+
+
+<h3>Single Page Apps &amp; Serverless without Compromise (or as little as possible) - Jared Short</h3>
+
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">GOAD - LamdaとGoによる分散負荷テストツール。便利そう。 <a href="https://t.co/bUDyL0OHYz">https://t.co/bUDyL0OHYz</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/858029124899794944?ref_src=twsrc%5Etfw">April 28, 2017</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+
+
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">GraphQLかー。 <a href="https://twitter.com/hashtag/ServerlessConf?src=hash&amp;ref_src=twsrc%5Etfw">#ServerlessConf</a> <a href="https://t.co/Ti2EgaXZVt">pic.twitter.com/Ti2EgaXZVt</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/858032484273074176?ref_src=twsrc%5Etfw">April 28, 2017</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+
+
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">おお、GraphQLとLambdaのプラットフォーム <a href="https://t.co/Cn0FK5MV0c">https://t.co/Cn0FK5MV0c</a> <a href="https://twitter.com/hashtag/ServerlessConf?src=hash&amp;ref_src=twsrc%5Etfw">#ServerlessConf</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/858033058661924865?ref_src=twsrc%5Etfw">April 28, 2017</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+
+
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="en" dir="ltr">Server Smoothie! <a href="https://twitter.com/hashtag/ServerlessConf?src=hash&amp;ref_src=twsrc%5Etfw">#ServerlessConf</a> <a href="https://t.co/qg84hSy2qQ">pic.twitter.com/qg84hSy2qQ</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/858080490104004608?ref_src=twsrc%5Etfw">April 28, 2017</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+
+
+<h3>Serverless Workflows in AWS: A Journey from SWF to Step Functions - Forrest Brazeal</h3>
+
+<p>最後にRAP!!!新しいwww</p>
+
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">この人、セッションの最後でサーバーレスのラップを約束したぞ。 <a href="https://twitter.com/hashtag/serverlessconf?src=hash&amp;ref_src=twsrc%5Etfw">#serverlessconf</a> <a href="https://t.co/ajDs6VR2Ne">pic.twitter.com/ajDs6VR2Ne</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/858043060508401664?ref_src=twsrc%5Etfw">April 28, 2017</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+
+
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="en" dir="ltr">Serverless Rap!? <a href="https://twitter.com/hashtag/ServerlessConf?src=hash&amp;ref_src=twsrc%5Etfw">#ServerlessConf</a> <a href="https://t.co/iRRVS48KNa">pic.twitter.com/iRRVS48KNa</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/858051472830889986?ref_src=twsrc%5Etfw">April 28, 2017</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+
+
+<h3>Keynote by Tim Wagner</h3>
+
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">今回のTimはどんな風にサーバを破壊するんだろう。ステージ横の布が気になる。 <a href="https://twitter.com/hashtag/ServerlessConf?src=hash&amp;ref_src=twsrc%5Etfw">#ServerlessConf</a> <a href="https://t.co/mxzwQfrfWL">pic.twitter.com/mxzwQfrfWL</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/858069201797468161?ref_src=twsrc%5Etfw">April 28, 2017</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+
+
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">ドラクエだ！ <a href="https://twitter.com/hashtag/ServerlessConf?src=hash&amp;ref_src=twsrc%5Etfw">#ServerlessConf</a> <a href="https://t.co/iiRJnhiiGO">pic.twitter.com/iiRJnhiiGO</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/858073465315831808?ref_src=twsrc%5Etfw">April 28, 2017</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+
+
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="en" dir="ltr">PyWren - lambda map/reduce framework. 25TFLOPS! <a href="https://t.co/kEhLd2scbF">https://t.co/kEhLd2scbF</a> <a href="https://twitter.com/hashtag/ServerlessConf?src=hash&amp;ref_src=twsrc%5Etfw">#ServerlessConf</a> <a href="https://t.co/dWeQS0tkIC">pic.twitter.com/dWeQS0tkIC</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/858075062045487104?ref_src=twsrc%5Etfw">April 28, 2017</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+
+
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">お！ <a href="https://twitter.com/hashtag/ServerlessConf?src=hash&amp;ref_src=twsrc%5Etfw">#ServerlessConf</a> <a href="https://t.co/61PH6xI1mS">pic.twitter.com/61PH6xI1mS</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/858079838577598464?ref_src=twsrc%5Etfw">April 28, 2017</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+
+
+<h2>おまけ</h2>
+
+<ul>
+<li>オースティンめっちゃ暑かった（日陰に入ると涼しい）</li>
+<li>シュラスコ美味かった！</li>
+<li>Uberが締め出されたのでローカルアプリが必要</li>
+<li>下記コメントが印象的だった</li>
+</ul>
+
+
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">Uber/Lyftが出て行って沢山のクローンサービスが立ち上がったけど、その中の一つのRide Austinでドライバーと雑談。「NPOだから、俺たちの手取りが大幅に増えて大変助かってる。前はガス代ぐらいにしかならなくて、生きていくのがやっとだった。出て行ってくれて良かったよ」</p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/857749605039063040?ref_src=twsrc%5Etfw">April 28, 2017</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+
+
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[ruboty-github_pr_releaseを作った]]></title>
@@ -3448,393 +3810,6 @@ Hive Queryのread処理は<a href="http://hipsterdevblog.com/blog/2015/05/30/ana
 <p>バックアップのタイミングでDynamoDBのthroughputをガツンと上げれば、件数によっては短時間で済む場合もあるので、参考にでも！</p>
 
 <p>（※ Production Trafficに影響がないように、Read Throughput Percentは適切に設定する必要があります）</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[EC2 Auto Recoveryの注意点]]></title>
-    <link href="http://ijin.github.io/blog/2015/05/01/notes-on-ec2-auto-recovery/"/>
-    <updated>2015-05-01T11:45:00+09:00</updated>
-    <id>http://ijin.github.io/blog/2015/05/01/notes-on-ec2-auto-recovery</id>
-    <content type="html"><![CDATA[<p>先日、EC2のAuto Recoveryでちょっとハマったのでメモ。</p>
-
-<p>Cloudwatchの<code>StatusCheckFailed_System</code>アラームを設定すると、インスタンスを自動的に復旧してくれるEC2 Auto Recoveryという機能があり、使うためには条件がいくつかあります。</p>
-
-<ul>
-<li>特定のリージョン</li>
-<li>C3, C4, M3, R3, T2 instances</li>
-<li>VPC</li>
-<li>共有tenancy</li>
-<li>EBSストレージのみのサーバ</li>
-</ul>
-
-
-<p><a href="http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-instance-recover.html">Recover Your Instance</a></p>
-
-<p>しかし、上記を満たしているのに、特定のAMIをCLI経由で起動するとEC2 Auto Recoveryを設定できなくなります。</p>
-
-<p>（AWSコンソールでラジオボタンが押せない。CLIで設定しても効かない）
-<img src="https://lh5.googleusercontent.com/-dwWUcfCssA4/VULwrOsgxNI/AAAAAAAABFo/VQy-GnIYQXg/w448-h186-no/Screenshot%2B2015-05-01%2B12.18.16.png"></p>
-
-<p>原因はAMIにephemeral disk等のblock device mappingが設定されていて、T2やC4等のEBS onlyなinstance typeで起動しているにも関わらず、AWS側がephemeral diskが付与されていると認識してしまう所にあります。なお、AWSコンソールからの起動だとこの現象は発生しません。</p>
-
-<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-
-
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/gist-embed/2.1/gist-embed.min.js"></script>
-
-
-<p>AMIでblock device mappingが埋め込まれている</p>
-
-<pre><code>aws ec2 describe-images --image-ids ami-e74b60e6 --region ap-northeast-1
-</code></pre>
-
-<p><code data-gist-id="55659515d54593c29618" data-gist-highlight-line="21-28"></code></p>
-
-<p>本来はEBS onlyなinstance typeだとblock device mappingの設定如何に関わらず、付与自体が不可能なので、全く関係ないはずです。</p>
-
-<p>解決方法は現時点（2015/5/1）では3通り</p>
-
-<ul>
-<li>extraなmappingが設定されていないAMIを使う（Amazon Linux等）</li>
-<li>AWSコンソールから起動する</li>
-<li>明示的に<code>--block-device-mappings</code>パラメータで<code>NoDevice</code>と指定
-<code>aws ec2 run-instances --image-id ami-e74b60e6 --instance-type t2.small --subnet-id subnet-xxxxxxxx --block-device-mappings "[{\"DeviceName\": \"/dev/sdb\",  \"NoDevice\": \"\"}, {\"DeviceName\": \"/dev/sdc\",  \"NoDevice\": \"\"}]"</code></li>
-</ul>
-
-
-<p>これは明らかにAWS側のバグなので早く治って欲しいものですね。</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Auto Scalingによる自動復旧（AWS Lambda+SNS編）]]></title>
-    <link href="http://ijin.github.io/blog/2015/04/17/self-healing-with-non-elb-autoscaling4/"/>
-    <updated>2015-04-17T14:01:00+09:00</updated>
-    <id>http://ijin.github.io/blog/2015/04/17/self-healing-with-non-elb-autoscaling4</id>
-    <content type="html"><![CDATA[<p>先週の<a href="http://aws.amazon.com/summits/san-francisco/">AWS Summit San Fransisco</a>にて、ついにLambdaがSNSに<a href="http://docs.aws.amazon.com/sns/latest/dg/sns-lambda.html">対応</a>しました。
-様々なサービスが発表された中、個人的にはこれが一番のヒットです！というのも、この機能によってAWS間のサービスがより連携しやすくなり、新しいリアクティブなアーキテクチャをどんどん実現できそうだからです。</p>
-
-<p>というわけで、少し試してみました。</p>
-
-<p>お題は去年12月に試したAutoScaling + Lambda。（当時はLambdaはまだこの機能がなかったのでSNS→SQSにてイベントをプロセスする仕組みを<a href="http://ijin.github.io/blog/2014/12/05/self-healing-with-non-elb-autoscaling3/">作りました</a>。）</p>
-
-<p>SNS連携によって前回のこれが</p>
-
-<p><img src="https://lh4.googleusercontent.com/-IxSeVgkwfQU/VIIapiet4tI/AAAAAAAABBw/ukic0BIBIT0/w529-h393-no/aws-advent-2014.png"></p>
-
-<p>こうなります。（Lambdaのアイコンが出たので差し替えてます）</p>
-
-<p><img src="https://lh3.googleusercontent.com/-ejPyB1qrZyQ/VTCEjbhe2cI/AAAAAAAABFI/VCYVIo5hFao/w404-h393-no/as-sns-lambda2.png"></p>
-
-<p>うーん、シンプル！</p>
-
-<h3>設定</h3>
-
-<p>前回とほぼ同様。</p>
-
-<p>SNS作成</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>$ aws sns create-topic --name instance-alert --region ap-northeast-1
-</span><span class='line'>{
-</span><span class='line'>    "TopicArn": "arn:aws:sns:ap-northeast-1:123456789012:instance-alert"
-</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
-
-
-<p>LambdaとSNS連携できるようにポリシーを付与</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>$ aws lambda add-permission --function-name makeASUnhealty --statement-id sns-instance-alert \
-</span><span class='line'>--action "lambda:invokeFunction" --principal sns.amazonaws.com \
-</span><span class='line'>--source-arn arn:aws:sns:ap-northeast-1:123456789012:instance-alert --region us-west-2                                                                                                                                                                                                  
-</span><span class='line'>{
-</span><span class='line'>    "Statement": "{\"Condition\":{\"ArnLike\":{\"AWS:SourceArn\":\"arn:aws:sns:ap-northeast-1:123456789012:instance-alert\"}},\"Resource\":\"arn:aws:lambda:us-west-2:123456789012:function:makeASUnhealty\",\"Action\":[\"lambda:invokeFunction\"],\"Principal\":{\"Service\":\"sns.amazonaws.com\"},\"Sid\":\"sns-instance-alert\",\"Effect\":\"Allow\"}"
-</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Subscribe</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>$ aws sns subscribe --topic-arn arn:aws:sns:ap-northeast-1:123456789012:instance- --protocol lambda \
-</span><span class='line'>--notification-endpoint arn:aws:lambda:us-west-2:123456789012:function:makeASUnhealty --region ap-northeast-1
-</span><span class='line'>{
-</span><span class='line'>    "SubscriptionArn": "arn:aws:sns:ap-northeast-1:123456789012:as-test:4b22eec6-aeb5-4421-7a2f-99ca33a4b8ab"
-</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
-
-
-<p>aws cliはのヘルプにはまだSNSをLambdaへsubscribeするやり方は書いてませんが、上記のようにやればできます。 <a href="http://alestic.com/2015/04/aws-cli-sns-lambda">Thanks Eric!</a></p>
-
-<p>EC2 Status Check</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>$ export INSTANCE=i-xxxxxxxx
-</span><span class='line'>$ aws cloudwatch put-metric-alarm --alarm-name StatusCheckFailed-Alarm-for-$INSTANCE \
-</span><span class='line'>--alarm-description "Instance $INSTANCE has failed" --metric-name StatusCheckFailed \
-</span><span class='line'>--namespace AWS/EC2 --statistic Maximum --dimensions Name=InstanceId,Value=$INSTANCE \
-</span><span class='line'>--period 60 --unit Count --evaluation-periods 2 --threshold 1 --comparison-operator \
-</span><span class='line'>  GreaterThanOrEqualToThreshold --alarm-actions arn:aws:sns:ap-northeast-1:560336700862:instance-alert \
-</span><span class='line'>--region ap-northeast-1</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Lambda Function</p>
-
-<div><script src='https://gist.github.com/52033eb3b9b02c1fe975.js?file='></script>
-<noscript><pre><code></code></pre></noscript></div>
-
-
-<h3>自動復旧</h3>
-
-<p>通信を遮断し、Status Check Failを発動させる</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>$ date; sudo ifdown eth0
-</span><span class='line'>Fri Apr 17 03:08:39 UTC 2015</span></code></pre></td></tr></table></div></figure>
-
-
-<p>EC2 Status Check。2分でfail検知</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>Fri Apr 17 12:10:25 JST 2015
-</span><span class='line'>ok
-</span><span class='line'>DETAILS reachability    passed
-</span><span class='line'>
-</span><span class='line'>Fri Apr 17 12:10:31 JST 2015
-</span><span class='line'>impaired
-</span><span class='line'>DETAILS 2015-04-17T03:10:00.000Z        reachability    failed</span></code></pre></td></tr></table></div></figure>
-
-
-<p>SNS通知。さらに2分ちょい。</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>Alarm Details:
-</span><span class='line'>- Name:                       StatusCheckFailed-Alarm-for-i-xxxxxxxx
-</span><span class='line'>- Description:                Instance i-xxxxxxxx has failed
-</span><span class='line'>- State Change:               OK -&gt; ALARM
-</span><span class='line'>- Reason for State Change:    Threshold Crossed: 2 datapoints were greater than or equal to the threshold (1.0). The most recent datapoints: [1.0, 1.0].
-</span><span class='line'>- Timestamp:                  Friday 17 April, 2015 03:13:09 UTC
-</span><span class='line'>- AWS Account:                123456789012
-</span><span class='line'>
-</span><span class='line'>Threshold:
-</span><span class='line'>- The alarm is in the ALARM state when the metric is GreaterThanOrEqualToThreshold 1.0 for 60 seconds.
-</span><span class='line'>
-</span><span class='line'>Monitored Metric:
-</span><span class='line'>- MetricNamespace:            AWS/EC2
-</span><span class='line'>- MetricName:                 StatusCheckFailed
-</span><span class='line'>- Dimensions:                 [InstanceId = i-xxxxxxxx]
-</span><span class='line'>- Period:                     60 seconds
-</span><span class='line'>- Statistic:                  Maximum
-</span><span class='line'>- Unit:                       Count</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Lambdaログ</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>2015-04-17T03:13:14.504Z  ac9ed52f-e4af-1e14-b826-ee9008a99db9   Received event:..
-</span><span class='line'>2015-04-17T03:13:14.504Z  ace9d52f-e4af-1e14-b826-ee9008a99db9    Changing instance health for: i-xxxxxxxx
-</span><span class='line'>2015-04-17T03:13:15.682Z  ace9d25f-e4af-1e14-b826-ee9008a99db9    { ResponseMetadata: { RequestId: 'b0194dfb-e4af-1e14-895f-abdf96b0b593' } }
-</span><span class='line'>2015-04-17T03:13:15.684Z  ace9d25f-e4af-1e14-b826-ee9008a99db9    result: ""</span></code></pre></td></tr></table></div></figure>
-
-
-<p>タイムスタンプによるとSNS発砲されてたからLambda発火まで5秒！</p>
-
-<p>Auto ScalingのHealth Status</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-<span class='line-number'>38</span>
-<span class='line-number'>39</span>
-<span class='line-number'>40</span>
-<span class='line-number'>41</span>
-<span class='line-number'>42</span>
-<span class='line-number'>43</span>
-<span class='line-number'>44</span>
-<span class='line-number'>45</span>
-<span class='line-number'>46</span>
-<span class='line-number'>47</span>
-<span class='line-number'>48</span>
-<span class='line-number'>49</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>Fri Apr 17 12:13:10 JST 2015
-</span><span class='line'>as-sg   ap-northeast-1a HEALTHY i-ce02563d      as-lc   InService
-</span><span class='line'>
-</span><span class='line'>Fri Apr 17 12:13:15 JST 2015
-</span><span class='line'>as-sg   ap-northeast-1a UNHEALTHY       i-ce02563d      as-lc   InService
-</span><span class='line'>
-</span><span class='line'>Fri Apr 17 12:13:20 JST 2015
-</span><span class='line'>as-sg   ap-northeast-1a UNHEALTHY       i-ce02563d      as-lc   InService
-</span><span class='line'>
-</span><span class='line'>Fri Apr 17 12:13:26 JST 2015
-</span><span class='line'>as-sg   ap-northeast-1a UNHEALTHY       i-ce02563d      as-lc   InService
-</span><span class='line'>
-</span><span class='line'>Fri Apr 17 12:13:31 JST 2015
-</span><span class='line'>as-sg   ap-northeast-1a UNHEALTHY       i-ce02563d      as-lc   InService
-</span><span class='line'>
-</span><span class='line'>Fri Apr 17 12:13:37 JST 2015
-</span><span class='line'>as-sg   ap-northeast-1a UNHEALTHY       i-ce02563d      as-lc   Terminating
-</span><span class='line'>
-</span><span class='line'>Fri Apr 17 12:13:43 JST 2015
-</span><span class='line'>as-sg   ap-northeast-1a UNHEALTHY       i-ce02563d      as-lc   Terminating
-</span><span class='line'>
-</span><span class='line'>Fri Apr 17 12:13:49 JST 2015
-</span><span class='line'>as-sg   ap-northeast-1a UNHEALTHY       i-ce02563d      as-lc   Terminating
-</span><span class='line'>
-</span><span class='line'>Fri Apr 17 12:13:54 JST 2015
-</span><span class='line'>as-sg   ap-northeast-1a UNHEALTHY       i-ce02563d      as-lc   Terminating
-</span><span class='line'>
-</span><span class='line'>Fri Apr 17 12:13:59 JST 2015
-</span><span class='line'>
-</span><span class='line'>Fri Apr 17 12:14:05 JST 2015
-</span><span class='line'>as-sg   ap-northeast-1a HEALTHY i-525601a1      as-lc   Pending
-</span><span class='line'>
-</span><span class='line'>Fri Apr 17 12:14:10 JST 2015
-</span><span class='line'>as-sg   ap-northeast-1a HEALTHY i-525601a1      as-lc   Pending
-</span><span class='line'>
-</span><span class='line'>Fri Apr 17 12:14:16 JST 2015
-</span><span class='line'>as-sg   ap-northeast-1a HEALTHY i-525601a1      as-lc   Pending
-</span><span class='line'>
-</span><span class='line'>Fri Apr 17 12:14:21 JST 2015
-</span><span class='line'>as-sg   ap-northeast-1a HEALTHY i-525601a1      as-lc   Pending
-</span><span class='line'>
-</span><span class='line'>Fri Apr 17 12:14:26 JST 2015
-</span><span class='line'>as-sg   ap-northeast-1a HEALTHY i-525601a1      as-lc   Pending
-</span><span class='line'>
-</span><span class='line'>Fri Apr 17 12:14:32 JST 2015
-</span><span class='line'>as-sg   ap-northeast-1a HEALTHY i-525601a1      as-lc   Pending
-</span><span class='line'>
-</span><span class='line'>Fri Apr 17 12:14:37 JST 2015
-</span><span class='line'>as-sg   ap-northeast-1a HEALTHY i-525601a1      as-lc   InService</span></code></pre></td></tr></table></div></figure>
-
-
-<p>ちゃんとTerminateされてリプレースされてますね。</p>
-
-<p>AutoScalingの通知</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>Service: AWS Auto Scaling
-</span><span class='line'>Time: 2015-04-17T03:13:59.367Z
-</span><span class='line'>RequestId: efa97137-fa15-4aa4-9c8c-5241961a2d0e
-</span><span class='line'>Event: autoscaling:EC2_INSTANCE_TERMINATE
-</span><span class='line'>AccountId: 123456789012
-</span><span class='line'>AutoScalingGroupName: as-sg
-</span><span class='line'>AutoScalingGroupARN: arn:aws:autoscaling:ap-northeast-1:123456789012:autoScalingGroup:c395c157-3a7e-4d56-287b-5ad9b26eb464:autoScalingGroupName/as-sg
-</span><span class='line'>ActivityId: efa97137-fa15-4aa4-9c8c-5241961a2d0e
-</span><span class='line'>Description: Terminating EC2 instance: i-xxxxxxxx
-</span><span class='line'>Cause: At 2015-04-17T03:13:36Z an instance was taken out of service in response to a user health-check.
-</span><span class='line'>StartTime: 2015-04-17T03:13:36.342Z
-</span><span class='line'>EndTime: 2015-04-17T03:13:59.367Z
-</span><span class='line'>StatusCode: InProgress
-</span><span class='line'>StatusMessage:
-</span><span class='line'>Progress: 50
-</span><span class='line'>EC2InstanceId: i-xxxxxxxx
-</span><span class='line'>Details: {"Availability Zone":"ap-northeast-1a","Subnet ID":"subnet-bbbbbbbb"}</span></code></pre></td></tr></table></div></figure>
-
-
-<p>通常は<code>Cause</code>が<code>an instance was taken out of service in response to a EC2 health check indicating it has been terminated or stopped.</code>となるのが<code>an instance was taken out of service in response to a user health-check.</code>となっているのでAutoScalingのEC2 Health Checkより前にアクションが起こされた事が分かります。</p>
-
-<p>障害発生からInstanceがリプレースされて<code>InService</code>になるAuto Healingのトータル時間は6分ちょいになりました。
-<a href="http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-instance-recover.html">EC2 Auto Recovery</a>を使えば済む場合もありますが、あちらはAWS側の障害に起因する<code>StatusCheckFailed_System</code>のみで<code>StatusCheckFailed_Instance</code>はトリガー対象じゃないのと、特定のインスタンスタイプやVPC等若干制限があります。</p>
-
-<h3>終わりに</h3>
-
-<p>ちなみに今回はinstanceやSNSは東京リージョン（ap-northeast-1）、Lambdaはオレゴンリージョン（us-west-2）というリージョンを跨いだ連携も可能という事が分かりました。まだ東京に来てないけど、既にproduction readyなのでもう普通に使っていけます。</p>
-
-<p>いやー。SNS連携によって夢は広がりますねぇ。</p>
 ]]></content>
   </entry>
   

@@ -4,7 +4,7 @@
   <title><![CDATA[Category: serverless | @ijin]]></title>
   <link href="http://ijin.github.io/blog/categories/serverless/atom.xml" rel="self"/>
   <link href="http://ijin.github.io/"/>
-  <updated>2017-06-16T04:58:21+09:00</updated>
+  <updated>2018-02-22T19:39:16+09:00</updated>
   <id>http://ijin.github.io/</id>
   <author>
     <name><![CDATA[Michael H. Oshita]]></name>
@@ -12,6 +12,100 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[ServerlessConf Austin 2017に参加してきた]]></title>
+    <link href="http://ijin.github.io/blog/2017/04/30/serverlessconf-austin-2017/"/>
+    <updated>2017-04-30T17:40:00+09:00</updated>
+    <id>http://ijin.github.io/blog/2017/04/30/serverlessconf-austin-2017</id>
+    <content type="html"><![CDATA[<p><a href="https://austin.serverlessconf.io/">ServerlessConf Austin 2017</a>に参加したので、端的なメモ。</p>
+
+<p>Day 1の終わりに着いて、ほぼDay 2のみ</p>
+
+<p><img src="https://lh3.googleusercontent.com/PU0qf-q97mQXg0frh0vEyY_yzmiTrUUIISKS3Lr4hrqMvimTogqZEge-lg3N76kvUqS-4XnlW23ATuuguLNqGkDcODQOn393OKl2XZtpDsnXjxUSKfeDn1r12OI15QFiec36CPO8ag=w1122-h842-no"></p>
+
+<h3>Self Replicating Serverless Function -  Michael Adda</h3>
+
+<p><a href="https://en.wikipedia.org/wiki/Quine_(computing">Quine</a>おじさんによるウロボロス的lambda実装のお話。思考実験としては面白かった。</p>
+
+<p><div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">quineおじさん  <a href="https://twitter.com/hashtag/ServerlessConf?src=hash&amp;ref_src=twsrc%5Etfw">#ServerlessConf</a> <a href="https://t.co/FOisTd9AUD">pic.twitter.com/FOisTd9AUD</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/857961545015242752?ref_src=twsrc%5Etfw">April 28, 2017</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">ウロボロス！  <a href="https://twitter.com/hashtag/ServerlessConf?src=hash&amp;ref_src=twsrc%5Etfw">#ServerlessConf</a> <a href="https://t.co/hSmps3fWKj">pic.twitter.com/hSmps3fWKj</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/857962397281144832?ref_src=twsrc%5Etfw">April 28, 2017</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div></p>
+
+<h3>Harmonizing Serverless &amp; Traditional Applications - Ryan Brown</h3>
+
+<p><div class='embed tweet'><blockquote class="twitter-tweet"><p lang="fr" dir="ltr">Queueueueueuing! <a href="https://twitter.com/hashtag/ServerlessConf?src=hash&amp;ref_src=twsrc%5Etfw">#ServerlessConf</a> <a href="https://t.co/mL67Gt9UU9">pic.twitter.com/mL67Gt9UU9</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/857965198698835968?ref_src=twsrc%5Etfw">April 28, 2017</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div></p>
+
+<h3>Serverless Security: What’s Left To Protect? - Guy Podjarny</h3>
+
+<p><div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">元Akami CTOによるサーバーレスセキュリティのセッション <a href="https://twitter.com/hashtag/ServerlessConf?src=hash&amp;ref_src=twsrc%5Etfw">#ServerlessConf</a> <a href="https://t.co/nGYiTuYys8">pic.twitter.com/nGYiTuYys8</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/858005309104693248?ref_src=twsrc%5Etfw">April 28, 2017</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">今はSnykというセキュリティ・監視サービスをやってる。後で見てみよう。 <a href="https://t.co/u91czC6gPE">https://t.co/u91czC6gPE</a> <a href="https://twitter.com/hashtag/ServerlessConf?src=hash&amp;ref_src=twsrc%5Etfw">#ServerlessConf</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/858005655960961026?ref_src=twsrc%5Etfw">April 28, 2017</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div></p>
+
+<h3>Single Page Apps &amp; Serverless without Compromise (or as little as possible) - Jared Short</h3>
+
+<p><div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">GOAD - LamdaとGoによる分散負荷テストツール。便利そう。 <a href="https://t.co/bUDyL0OHYz">https://t.co/bUDyL0OHYz</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/858029124899794944?ref_src=twsrc%5Etfw">April 28, 2017</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">GraphQLかー。 <a href="https://twitter.com/hashtag/ServerlessConf?src=hash&amp;ref_src=twsrc%5Etfw">#ServerlessConf</a> <a href="https://t.co/Ti2EgaXZVt">pic.twitter.com/Ti2EgaXZVt</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/858032484273074176?ref_src=twsrc%5Etfw">April 28, 2017</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">おお、GraphQLとLambdaのプラットフォーム <a href="https://t.co/Cn0FK5MV0c">https://t.co/Cn0FK5MV0c</a> <a href="https://twitter.com/hashtag/ServerlessConf?src=hash&amp;ref_src=twsrc%5Etfw">#ServerlessConf</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/858033058661924865?ref_src=twsrc%5Etfw">April 28, 2017</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="en" dir="ltr">Server Smoothie! <a href="https://twitter.com/hashtag/ServerlessConf?src=hash&amp;ref_src=twsrc%5Etfw">#ServerlessConf</a> <a href="https://t.co/qg84hSy2qQ">pic.twitter.com/qg84hSy2qQ</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/858080490104004608?ref_src=twsrc%5Etfw">April 28, 2017</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div></p>
+
+<h3>Serverless Workflows in AWS: A Journey from SWF to Step Functions - Forrest Brazeal</h3>
+
+<p>最後にRAP!!!新しいwww</p>
+
+<p><div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">この人、セッションの最後でサーバーレスのラップを約束したぞ。 <a href="https://twitter.com/hashtag/serverlessconf?src=hash&amp;ref_src=twsrc%5Etfw">#serverlessconf</a> <a href="https://t.co/ajDs6VR2Ne">pic.twitter.com/ajDs6VR2Ne</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/858043060508401664?ref_src=twsrc%5Etfw">April 28, 2017</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="en" dir="ltr">Serverless Rap!? <a href="https://twitter.com/hashtag/ServerlessConf?src=hash&amp;ref_src=twsrc%5Etfw">#ServerlessConf</a> <a href="https://t.co/iRRVS48KNa">pic.twitter.com/iRRVS48KNa</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/858051472830889986?ref_src=twsrc%5Etfw">April 28, 2017</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div></p>
+
+<h3>Keynote by Tim Wagner</h3>
+
+<p><div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">今回のTimはどんな風にサーバを破壊するんだろう。ステージ横の布が気になる。 <a href="https://twitter.com/hashtag/ServerlessConf?src=hash&amp;ref_src=twsrc%5Etfw">#ServerlessConf</a> <a href="https://t.co/mxzwQfrfWL">pic.twitter.com/mxzwQfrfWL</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/858069201797468161?ref_src=twsrc%5Etfw">April 28, 2017</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">ドラクエだ！ <a href="https://twitter.com/hashtag/ServerlessConf?src=hash&amp;ref_src=twsrc%5Etfw">#ServerlessConf</a> <a href="https://t.co/iiRJnhiiGO">pic.twitter.com/iiRJnhiiGO</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/858073465315831808?ref_src=twsrc%5Etfw">April 28, 2017</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="en" dir="ltr">PyWren - lambda map/reduce framework. 25TFLOPS! <a href="https://t.co/kEhLd2scbF">https://t.co/kEhLd2scbF</a> <a href="https://twitter.com/hashtag/ServerlessConf?src=hash&amp;ref_src=twsrc%5Etfw">#ServerlessConf</a> <a href="https://t.co/dWeQS0tkIC">pic.twitter.com/dWeQS0tkIC</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/858075062045487104?ref_src=twsrc%5Etfw">April 28, 2017</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">お！ <a href="https://twitter.com/hashtag/ServerlessConf?src=hash&amp;ref_src=twsrc%5Etfw">#ServerlessConf</a> <a href="https://t.co/61PH6xI1mS">pic.twitter.com/61PH6xI1mS</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/858079838577598464?ref_src=twsrc%5Etfw">April 28, 2017</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div></p>
+
+<h2>おまけ</h2>
+
+<ul>
+<li>オースティンめっちゃ暑かった（日陰に入ると涼しい）</li>
+<li>シュラスコ美味かった！</li>
+<li>Uberが締め出されたのでローカルアプリが必要</li>
+<li>下記コメントが印象的だった</li>
+</ul>
+
+
+<p><div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">Uber/Lyftが出て行って沢山のクローンサービスが立ち上がったけど、その中の一つのRide Austinでドライバーと雑談。「NPOだから、俺たちの手取りが大幅に増えて大変助かってる。前はガス代ぐらいにしかならなくて、生きていくのがやっとだった。出て行ってくれて良かったよ」</p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/857749605039063040?ref_src=twsrc%5Etfw">April 28, 2017</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div></p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[ServerlessConf London 2016に参加してきた。]]></title>

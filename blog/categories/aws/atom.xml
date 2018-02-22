@@ -4,7 +4,7 @@
   <title><![CDATA[Category: aws | @ijin]]></title>
   <link href="http://ijin.github.io/blog/categories/aws/atom.xml" rel="self"/>
   <link href="http://ijin.github.io/"/>
-  <updated>2017-06-16T04:58:21+09:00</updated>
+  <updated>2018-02-22T19:39:16+09:00</updated>
   <id>http://ijin.github.io/</id>
   <author>
     <name><![CDATA[Michael H. Oshita]]></name>
@@ -12,6 +12,181 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[AWS re:Invent 2017に参加してきた]]></title>
+    <link href="http://ijin.github.io/blog/2017/12/31/aws-re-invent-2017/"/>
+    <updated>2017-12-31T23:50:00+09:00</updated>
+    <id>http://ijin.github.io/blog/2017/12/31/aws-re-invent-2017</id>
+    <content type="html"><![CDATA[<p>AWS re:Inventに5回目の参加記録。</p>
+
+<p>例によって、帰国直後の体験談の発表</p>
+
+<p><script async="true" class="speakerdeck-embed" data-id="68dc84cbb44d44cebc608c31aca10b9a" src="//speakerdeck.com/assets/embed.js"> </script></p>
+
+<p><img src="https://lh3.googleusercontent.com/V14NgOarSqa6dSAj2hvppJuVQsFGm7EU07dWXCY2vUox09ysgJ9vdM8_Y4y6uNWH0iioyoKKrGocPT27QIRpTNtg5kVT5AZezM4aLh5s_Ob-LwmdToh9Rh6Q9CWN1ts6VfAOo3bUIA=w473-h630-no"></p>
+
+<h2>Game Day</h2>
+
+<p>まず、何よりもGame Day！もはやこれに出れれば8割型満足。。内容としてはいろんなサービスを使うようになってて結構凝ってた。</p>
+
+<p><img src="https://lh3.googleusercontent.com/ZntKtGaloc3dWKmu1roAm3J0lyqArnkc7RmMxUIv4reySM1puFffYU9Tc_HO54S9NTdfoOvfMwfPpTjJyMybH_K6sj4OEfPDfKJPhGWHQ9CcrxtHlBKjKazuYdBbpYqdenkX4Aqxjw=w1050-h787-no"></p>
+
+<p>去年の運営チームとは別になったらしいので中身も毛色が少し違ってた。</p>
+
+<p><img src="https://lh3.googleusercontent.com/HRURknhesNClVInP9hIU1XLDcyVMHxlvCr47TPMXMVPYcqgUIyDO0UyzE2WZ73sZa7UBmh3ULw_saq2rPnEhA_j_CYeQcALEzs4joBjlRO8gsCvA_ATcXRV8v8B0ZnSSChL9N5iuFA=w591-h787-no"></p>
+
+<h2>Keynote by Andy Jassy</h2>
+
+<p>今年は部屋でゆったりと。</p>
+
+<p><img src="https://lh3.googleusercontent.com/qjbdhgOgzzvykTsUJtz_ZbCWF4hBj3mfEEw9R6BwQKg_sPf6FyO8F2b2xHZLk2JZFdLyV8SU7IWg1WYK0fqEzjNF5kIe8ry9JVvZlZwROZLpGjSnNeXzdDrhQTq-h5kknwLTnvZwhQ=w1122-h842-no"></p>
+
+<p>怒涛のリリースラッシュ！</p>
+
+<p><div class='embed tweet'><blockquote class="twitter-tweet"><p lang="en" dir="ltr">The list of current AWS services barely fits on this huge stage slide <a href="https://twitter.com/hashtag/reinvent?src=hash&amp;ref_src=twsrc%5Etfw">#reinvent</a> <a href="https://t.co/RxZHpCKbtl">pic.twitter.com/RxZHpCKbtl</a></p>&mdash; Marius Ducea (@mariusducea) <a href="https://twitter.com/mariusducea/status/935904367990861825?ref_src=twsrc%5Etfw">November 29, 2017</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="et" dir="ltr">EKS (ECS for Kubernetes)きた。 <a href="https://twitter.com/hashtag/reinvent?src=hash&amp;ref_src=twsrc%5Etfw">#reinvent</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/935909063363194880?ref_src=twsrc%5Etfw">November 29, 2017</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">AWS Fargate、2年前に欲しかったやつだ。 <a href="https://twitter.com/hashtag/reinvent?src=hash&amp;ref_src=twsrc%5Etfw">#reinvent</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/935909778009702401?ref_src=twsrc%5Etfw">November 29, 2017</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="es" dir="ltr">Aurora Multi-Master! <a href="https://twitter.com/hashtag/reinvent?src=hash&amp;ref_src=twsrc%5Etfw">#reinvent</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/935912830284439552?ref_src=twsrc%5Etfw">November 29, 2017</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">Aurora Serverless...そのネーミングはちょっと。。 <a href="https://twitter.com/hashtag/reinvent?src=hash&amp;ref_src=twsrc%5Etfw">#reinvent</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/935913661276626949?ref_src=twsrc%5Etfw">November 29, 2017</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">DynamoDB Global Tables... Spannerっぽいやつか。 <a href="https://twitter.com/hashtag/reinvent?src=hash&amp;ref_src=twsrc%5Etfw">#reinvent</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/935914517694857217?ref_src=twsrc%5Etfw">November 29, 2017</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">DynamoDB backup &amp; restore! もうDatapipelineで疲弊しなくて良いのか。 <a href="https://twitter.com/hashtag/reinvent?src=hash&amp;ref_src=twsrc%5Etfw">#reinvent</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/935914943995510784?ref_src=twsrc%5Etfw">November 29, 2017</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="en" dir="ltr">Amazon Neptune. Graph databaseか。 <a href="https://twitter.com/hashtag/reinvent?src=hash&amp;ref_src=twsrc%5Etfw">#reinvent</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/935915727248277504?ref_src=twsrc%5Etfw">November 29, 2017</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">S3 Select...Athenaとどう違うんだ。 <a href="https://twitter.com/hashtag/reinvent?src=hash&amp;ref_src=twsrc%5Etfw">#reinvent</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/935921615967207424?ref_src=twsrc%5Etfw">November 29, 2017</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="en" dir="ltr">Glacier Select...w <a href="https://twitter.com/hashtag/reinvent?src=hash&amp;ref_src=twsrc%5Etfw">#reinvent</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/935921912240209922?ref_src=twsrc%5Etfw">November 29, 2017</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="en" dir="ltr">Amazon Sagemaker! <a href="https://twitter.com/hashtag/reinvent?src=hash&amp;ref_src=twsrc%5Etfw">#reinvent</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/935924977290723328?ref_src=twsrc%5Etfw">November 29, 2017</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">AWS DeepLens. Greengrass入りだ。<a href="https://twitter.com/hashtag/reinvent?src=hash&amp;ref_src=twsrc%5Etfw">#reinvent</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/935927159998226433?ref_src=twsrc%5Etfw">November 29, 2017</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">Rekognition VideoにKinesis Video Streams。すごいな。 <a href="https://twitter.com/hashtag/reInvent?src=hash&amp;ref_src=twsrc%5Etfw">#reInvent</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/935931635928674304?ref_src=twsrc%5Etfw">November 29, 2017</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">Amazon Transcribe。便利そう <a href="https://twitter.com/hashtag/reInvent?src=hash&amp;ref_src=twsrc%5Etfw">#reInvent</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/935932086455746562?ref_src=twsrc%5Etfw">November 29, 2017</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="en" dir="ltr">Amazon Translate!  <a href="https://twitter.com/hashtag/reInvent?src=hash&amp;ref_src=twsrc%5Etfw">#reInvent</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/935932557853573121?ref_src=twsrc%5Etfw">November 29, 2017</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="en" dir="ltr">Amazon Comprehend! <a href="https://twitter.com/hashtag/reInvent?src=hash&amp;ref_src=twsrc%5Etfw">#reInvent</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/935933124621381632?ref_src=twsrc%5Etfw">November 29, 2017</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="en" dir="ltr">AWS IoT 1clickにIoT Device Management <a href="https://twitter.com/hashtag/reInvent?src=hash&amp;ref_src=twsrc%5Etfw">#reInvent</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/935939366404333568?ref_src=twsrc%5Etfw">November 29, 2017</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="en" dir="ltr">AWS IoT Device Defender <a href="https://twitter.com/hashtag/reInvent?src=hash&amp;ref_src=twsrc%5Etfw">#reInvent</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/935939678561173504?ref_src=twsrc%5Etfw">November 29, 2017</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="en" dir="ltr">AWS IoT Analytics <a href="https://twitter.com/hashtag/reInvent?src=hash&amp;ref_src=twsrc%5Etfw">#reInvent</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/935940580152033280?ref_src=twsrc%5Etfw">November 29, 2017</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="es" dir="ltr">Amazon FreeRTOS <a href="https://twitter.com/hashtag/reInvent?src=hash&amp;ref_src=twsrc%5Etfw">#reInvent</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/935941862111690752?ref_src=twsrc%5Etfw">November 29, 2017</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div></p>
+
+<h2>DeepLens Workshop</h2>
+
+<p><div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">わーい。DeepLens Workshopに入れた！マシンはUbuntu <a href="https://twitter.com/hashtag/reinvent?src=hash&amp;ref_src=twsrc%5Etfw">#reinvent</a> <a href="https://t.co/kIVSqnQxL8">pic.twitter.com/kIVSqnQxL8</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/936069758834716673?ref_src=twsrc%5Etfw">November 30, 2017</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">SqueezeNetというCNNモデルをSagemakerでJupiter notebook上でトレーニングしてDeepLensにデプロイ、推測はlambdaに任せるように設定するとさっきもらった🌭 の判定がリアルタイムで出来た！<a href="https://twitter.com/hashtag/reinvent?src=hash&amp;ref_src=twsrc%5Etfw">#reinvent</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/936091987194679296?ref_src=twsrc%5Etfw">November 30, 2017</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">ゲット！ <a href="https://twitter.com/hashtag/reinvent?src=hash&amp;ref_src=twsrc%5Etfw">#reinvent</a> <a href="https://t.co/YqnKo9qkE9">pic.twitter.com/YqnKo9qkE9</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/936112237835567105?ref_src=twsrc%5Etfw">November 30, 2017</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div></p>
+
+<h2>Keynote by Werner Vogels</h2>
+
+<p>前日に引き続き、リリースラッシュを構えていたのにちょっとだけ発表してWernerの熱い想いを語る独壇場だった。。</p>
+
+<p><div class='embed tweet'><blockquote class="twitter-tweet"><p lang="en" dir="ltr">And <a href="https://twitter.com/Werner?ref_src=twsrc%5Etfw">@Werner</a> is on the stage <a href="https://twitter.com/hashtag/reinvent?src=hash&amp;ref_src=twsrc%5Etfw">#reinvent</a> <a href="https://t.co/UtpuhDgPtM">pic.twitter.com/UtpuhDgPtM</a></p>&mdash; Marius Ducea (@mariusducea) <a href="https://twitter.com/mariusducea/status/936271664844644353?ref_src=twsrc%5Etfw">November 30, 2017</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">Alexa for Business。ユーザやスキル等のマネージメントをしてくれる <a href="https://twitter.com/hashtag/reinvent?src=hash&amp;ref_src=twsrc%5Etfw">#reinvent</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/936279030734626816?ref_src=twsrc%5Etfw">November 30, 2017</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">AWS Cloud9！まんまだw <a href="https://twitter.com/hashtag/reInvent?src=hash&amp;ref_src=twsrc%5Etfw">#reInvent</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/936285778052759552?ref_src=twsrc%5Etfw">November 30, 2017</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">Vim modeもあるぜ！ってのが太字だw（emacsは普通文字） <a href="https://t.co/2MwmHFrrHp">https://t.co/2MwmHFrrHp</a> <a href="https://twitter.com/hashtag/reInvent?src=hash&amp;ref_src=twsrc%5Etfw">#reInvent</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/936286654955896832?ref_src=twsrc%5Etfw">November 30, 2017</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">Cloud9使うのにEC2なんて起動したくないよ。。 <a href="https://twitter.com/hashtag/reInvent?src=hash&amp;ref_src=twsrc%5Etfw">#reInvent</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/936290503854735360?ref_src=twsrc%5Etfw">November 30, 2017</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="en" dir="ltr">Lambda features: API GW VPC integration, Concurrency control, 3GB memory, .NET Core 2.0, Go <a href="https://twitter.com/hashtag/reInvent?src=hash&amp;ref_src=twsrc%5Etfw">#reInvent</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/936301561583583232?ref_src=twsrc%5Etfw">November 30, 2017</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="en" dir="ltr">AWS Serverless Application Repository、ほう。 <a href="https://twitter.com/hashtag/reInvent?src=hash&amp;ref_src=twsrc%5Etfw">#reInvent</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/936301841972731904?ref_src=twsrc%5Etfw">November 30, 2017</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">冒頭で言った通り、今日のKeynoteは発表ほとんどないな。昨日の怒涛のリリースラッシュみたいなのを待ち構えていたけど。 <a href="https://twitter.com/hashtag/reInvent?src=hash&amp;ref_src=twsrc%5Etfw">#reInvent</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/936305707007098880?ref_src=twsrc%5Etfw">November 30, 2017</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div></p>
+
+<h2>Hackathon - ALL-in JAM</h2>
+
+<p>いろんな要素やサービスが詰まったハッカソン。初めて触るサービスもあって楽しかった。</p>
+
+<p><div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">UIがかっこいい <a href="https://twitter.com/hashtag/reInvent?src=hash&amp;ref_src=twsrc%5Etfw">#reInvent</a> <a href="https://t.co/j62Px7WfAN">pic.twitter.com/j62Px7WfAN</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/936324291594928128?ref_src=twsrc%5Etfw">November 30, 2017</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">始まった。BGMはMatrixのClubbed to Death <a href="https://twitter.com/hashtag/reInvent?src=hash&amp;ref_src=twsrc%5Etfw">#reInvent</a> <a href="https://t.co/Ha86JAO0k8">pic.twitter.com/Ha86JAO0k8</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/936329057439858688?ref_src=twsrc%5Etfw">November 30, 2017</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div></p>
+
+<h2>会場</h2>
+
+<p>VenitienからAriaまでの道のり。。長い。</p>
+
+<p><div class="embed-video-container"><iframe src="http://www.youtube.com/embed/Kd2HMe02DYg "></iframe></div></p>
+
+<h2>re:Play</h2>
+
+<p>メインDJはDJ Snake。プレイ自体は30分ぐらいは楽しめたかな。。好み違った。</p>
+
+<p><div class='embed tweet'><blockquote class="twitter-tweet"><p lang="und" dir="ltr"><a href="https://twitter.com/hashtag/rePlay?src=hash&amp;ref_src=twsrc%5Etfw">#rePlay</a> <a href="https://twitter.com/hashtag/reInvent?src=hash&amp;ref_src=twsrc%5Etfw">#reInvent</a> <a href="https://t.co/ece6W02ba0">pic.twitter.com/ece6W02ba0</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/936480800165343232?ref_src=twsrc%5Etfw">December 1, 2017</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div></p>
+
+<h2>まとめ</h2>
+
+<ul>
+<li>Fargateもっと早く欲しかった</li>
+<li>DeepLensもらえた。何作ろう</li>
+<li>今年もlambdaにrubyが来なかった</li>
+<li>Cloud9でEC2自前で立てるのはコレジャナイ感</li>
+<li>会場広すぎでしょ</li>
+</ul>
+
+
+<p><div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">JAWS-UG 横浜 re:Invent recap めっちゃ楽しかったーみなさんお疲れ様でしたー<br>最後  <a href="https://twitter.com/ijin?ref_src=twsrc%5Etfw">@ijin</a> さんが言ってた「情報にキャッチアップするなら doc 読めばいい。現地行って workshopとか参加しようぜ」ですね。</p>&mdash; Toshihiko Nozaki (@bukaz54) <a href="https://twitter.com/bukaz54/status/937659284384395266?ref_src=twsrc%5Etfw">December 4, 2017</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div></p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[AWS re:Invent 2016に参加してきた]]></title>
@@ -785,89 +960,6 @@ aws apigateway update-integration-response --rest-api-id $rest_id --resource-id 
 </p>
 
 <p>それでは、良いLambdaライフを！</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Lambdaの容量を監視しよう]]></title>
-    <link href="http://ijin.github.io/blog/2016/01/14/monitor-lambda-capacity/"/>
-    <updated>2016-01-14T05:23:00+09:00</updated>
-    <id>http://ijin.github.io/blog/2016/01/14/monitor-lambda-capacity</id>
-    <content type="html"><![CDATA[<p><code>2016/1/14</code>現在、AWS Lambdaにはなんと<strong>リージョン</strong>毎！にアップロードできるパッケージの合計サイズがたったの<strong>1.5GB</strong>という<a href="http://docs.aws.amazon.com/lambda/latest/dg/limits.html#limits-list">悲しい制限</a>があります。特にlibraryを同包したり、versioningを使ったりしてCIをガンガン回してると、結構すぐこの上限に達してしまいがちです。そこで、Lambdaの総容量はAWSコンソール上には表示されるものの、トラッキングし辛いので監視する仕組みを作ってみました。</p>
-
-<h2>仕組み</h2>
-
-<p>LambdaのScheduled Eventsを使って、<code>ListFunctions</code>と<code>ListVersionsByFunction</code> APIを叩いて、個別functionの<code>CodeSize</code>をサマって、<code>PutMetricData</code>でCloudWatchに投げて、Alarm設定してるだけ。</p>
-
-<script src="https://gist-it.appspot.com/https://github.com/ijin/check_lambda_capacity/blob/master/lambda_function.py"></script>
-
-
-<p>(*) <code>2016/1/26</code> 追記：<a href="https://twitter.com/marcy_terui">@marcy_terui</a>さんからの<a href="https://twitter.com/marcy_terui/status/689326911634329600">ご指摘</a>でVersionsの容量計算が抜けてました。ありがとうございます。</p>
-
-<p>といっても、今後別アカウントでいちいち設定（IAM role&amp;policy、Lambda、SNS、CloudWatch）するのも非常に面倒くさいので、今回は<a href="http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/working-with-templates-cfn-designer.html">CloudFormation Designer</a>を使って、ほぼ一発で環境を再現できるようにしました。</p>
-
-<h2>CloudFormation</h2>
-
-<p>ボタン作ってみた。<a href="https://console.aws.amazon.com/cloudformation/home?region=ap-northeast-1#/stacks/new?stackName=check-lambda-capacity&templateURL=https://s3-ap-northeast-1.amazonaws.com/ijin/aws/lambda/check_lambda_capacity/check_lambda_capacity.template">
-<img src="https://s3.amazonaws.com/cloudformation-examples/cloudformation-launch-stack.png">
-</a></p>
-
-<h3>Stack Creation</h3>
-
-<p>Designerではこんな感じ。心なしか、jsonの苦痛が多少楽になったような。。後、Propertyの補完機能は良いけどショートカットが<code>Cmd+Space</code>なのでSpotlightさんがぁ。</p>
-
-<p><img src="https://lh3.googleusercontent.com/CLHrqYHPDKPxABDkWdrl0FYbEEC9enKmbOaK75TqhqL5tPnQ8oRjA3_f3N3iJoD5cSanPbbvt9lT=w880-h586-no"></p>
-
-<p>s3からtemplateを指定。
-template urlは<code>https://s3-ap-northeast-1.amazonaws.com/ijin/aws/lambda/check_lambda_capacity/check_lambda_capacity.template</code></p>
-
-<p><img src="https://lh3.googleusercontent.com/XeF-yQk1cxy8z8KnHTJS3mP-onExoYmbJ7-OYISmLd3NYxO4fVCQnqAxygAEu6zdMtzEy16641C-=w826-h268-no"></p>
-
-<p>Parameterとしては以下が指定可能</p>
-
-<ul>
-<li>アラート閾値（Byte単位）</li>
-<li>SNS topic（空の場合は、自動作成される）</li>
-</ul>
-
-
-<p><img src="https://lh3.googleusercontent.com/vX0JiEE_me3Wn6__PbNysmSYVkGiOs4jbqivZm7lOoq18kZpyrV9lj01kL9-rDMCX1JAS7BHVmI4=w902-h509-no"></p>
-
-<p>Stackを作成すると、諸々のリソースが数分で出来上がり。</p>
-
-<p><img src="https://lh3.googleusercontent.com/rQy-Any2cmz9I7YxuGD-Pi8_4VB9dGKFnCbAxWHH4QPjRMF7Y9nKAi2sZPY2HogoL2vpcc8ABy4E=w1050-h260-no"></p>
-
-<h3>Manual Labor</h3>
-
-<p>本当は以上で終了！にしたいところですが、LambdaのScheduled Eventsの設定はAWSコンソールからのみしか出来ないという<del>情けない</del><a href="http://docs.aws.amazon.com/lambda/latest/dg/with-scheduled-events.html">残念な状態</a>（<code>2016/1/14</code>現在）なので、ここからポチポチ設定作業。。（API重視の開発姿勢はどこ行ったんだろう）</p>
-
-<p>(*) <code>2016/1/26</code> 追記：この記事の翌日に発表された <a href="http://docs.aws.amazon.com/AmazonCloudWatch/latest/DeveloperGuide/WhatIsCloudWatchEvents.html"><code>CloudWatch Events</code></a> の <a href="http://docs.aws.amazon.com/AmazonCloudWatch/latest/DeveloperGuide/ScheduledEvents.html"><code>scheduling</code> 機能</a> によって出来るようになりました。なんというタイミング。</p>
-
-<p><img src="https://lh3.googleusercontent.com/2pedymzqDYHJ30u7VglVv-7_6IpFhpOnRdnE4-QxjuIdX1fep2FwtoyDNr1Kl5yEqT1rtjoLDLZx=w581-h238-no"></p>
-
-<p><img src="https://lh3.googleusercontent.com/hcLpNX45gIQZQUQGvsyyIXfOH3s9yDpNLIZJN8TU-RUZDdMGdrsNXAb_NRupjWF9Hf4QrK4y6lXO=w864-h441-no"></p>
-
-<p>最小頻度が5分毎
-<img src="https://lh3.googleusercontent.com/lzuWtzvkK1A5pUSPyShVaFzzOQ13cD8PFVfCAz3rxSYkn5sKirWnhq-4PlKyhuesMlCQtrfH57yx=w862-h507-no"></p>
-
-<h3>Graph</h3>
-
-<p>これで、グラフが取れて閾値を超えたらアラートが飛ぶようになる</p>
-
-<p><img src="https://lh3.googleusercontent.com/yzswstqCbaTzpkYfy5MlRS2I9ur5Is3hI8Eii-o27twq-fYA_6o8SY5Rrn0DbyZEn8UJarGhh_9L=w570-h270-no"></p>
-
-<p><img src="https://lh3.googleusercontent.com/NE43x1KQW76QO7b4TMIjjcEYrpQ07B9SNOb-9L-wEnNKc8oC-69HpgzWiVABnQwBSNGtDz4ayeTR=w286-h221-no"></p>
-
-<h2>Code</h2>
-
-<p>出来上がったCloudFormation templateコードはこちら。<code>AWS::Lambda::Function</code>がlambdaのresource担当だけど、templateにfunctionをインラインで埋め込めるのは現時点では<a href="http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-lambda-function-code.html"><code>nodejs</code>のみ</a>なので仕方なくzipしたpythonコードをs3にアップして参照するようにしてる。</p>
-
-<script src="https://gist-it.appspot.com/https://github.com/ijin/check_lambda_capacity/blob/master/check_lambda_capacity.template"></script>
-
-
-<p>元気があれば、そのうちnode版も書こうかな。。</p>
-
-<p>GitHubのリポジトリは<a href="https://github.com/ijin/check_lambda_capacity">こちらから</a>。</p>
 ]]></content>
   </entry>
   

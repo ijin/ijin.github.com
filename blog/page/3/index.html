@@ -9,8 +9,7 @@
   <meta name="author" content="Michael H. Oshita">
 
   
-  <meta name="description" content="サバフェス！2015 Springに参加してきました。
-やった内容を少々。 前回と同じくチーム@ijinとして1人で参戦して、順位は「4位」。 スコアは44988.867 TpmCでした。 お題 Mysql on ioDriveでtpcc-mysqlベンチマークのtransaction &hellip;">
+  <meta name="description" content="先日、EC2のAuto Recoveryでちょっとハマったのでメモ。 CloudwatchのStatusCheckFailed_Systemアラームを設定すると、インスタンスを自動的に復旧してくれるEC2 Auto Recoveryという機能があり、使うためには条件がいくつかあります。 &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -88,6 +87,447 @@ document.write = function(html) {
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2015/05/01/notes-on-ec2-auto-recovery/">EC2 Auto Recoveryの注意点</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2015-05-01T11:45:00+09:00" pubdate data-updated="true">May 1<span>st</span>, 2015</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>先日、EC2のAuto Recoveryでちょっとハマったのでメモ。</p>
+
+<p>Cloudwatchの<code>StatusCheckFailed_System</code>アラームを設定すると、インスタンスを自動的に復旧してくれるEC2 Auto Recoveryという機能があり、使うためには条件がいくつかあります。</p>
+
+<ul>
+<li>特定のリージョン</li>
+<li>C3, C4, M3, R3, T2 instances</li>
+<li>VPC</li>
+<li>共有tenancy</li>
+<li>EBSストレージのみのサーバ</li>
+</ul>
+
+
+<p><a href="http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-instance-recover.html">Recover Your Instance</a></p>
+
+<p>しかし、上記を満たしているのに、特定のAMIをCLI経由で起動するとEC2 Auto Recoveryを設定できなくなります。</p>
+
+<p>（AWSコンソールでラジオボタンが押せない。CLIで設定しても効かない）
+<img src="https://lh5.googleusercontent.com/-dwWUcfCssA4/VULwrOsgxNI/AAAAAAAABFo/VQy-GnIYQXg/w448-h186-no/Screenshot%2B2015-05-01%2B12.18.16.png"></p>
+
+<p>原因はAMIにephemeral disk等のblock device mappingが設定されていて、T2やC4等のEBS onlyなinstance typeで起動しているにも関わらず、AWS側がephemeral diskが付与されていると認識してしまう所にあります。なお、AWSコンソールからの起動だとこの現象は発生しません。</p>
+
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+
+
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/gist-embed/2.1/gist-embed.min.js"></script>
+
+
+<p>AMIでblock device mappingが埋め込まれている</p>
+
+<pre><code>aws ec2 describe-images --image-ids ami-e74b60e6 --region ap-northeast-1
+</code></pre>
+
+<p><code data-gist-id="55659515d54593c29618" data-gist-highlight-line="21-28"></code></p>
+
+<p>本来はEBS onlyなinstance typeだとblock device mappingの設定如何に関わらず、付与自体が不可能なので、全く関係ないはずです。</p>
+
+<p>解決方法は現時点（2015/5/1）では3通り</p>
+
+<ul>
+<li>extraなmappingが設定されていないAMIを使う（Amazon Linux等）</li>
+<li>AWSコンソールから起動する</li>
+<li>明示的に<code>--block-device-mappings</code>パラメータで<code>NoDevice</code>と指定
+<code>aws ec2 run-instances --image-id ami-e74b60e6 --instance-type t2.small --subnet-id subnet-xxxxxxxx --block-device-mappings "[{\"DeviceName\": \"/dev/sdb\",  \"NoDevice\": \"\"}, {\"DeviceName\": \"/dev/sdc\",  \"NoDevice\": \"\"}]"</code></li>
+</ul>
+
+
+<p>これは明らかにAWS側のバグなので早く治って欲しいものですね。</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2015/04/17/self-healing-with-non-elb-autoscaling4/">Auto Scalingによる自動復旧（AWS Lambda+SNS編）</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2015-04-17T14:01:00+09:00" pubdate data-updated="true">Apr 17<span>th</span>, 2015</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>先週の<a href="http://aws.amazon.com/summits/san-francisco/">AWS Summit San Fransisco</a>にて、ついにLambdaがSNSに<a href="http://docs.aws.amazon.com/sns/latest/dg/sns-lambda.html">対応</a>しました。
+様々なサービスが発表された中、個人的にはこれが一番のヒットです！というのも、この機能によってAWS間のサービスがより連携しやすくなり、新しいリアクティブなアーキテクチャをどんどん実現できそうだからです。</p>
+
+<p>というわけで、少し試してみました。</p>
+
+<p>お題は去年12月に試したAutoScaling + Lambda。（当時はLambdaはまだこの機能がなかったのでSNS→SQSにてイベントをプロセスする仕組みを<a href="/blog/2014/12/05/self-healing-with-non-elb-autoscaling3/">作りました</a>。）</p>
+
+<p>SNS連携によって前回のこれが</p>
+
+<p><img src="https://lh4.googleusercontent.com/-IxSeVgkwfQU/VIIapiet4tI/AAAAAAAABBw/ukic0BIBIT0/w529-h393-no/aws-advent-2014.png"></p>
+
+<p>こうなります。（Lambdaのアイコンが出たので差し替えてます）</p>
+
+<p><img src="https://lh3.googleusercontent.com/-ejPyB1qrZyQ/VTCEjbhe2cI/AAAAAAAABFI/VCYVIo5hFao/w404-h393-no/as-sns-lambda2.png"></p>
+
+<p>うーん、シンプル！</p>
+
+<h3>設定</h3>
+
+<p>前回とほぼ同様。</p>
+
+<p>SNS作成</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ aws sns create-topic --name instance-alert --region ap-northeast-1
+</span><span class='line'>{
+</span><span class='line'>    "TopicArn": "arn:aws:sns:ap-northeast-1:123456789012:instance-alert"
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+
+
+<p>LambdaとSNS連携できるようにポリシーを付与</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ aws lambda add-permission --function-name makeASUnhealty --statement-id sns-instance-alert \
+</span><span class='line'>--action "lambda:invokeFunction" --principal sns.amazonaws.com \
+</span><span class='line'>--source-arn arn:aws:sns:ap-northeast-1:123456789012:instance-alert --region us-west-2                                                                                                                                                                                                  
+</span><span class='line'>{
+</span><span class='line'>    "Statement": "{\"Condition\":{\"ArnLike\":{\"AWS:SourceArn\":\"arn:aws:sns:ap-northeast-1:123456789012:instance-alert\"}},\"Resource\":\"arn:aws:lambda:us-west-2:123456789012:function:makeASUnhealty\",\"Action\":[\"lambda:invokeFunction\"],\"Principal\":{\"Service\":\"sns.amazonaws.com\"},\"Sid\":\"sns-instance-alert\",\"Effect\":\"Allow\"}"
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Subscribe</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ aws sns subscribe --topic-arn arn:aws:sns:ap-northeast-1:123456789012:instance- --protocol lambda \
+</span><span class='line'>--notification-endpoint arn:aws:lambda:us-west-2:123456789012:function:makeASUnhealty --region ap-northeast-1
+</span><span class='line'>{
+</span><span class='line'>    "SubscriptionArn": "arn:aws:sns:ap-northeast-1:123456789012:as-test:4b22eec6-aeb5-4421-7a2f-99ca33a4b8ab"
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+
+
+<p>aws cliはのヘルプにはまだSNSをLambdaへsubscribeするやり方は書いてませんが、上記のようにやればできます。 <a href="http://alestic.com/2015/04/aws-cli-sns-lambda">Thanks Eric!</a></p>
+
+<p>EC2 Status Check</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ export INSTANCE=i-xxxxxxxx
+</span><span class='line'>$ aws cloudwatch put-metric-alarm --alarm-name StatusCheckFailed-Alarm-for-$INSTANCE \
+</span><span class='line'>--alarm-description "Instance $INSTANCE has failed" --metric-name StatusCheckFailed \
+</span><span class='line'>--namespace AWS/EC2 --statistic Maximum --dimensions Name=InstanceId,Value=$INSTANCE \
+</span><span class='line'>--period 60 --unit Count --evaluation-periods 2 --threshold 1 --comparison-operator \
+</span><span class='line'>  GreaterThanOrEqualToThreshold --alarm-actions arn:aws:sns:ap-northeast-1:560336700862:instance-alert \
+</span><span class='line'>--region ap-northeast-1</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Lambda Function</p>
+
+<div><script src='https://gist.github.com/52033eb3b9b02c1fe975.js?file='></script>
+<noscript><pre><code></code></pre></noscript></div>
+
+
+<h3>自動復旧</h3>
+
+<p>通信を遮断し、Status Check Failを発動させる</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ date; sudo ifdown eth0
+</span><span class='line'>Fri Apr 17 03:08:39 UTC 2015</span></code></pre></td></tr></table></div></figure>
+
+
+<p>EC2 Status Check。2分でfail検知</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>Fri Apr 17 12:10:25 JST 2015
+</span><span class='line'>ok
+</span><span class='line'>DETAILS reachability    passed
+</span><span class='line'>
+</span><span class='line'>Fri Apr 17 12:10:31 JST 2015
+</span><span class='line'>impaired
+</span><span class='line'>DETAILS 2015-04-17T03:10:00.000Z        reachability    failed</span></code></pre></td></tr></table></div></figure>
+
+
+<p>SNS通知。さらに2分ちょい。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>Alarm Details:
+</span><span class='line'>- Name:                       StatusCheckFailed-Alarm-for-i-xxxxxxxx
+</span><span class='line'>- Description:                Instance i-xxxxxxxx has failed
+</span><span class='line'>- State Change:               OK -&gt; ALARM
+</span><span class='line'>- Reason for State Change:    Threshold Crossed: 2 datapoints were greater than or equal to the threshold (1.0). The most recent datapoints: [1.0, 1.0].
+</span><span class='line'>- Timestamp:                  Friday 17 April, 2015 03:13:09 UTC
+</span><span class='line'>- AWS Account:                123456789012
+</span><span class='line'>
+</span><span class='line'>Threshold:
+</span><span class='line'>- The alarm is in the ALARM state when the metric is GreaterThanOrEqualToThreshold 1.0 for 60 seconds.
+</span><span class='line'>
+</span><span class='line'>Monitored Metric:
+</span><span class='line'>- MetricNamespace:            AWS/EC2
+</span><span class='line'>- MetricName:                 StatusCheckFailed
+</span><span class='line'>- Dimensions:                 [InstanceId = i-xxxxxxxx]
+</span><span class='line'>- Period:                     60 seconds
+</span><span class='line'>- Statistic:                  Maximum
+</span><span class='line'>- Unit:                       Count</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Lambdaログ</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>2015-04-17T03:13:14.504Z  ac9ed52f-e4af-1e14-b826-ee9008a99db9   Received event:..
+</span><span class='line'>2015-04-17T03:13:14.504Z  ace9d52f-e4af-1e14-b826-ee9008a99db9    Changing instance health for: i-xxxxxxxx
+</span><span class='line'>2015-04-17T03:13:15.682Z  ace9d25f-e4af-1e14-b826-ee9008a99db9    { ResponseMetadata: { RequestId: 'b0194dfb-e4af-1e14-895f-abdf96b0b593' } }
+</span><span class='line'>2015-04-17T03:13:15.684Z  ace9d25f-e4af-1e14-b826-ee9008a99db9    result: ""</span></code></pre></td></tr></table></div></figure>
+
+
+<p>タイムスタンプによるとSNS発砲されてたからLambda発火まで5秒！</p>
+
+<p>Auto ScalingのHealth Status</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>Fri Apr 17 12:13:10 JST 2015
+</span><span class='line'>as-sg   ap-northeast-1a HEALTHY i-ce02563d      as-lc   InService
+</span><span class='line'>
+</span><span class='line'>Fri Apr 17 12:13:15 JST 2015
+</span><span class='line'>as-sg   ap-northeast-1a UNHEALTHY       i-ce02563d      as-lc   InService
+</span><span class='line'>
+</span><span class='line'>Fri Apr 17 12:13:20 JST 2015
+</span><span class='line'>as-sg   ap-northeast-1a UNHEALTHY       i-ce02563d      as-lc   InService
+</span><span class='line'>
+</span><span class='line'>Fri Apr 17 12:13:26 JST 2015
+</span><span class='line'>as-sg   ap-northeast-1a UNHEALTHY       i-ce02563d      as-lc   InService
+</span><span class='line'>
+</span><span class='line'>Fri Apr 17 12:13:31 JST 2015
+</span><span class='line'>as-sg   ap-northeast-1a UNHEALTHY       i-ce02563d      as-lc   InService
+</span><span class='line'>
+</span><span class='line'>Fri Apr 17 12:13:37 JST 2015
+</span><span class='line'>as-sg   ap-northeast-1a UNHEALTHY       i-ce02563d      as-lc   Terminating
+</span><span class='line'>
+</span><span class='line'>Fri Apr 17 12:13:43 JST 2015
+</span><span class='line'>as-sg   ap-northeast-1a UNHEALTHY       i-ce02563d      as-lc   Terminating
+</span><span class='line'>
+</span><span class='line'>Fri Apr 17 12:13:49 JST 2015
+</span><span class='line'>as-sg   ap-northeast-1a UNHEALTHY       i-ce02563d      as-lc   Terminating
+</span><span class='line'>
+</span><span class='line'>Fri Apr 17 12:13:54 JST 2015
+</span><span class='line'>as-sg   ap-northeast-1a UNHEALTHY       i-ce02563d      as-lc   Terminating
+</span><span class='line'>
+</span><span class='line'>Fri Apr 17 12:13:59 JST 2015
+</span><span class='line'>
+</span><span class='line'>Fri Apr 17 12:14:05 JST 2015
+</span><span class='line'>as-sg   ap-northeast-1a HEALTHY i-525601a1      as-lc   Pending
+</span><span class='line'>
+</span><span class='line'>Fri Apr 17 12:14:10 JST 2015
+</span><span class='line'>as-sg   ap-northeast-1a HEALTHY i-525601a1      as-lc   Pending
+</span><span class='line'>
+</span><span class='line'>Fri Apr 17 12:14:16 JST 2015
+</span><span class='line'>as-sg   ap-northeast-1a HEALTHY i-525601a1      as-lc   Pending
+</span><span class='line'>
+</span><span class='line'>Fri Apr 17 12:14:21 JST 2015
+</span><span class='line'>as-sg   ap-northeast-1a HEALTHY i-525601a1      as-lc   Pending
+</span><span class='line'>
+</span><span class='line'>Fri Apr 17 12:14:26 JST 2015
+</span><span class='line'>as-sg   ap-northeast-1a HEALTHY i-525601a1      as-lc   Pending
+</span><span class='line'>
+</span><span class='line'>Fri Apr 17 12:14:32 JST 2015
+</span><span class='line'>as-sg   ap-northeast-1a HEALTHY i-525601a1      as-lc   Pending
+</span><span class='line'>
+</span><span class='line'>Fri Apr 17 12:14:37 JST 2015
+</span><span class='line'>as-sg   ap-northeast-1a HEALTHY i-525601a1      as-lc   InService</span></code></pre></td></tr></table></div></figure>
+
+
+<p>ちゃんとTerminateされてリプレースされてますね。</p>
+
+<p>AutoScalingの通知</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>Service: AWS Auto Scaling
+</span><span class='line'>Time: 2015-04-17T03:13:59.367Z
+</span><span class='line'>RequestId: efa97137-fa15-4aa4-9c8c-5241961a2d0e
+</span><span class='line'>Event: autoscaling:EC2_INSTANCE_TERMINATE
+</span><span class='line'>AccountId: 123456789012
+</span><span class='line'>AutoScalingGroupName: as-sg
+</span><span class='line'>AutoScalingGroupARN: arn:aws:autoscaling:ap-northeast-1:123456789012:autoScalingGroup:c395c157-3a7e-4d56-287b-5ad9b26eb464:autoScalingGroupName/as-sg
+</span><span class='line'>ActivityId: efa97137-fa15-4aa4-9c8c-5241961a2d0e
+</span><span class='line'>Description: Terminating EC2 instance: i-xxxxxxxx
+</span><span class='line'>Cause: At 2015-04-17T03:13:36Z an instance was taken out of service in response to a user health-check.
+</span><span class='line'>StartTime: 2015-04-17T03:13:36.342Z
+</span><span class='line'>EndTime: 2015-04-17T03:13:59.367Z
+</span><span class='line'>StatusCode: InProgress
+</span><span class='line'>StatusMessage:
+</span><span class='line'>Progress: 50
+</span><span class='line'>EC2InstanceId: i-xxxxxxxx
+</span><span class='line'>Details: {"Availability Zone":"ap-northeast-1a","Subnet ID":"subnet-bbbbbbbb"}</span></code></pre></td></tr></table></div></figure>
+
+
+<p>通常は<code>Cause</code>が<code>an instance was taken out of service in response to a EC2 health check indicating it has been terminated or stopped.</code>となるのが<code>an instance was taken out of service in response to a user health-check.</code>となっているのでAutoScalingのEC2 Health Checkより前にアクションが起こされた事が分かります。</p>
+
+<p>障害発生からInstanceがリプレースされて<code>InService</code>になるAuto Healingのトータル時間は6分ちょいになりました。
+<a href="http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-instance-recover.html">EC2 Auto Recovery</a>を使えば済む場合もありますが、あちらはAWS側の障害に起因する<code>StatusCheckFailed_System</code>のみで<code>StatusCheckFailed_Instance</code>はトリガー対象じゃないのと、特定のインスタンスタイプやVPC等若干制限があります。</p>
+
+<h3>終わりに</h3>
+
+<p>ちなみに今回はinstanceやSNSは東京リージョン（ap-northeast-1）、Lambdaはオレゴンリージョン（us-west-2）というリージョンを跨いだ連携も可能という事が分かりました。まだ東京に来てないけど、既にproduction readyなのでもう普通に使っていけます。</p>
+
+<p>いやー。SNS連携によって夢は広がりますねぇ。</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -1490,535 +1930,6 @@ sudo mount -t xfs -o noatime,logbufs=8 /dev/md0 /data
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2013/12/14/self-healing-with-non-elb-autoscaling2/">Autoscalingによる自動復旧(Immutable Infrastucture)</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-12-14T23:40:00+09:00" pubdate data-updated="true">Dec 14<span>th</span>, 2013</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>以前、「<a href="/blog/2013/02/08/self-healing-with-non-elb-autoscaling/">非ELBなAutoscalingによる自動復旧</a>」でインスタンスの自動復旧の挙動をテストしました。
-障害が発生したサーバをterminateし、新サーバをstartしてリプレースする仕組みはまさに最近話題のImmutable Infrastructureですね。
-CDP的には「<a href="http://aws.clouddesignpattern.org/index.php/CDP:Server_Swapping%E3%83%91%E3%82%BF%E3%83%BC%E3%83%B3">Server Swappingパターン</a>」が一番近いですが、今後はImmutable分類もあっても良いような気がします。</p>
-
-<p>前回はAuto Scalingがインスタンス障害を検知してリプレースするまでのタイムラグが約20分だと分かりました。
-本日、インスタンスの状態をチェックするEC2 Status Checkが1分間隔になった（以前は5分間隔）と<a href="https://forums.aws.amazon.com/ann.jspa?annID=2266">発表</a>されたので、
-これによってタイムラグが短縮されたかを検証してみます。</p>
-
-<h3>設定</h3>
-
-<p>手順は前回と一緒なので省略</p>
-
-<h3>自動復旧</h3>
-
-<p>通信を遮断し、Status Check Failを発動させる</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>ubuntu@ip-10-123-32-180:~$ date; sudo ifdown eth0
-</span><span class='line'>Sat Dec 14 14:19:19 UTC 2013
-</span><span class='line'>Write failed: Broken pipe</span></code></pre></td></tr></table></div></figure>
-
-
-<p>EC2のStatus Checkを流す</p>
-
-<pre><code>while true; do date; aws ec2 describe-instance-status --instance-ids i-b03788b5 --query 'InstanceStatuses[*].InstanceStatus' --output text ; echo ; sleep 10; done
-</code></pre>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>Sat Dec 14 23:22:05 JST 2013
-</span><span class='line'>ok
-</span><span class='line'>DETAILS reachability    passed
-</span><span class='line'>
-</span><span class='line'>Sat Dec 14 23:22:16 JST 2013
-</span><span class='line'>ok
-</span><span class='line'>DETAILS reachability    passed
-</span><span class='line'>
-</span><span class='line'>Sat Dec 14 23:22:27 JST 2013
-</span><span class='line'>impaired
-</span><span class='line'>DETAILS 2013-12-14T14:22:00.000Z        reachability    failed
-</span><span class='line'>
-</span><span class='line'>Sat Dec 14 23:22:37 JST 2013
-</span><span class='line'>impaired
-</span><span class='line'>DETAILS 2013-12-14T14:22:00.000Z        reachability    failed</span></code></pre></td></tr></table></div></figure>
-
-
-<p>約3分でStatus異常が検知されました。</p>
-
-<p><img src="https://lh5.googleusercontent.com/-pabfvBU5fW0/Uqx4SEmBYLI/AAAAAAAAA2E/abCLUwoESds/w734-h154-no/Instance_status_check_2013-12-14+at+11.34.27+PM.png"></p>
-
-<p>Auto ScalingのHealthStatusを流す</p>
-
-<pre><code>while true; do date; aws autoscaling describe-auto-scaling-instances --query 'AutoScalingInstances[*].HealthStatus' --output text; echo; sleep 10; done
-</code></pre>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-<span class='line-number'>38</span>
-<span class='line-number'>39</span>
-<span class='line-number'>40</span>
-<span class='line-number'>41</span>
-<span class='line-number'>42</span>
-<span class='line-number'>43</span>
-<span class='line-number'>44</span>
-<span class='line-number'>45</span>
-<span class='line-number'>46</span>
-<span class='line-number'>47</span>
-<span class='line-number'>48</span>
-<span class='line-number'>49</span>
-<span class='line-number'>50</span>
-<span class='line-number'>51</span>
-<span class='line-number'>52</span>
-<span class='line-number'>53</span>
-<span class='line-number'>54</span>
-<span class='line-number'>55</span>
-<span class='line-number'>56</span>
-<span class='line-number'>57</span>
-<span class='line-number'>58</span>
-<span class='line-number'>59</span>
-<span class='line-number'>60</span>
-<span class='line-number'>61</span>
-<span class='line-number'>62</span>
-<span class='line-number'>63</span>
-<span class='line-number'>64</span>
-<span class='line-number'>65</span>
-<span class='line-number'>66</span>
-<span class='line-number'>67</span>
-<span class='line-number'>68</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>Sat Dec 14 23:38:06 JST 2013
-</span><span class='line'>[
-</span><span class='line'>    {
-</span><span class='line'>        "State": "InService", 
-</span><span class='line'>        "Health": "HEALTHY", 
-</span><span class='line'>        "ID": "i-b03788b5"
-</span><span class='line'>    }
-</span><span class='line'>]
-</span><span class='line'>
-</span><span class='line'>Sat Dec 14 23:38:17 JST 2013
-</span><span class='line'>[
-</span><span class='line'>    {
-</span><span class='line'>        "State": "InService", 
-</span><span class='line'>        "Health": "UNHEALTHY", 
-</span><span class='line'>        "ID": "i-b03788b5"
-</span><span class='line'>    }
-</span><span class='line'>]
-</span><span class='line'>
-</span><span class='line'>Sat Dec 14 23:38:28 JST 2013
-</span><span class='line'>[
-</span><span class='line'>    {
-</span><span class='line'>        "State": "InService", 
-</span><span class='line'>        "Health": "UNHEALTHY", 
-</span><span class='line'>        "ID": "i-b03788b5"
-</span><span class='line'>    }
-</span><span class='line'>]
-</span><span class='line'>
-</span><span class='line'>Sat Dec 14 23:38:38 JST 2013
-</span><span class='line'>[
-</span><span class='line'>    {
-</span><span class='line'>        "State": "Terminating", 
-</span><span class='line'>        "Health": "UNHEALTHY", 
-</span><span class='line'>        "ID": "i-b03788b5"
-</span><span class='line'>    }
-</span><span class='line'>]
-</span><span class='line'>
-</span><span class='line'>
-</span><span class='line'>Sat Dec 14 23:38:49 JST 2013
-</span><span class='line'>[
-</span><span class='line'>    {
-</span><span class='line'>        "State": "Terminating", 
-</span><span class='line'>        "Health": "UNHEALTHY", 
-</span><span class='line'>        "ID": "i-b03788b5"
-</span><span class='line'>    }
-</span><span class='line'>]
-</span><span class='line'>
-</span><span class='line'>Sat Dec 14 23:38:59 JST 2013
-</span><span class='line'>[
-</span><span class='line'>    {
-</span><span class='line'>        "State": "Terminating", 
-</span><span class='line'>        "Health": "UNHEALTHY", 
-</span><span class='line'>        "ID": "i-b03788b5"
-</span><span class='line'>    }
-</span><span class='line'>]
-</span><span class='line'>
-</span><span class='line'>Sat Dec 14 23:39:10 JST 2013
-</span><span class='line'>[
-</span><span class='line'>    {
-</span><span class='line'>        "State": "Pending", 
-</span><span class='line'>        "Health": "HEALTHY", 
-</span><span class='line'>        "ID": "i-4cc7a849"
-</span><span class='line'>    }, 
-</span><span class='line'>    {
-</span><span class='line'>        "State": "Terminating", 
-</span><span class='line'>        "Health": "UNHEALTHY", 
-</span><span class='line'>        "ID": "i-b03788b5"
-</span><span class='line'>    }
-</span><span class='line'>]
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>やっとAuto Scalingの方でも異常検知。</p>
-
-<p><img src="https://lh4.googleusercontent.com/-8Dj_s0mm9I8/Uqx4R1-Wl9I/AAAAAAAAA2I/laUZmwhUw8o/w873-h151-no/Autoscaling_health_2013-12-14+at+11.57.42+PM.png"></p>
-
-<p>SNS通知</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>Service: AWS Auto Scaling
-</span><span class='line'>Time: 2013-12-14T14:39:41.271Z
-</span><span class='line'>RequestId: f622c6d2-8c77-4fef-8b38-ece463574712
-</span><span class='line'>Event: autoscaling:EC2_INSTANCE_TERMINATE
-</span><span class='line'>AccountId: 111155559999
-</span><span class='line'>AutoScalingGroupName: test-sg
-</span><span class='line'>AutoScalingGroupARN: arn:aws:autoscaling:ap-northeast-1:11115559999:autoScalingGroup:0e771015-f979-4afe-b065-595abafdbf9b:autoScalingGroupName/test-sg
-</span><span class='line'>ActivityId: f622c6d2-8c77-4fef-8b38-ece463574712
-</span><span class='line'>Description: Terminating EC2 instance: i-b03788b5
-</span><span class='line'>Cause: At 2013-12-14T14:38:38Z an instance was taken out of service in response to a system health-check.
-</span><span class='line'>StartTime: 2013-12-14T14:38:38.257Z
-</span><span class='line'>EndTime: 2013-12-14T14:39:41.271Z
-</span><span class='line'>StatusCode: InProgress
-</span><span class='line'>StatusMessage:
-</span><span class='line'>Progress: 50
-</span><span class='line'>EC2InstanceId: i-b03788b5</span></code></pre></td></tr></table></div></figure>
-
-
-<p>やはり20分のタイムラグ変わらずですね。。</p>
-
-<h3>結論</h3>
-
-<p>というわけで、EC2 Status Checkが1分間隔になっても、EC2のみ（ELBを使わい場合）のAuto Scalingによる不調インスタンスの自動復旧時間は変わらずでした。</p>
-
-<p>ちなみにAWS ConsoleでAuto Scalingの設定ができるようになったけど、まだscaling groupにtagが付けられないのがちょっと微妙ですね。。GUIで状態を見る分には楽だけど。</p>
-</div>
-  
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2013/12/13/serverfesta-2013-autumn/">サバフェス！2013に参加してきた</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-12-13T15:59:00+09:00" pubdate data-updated="true">Dec 13<span>th</span>, 2013</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>少し前に<a href="http://connpass.com/event/3690/">サバフェス！2013 Autumn</a>に参加してきました。
-内容を忘れないうちにやった事を書いておきます。</p>
-
-<p>スコアはトップレベルだったものの、運営側がサーバを起動した所、自動でサービスが立ち上がらなかったらしいので残念な事に参考値のみに。（提出前に2回ぐらい再起動確認したのにおかしいなぁ。。）
-優勝スコアは90.830 (GET 199,802 : POST 18,106)で、私のは<strong>93.410</strong> (GET 162,923 : POST 29,930)でした。</p>
-
-<h2>お題</h2>
-
-<p>「最速インフラを構築せよ！！！</p>
-
-<p>WordPressに一切手を加えずに、どこまで高速化できるのか！？</p>
-
-<p>OSチューニング、サーバチューニング、負荷分散…最適解を探せ！」</p>
-
-<p>&#8211;</p>
-
-<p><a href="http://www.idcf.jp/cloud/service/self.html">IDCFクラウド</a>上で仮想マシン5台（M8タイプまで）を使ってスコアを競うというもの。
-<a href="https://www.facebook.com/tuningathon">チューニンガソン</a>と似てますが、サーバが複数台使えるのが良いですね。</p>
-
-<h2>構成</h2>
-
-<p>表彰式でLTしたけど、LVS (DSR) + php 5.5 + apcu + Varnish + nginx (lua) + memcached</p>
-
-<p>ポイントは</p>
-
-<ul>
-<li>GET時は1台では帯域の限界に達したのでLVS (DSR)による4台での並列応答</li>
-<li>POST時には必ず各Varnishのキャッシュクリア（ban）する</li>
-<li>POST時にnginx->memcachedへ渡すと高速すぎたのであえてsleepを5msして遅延させる</li>
-<li>nginx(lua)はコード量が多いと通らないのでぎりぎりまで削減</li>
-<li>memcachedからmysqlへの非同期処理（5ms間隔）</li>
-<li>mysqlの更新処理はそんなにいらないので基本チューニングとInnoDBにしただけで、5.1のまま</li>
-<li>サーバはM8までいらないのでM4で</li>
-<li>海外から参戦したけど、GUIが重いのでAPI経由での操作</li>
-</ul>
-
-
-<p>でしょうか。特に意識したのはmemcachedからmysqlへの許容範囲内での同期と複数台あるVarnishのキャッシュクリアですね。他のチームはnginxでTTLを設定して逃げたようですが、実運用時にはPOST時にキャッシュクリアを確実にする必要があるのでVarnish moduleをコンパイルして他のsiblingへ並列でban処理を投げてました。まあ、今回のベンチマークツールはそこまで厳格じゃなかったけど、最終チェックは人間が動作させるので。</p>
-
-<p>LT資料。スコア推移と簡単な構成の紹介</p>
-
-<div class="embed-ss-container"><iframe src="http://www.slideshare.net/slideshow/embed_code/29171459 "></iframe></div>
-
-
-<h2>設定ファイル</h2>
-
-<p>以下、設定ファイルです。いらない所は削ったけど動くはず。。</p>
-
-<p>backend varnish vcl （各backendの設定は微妙に違う）:</p>
-
-<div><script src='https://gist.github.com/7941009.js?file='></script>
-<noscript><pre><code>&lt;html&gt;&lt;body&gt;You are being &lt;a href=&quot;https://github.com/gist/7941009&quot;&gt;redirected&lt;/a&gt;.&lt;/body&gt;&lt;/html&gt;</code></pre></noscript></div>
-
-
-<p>backend nginx.conf:</p>
-
-<div><script src='https://gist.github.com/7940999.js?file='></script>
-<noscript><pre><code>&lt;html&gt;&lt;body&gt;You are being &lt;a href=&quot;https://github.com/gist/7940999&quot;&gt;redirected&lt;/a&gt;.&lt;/body&gt;&lt;/html&gt;</code></pre></noscript></div>
-
-
-<p>base nginx.conf:</p>
-
-<div><script src='https://gist.github.com/7941214.js?file='></script>
-<noscript><pre><code>&lt;html&gt;&lt;body&gt;You are being &lt;a href=&quot;https://github.com/gist/7941214&quot;&gt;redirected&lt;/a&gt;.&lt;/body&gt;&lt;/html&gt;</code></pre></noscript></div>
-
-
-<p>base syncer.rb:</p>
-
-<div><script src='https://gist.github.com/7941042.js?file='></script>
-<noscript><pre><code>&lt;html&gt;&lt;body&gt;You are being &lt;a href=&quot;https://github.com/gist/7941042&quot;&gt;redirected&lt;/a&gt;.&lt;/body&gt;&lt;/html&gt;</code></pre></noscript></div>
-
-
-<p>base supervisord.conf:</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>[program:syncer]
-</span><span class='line'>command=/home/mho/.rvm/bin/ruby /home/mho/syncer/sync.rb 5
-</span><span class='line'>stdout_logfile_maxbytes=1MB
-</span><span class='line'>stderr_logfile_maxbytes=1MB
-</span><span class='line'>stdout_logfile=/tmp/%(program_name)s-stdout.log
-</span><span class='line'>stderr_logfile=/tmp/%(program_name)s-stderr.log
-</span><span class='line'>user=mho
-</span><span class='line'>directory=/home/mho/syncer
-</span><span class='line'>autostart=true
-</span><span class='line'>autorestart=true</span></code></pre></td></tr></table></div></figure>
-
-
-<p>base my.cnf:</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>[mysqld]
-</span><span class='line'>datadir=/var/lib/mysql
-</span><span class='line'>socket=/var/lib/mysql/mysql.sock
-</span><span class='line'>user=mysql
-</span><span class='line'># Disabling symbolic-links is recommended to prevent assorted security risks
-</span><span class='line'>symbolic-links=0
-</span><span class='line'>character-set-server = utf8
-</span><span class='line'>max_connections = 1000
-</span><span class='line'> 
-</span><span class='line'>key_buffer_size = 32M
-</span><span class='line'>max_allowed_packet = 16M
-</span><span class='line'>thread_stack = 192K
-</span><span class='line'>thread_cache_size  = 200
-</span><span class='line'> 
-</span><span class='line'>#slow_query_log=1
-</span><span class='line'>#long_query_time=0
-</span><span class='line'>query_cache_type = 0
-</span><span class='line'>skip-innodb_doublewrite
-</span><span class='line'>innodb_buffer_pool_size = 192M
-</span><span class='line'>innodb_log_buffer_size = 4M
-</span><span class='line'>innodb_flush_log_at_trx_commit = 0
-</span><span class='line'>innodb_support_xa = 0</span></code></pre></td></tr></table></div></figure>
-
-
-<p>sysctl.conf:</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>fs.file-max = 1048576
-</span><span class='line'>
-</span><span class='line'>net.ipv4.ip_local_port_range = 1024 65535
-</span><span class='line'>
-</span><span class='line'>net.core.wmem_max = 16777216
-</span><span class='line'>net.core.rmem_max = 16777216
-</span><span class='line'>
-</span><span class='line'>net.ipv4.tcp_wmem = 4096 65536 16777216
-</span><span class='line'>net.ipv4.tcp_rmem = 4096 87380 16777216
-</span><span class='line'>
-</span><span class='line'>net.core.somaxconn = 8192
-</span><span class='line'>
-</span><span class='line'>net.core.netdev_max_backlog = 8000
-</span><span class='line'>
-</span><span class='line'>net.ipv4.tcp_max_syn_backlog = 8192
-</span><span class='line'>
-</span><span class='line'>net.ipv4.tcp_synack_retries = 3
-</span><span class='line'>net.ipv4.tcp_retries2 = 5
-</span><span class='line'>
-</span><span class='line'>net.ipv4.tcp_keepalive_time = 900
-</span><span class='line'>
-</span><span class='line'>net.ipv4.tcp_keepalive_probes = 3
-</span><span class='line'>
-</span><span class='line'>net.ipv4.tcp_keepalive_intvl = 15
-</span><span class='line'>
-</span><span class='line'>net.nf_conntrack_max = 1000000</span></code></pre></td></tr></table></div></figure>
-
-
-<h2>終わりに</h2>
-
-<p>最初はecho選手権になってたのであんまりやる気がなかったけど、後半はちょっと楽しめました。結果は惜しかったけど、今まで<a href="https://www.facebook.com/tuningathon">チューニンガソン</a>や<a href="http://isucon.net">ISUCON</a>に出場したり、トラブル☆しゅーたーずを主催したり、日々の運用等の経験が生きた感じがします。運営の皆様、ありがとうございました。次があれば楽しみにしています！（レギュレーションの解釈が微妙だったのでそこはブラッシュアップして欲しいですね）</p>
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/blog/page/4/">&larr; Older</a>
@@ -2034,6 +1945,14 @@ CDP的には「<a href="http://aws.clouddesignpattern.org/index.php/CDP:Server_S
     <section>
   <h1>Recent Posts</h1>
   <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2017/12/31/aws-re-invent-2017/">AWS re:Invent 2017に参加してきた</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2017/04/30/serverlessconf-austin-2017/">ServerlessConf Austin 2017に参加してきた</a>
+      </li>
     
       <li class="post">
         <a href="/blog/2017/03/27/ruboty-github-pr-release/">ruboty-github_pr_releaseを作った</a>
@@ -2095,6 +2014,18 @@ CDP的には「<a href="http://aws.clouddesignpattern.org/index.php/CDP:Server_S
         <a href="/blog/2015/09/27/isucon5-qualifier/">ISUCON5の予選に記念参加してきた</a>
       </li>
     
+      <li class="post">
+        <a href="/blog/2015/08/23/yapc-asia-tokyo-2015/">YAPC::Asia Tokyo 2015に参加してきた</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/08/06/github-to-lambda-to-slack/">GitHubのeventをLambdaで処理してSlackへ通知</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/07/02/dynamodb-export-with-datapipeline/">Data PipelineによるDynamoDBのexport</a>
+      </li>
+    
   </ul>
 </section>
 
@@ -2125,7 +2056,7 @@ CDP的には「<a href="http://aws.clouddesignpattern.org/index.php/CDP:Server_S
     </div>
   </div>
   <footer role="contentinfo"><p>
-  Copyright &copy; 2017 - Michael H. Oshita -
+  Copyright &copy; 2018 - Michael H. Oshita -
   <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
 </p>
 

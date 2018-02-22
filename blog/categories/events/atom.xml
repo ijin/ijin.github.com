@@ -4,7 +4,7 @@
   <title><![CDATA[Category: events | @ijin]]></title>
   <link href="http://ijin.github.io/blog/categories/events/atom.xml" rel="self"/>
   <link href="http://ijin.github.io/"/>
-  <updated>2017-06-16T04:58:21+09:00</updated>
+  <updated>2018-02-22T19:39:16+09:00</updated>
   <id>http://ijin.github.io/</id>
   <author>
     <name><![CDATA[Michael H. Oshita]]></name>
@@ -12,6 +12,275 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[AWS re:Invent 2017に参加してきた]]></title>
+    <link href="http://ijin.github.io/blog/2017/12/31/aws-re-invent-2017/"/>
+    <updated>2017-12-31T23:50:00+09:00</updated>
+    <id>http://ijin.github.io/blog/2017/12/31/aws-re-invent-2017</id>
+    <content type="html"><![CDATA[<p>AWS re:Inventに5回目の参加記録。</p>
+
+<p>例によって、帰国直後の体験談の発表</p>
+
+<p><script async="true" class="speakerdeck-embed" data-id="68dc84cbb44d44cebc608c31aca10b9a" src="//speakerdeck.com/assets/embed.js"> </script></p>
+
+<p><img src="https://lh3.googleusercontent.com/V14NgOarSqa6dSAj2hvppJuVQsFGm7EU07dWXCY2vUox09ysgJ9vdM8_Y4y6uNWH0iioyoKKrGocPT27QIRpTNtg5kVT5AZezM4aLh5s_Ob-LwmdToh9Rh6Q9CWN1ts6VfAOo3bUIA=w473-h630-no"></p>
+
+<h2>Game Day</h2>
+
+<p>まず、何よりもGame Day！もはやこれに出れれば8割型満足。。内容としてはいろんなサービスを使うようになってて結構凝ってた。</p>
+
+<p><img src="https://lh3.googleusercontent.com/ZntKtGaloc3dWKmu1roAm3J0lyqArnkc7RmMxUIv4reySM1puFffYU9Tc_HO54S9NTdfoOvfMwfPpTjJyMybH_K6sj4OEfPDfKJPhGWHQ9CcrxtHlBKjKazuYdBbpYqdenkX4Aqxjw=w1050-h787-no"></p>
+
+<p>去年の運営チームとは別になったらしいので中身も毛色が少し違ってた。</p>
+
+<p><img src="https://lh3.googleusercontent.com/HRURknhesNClVInP9hIU1XLDcyVMHxlvCr47TPMXMVPYcqgUIyDO0UyzE2WZ73sZa7UBmh3ULw_saq2rPnEhA_j_CYeQcALEzs4joBjlRO8gsCvA_ATcXRV8v8B0ZnSSChL9N5iuFA=w591-h787-no"></p>
+
+<h2>Keynote by Andy Jassy</h2>
+
+<p>今年は部屋でゆったりと。</p>
+
+<p><img src="https://lh3.googleusercontent.com/qjbdhgOgzzvykTsUJtz_ZbCWF4hBj3mfEEw9R6BwQKg_sPf6FyO8F2b2xHZLk2JZFdLyV8SU7IWg1WYK0fqEzjNF5kIe8ry9JVvZlZwROZLpGjSnNeXzdDrhQTq-h5kknwLTnvZwhQ=w1122-h842-no"></p>
+
+<p>怒涛のリリースラッシュ！</p>
+
+<p><div class='embed tweet'><blockquote class="twitter-tweet"><p lang="en" dir="ltr">The list of current AWS services barely fits on this huge stage slide <a href="https://twitter.com/hashtag/reinvent?src=hash&amp;ref_src=twsrc%5Etfw">#reinvent</a> <a href="https://t.co/RxZHpCKbtl">pic.twitter.com/RxZHpCKbtl</a></p>&mdash; Marius Ducea (@mariusducea) <a href="https://twitter.com/mariusducea/status/935904367990861825?ref_src=twsrc%5Etfw">November 29, 2017</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="et" dir="ltr">EKS (ECS for Kubernetes)きた。 <a href="https://twitter.com/hashtag/reinvent?src=hash&amp;ref_src=twsrc%5Etfw">#reinvent</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/935909063363194880?ref_src=twsrc%5Etfw">November 29, 2017</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">AWS Fargate、2年前に欲しかったやつだ。 <a href="https://twitter.com/hashtag/reinvent?src=hash&amp;ref_src=twsrc%5Etfw">#reinvent</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/935909778009702401?ref_src=twsrc%5Etfw">November 29, 2017</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="es" dir="ltr">Aurora Multi-Master! <a href="https://twitter.com/hashtag/reinvent?src=hash&amp;ref_src=twsrc%5Etfw">#reinvent</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/935912830284439552?ref_src=twsrc%5Etfw">November 29, 2017</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">Aurora Serverless...そのネーミングはちょっと。。 <a href="https://twitter.com/hashtag/reinvent?src=hash&amp;ref_src=twsrc%5Etfw">#reinvent</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/935913661276626949?ref_src=twsrc%5Etfw">November 29, 2017</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">DynamoDB Global Tables... Spannerっぽいやつか。 <a href="https://twitter.com/hashtag/reinvent?src=hash&amp;ref_src=twsrc%5Etfw">#reinvent</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/935914517694857217?ref_src=twsrc%5Etfw">November 29, 2017</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">DynamoDB backup &amp; restore! もうDatapipelineで疲弊しなくて良いのか。 <a href="https://twitter.com/hashtag/reinvent?src=hash&amp;ref_src=twsrc%5Etfw">#reinvent</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/935914943995510784?ref_src=twsrc%5Etfw">November 29, 2017</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="en" dir="ltr">Amazon Neptune. Graph databaseか。 <a href="https://twitter.com/hashtag/reinvent?src=hash&amp;ref_src=twsrc%5Etfw">#reinvent</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/935915727248277504?ref_src=twsrc%5Etfw">November 29, 2017</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">S3 Select...Athenaとどう違うんだ。 <a href="https://twitter.com/hashtag/reinvent?src=hash&amp;ref_src=twsrc%5Etfw">#reinvent</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/935921615967207424?ref_src=twsrc%5Etfw">November 29, 2017</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="en" dir="ltr">Glacier Select...w <a href="https://twitter.com/hashtag/reinvent?src=hash&amp;ref_src=twsrc%5Etfw">#reinvent</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/935921912240209922?ref_src=twsrc%5Etfw">November 29, 2017</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="en" dir="ltr">Amazon Sagemaker! <a href="https://twitter.com/hashtag/reinvent?src=hash&amp;ref_src=twsrc%5Etfw">#reinvent</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/935924977290723328?ref_src=twsrc%5Etfw">November 29, 2017</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">AWS DeepLens. Greengrass入りだ。<a href="https://twitter.com/hashtag/reinvent?src=hash&amp;ref_src=twsrc%5Etfw">#reinvent</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/935927159998226433?ref_src=twsrc%5Etfw">November 29, 2017</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">Rekognition VideoにKinesis Video Streams。すごいな。 <a href="https://twitter.com/hashtag/reInvent?src=hash&amp;ref_src=twsrc%5Etfw">#reInvent</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/935931635928674304?ref_src=twsrc%5Etfw">November 29, 2017</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">Amazon Transcribe。便利そう <a href="https://twitter.com/hashtag/reInvent?src=hash&amp;ref_src=twsrc%5Etfw">#reInvent</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/935932086455746562?ref_src=twsrc%5Etfw">November 29, 2017</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="en" dir="ltr">Amazon Translate!  <a href="https://twitter.com/hashtag/reInvent?src=hash&amp;ref_src=twsrc%5Etfw">#reInvent</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/935932557853573121?ref_src=twsrc%5Etfw">November 29, 2017</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="en" dir="ltr">Amazon Comprehend! <a href="https://twitter.com/hashtag/reInvent?src=hash&amp;ref_src=twsrc%5Etfw">#reInvent</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/935933124621381632?ref_src=twsrc%5Etfw">November 29, 2017</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="en" dir="ltr">AWS IoT 1clickにIoT Device Management <a href="https://twitter.com/hashtag/reInvent?src=hash&amp;ref_src=twsrc%5Etfw">#reInvent</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/935939366404333568?ref_src=twsrc%5Etfw">November 29, 2017</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="en" dir="ltr">AWS IoT Device Defender <a href="https://twitter.com/hashtag/reInvent?src=hash&amp;ref_src=twsrc%5Etfw">#reInvent</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/935939678561173504?ref_src=twsrc%5Etfw">November 29, 2017</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="en" dir="ltr">AWS IoT Analytics <a href="https://twitter.com/hashtag/reInvent?src=hash&amp;ref_src=twsrc%5Etfw">#reInvent</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/935940580152033280?ref_src=twsrc%5Etfw">November 29, 2017</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="es" dir="ltr">Amazon FreeRTOS <a href="https://twitter.com/hashtag/reInvent?src=hash&amp;ref_src=twsrc%5Etfw">#reInvent</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/935941862111690752?ref_src=twsrc%5Etfw">November 29, 2017</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div></p>
+
+<h2>DeepLens Workshop</h2>
+
+<p><div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">わーい。DeepLens Workshopに入れた！マシンはUbuntu <a href="https://twitter.com/hashtag/reinvent?src=hash&amp;ref_src=twsrc%5Etfw">#reinvent</a> <a href="https://t.co/kIVSqnQxL8">pic.twitter.com/kIVSqnQxL8</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/936069758834716673?ref_src=twsrc%5Etfw">November 30, 2017</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">SqueezeNetというCNNモデルをSagemakerでJupiter notebook上でトレーニングしてDeepLensにデプロイ、推測はlambdaに任せるように設定するとさっきもらった🌭 の判定がリアルタイムで出来た！<a href="https://twitter.com/hashtag/reinvent?src=hash&amp;ref_src=twsrc%5Etfw">#reinvent</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/936091987194679296?ref_src=twsrc%5Etfw">November 30, 2017</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">ゲット！ <a href="https://twitter.com/hashtag/reinvent?src=hash&amp;ref_src=twsrc%5Etfw">#reinvent</a> <a href="https://t.co/YqnKo9qkE9">pic.twitter.com/YqnKo9qkE9</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/936112237835567105?ref_src=twsrc%5Etfw">November 30, 2017</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div></p>
+
+<h2>Keynote by Werner Vogels</h2>
+
+<p>前日に引き続き、リリースラッシュを構えていたのにちょっとだけ発表してWernerの熱い想いを語る独壇場だった。。</p>
+
+<p><div class='embed tweet'><blockquote class="twitter-tweet"><p lang="en" dir="ltr">And <a href="https://twitter.com/Werner?ref_src=twsrc%5Etfw">@Werner</a> is on the stage <a href="https://twitter.com/hashtag/reinvent?src=hash&amp;ref_src=twsrc%5Etfw">#reinvent</a> <a href="https://t.co/UtpuhDgPtM">pic.twitter.com/UtpuhDgPtM</a></p>&mdash; Marius Ducea (@mariusducea) <a href="https://twitter.com/mariusducea/status/936271664844644353?ref_src=twsrc%5Etfw">November 30, 2017</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">Alexa for Business。ユーザやスキル等のマネージメントをしてくれる <a href="https://twitter.com/hashtag/reinvent?src=hash&amp;ref_src=twsrc%5Etfw">#reinvent</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/936279030734626816?ref_src=twsrc%5Etfw">November 30, 2017</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">AWS Cloud9！まんまだw <a href="https://twitter.com/hashtag/reInvent?src=hash&amp;ref_src=twsrc%5Etfw">#reInvent</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/936285778052759552?ref_src=twsrc%5Etfw">November 30, 2017</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">Vim modeもあるぜ！ってのが太字だw（emacsは普通文字） <a href="https://t.co/2MwmHFrrHp">https://t.co/2MwmHFrrHp</a> <a href="https://twitter.com/hashtag/reInvent?src=hash&amp;ref_src=twsrc%5Etfw">#reInvent</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/936286654955896832?ref_src=twsrc%5Etfw">November 30, 2017</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">Cloud9使うのにEC2なんて起動したくないよ。。 <a href="https://twitter.com/hashtag/reInvent?src=hash&amp;ref_src=twsrc%5Etfw">#reInvent</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/936290503854735360?ref_src=twsrc%5Etfw">November 30, 2017</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="en" dir="ltr">Lambda features: API GW VPC integration, Concurrency control, 3GB memory, .NET Core 2.0, Go <a href="https://twitter.com/hashtag/reInvent?src=hash&amp;ref_src=twsrc%5Etfw">#reInvent</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/936301561583583232?ref_src=twsrc%5Etfw">November 30, 2017</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="en" dir="ltr">AWS Serverless Application Repository、ほう。 <a href="https://twitter.com/hashtag/reInvent?src=hash&amp;ref_src=twsrc%5Etfw">#reInvent</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/936301841972731904?ref_src=twsrc%5Etfw">November 30, 2017</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">冒頭で言った通り、今日のKeynoteは発表ほとんどないな。昨日の怒涛のリリースラッシュみたいなのを待ち構えていたけど。 <a href="https://twitter.com/hashtag/reInvent?src=hash&amp;ref_src=twsrc%5Etfw">#reInvent</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/936305707007098880?ref_src=twsrc%5Etfw">November 30, 2017</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div></p>
+
+<h2>Hackathon - ALL-in JAM</h2>
+
+<p>いろんな要素やサービスが詰まったハッカソン。初めて触るサービスもあって楽しかった。</p>
+
+<p><div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">UIがかっこいい <a href="https://twitter.com/hashtag/reInvent?src=hash&amp;ref_src=twsrc%5Etfw">#reInvent</a> <a href="https://t.co/j62Px7WfAN">pic.twitter.com/j62Px7WfAN</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/936324291594928128?ref_src=twsrc%5Etfw">November 30, 2017</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">始まった。BGMはMatrixのClubbed to Death <a href="https://twitter.com/hashtag/reInvent?src=hash&amp;ref_src=twsrc%5Etfw">#reInvent</a> <a href="https://t.co/Ha86JAO0k8">pic.twitter.com/Ha86JAO0k8</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/936329057439858688?ref_src=twsrc%5Etfw">November 30, 2017</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div></p>
+
+<h2>会場</h2>
+
+<p>VenitienからAriaまでの道のり。。長い。</p>
+
+<p><div class="embed-video-container"><iframe src="http://www.youtube.com/embed/Kd2HMe02DYg "></iframe></div></p>
+
+<h2>re:Play</h2>
+
+<p>メインDJはDJ Snake。プレイ自体は30分ぐらいは楽しめたかな。。好み違った。</p>
+
+<p><div class='embed tweet'><blockquote class="twitter-tweet"><p lang="und" dir="ltr"><a href="https://twitter.com/hashtag/rePlay?src=hash&amp;ref_src=twsrc%5Etfw">#rePlay</a> <a href="https://twitter.com/hashtag/reInvent?src=hash&amp;ref_src=twsrc%5Etfw">#reInvent</a> <a href="https://t.co/ece6W02ba0">pic.twitter.com/ece6W02ba0</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/936480800165343232?ref_src=twsrc%5Etfw">December 1, 2017</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div></p>
+
+<h2>まとめ</h2>
+
+<ul>
+<li>Fargateもっと早く欲しかった</li>
+<li>DeepLensもらえた。何作ろう</li>
+<li>今年もlambdaにrubyが来なかった</li>
+<li>Cloud9でEC2自前で立てるのはコレジャナイ感</li>
+<li>会場広すぎでしょ</li>
+</ul>
+
+
+<p><div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">JAWS-UG 横浜 re:Invent recap めっちゃ楽しかったーみなさんお疲れ様でしたー<br>最後  <a href="https://twitter.com/ijin?ref_src=twsrc%5Etfw">@ijin</a> さんが言ってた「情報にキャッチアップするなら doc 読めばいい。現地行って workshopとか参加しようぜ」ですね。</p>&mdash; Toshihiko Nozaki (@bukaz54) <a href="https://twitter.com/bukaz54/status/937659284384395266?ref_src=twsrc%5Etfw">December 4, 2017</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div></p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[ServerlessConf Austin 2017に参加してきた]]></title>
+    <link href="http://ijin.github.io/blog/2017/04/30/serverlessconf-austin-2017/"/>
+    <updated>2017-04-30T17:40:00+09:00</updated>
+    <id>http://ijin.github.io/blog/2017/04/30/serverlessconf-austin-2017</id>
+    <content type="html"><![CDATA[<p><a href="https://austin.serverlessconf.io/">ServerlessConf Austin 2017</a>に参加したので、端的なメモ。</p>
+
+<p>Day 1の終わりに着いて、ほぼDay 2のみ</p>
+
+<p><img src="https://lh3.googleusercontent.com/PU0qf-q97mQXg0frh0vEyY_yzmiTrUUIISKS3Lr4hrqMvimTogqZEge-lg3N76kvUqS-4XnlW23ATuuguLNqGkDcODQOn393OKl2XZtpDsnXjxUSKfeDn1r12OI15QFiec36CPO8ag=w1122-h842-no"></p>
+
+<h3>Self Replicating Serverless Function -  Michael Adda</h3>
+
+<p><a href="https://en.wikipedia.org/wiki/Quine_(computing">Quine</a>おじさんによるウロボロス的lambda実装のお話。思考実験としては面白かった。</p>
+
+<p><div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">quineおじさん  <a href="https://twitter.com/hashtag/ServerlessConf?src=hash&amp;ref_src=twsrc%5Etfw">#ServerlessConf</a> <a href="https://t.co/FOisTd9AUD">pic.twitter.com/FOisTd9AUD</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/857961545015242752?ref_src=twsrc%5Etfw">April 28, 2017</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">ウロボロス！  <a href="https://twitter.com/hashtag/ServerlessConf?src=hash&amp;ref_src=twsrc%5Etfw">#ServerlessConf</a> <a href="https://t.co/hSmps3fWKj">pic.twitter.com/hSmps3fWKj</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/857962397281144832?ref_src=twsrc%5Etfw">April 28, 2017</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div></p>
+
+<h3>Harmonizing Serverless &amp; Traditional Applications - Ryan Brown</h3>
+
+<p><div class='embed tweet'><blockquote class="twitter-tweet"><p lang="fr" dir="ltr">Queueueueueuing! <a href="https://twitter.com/hashtag/ServerlessConf?src=hash&amp;ref_src=twsrc%5Etfw">#ServerlessConf</a> <a href="https://t.co/mL67Gt9UU9">pic.twitter.com/mL67Gt9UU9</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/857965198698835968?ref_src=twsrc%5Etfw">April 28, 2017</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div></p>
+
+<h3>Serverless Security: What’s Left To Protect? - Guy Podjarny</h3>
+
+<p><div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">元Akami CTOによるサーバーレスセキュリティのセッション <a href="https://twitter.com/hashtag/ServerlessConf?src=hash&amp;ref_src=twsrc%5Etfw">#ServerlessConf</a> <a href="https://t.co/nGYiTuYys8">pic.twitter.com/nGYiTuYys8</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/858005309104693248?ref_src=twsrc%5Etfw">April 28, 2017</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">今はSnykというセキュリティ・監視サービスをやってる。後で見てみよう。 <a href="https://t.co/u91czC6gPE">https://t.co/u91czC6gPE</a> <a href="https://twitter.com/hashtag/ServerlessConf?src=hash&amp;ref_src=twsrc%5Etfw">#ServerlessConf</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/858005655960961026?ref_src=twsrc%5Etfw">April 28, 2017</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div></p>
+
+<h3>Single Page Apps &amp; Serverless without Compromise (or as little as possible) - Jared Short</h3>
+
+<p><div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">GOAD - LamdaとGoによる分散負荷テストツール。便利そう。 <a href="https://t.co/bUDyL0OHYz">https://t.co/bUDyL0OHYz</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/858029124899794944?ref_src=twsrc%5Etfw">April 28, 2017</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">GraphQLかー。 <a href="https://twitter.com/hashtag/ServerlessConf?src=hash&amp;ref_src=twsrc%5Etfw">#ServerlessConf</a> <a href="https://t.co/Ti2EgaXZVt">pic.twitter.com/Ti2EgaXZVt</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/858032484273074176?ref_src=twsrc%5Etfw">April 28, 2017</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">おお、GraphQLとLambdaのプラットフォーム <a href="https://t.co/Cn0FK5MV0c">https://t.co/Cn0FK5MV0c</a> <a href="https://twitter.com/hashtag/ServerlessConf?src=hash&amp;ref_src=twsrc%5Etfw">#ServerlessConf</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/858033058661924865?ref_src=twsrc%5Etfw">April 28, 2017</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="en" dir="ltr">Server Smoothie! <a href="https://twitter.com/hashtag/ServerlessConf?src=hash&amp;ref_src=twsrc%5Etfw">#ServerlessConf</a> <a href="https://t.co/qg84hSy2qQ">pic.twitter.com/qg84hSy2qQ</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/858080490104004608?ref_src=twsrc%5Etfw">April 28, 2017</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div></p>
+
+<h3>Serverless Workflows in AWS: A Journey from SWF to Step Functions - Forrest Brazeal</h3>
+
+<p>最後にRAP!!!新しいwww</p>
+
+<p><div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">この人、セッションの最後でサーバーレスのラップを約束したぞ。 <a href="https://twitter.com/hashtag/serverlessconf?src=hash&amp;ref_src=twsrc%5Etfw">#serverlessconf</a> <a href="https://t.co/ajDs6VR2Ne">pic.twitter.com/ajDs6VR2Ne</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/858043060508401664?ref_src=twsrc%5Etfw">April 28, 2017</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="en" dir="ltr">Serverless Rap!? <a href="https://twitter.com/hashtag/ServerlessConf?src=hash&amp;ref_src=twsrc%5Etfw">#ServerlessConf</a> <a href="https://t.co/iRRVS48KNa">pic.twitter.com/iRRVS48KNa</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/858051472830889986?ref_src=twsrc%5Etfw">April 28, 2017</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div></p>
+
+<h3>Keynote by Tim Wagner</h3>
+
+<p><div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">今回のTimはどんな風にサーバを破壊するんだろう。ステージ横の布が気になる。 <a href="https://twitter.com/hashtag/ServerlessConf?src=hash&amp;ref_src=twsrc%5Etfw">#ServerlessConf</a> <a href="https://t.co/mxzwQfrfWL">pic.twitter.com/mxzwQfrfWL</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/858069201797468161?ref_src=twsrc%5Etfw">April 28, 2017</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">ドラクエだ！ <a href="https://twitter.com/hashtag/ServerlessConf?src=hash&amp;ref_src=twsrc%5Etfw">#ServerlessConf</a> <a href="https://t.co/iiRJnhiiGO">pic.twitter.com/iiRJnhiiGO</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/858073465315831808?ref_src=twsrc%5Etfw">April 28, 2017</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="en" dir="ltr">PyWren - lambda map/reduce framework. 25TFLOPS! <a href="https://t.co/kEhLd2scbF">https://t.co/kEhLd2scbF</a> <a href="https://twitter.com/hashtag/ServerlessConf?src=hash&amp;ref_src=twsrc%5Etfw">#ServerlessConf</a> <a href="https://t.co/dWeQS0tkIC">pic.twitter.com/dWeQS0tkIC</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/858075062045487104?ref_src=twsrc%5Etfw">April 28, 2017</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">お！ <a href="https://twitter.com/hashtag/ServerlessConf?src=hash&amp;ref_src=twsrc%5Etfw">#ServerlessConf</a> <a href="https://t.co/61PH6xI1mS">pic.twitter.com/61PH6xI1mS</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/858079838577598464?ref_src=twsrc%5Etfw">April 28, 2017</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div></p>
+
+<h2>おまけ</h2>
+
+<ul>
+<li>オースティンめっちゃ暑かった（日陰に入ると涼しい）</li>
+<li>シュラスコ美味かった！</li>
+<li>Uberが締め出されたのでローカルアプリが必要</li>
+<li>下記コメントが印象的だった</li>
+</ul>
+
+
+<p><div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">Uber/Lyftが出て行って沢山のクローンサービスが立ち上がったけど、その中の一つのRide Austinでドライバーと雑談。「NPOだから、俺たちの手取りが大幅に増えて大変助かってる。前はガス代ぐらいにしかならなくて、生きていくのがやっとだった。出て行ってくれて良かったよ」</p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/857749605039063040?ref_src=twsrc%5Etfw">April 28, 2017</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div></p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[AWS re:Invent 2016に参加してきた]]></title>
@@ -588,416 +857,6 @@ end
 <p><div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">isuconの試合途中結果を勝手にdatadogに流してるやつwwwwwwwwwwwww <a href="https://t.co/CXDO15vV68">https://t.co/CXDO15vV68</a> <a href="https://twitter.com/hashtag/isucon?src=hash">#isucon</a></p>&mdash; そらは (@sora_h) <a href="https://twitter.com/sora_h/status/660379055867334656">October 31, 2015</a></blockquote>
 <script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
 （※）実は去年のISUCONの時も似たような事をやってましたね。。</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[DockerCon 2016に参加してきた]]></title>
-    <link href="http://ijin.github.io/blog/2016/06/28/dockercon-2016/"/>
-    <updated>2016-06-28T10:17:00+09:00</updated>
-    <id>http://ijin.github.io/blog/2016/06/28/dockercon-2016</id>
-    <content type="html"><![CDATA[<p>先日、<a href="http://2016.dockercon.com/">DockerCon 2016</a>に参加してきたので、そのメモ。</p>
-
-<h2>To DockerCon you go!</h2>
-
-<p><script async="true" class="speakerdeck-embed" data-id="dd1706017844461583368f3aec9e49b5" src="//speakerdeck.com/assets/embed.js"> </script></p>
-
-<p>ちなみに行く事になった経緯は後日の<a href="http://qiita.com/t-sato/items/b7d33ac38205fe5d2997">JAWS-UGおコンテナ支部 #5</a>でLTしてきました。</p>
-
-<p>パッション大事！</p>
-
-<p>以下、トゥギャッター風に。</p>
-
-<h2>Day 0</h2>
-
-<h3>Pre-Registration &amp; Welcome Party</h3>
-
-<p><img src="https://lh3.googleusercontent.com/EbICBfukR41-rSVc75vfqKH1FW2-tjRofVSSohIEgD4iQMFZImz7wmZc7j6mihcVavhwFStPFKGr=w455-h606-no"></p>
-
-<p>場所はシアトルのWashington State Convention Center。何気にこの地に訪れるのは初。</p>
-
-<p><img src="https://lh3.googleusercontent.com/gcFQaHyxe0yqMvFKpAyMuF0Ht7_NSq4MwIysYy_pkbk6XKhSgme1uCA_h0aBAewWq1LTqEkUv_Lu=w455-h606-no"></p>
-
-<p>Welcome to DockerCon 2016!</p>
-
-<p><div class='embed tweet'><blockquote class="twitter-tweet"><p lang="en" dir="ltr">Moby Dock! <a href="https://twitter.com/hashtag/DockerCon?src=hash">#DockerCon</a> <a href="https://t.co/cNwtOeLxlI">pic.twitter.com/cNwtOeLxlI</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/744699319534575616">June 20, 2016</a></blockquote>
-<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div></p>
-
-<p><img src="https://lh3.googleusercontent.com/pQvzcaHk0EzEjoHTUwENIzW25Mou2QfQ9DiVZXflPalOgvG7B9S9ZCFVyq6W7lRPSBdU746_6-I7=w808-h606-no"></p>
-
-<p>企業ブース</p>
-
-<p><div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">20時なのにすごい明るい。 <a href="https://t.co/bjdAPk9PKo">pic.twitter.com/bjdAPk9PKo</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/744729346259070976">June 20, 2016</a></blockquote>
-<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div></p>
-
-<p><img src="https://lh3.googleusercontent.com/UhiotzEzNdpO855q4fqariqpi7yzQyMVunDPAbuTW6QwgvgtI55zuJx8R2ox9siM8AuR-2oHeWIw=w808-h606-no"></p>
-
-<p>Welcome Party</p>
-
-<p><img src="https://lh3.googleusercontent.com/X3cd_omPYz3s1oHy5gbowLj7HZG3uwnotMA9WY3UF5qS5PlZ9tiYkoX3FHi0N68E-GoMbmiWi1A_=w793-h595-no"></p>
-
-<p>Bar</p>
-
-<h2>Day 1</h2>
-
-<h3>Highlights</h3>
-
-<ul>
-<li>Docker 1.12 (orchestration built-in)
-
-<ul>
-<li>swarm mode</li>
-<li>serice api</li>
-<li>cryptographic node identity</li>
-<li>build-in routing mesh</li>
-</ul>
-</li>
-<li>Experimental Distributed Application Bundles (DAB)</li>
-<li>Docker for AWS &amp; Azure (beta)</li>
-<li>Docker for Mac &amp; Windows (public beta)</li>
-</ul>
-
-
-<p><img src="https://lh3.googleusercontent.com/S1EdQrzioZdPZ5B4xpcHefQOIXnCeQgeRDXA2nm-Rwx5rDLNQrIHV7GaoG6OlYh_WTEVmfLZK5qa=w455-h606-no"></p>
-
-<p>ぞろぞろ</p>
-
-<p><div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">これは。。 <a href="https://twitter.com/hashtag/DockerCon?src=hash">#DockerCon</a> <a href="https://t.co/rB563DXO5P">pic.twitter.com/rB563DXO5P</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/744923494589202432">June 20, 2016</a></blockquote>
-<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
-<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">広い。 <a href="https://twitter.com/hashtag/DockerCon?src=hash">#DockerCon</a> <a href="https://t.co/WJbjh4olWJ">pic.twitter.com/WJbjh4olWJ</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/744923505871839233">June 20, 2016</a></blockquote>
-<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
-<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="en" dir="ltr">2014 - 500 attendees<br>2015 - 2000 attendees<br>2016 - 4000 attendees<a href="https://twitter.com/hashtag/DockerCon?src=hash">#DockerCon</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/744928052858126338">June 20, 2016</a></blockquote>
-<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
-<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="en" dir="ltr">Cats shooting lasers. So random. <a href="https://twitter.com/hashtag/DockerCon?src=hash">#DockerCon</a> <a href="https://t.co/uuiQBHLell">pic.twitter.com/uuiQBHLell</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/744928124815577088">June 20, 2016</a></blockquote>
-<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
-<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="en" dir="ltr">Live de-bugging inside a container with <a href="https://twitter.com/docker">@docker</a> for Mac and Windows by <a href="https://twitter.com/AanandPrasad">@AanandPrasad</a> <a href="https://twitter.com/hashtag/dockercon?src=hash">#dockercon</a> <a href="https://t.co/zAUvVUOEc5">pic.twitter.com/zAUvVUOEc5</a></p>&mdash; Betty Junod (@BettyJunod) <a href="https://twitter.com/BettyJunod/status/744935919673708544">June 20, 2016</a></blockquote>
-<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div></p>
-
-<p><div class='embed tweet'><blockquote class="twitter-tweet"><p lang="en" dir="ltr">Docker 1.12<br>- Swarm mode<br>- Cryptographic node identity<br>- Service API<br>- Built-in routing mesh<a href="https://twitter.com/hashtag/DockerCon?src=hash">#DockerCon</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/744941579647913984">June 20, 2016</a></blockquote>
-<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
-<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="en" dir="ltr">Distributed Application Bundle <a href="https://twitter.com/hashtag/DockerCon?src=hash">#DockerCon</a> <a href="https://t.co/IKhFIdx9Pf">pic.twitter.com/IKhFIdx9Pf</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/744950295835217920">June 20, 2016</a></blockquote>
-<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div></p>
-
-<h3>Sessions</h3>
-
-<ul>
-<li>The Golden Ticket: Docker and High Security Microservices</li>
-<li>Microservices + Events + Docker = A Perfect Trio</li>
-<li>Thinking Inside the Container: A Continuous Delivery Story</li>
-<li>Docker in Production, Look No Hands!</li>
-</ul>
-
-
-<p><strong>The Golden Ticket: Docker and High Security Microservices</strong></p>
-
-<p><div class='embed tweet'><blockquote class="twitter-tweet"><p lang="en" dir="ltr">apparmor example on golang+docker <a href="https://twitter.com/hashtag/DockerCon?src=hash">#DockerCon</a> <a href="https://t.co/rwuzMYdpIF">pic.twitter.com/rwuzMYdpIF</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/744973236203446272">June 20, 2016</a></blockquote>
-<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
-<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">Sysdig 便利そう。 <a href="https://twitter.com/hashtag/DockerCon?src=hash">#DockerCon</a> <a href="https://t.co/9a0ruRZK9w">pic.twitter.com/9a0ruRZK9w</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/744975496308359168">June 20, 2016</a></blockquote>
-<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
-<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="en" dir="ltr">Seccomp pro tips for Docker/runC <a href="https://twitter.com/hashtag/DockerCon?src=hash">#DockerCon</a> <a href="https://t.co/4n4w4lNlxO">pic.twitter.com/4n4w4lNlxO</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/744976420074446849">June 20, 2016</a></blockquote>
-<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div></p>
-
-<p><strong>Microservices + Events + Docker = A Perfect Trio</strong></p>
-
-<p><div class='embed tweet'><blockquote class="twitter-tweet"><p lang="en" dir="ltr">Microservices + Events + Docker = A Perfect Trio <a href="https://twitter.com/hashtag/DockerCon?src=hash">#DockerCon</a> <a href="https://t.co/MnbK8FO7OL">pic.twitter.com/MnbK8FO7OL</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/744999360421732352">June 20, 2016</a></blockquote>
-<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
-<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="en" dir="ltr">The Art of Scalability <a href="https://twitter.com/hashtag/DockerCon?src=hash">#DockerCon</a> <a href="https://t.co/aX3MhHiwAO">pic.twitter.com/aX3MhHiwAO</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/745000882610274304">June 20, 2016</a></blockquote>
-<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
-<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="en" dir="ltr">How to atomically update database and publish an event - use event-sourcing. <a href="https://twitter.com/hashtag/DockerCon?src=hash">#DockerCon</a> <a href="https://t.co/cOoCA9N15m">pic.twitter.com/cOoCA9N15m</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/745004762962223104">June 20, 2016</a></blockquote>
-<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
-<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="und" dir="ltr"><a href="https://t.co/udEVJFzxSM">https://t.co/udEVJFzxSM</a> <a href="https://twitter.com/hashtag/DockerCon?src=hash">#DockerCon</a> <a href="https://t.co/zFpQbTLvLA">pic.twitter.com/zFpQbTLvLA</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/745009602677248000">June 20, 2016</a></blockquote>
-<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div></p>
-
-<p><strong>Thinking Inside the Container: A Continuous Delivery Story</strong></p>
-
-<p><div class='embed tweet'><blockquote class="twitter-tweet"><p lang="en" dir="ltr">Thinking Inside the Container: A Continuous Delivery Story <a href="https://twitter.com/hashtag/DockerCon?src=hash">#DockerCon</a> <a href="https://t.co/5Mr6ijoXYF">pic.twitter.com/5Mr6ijoXYF</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/745012607329906688">June 20, 2016</a></blockquote>
-<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
-<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="en" dir="ltr">10,000-14,000 containers a week.  <a href="https://twitter.com/hashtag/DockerCon?src=hash">#DockerCon</a> <a href="https://t.co/MXtu23Eg7G">pic.twitter.com/MXtu23Eg7G</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/745013610032803840">June 20, 2016</a></blockquote>
-<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
-<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="en" dir="ltr">The reality... <a href="https://twitter.com/hashtag/DockerCon?src=hash">#DockerCon</a> <a href="https://t.co/huScMIX8Ce">pic.twitter.com/huScMIX8Ce</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/745014086392381440">June 20, 2016</a></blockquote>
-<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
-<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="en" dir="ltr">So simple! <a href="https://twitter.com/hashtag/DockerCon?src=hash">#DockerCon</a> <a href="https://t.co/ZfIzpHEQKm">pic.twitter.com/ZfIzpHEQKm</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/745019391960481792">June 20, 2016</a></blockquote>
-<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
-<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="fr" dir="ltr">Garbage Collection <a href="https://twitter.com/hashtag/DockerCon?src=hash">#DockerCon</a> <a href="https://t.co/qUYqmr0TpY">pic.twitter.com/qUYqmr0TpY</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/745019998523908100">June 20, 2016</a></blockquote>
-<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div></p>
-
-<h3>DockerCon party @ Space Needle</h3>
-
-<p>最後はシアトルの名所（？）、<a href="http://www.spaceneedle.com">Space Needle</a>での貸切パーティー</p>
-
-<p><div class='embed tweet'><blockquote class="twitter-tweet"><p lang="en" dir="ltr"><a href="https://twitter.com/hashtag/DockerCon?src=hash">#DockerCon</a> party! <a href="https://t.co/EIl3FoNUZd">pic.twitter.com/EIl3FoNUZd</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/745097049478045696">June 21, 2016</a></blockquote>
-<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div></p>
-
-<p><img src="https://lh3.googleusercontent.com/k_fJmctUgvWrWhlHNFsf1taBDn68iRM9fDDOIEZKkmvaPD03bY1bD4Wd_JGOw8f4pRygew0rKx08=w455-h606-no"></p>
-
-<p>中でもワイワイ</p>
-
-<h2>Day 2</h2>
-
-<h3>Highlights</h3>
-
-<ul>
-<li>Docker Datacenter</li>
-<li>AWS Quickstart</li>
-<li>Azure Marcketplace Templates</li>
-<li>Docker Store (private beta)</li>
-</ul>
-
-
-<p><div class='embed tweet'><blockquote class="twitter-tweet"><p lang="und" dir="ltr">Day 2! <a href="https://twitter.com/hashtag/DockerCon?src=hash">#DockerCon</a> <a href="https://t.co/jVobmfYqEO">pic.twitter.com/jVobmfYqEO</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/745288065803968512">June 21, 2016</a></blockquote>
-<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
-<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">今日のテーマは&quot;Democratizing Docker for the Enterprise&quot; <a href="https://twitter.com/hashtag/DockerCon?src=hash">#DockerCon</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/745288586803613696">June 21, 2016</a></blockquote>
-<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div></p>
-
-<p>個人的には、とある企業でのDockerのユースケースを演じる漫才が面白かった。</p>
-
-<p><div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">Enterprise Opsの日常。まずredditで狐の動画を見る。 <a href="https://twitter.com/hashtag/DockerCon?src=hash">#DockerCon</a> <a href="https://t.co/PtBhwieitx">pic.twitter.com/PtBhwieitx</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/745294134190170112">June 21, 2016</a></blockquote>
-<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
-<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">昨日のデモは猫vs犬の投票システムだったけど、今日のエンプラ版はISOの投票になってる。9000 vs 9001 <a href="https://twitter.com/hashtag/DockerCon?src=hash">#DockerCon</a> <a href="https://t.co/5Cm8jPsUWy">pic.twitter.com/5Cm8jPsUWy</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/745294892423745536">June 21, 2016</a></blockquote>
-<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
-<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="en" dir="ltr">&quot;I&#39;m going to Burning Man&quot; <a href="https://twitter.com/hashtag/DockerCon?src=hash">#DockerCon</a> <a href="https://t.co/B6vnsZfnDX">pic.twitter.com/B6vnsZfnDX</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/745295726700224513">June 21, 2016</a></blockquote>
-<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
-<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="en" dir="ltr">Oh no, Nosebleed!! <a href="https://twitter.com/hashtag/DockerCon?src=hash">#DockerCon</a> <a href="https://t.co/9FjwpBXNCd">pic.twitter.com/9FjwpBXNCd</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/745296068259123201">June 21, 2016</a></blockquote>
-<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
-<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="en" dir="ltr">“The Nosebleed OpenSSL Bug” <a href="https://twitter.com/hashtag/DockCon?src=hash">#DockCon</a> <a href="https://t.co/HqHJl6sNM4">https://t.co/HqHJl6sNM4</a></p>&mdash; Marius Ducea (@mariusducea) <a href="https://twitter.com/mariusducea/status/745296465094860802">June 21, 2016</a></blockquote>
-<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
-<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="en" dir="ltr">&quot;I brought you some  coffee. It doesn&#39;t have all the substances you might have gotten at Burning Man&quot; <a href="https://twitter.com/hashtag/DockerCon?src=hash">#DockerCon</a> <a href="https://t.co/7mTHpBCDMC">pic.twitter.com/7mTHpBCDMC</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/745297941535981569">June 21, 2016</a></blockquote>
-<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div></p>
-
-<p>AzureのCTO</p>
-
-<p><div class='embed tweet'><blockquote class="twitter-tweet"><p lang="eu" dir="ltr">Azure CTO <a href="https://twitter.com/hashtag/DockerCon?src=hash">#DockerCon</a> <a href="https://t.co/6DHOavOAU4">pic.twitter.com/6DHOavOAU4</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/745300074528333824">June 21, 2016</a></blockquote>
-<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
-<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">AzureのCTOがMacとChromeでデモしてる。</p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/745300681104359424">June 21, 2016</a></blockquote>
-<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
-<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">MacのVisual Studio CodeでC#出来るよアピールか。 <a href="https://twitter.com/hashtag/DockerCon?src=hash">#DockerCon</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/745301503926165504">June 21, 2016</a></blockquote>
-<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
-<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">デモ失敗w <a href="https://twitter.com/hashtag/DockerCon?src=hash">#DockerCon</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/745302570936086528">June 21, 2016</a></blockquote>
-<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div></p>
-
-<p>ADPのCTO</p>
-
-<p><div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">巨漢。 <a href="https://twitter.com/hashtag/DockerCon?src=hash">#DockerCon</a> <a href="https://t.co/LbXqA01J2o">pic.twitter.com/LbXqA01J2o</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/745305740873633792">June 21, 2016</a></blockquote>
-<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
-<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">鼻息がwww <a href="https://twitter.com/hashtag/dockercon?src=hash">#dockercon</a></p>&mdash; Keisuke Nishitani (@Keisuke69) <a href="https://twitter.com/Keisuke69/status/745305275972759552">June 21, 2016</a></blockquote>
-<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
-<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">いや、良い事言ってるんだけど、どうしても鼻息の方が気になるw</p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/745306231712022528">June 21, 2016</a></blockquote>
-<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
-<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="en" dir="ltr">&quot;Microservices are like chicken nuggets, but we have chickens&quot; <a href="https://twitter.com/hashtag/DockerCon?src=hash">#DockerCon</a> <a href="https://t.co/AZLfOyKgQ7">pic.twitter.com/AZLfOyKgQ7</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/745308374997184512">June 21, 2016</a></blockquote>
-<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div></p>
-
-<h3>Sessions</h3>
-
-<ul>
-<li>Making Friendly Microservices</li>
-<li>Sharding Containers: Make Go Apps Computer-Friendly Again</li>
-<li>Closing General Session: Moby Dock's Cool Hacks</li>
-</ul>
-
-
-<p><strong>Making Friendly Microservices</strong></p>
-
-<p><div class='embed tweet'><blockquote class="twitter-tweet"><p lang="en" dir="ltr">Friendly microservices <a href="https://twitter.com/hashtag/DockerCon?src=hash">#DockerCon</a> <a href="https://t.co/onL94wSudp">pic.twitter.com/onL94wSudp</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/745353738508853248">June 21, 2016</a></blockquote>
-<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
-<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">お、Atlasが出てきた。 <a href="https://twitter.com/hashtag/DockerCon?src=hash">#DockerCon</a> <a href="https://t.co/rqzoOfLvbY">pic.twitter.com/rqzoOfLvbY</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/745357805347999745">June 21, 2016</a></blockquote>
-<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
-<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">Zipkin知らんかった。 microservices 向けの分散追跡システムらしい。 <a href="https://twitter.com/hashtag/DockerCon?src=hash">#DockerCon</a> <a href="https://t.co/cSfQPXImFG">pic.twitter.com/cSfQPXImFG</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/745357873098567683">June 21, 2016</a></blockquote>
-<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div></p>
-
-<p><strong>Sharding Containers: Make Go Apps Computer-Friendly Again</strong></p>
-
-<p><div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">wrkでベンチマーク。 <a href="https://twitter.com/hashtag/DockerCon?src=hash">#DockerCon</a> <a href="https://t.co/vxmAUK7U5B">pic.twitter.com/vxmAUK7U5B</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/745398037497806849">June 21, 2016</a></blockquote>
-<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div></p>
-
-<p><strong>Closing General Session: Moby Dock's Cool Hacks</strong></p>
-
-<p><div class='embed tweet'><blockquote class="twitter-tweet"><p lang="en" dir="ltr">Jeff Nickoloff taking about Services. <a href="https://twitter.com/hashtag/DockerCon?src=hash">#DockerCon</a> <a href="https://t.co/DjHBYBw4dp">pic.twitter.com/DjHBYBw4dp</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/745405126408450050">June 21, 2016</a></blockquote>
-<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
-<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="en" dir="ltr">Demo on Entropy - a failure orchestration microservicen for Docker platforms <a href="https://twitter.com/hashtag/DockerCon?src=hash">#DockerCon</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/745406128679333890">June 22, 2016</a></blockquote>
-<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
-<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">Docker用の chaos monkeyみたいなやつか。 <a href="https://twitter.com/hashtag/DockerCon?src=hash">#DockerCon</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/745406672416342016">June 22, 2016</a></blockquote>
-<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
-<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="en" dir="ltr">latency injection <a href="https://twitter.com/hashtag/DockerCon?src=hash">#DockerCon</a> <a href="https://t.co/xseLsGyaGH">pic.twitter.com/xseLsGyaGH</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/745407885035724800">June 22, 2016</a></blockquote>
-<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div></p>
-
-<p>Serverless Dockerが面白かった。</p>
-
-<p><div class='embed tweet'><blockquote class="twitter-tweet"><p lang="de" dir="ltr">Serverless Docker!? <a href="https://twitter.com/hashtag/DockerCon?src=hash">#DockerCon</a> <a href="https://t.co/rVxbSelFkq">pic.twitter.com/rVxbSelFkq</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/745408340319051781">June 22, 2016</a></blockquote>
-<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
-<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">Docker内のコードからDocker Swarm上で コンテナを実行して Serverlessを実現。なるほど。 <a href="https://twitter.com/hashtag/DockerCon?src=hash">#DockerCon</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/745410551778410496">June 22, 2016</a></blockquote>
-<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
-<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="en" dir="ltr">How to run Serverless Docker <a href="https://twitter.com/hashtag/DockerCon?src=hash">#DockerCon</a> <a href="https://t.co/QjNQzpTk7q">pic.twitter.com/QjNQzpTk7q</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/745410776848990208">June 22, 2016</a></blockquote>
-<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
-<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="en" dir="ltr">Get involved! <a href="https://t.co/fjFuAACXZR">https://t.co/fjFuAACXZR</a> <a href="https://twitter.com/hashtag/DockerCon?src=hash">#DockerCon</a> <a href="https://twitter.com/hashtag/serverlessdocker?src=hash">#serverlessdocker</a> <a href="https://t.co/ro4XuBWLVw">pic.twitter.com/ro4XuBWLVw</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/745411486625861633">June 22, 2016</a></blockquote>
-<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
-<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">Lambda内でも docker実行出来たら良いな。</p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/745411898510704640">June 22, 2016</a></blockquote>
-<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div></p>
-
-<p>Docker on Drones</p>
-
-<p><div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">飛行中のドローンに搭載してる dockerをライブアップデート。すごい。 <a href="https://twitter.com/hashtag/DockerCon?src=hash">#DockerCon</a> <a href="https://t.co/RKWjExgTtu">pic.twitter.com/RKWjExgTtu</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/745412950551212034">June 22, 2016</a></blockquote>
-<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div></p>
-
-<h2>終わりに</h2>
-
-<p>世界各国のエンジニアと話せて、Dockerに対する熱量や動向を肌感覚で感じとれて非常に有意義な旅でした。以前の<a href="/blog/2014/04/21/chefconf-2014/">ChefConf</a>や<a href="/blog/2015/09/30/hashiconf-2015/">HashiConf</a>もそうだけど、気になる技術やトレンドがあればTechカンファレンスに直接乗り込んで見るのが一番効率的なので、今後も継続してどこかに参加するようにしたいです。</p>
-
-<p>Thank you!</p>
-
-<p><img src="https://lh3.googleusercontent.com/yPy0EnK1ewU3HbrQyT6pSxR-G--QAHZ2fmwLJ09Jh14sw9yju2q1DQd3pIin-AXJ0ohAJeRqxhAE=w455-h606-no"></p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[AWS re:Invent 2015に参加してきた]]></title>
-    <link href="http://ijin.github.io/blog/2015/10/26/aws-re-invent-2015/"/>
-    <updated>2015-10-26T02:26:00+09:00</updated>
-    <id>http://ijin.github.io/blog/2015/10/26/aws-re-invent-2015</id>
-    <content type="html"><![CDATA[<p>今年で3度目の参加となるAWS re:Invent。
-忘れない内に記録を残しておきます。</p>
-
-<h2>Day 0</h2>
-
-<h3>Game Day</h3>
-
-<p>Unicornを貸し出すサービスを展開する仮想のスタートアップ企業にDevOpsチームとして最近入社したという設定。前任者が退職しており、資料が少ない中でサービスオープンに立ち会いつつ、様々な困難に直面するというフルデイ・イベント。
-今までのGame Dayと違って面白いのはパフォーマンス・チューニングをしつつも、コストも意識しながらチーム間でスコアを競争するところ。アプリは触れないので、<a href="http://isucon.net/">ISUCON</a>よりは昔やった<a href="/blog/2012/07/03/tuningathon4/">チューニンガソン</a>に近い感じ。</p>
-
-<p>スコアは累積の損益。アーキテクチャによっては利益が出たり損失が出たりする。例えば、多くのリクエストが処理できると利益は増すが、AWSのリソースが多いと費用が掛かって損失になりうる。
-当然最初は各チームは赤字から始まり、時間とともに積算した利益によって黒転して行く様が目新しかった。</p>
-
-<p>結果、48チーム中で<strong>6位</strong>。（上位2チームはチートで失格となったので<strong>実質は4位</strong>）</p>
-
-<p><img src="https://lh3.googleusercontent.com/H8zoy7lrftuIo9ZQTN_LsUC3KsiGsNkOJbPzuW4vAxy4o6IOAH8=w547-h298-no"></p>
-
-<p><div class='embed tweet'><blockquote class="twitter-tweet"><p lang="en" dir="ltr"><a href="https://twitter.com/ijin">@ijin</a> <a href="https://twitter.com/AWSreInvent">@AWSreInvent</a> the rabbit icon was awarded to the team with the fastest response time to a request.0.0005s is not too shabby!</p>&mdash; Kyle Lichtenberg (@KyleLichtenberg) <a href="https://twitter.com/KyleLichtenberg/status/651573816301219840">October 7, 2015</a></blockquote>
-<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div></p>
-
-<p>ちなみに最速レスポンスタイムはうちのチームが叩きだした。</p>
-
-<p><div class='embed tweet'><blockquote class="twitter-tweet"><p lang="en" dir="ltr">Our team - &quot;Ubercon&quot;! <a href="https://twitter.com/hashtag/reinvent?src=hash">#reinvent</a> <a href="https://twitter.com/hashtag/AWSGameDay?src=hash">#AWSGameDay</a> <a href="http://t.co/dpRu1vicgM">pic.twitter.com/dpRu1vicgM</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/651544851620700160">October 6, 2015</a></blockquote>
-<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div></p>
-
-<p>詳細は今度日本で開催されるかも知れないので控えておくが、非常に楽しめたので次回は運営側に回って手伝おうかと思います！</p>
-
-<h2>Day 1</h2>
-
-<h3>Keynote</h3>
-
-<p>Andy Jessy副社長による発表。今年のテーマは「<strong>自由</strong>」</p>
-
-<ul>
-<li>Amazon QuickSight</li>
-<li>Amazon Kinesis Firehose</li>
-<li>Amazon Snowball</li>
-<li>MariaDB for RDS</li>
-<li>AWS Database Migration Service</li>
-<li>AWS Schema Conversion Tool</li>
-<li>AWS Config Rules</li>
-<li>Amazon Inspector</li>
-</ul>
-
-
-<p><img src="https://lh3.googleusercontent.com/SSI_hMC3cjzUSvGPxT49FD26VBeY_QYt_qGoTLDPo8nBLwdmglM=w493-h544-no"></p>
-
-<p><del>Oracle</del>からの自由、解放！</p>
-
-<h3>WRK306 - AWS Professional Services Architecting Workshop</h3>
-
-<p>実在した、ある企業のクラウド移行案件。RFP的なモノがあり、アーキテクチャをチーム内で議論し、最後にそれぞれ各チームが発表していく流れ。
-かつてjawsugで主催を手伝ったワールドカフェ形式とほぼ同じだったので、チームメンバーを先導してCacooでさくさく構成図を起こしていく。
-他のチームが模造紙にラフスケッチで発表する中、我らは綺麗に正本して、プロジェクターで登壇しながら発表。</p>
-
-<p><div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">ワークショップはうちらのチームだけCacooで図を書いたので制覇した感がある。 <a href="https://twitter.com/hashtag/reinvent?src=hash">#reinvent</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/651869691699425281">October 7, 2015</a></blockquote>
-<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div></p>
-
-<p>最後に実際にどう移行したかというAWSチームからの回答。まず、移行フェーズを段階的に分け、最初はシステムをほぼそのままクラウド上に乗せた後に部分的に最適化してコンポーネントを置き換えて行ったという話。最後にLambdaになっていた部分があったのが興味深かった。</p>
-
-<p>早く新サービスに対応したAWS Simple Iconsのアップデートが待たれるところ。</p>
-
-<p><img src="https://lh3.googleusercontent.com/IVrSN7g0MnAfVa6pB4ajQWUZYPmpFMOH6Ych-FedX1HqxCfEHtc=w583-h346-no"></p>
-
-<p>今回提案した内容。</p>
-
-<h3>WRK305 - Zombie Apocalypse Survival: Building Serverless Microservices</h3>
-
-<p><a href="https://ja.wikipedia.org/wiki/%E3%82%BE%E3%83%B3%E3%83%93%E3%81%AB%E3%82%88%E3%82%8B%E4%B8%96%E7%95%8C%E3%81%AE%E7%B5%82%E6%9C%AB">Zombie Apocalypse</a>が起こって、人類存亡の危機！途中まで実装されたチャットルームの機能を拡張・実装して危機を救え！というシナリオの元、LambdaとAPI Gatewayとjavascript sdkで実装されたサーバーレスアーキテクチャのワークショップ。</p>
-
-<p>機能拡張の為に実装が必要なので、設計しながらチーム内で作業分担し、コードをせっせと書いていく。
-ゾンビ出現のアラート通知、ヒートマップ描画、アンデッドカウンター、緊急食料倉庫の位置情報配信等、面白い機能要求が盛り沢山。</p>
-
-<p><img src="https://lh3.googleusercontent.com/-UStcIzDdtS42SZTgt657iKvYHWlbcfktbvuCq3-LIioBfrBzgI=w600-h346-no"></p>
-
-<p>ささっとSlack部屋を作り、githubでコードを共有しながらのチームワーク作業。多分、うちらのチームが一番多く実装できた感触。</p>
-
-<p><img src="https://lh3.googleusercontent.com/WZ7nUMvRhoNzixWqjEdCFJ1wJqNH-BqjV4M4cq93mBXBnJ8UPOk=w493-h544-no"></p>
-
-<p>このワークショップはかなりの人気で、開始30分前にすでに長蛇の列が。
-運良くぎりぎり最後の参加者として入れたけど、皆どれだけゾンビが好きなんだ。。</p>
-
-<h2>Day 2</h2>
-
-<h3>Keynote</h3>
-
-<p>Wernerl Vogels CTOの発表。</p>
-
-<ul>
-<li>Amazon Kinesis Analytics</li>
-<li>X1 instance (100 cores, 1TB RAM)</li>
-<li>t2.nano instance</li>
-<li>Amazon EC2 Container Registry</li>
-<li>Lambda
-
-<ul>
-<li>VPC support</li>
-<li>Long running Functions (300s)</li>
-<li>Scheduled Functions</li>
-<li>Custom Retry Logic</li>
-<li>Python</li>
-</ul>
-</li>
-<li>AWS IOT</li>
-</ul>
-
-
-<p><img src="https://lh3.googleusercontent.com/A4p3UvP0JiMxjpZF7L0zxdMFkU96aOYtZ-BExM2zFERDsebakXw=w493-h543-no"></p>
-
-<p>前日にAndyが7つの自由を語って、当日はWernerが7つの法則を語る。</p>
-
-<h3>WRK308 - AWS + ASK: Teaching Amazon Echo New Skills</h3>
-
-<p>Amazon Echoを使った、Alexaのプログラミングワークショップ。音声によって、Echo経由でLambdaイベントを呼び出し、Alexaサービスと連携するカスタマイズしたスキルセットを実装して行く。</p>
-
-<p>例えば、Alexaに好きな色を覚えさせて、後ほど聞くと答えてくれる機能とか。全てボイスコントロール。<a href="http://yoshidashingo.hatenablog.com/?page=1445224481">吉田さんの英語でも通じた</a>ので、かなり優秀。</p>
-
-<p>新品のEchoを開封して使ったので、最後に貰える物かとささやかに期待したものの、$15のAWSクーポン配布のみ。さすが<del>ケチ</del>FrugalなAmazonさん。</p>
-
-<p><div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">Alexaとlambdaが連携してEchoが喋った！ <a href="https://twitter.com/hashtag/reinvent?src=hash">#reinvent</a> <a href="http://t.co/V6QpNyj3tK">pic.twitter.com/V6QpNyj3tK</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/652234646231646208">October 8, 2015</a></blockquote>
-<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div></p>
-
-<p><div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">Alexは今ユーザ駆動にしか対応してないけど、awsのイベント駆動はtop priorityとの事。そのうち例えばbilling alertを音声で通知できるようになるなぁ。楽しみだ。 <a href="https://twitter.com/hashtag/reinvent?src=hash">#reinvent</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/652239936968654848">October 8, 2015</a></blockquote>
-<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div></p>
-
-<h3>re:Play</h3>
-
-<p>EDMの若きプリンスDJ、Zeddをシークレットゲストとして呼んでのアフター。</p>
-
-<p><div class='embed tweet'><blockquote class="twitter-tweet"><p lang="en" dir="ltr">What a view for this secret <a href="https://twitter.com/Zedd">@zedd</a> show, this crowd does not end! <a href="https://twitter.com/hashtag/vegas?src=hash">#vegas</a> <a href="http://t.co/0Itv012o0k">pic.twitter.com/0Itv012o0k</a></p>&mdash; Rukes (@rukes) <a href="https://twitter.com/rukes/status/652400784353595392">October 9, 2015</a></blockquote>
-<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div></p>
-
-<p>もう完全にWernerのパーティー。</p>
-
-<p><div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">昨夜の <a href="https://twitter.com/hashtag/replay?src=hash">#replay</a> でこの積み上がったコンテナを見て、Docker Swarm を連想した人はさぞ多かったに違いない。 <a href="http://t.co/QxF2MkbHTi">pic.twitter.com/QxF2MkbHTi</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/652681828441063425">October 10, 2015</a></blockquote>
-<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div></p>
-
-<p><div class="embed-video-container"><iframe src="http://www.youtube.com/embed/cT676BMT7A8 "></iframe></div></p>
-
-<p>Zeldaのremixが良かった。</p>
-
-<h3>終わりに</h3>
-
-<p>結局セッションは一つも出なかったです。まあ、ビデオやスライドは公開されるので内容自体は後で把握可能なので別にいいかな。授業を聞きに来た分けでもないし。
-それよりも、現地に来ているエンジニアと交流したり、実装まで含んだハンズオンのワークショップをやった方が楽しいし、糧となる。後はトレンドを肌感覚として体感するには良い場所なので行った事ない人には是非オススメしておきたい。</p>
 ]]></content>
   </entry>
   

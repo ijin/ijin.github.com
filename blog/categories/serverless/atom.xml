@@ -4,7 +4,7 @@
   <title><![CDATA[Category: serverless | @ijin]]></title>
   <link href="http://ijin.github.io/blog/categories/serverless/atom.xml" rel="self"/>
   <link href="http://ijin.github.io/"/>
-  <updated>2018-02-22T19:39:16+09:00</updated>
+  <updated>2018-02-23T15:18:52+09:00</updated>
   <id>http://ijin.github.io/</id>
   <author>
     <name><![CDATA[Michael H. Oshita]]></name>
@@ -12,6 +12,57 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[ServerlessConf Paris 2018で発表してきた]]></title>
+    <link href="http://ijin.github.io/blog/2018/02/22/serverlessconf-paris-2018/"/>
+    <updated>2018-02-22T02:29:00+09:00</updated>
+    <id>http://ijin.github.io/blog/2018/02/22/serverlessconf-paris-2018</id>
+    <content type="html"><![CDATA[<p>既に世界数カ所の都市で行われている<a href="http://serverlessconf.io">ServerlessConf</a>がフランスのパリで開催されるという事でCFPに応募したら通ってしまったので<a href="http://paris.serverlessconf.io/speakers.html">発表</a>してきました。75個の応募の中から選んで頂いて光栄ですね。</p>
+
+<p>タイトルは<strong>Accelerating DevOps with Serverless</strong>で、DevOpsを手助けする為にServerlessを使って解決したストーリーや仕組み。</p>
+
+<p><script async="true" class="speakerdeck-embed" data-id="b0bc56c91fa54b1eadde7e7d2b5c169f" src="//speakerdeck.com/assets/embed.js"> </script></p>
+
+<hr />
+
+<p>内容としてはシンプルでgithubのbranchに応じて、テスト環境用のECSクラスタ内にrandom portでALBにtarget group, listenerを割り当ててservice作ってコンテナを配置するだけです。branch delete時にはtaskを停止し、逆順に削除していきます。通知はSNSでslack等へ連携可能。</p>
+
+<p>少し特色があるとすれば、serviceを作成したりtaskを停止するのにかなり時間を要する場合があるので、単一のlambdaではなく<a href="https://aws.amazon.com/step-functions/">step functions</a>で制御した事ですかね。今回、<a href="https://serverless.com">serverless framework</a>の<a href="https://github.com/horike37/serverless-step-functions">step functions plugin</a>のおかげで<a href="https://docs.aws.amazon.com/step-functions/latest/dg/concepts-state-machine-data.html">state machine data</a>をjsonで書かなくて済んだので作者の<a href="https://twitter.com/horike37">horike</a>さんには感謝です。</p>
+
+<p><img src="https://lh3.googleusercontent.com/FdRvgy-OwOnIN0ouQWsNV-JeiBURfOujH49arMUpqkCZZTBnYRcpUTuO1xwc4fvHQqCcgzDpyWIe-yUkMh55_GUGMJaotRqhjdj7QfVi7dBv4UyJOF9A4WCggIlouYDDtCxHujluaw=w600-h346-no"></p>
+
+<p>発表した内容のモノは現在、複数プロジェクトで使えるようになるべく汎用的な作りにして<strong>ECS deity</strong>として公開しています。参考にでもなれば。</p>
+
+<p><a href="https://github.com/ijin/ecs-deity">https://github.com/ijin/ecs-deity</a></p>
+
+<p>尚、GitHub eventによる自動デプロイだと毎回煩わしい場合もある（特定のbranch prefixが対象であるにせよ）ので、slackによるchatops手動デプロイも実装中です。</p>
+
+<p>と、まあやってる事はそんなに難しくないので、海外カンファレンスのCFPがあれば誰でも気軽に応募してみると良いと思います！</p>
+
+<h3>Afterthoughts</h3>
+
+<p>やはり、serverlessだとログ周りが様々なCloudWatch logsのlog streamsに分散（api gw, lambda, step functions）しているので、トレーシングがしんどかったりしたけど今回のConfで何度も取り上げられたトピックが<strong>Obervability</strong>だったので皆同様に苦労しているんだなぁと感じました。ブースにもその解決に取り込もうとしている企業がいくつかいたので、今後に期待ですね。</p>
+
+<p>この辺は一緒に行った<a href="https://twitter.com/yoshidashingo">yoshidashingo</a>さんが<a href="http://yoshidashingo.hatenablog.com/entry/serverlessconfparis18">ブログ</a>でよく考察してくれています。</p>
+
+<p>後、Keynote Speakerの<a href="https://twitter.com/theburningmonk">Yan Cui</a>さんのトークが重厚で実に素晴らしかったのでYouTubeに上がったら是非観てください。内容もテンポもスライドも勉強になります。</p>
+
+<h3>最後に</h3>
+
+<ul>
+<li>海外カンファレンスだと世界中からのエンジニアと話せるので非常に良い刺激になりますよ（可能なら発表を！！）</li>
+<li>2月のパリは寒い！行くなら観光客が少なく暖かい6月をオススメされた</li>
+<li>ご飯はどこ行っても美味しい！</li>
+</ul>
+
+
+<p><img src="https://lh3.googleusercontent.com/vcaTvpcnns1YSEmeRfwgBG3Mtsgfv_dJC0UgksXLE7usl7y4lInNrkJKiRkrsPUwdkkby8zrxs-wIZhSngHL7kQlg3c6tSd1HRG849GzQdnXFlYB1FHtu4_Pb9wVYANNR-NffEBshw=w675-h900-no">
+<img src="https://lh3.googleusercontent.com/HFNnHhADFLYTxW1V5qyUqRtr762bCGbeDsCBXbt6Lov_W1tSBAWrlp96IEWFt2hj6WTFa70R6nIVlGiGUq-RDVSOuRBpH3u0zkEQ5RtrVVYjmAAoJdbC9qQOCCjJg4cH2oZ2GK1TZw=w675-h900-no"></p>
+
+<p><div class="embed-video-container"><iframe src="http://www.youtube.com/embed/qcKKwuVJQPk "></iframe></div></p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[ServerlessConf Austin 2017に参加してきた]]></title>

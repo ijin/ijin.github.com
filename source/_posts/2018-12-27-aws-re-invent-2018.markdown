@@ -1,0 +1,72 @@
+---
+layout: post
+title: "AWS re:Invent 2018に参加してきた"
+date: 2018-12-27 17:33
+comments: true
+categories: 
+- events
+- aws
+---
+
+AWS re:Inventの参加記録。かれこれ6回目。
+
+{% speakerdeck 96f7171d83eb429091394cc5fb6f07ec %}
+
+今年も広かった。本当に広かった。。
+
+{% img https://lh3.googleusercontent.com/TcLThxIp2p9nOxnsNIOsJE9UUYKJ_MLsaa6f8yRDvVFNYySCFF4EsYuptDngfskkVivpCfR_75VItEDYygPFwlFSX3Qe6kRq1dhNJV5SqwNT4pv4RssEsbN10aIdUiQx1AFlWEdH0w=w521-h391-no %}
+
+## Game Day ##
+
+Microservicesというテーマで昨今の潮流に沿ってる感じで非常に楽しめた。
+
+今年は短く4時間になっていて、2回開催。またWernerのキーノートと重なって、意識を拡張しながらの作業だった。
+
+{% tweet https://twitter.com/ijin/status/1068181345363386371 %}
+
+## Security JAM ##
+
+難易度によって課題がレベル分けされていて、それをチーム内で分けてクリアしていくゲーム。Security Forensics的な要素が面白かった。
+
+{% img https://lh3.googleusercontent.com/OA0z6EqWe45eS-es3qQP359heJG-SW8UntHvEGaIQJLEoAuu1BViwXUWAEt_DUx4zcC2qu9Lpm7GX0GPP72f0ntQzKxDpzCkbw29PAVsOERsqSub1C5gkRCjAORK-tg9INOlDxwmPw=w588-h203-no %}
+
+{% tweet https://twitter.com/ijin/status/1068292529236267008 %}
+
+## Hotel ##
+
+今回はJAWS-UG関西の仲間と共に穴場的ロケーションから鑑賞。
+
+{% tweet https://twitter.com/ijin/status/1067811238082633730 %}
+
+## Keynotes ##
+
+以下、気になった発表だけ抜粋。
+
+{% tweet https://twitter.com/ijin/status/1067281869949947904 %}
+{% tweet https://twitter.com/ijin/status/1067510243851145217 %}
+{% tweet https://twitter.com/ijin/status/1067535680668987392 %}
+{% tweet https://twitter.com/ijin/status/1067828759523282944 %}
+{% tweet https://twitter.com/ijin/status/1067829622203531264 %}
+{% tweet https://twitter.com/ijin/status/1067831552418017280 %}
+{% tweet https://twitter.com/ijin/status/1067831857264250880 %}
+{% tweet https://twitter.com/ijin/status/1067843490309013505 %}
+{% tweet https://twitter.com/ijin/status/1067847520653438976 %}
+{% tweet https://twitter.com/ijin/status/1067848559448313856 %}
+{% tweet https://twitter.com/ijin/status/1067851681772126208 %}
+{% tweet https://twitter.com/ijin/status/1068204942257602560 %}
+{% tweet https://twitter.com/ijin/status/1068206219444158464 %}
+
+## re:Play ##
+
+DJは2014年以来、2回目の**Skrillex**
+
+場所は参加者が増大したので少し離れた場所にあるLas Vegas Festival Groundsにバスで移動。
+
+{% tweet https://twitter.com/ijin/status/1068213541591670784 %}
+
+## まとめ ##
+- lambdaのruby対応やっと来た
+- Outpostsでオンプレまで攻めてきたか
+- Ground Station！？衛生基地局？？？
+- 広すぎて会えなかった人達がチラホラ
+- シルク・ドゥ・ソレイユのMystreは感動した

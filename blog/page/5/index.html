@@ -9,7 +9,7 @@
   <meta name="author" content="Michael H. Oshita">
 
   
-  <meta name="description" content="CDP Advent Calendar 2012に登録しました。ここ1年ちょいで使い慣れてきたパターンがあり、作った当時はクラウドデザインパターンはなかったのですが、Clone ServerとScale Outパターンの組合せに当てはまると思うので紹介します。ちなみにアプリはRails。 &hellip;">
+  <meta name="description" content="先日のJAWS DAYSのセッション「Behind the scenes of Presidential Campaign」でリージョン間のデータ転送を高速化するツールとしてtsunami udpとcloudoptを使った話が出てたので試してみました。 通常、 &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -87,6 +87,501 @@ document.write = function(html) {
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2013/04/03/accelerating-cross-region-data-transfer/">リージョン間高速データ転送</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-04-03T09:05:00+09:00" pubdate data-updated="true">Apr 3<span>rd</span>, 2013</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>先日の<a href="http://jaws-ug.jp/jawsdays2013/">JAWS DAYS</a>のセッション<a href="http://www.publickey1.jp/blog/13/obama_for_america.html">「Behind the scenes of Presidential Campaign」</a>でリージョン間のデータ転送を高速化するツールとして<a href="http://tsunami-udp.sourceforge.net">tsunami udp</a>と<a href="http://www.cloudopt.com">cloudopt</a>を使った話が出てたので試してみました。</p>
+
+<p>通常、遠距離のサーバはRTTが大きくなるのでスループットが下がり、巨大なデータ転送には苦労しますが、なんと27TBを9時間で転送したとのこと！実際はマシンを並列にして同時転送したらしいので1台での実験です。</p>
+
+<h3>前提</h3>
+
+<ul>
+<li>東京(server1) -> アメリカ西海岸(server2)</li>
+<li>RTT: 120msぐらい</li>
+<li>EC2 instance type: m1.large</li>
+<li>OS: Ubuntu 12.04</li>
+</ul>
+
+
+<h3>ベーステスト</h3>
+
+<p>10Gファイルの作成</p>
+
+<pre><code>server1$ mkdir _tmp; cd _tmp
+server1$ dd if=/dev/zero of=10G count=1 bs=1 seek=10G
+</code></pre>
+
+<p>転送</p>
+
+<pre><code>server1$ scp -rp 10G server2:
+10G     100%   10GB  11.1MB/s   15:22
+</code></pre>
+
+<p>だいたい、90Mbpsぐらい。</p>
+
+<h3>Tsunami UDP</h3>
+
+<p>インストールは両サーバで</p>
+
+<pre><code>sudo apt-get install make gcc autoconf
+wget http://downloads.sourceforge.net/project/tsunami-udp/tsunami-udp/tsunami-v1.1-cvsbuild42/tsunami-v1.1-cvsbuild42.tar.gz
+tar xvfz tsunami-v1.1-cvsbuild42.tar.gz
+cd tsunami-udp-v11-b42
+make
+sudo make install
+</code></pre>
+
+<p>tsunami udpはfetch型の作りなので、送信側のサーバ（server1）で対象ファイルのあるディレクトリに移動してサービス起動</p>
+
+<pre><code>server1$ cd _tmp
+server1$ tsunamid *
+</code></pre>
+
+<p>で、クライアント(server2)からファイルをfetch</p>
+
+<pre><code>server2$ tsunami connect ec2-xx-x-xx-x-x get 10G quit
+</code></pre>
+
+<p>本当はftp-likeは対話型クライアントだけど、ワンライナーでも可能。  <br/>
+転送が完了するとクライアント側で情報が出力されます。</p>
+
+<pre><code>Transfer complete. Flushing to disk and signaling server to stop...
+!!!!
+PC performance figure : 224947 packets dropped (if high this indicates receiving PC overload)
+Transfer duration     : 419.32 seconds
+Total packet data     : 183339.18 Mbit
+Goodput data          : 181958.17 Mbit
+File data             : 81920.00 Mbit
+Throughput            : 437.23 Mbps
+Goodput w/ restarts   : 433.93 Mbps
+Final file rate       : 195.36 Mbps
+Transfer mode         : lossless
+</code></pre>
+
+<p>おお、確かに速い！スループットもセッションでも言ってた476Mbpsに近いし。</p>
+
+<p>サーバ側では</p>
+
+<pre><code>Server 1 transferred 10737418241 bytes in 419.33 seconds (195.4 Mbps)
+</code></pre>
+
+<p>ファイル自身の実際の転送レートはFinal file rateである<strong>195.4Mbps</strong>。
+多分、パラメータチューニングやより速いディスクを使うとスループットはさらに向上すると予想。</p>
+
+<h3>cloudopt</h3>
+
+<p>次は圧縮、TCP最適化、data deduplication等、様々な技術を用いてWANを高速化する<a href="http://www.cloudopt.com">cloudopt</a>の実験。こちらは有料で、ソフトウェアをインストールしてライセンスを購入（15日間のお試しあり）して使う方法とAmazon Marketplaceでセットアップ済みの課金型AMIを起動する方法がとれます。今回はてっとり早く後者で。</p>
+
+<p>AMIはMarketplaceでCloudoptを検索し、各リージョンで1台づつ起動。</p>
+
+<p><img src="https://lh5.googleusercontent.com/-7PWSb_8ClIo/UVuL_bzBeAI/AAAAAAAAAtc/8Lw_bDnaPVE/s665/cloudopt_marketplace_+2013-03-30+at+2.08.07+PM.png"></p>
+
+<p>Ubuntuベースなのが良いですね。</p>
+
+<p>まずscpから呼べるcloudcopyを使っての転送</p>
+
+<pre><code>server1$ scp -rp -S cloudcopy 10G server2:
+10G                 100%   10GB  41.5MB/s   04:07     
+CloudCopy transferred 17.22 MB, saving 99.8% of bandwidth by sending 9.983 fewer GB 
+</code></pre>
+
+<p>お、速い。しかしよく見てみると17.22MBしか転送されてません。どうやらファイル自体が全てゼロ埋めなので圧縮とdeduplicationが最大限効いているみたい。</p>
+
+<p>では、今度は実際のDBのバックアップで転送実験（容量14GB）</p>
+
+<pre><code>server1$ scp -rp -S cloudcopy dbbackup.tar server2:
+dbbackup.tar                100%   14GB  11.2MB/s   20:42   
+CloudCopy transferred 6.041 GB, saving 55.5% of bandwidth by sending 7.528 fewer GB
+</code></pre>
+
+<p>スループットはほぼ一緒だけど、転送容量が削減できてます。</p>
+
+<p>一度転送したファイルはbyte cacheされるので、次に転送する時は差分だけ送るので高速化されます。</p>
+
+<pre><code>server2$ rm dbbackup.tar 
+
+server1$ tar rvf dbbackup.tar file
+server1$ scp -rp -S cloudcopy dbbackup.tar server2:
+dbbackup.tar                100%   14GB  20.0MB/s   11:35  
+CloudCopy transferred 59.57 MB, saving 99.6% of bandwidth by sending 13.511 fewer GB
+</code></pre>
+
+<h3>リージョン間レプリケーション</h3>
+
+<p>次はMySQLのレプリケーション実験。</p>
+
+<p>各インスタンスでのピア設定</p>
+
+<pre><code>server1$ sudo cloudconfig peer_add server2 server2_local_ip(10.x.x.x)
+server2$ sudo cloudconfig peer_add server1 server1_local_ip(10.x.x.x)
+</code></pre>
+
+<p>これでcloudoptを使ったサーバ間のトンネルが確立されます。MySQLのレプリケーションはprivate ipでの設定が必要。
+一通りレプリケーションが出来き、スレーブIOを停止した状態でマスターにしばらく書き込んだのちに再開すると、binlogが転送されるのでcloudstatsコマンドで統計が見れます。</p>
+
+<pre><code>Component - cloudoptimizer
+------------------------------------------------------------
+           Number of connections:                    1
+              Original data size:            111.96 MB
+           Transferred data size:             52.44 MB
+
+            Bandwidth Saving:             59.51 MB (53.2%)
+</code></pre>
+
+<p><strong>53.2%</strong>の転送容量削減！</p>
+
+<h3>結論</h3>
+
+<p>以上を組み合わせれば、新たなCDP候補である「<strong>リージョン間レプリケーションパターン (Cross-Region Replication Pattern)</strong>」が実現できます。</p>
+
+<ul>
+<li>巨大データをリージョン間で転送するにはtsunami udpが有効そう</li>
+<li>リージョン間での差分バックアップやレプリケーション向けにはcloudoptで高速化</li>
+<li>普通のHTTP通信とかも使えるかも</li>
+<li>s3へのアップロード高速化も対応しているのでいずれ試してみたい</li>
+</ul>
+
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2013/02/22/mysql-benchmarks-on-aws-ssd-vs-fusion-io/">AWS SSD (hi1.4xlarge) vs Fusion-IOでのMySQLベンチマーク</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-02-22T17:32:00+09:00" pubdate data-updated="true">Feb 22<span>nd</span>, 2013</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>（※ <a href="#add">追記</a>しました - 5/19/13）</p>
+
+<p>巷ではMySQL 5.6 GAが出て騒がしいですが、ちょっと前に5.5系でAWSのSSDインスタンス（hi1.4xlarge）に載せ替える案件があったので、その時に取ったベンチマークを公表します。以前Fusion-IO (ioDrive Duo)でも同じようにやったので、比較になれば。</p>
+
+<h2>経緯</h2>
+
+<ul>
+<li>あるウェブサービスのDBサイズが巨大でm2.4xlargeでも辛くなってきている</li>
+<li>アクセスパターンによりパーティショニングが効かない</li>
+<li>シャーディングをするにはアプリ改修が大変</li>
+<li>数週間後に急激なアクセスが予想され、時間的余裕がない！</li>
+<li>データサイズの急激な増加によりbuffer poolから溢れ、ディスクアクセスのさらなる発生が懸念</li>
+</ul>
+
+
+<p>というわけで、時間がないのでSSDへの移行を検討し、ベンチマークを取りました。</p>
+
+<h2>ベンチマーク</h2>
+
+<p>buffer poolが徐々に足りなくなった場合のディスクアクセスの発生をシミュレート</p>
+
+<ul>
+<li>sysbenchのoltpモード</li>
+<li>データサイズは12G（5000万件）</li>
+<li>readonly</li>
+<li>uniform（フルスキャン）</li>
+</ul>
+
+
+<p>主要my.cnfパラメータ</p>
+
+<pre><code> sync_binlog = 0
+ innodb_buffer_pool_size = XXG
+ innodb_flush_method = O_DIRECT
+ innodb_flush_log_at_trx_commit = 1
+ innodb_file_per_table
+ innodb_io_capacity = 2000
+</code></pre>
+
+<p>コマンド</p>
+
+<pre><code> time sysbench --test=oltp --oltp-table-size=50000000 --db-driver=mysql --mysql-user=root prepare                                                                                                         
+ time sysbench --test=oltp --oltp-table-size=50000000 --db-driver=mysql --mysql-user=root --num-threads=16 --max-requests=0 --max-time=180 --init-rng=on --oltp-read-only=on --oltp-dist-type=uniform 2&gt;&amp;1 run                                                                                                         
+</code></pre>
+
+<h2>結果</h2>
+
+<p>トランザクション推移</p>
+
+<p><img src="https://docs.google.com/spreadsheet/oimg?key=0Aliw9SoXFJNMdFhhcHJkcDA5MGlackNHTXlPcWt0VWc&oid=2&zx=ii4lryrf8pz8"></p>
+
+<p>レスポンスタイム推移</p>
+
+<p><img src="https://docs.google.com/spreadsheet/oimg?key=0Aliw9SoXFJNMdFhhcHJkcDA5MGlackNHTXlPcWt0VWc&oid=3&zx=c2drap7b5561"></p>
+
+<p>Fusion-IOと比べて半分ぐらい。ioDrvie Duoの公称IOPSが250,000+ IOPSでhi1.4xlargeが120,000 IOPSなので、まあ合致しますね。</p>
+
+<p>まだ整理されてないベンチマーク結果があるので、後ほど追記しようと思います。</p>
+
+<h2>追記 <a name="add">&nbsp;</a></h2>
+
+<p>先日（5/17/13）の<a href="http://www.zusaar.com/event/668006">cloudpack night #6 - Re:Generate -</a>でADSJの荒木さんの発表でMySQLのパフォーマンスの話があったので<a href="https://code.launchpad.net/~percona-dev/perconatools/tpcc-mysql">tpcc-mysql</a>でベンチマークを取った資料を思い出し追記しました。</p>
+
+<ul>
+<li>500 warehouses (50GBぐらい)</li>
+<li>24GB Buffer pool</li>
+<li>16スレッド</li>
+<li>1時間実行</li>
+</ul>
+
+
+<p>コマンド（ロードはかなり時間がかかるので注意）</p>
+
+<pre><code> tpcc_load localhost tpcc root "" 500
+ tpcc_start -d tpcc -u root -p "" -w 500 -c 16 -r 300 -l 3600
+</code></pre>
+
+<p><img src="https://docs.google.com/spreadsheet/oimg?key=0Aliw9SoXFJNMdFhhcHJkcDA5MGlackNHTXlPcWt0VWc&oid=4&zx=y6kwyezb1qth"></p>
+
+<p>hi1.4xlargeの方が安定するまで少し時間がかかってます。<br />
+以下、安定化しだした900sあたりからの数値です。</p>
+
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Fusion-IO</th>
+<th>hi1.4xlarge</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>total</td>
+<td>2288758</td>
+<td>1444417</td>
+</tr>
+<tr>
+<td>avg</td>
+<td>8445.6</td>
+<td>5330.0</td>
+</tr>
+<tr>
+<td>stddev</td>
+<td>245.7</td>
+<td>132.8</td>
+</tr>
+</tbody>
+</table>
+
+
+<p>Fusion-IOに比べて6割ってところでしょうか。
+今回はSSDのephemeral disk1本で試したので、RAID0にするともうちょっと違ってくると思います。</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2013/02/08/self-healing-with-non-elb-autoscaling/">非ELBなAutoscalingによる自動復旧</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-02-08T09:29:00+09:00" pubdate data-updated="true">Feb 8<span>th</span>, 2013</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>バッチ処理等、サーバの冗長化が難しく仕方なく1台で動かさざるを得ない場合があります。でも可用性は確保したい。また、Pacemakerやkeepalived等できなくはないが、お金もあんまりかけられない場合もあります。
+そんな時にAWS上でよく使うのがAutoscalingによる1台構成です。最低台数・最大台数共に「1」に設定しておけばEC2インスタンスが壊れても自動的に新しいのにリプレースされて復旧されます。</p>
+
+<p>しかし、Autoscalingのhealth-check-typeを「EC2」にした場合、インスタンスの起動状態（running, stopped）しか見てくれないので、今までこの構成を実現するのにELBによる死活監視が必要でした。インスタンスがHTTPサーバじゃない場合、ちょっとムダです。</p>
+
+<p>ところが、ちょっと前にAutoscalingがインスタンスの健康状態をチェックするEC2 status checkに<a href="http://aws.amazon.com/about-aws/whats-new/2012/12/14/auto-scaling-now-uses-amazon-ec2-status-checks/">対応</a>し、ELBが不要になったはずなので試してみました。</p>
+
+<p>今回は各種AWSサービスに対応した統合されたPython版の<a href="http://aws.amazon.com/cli/">AWS CLI</a>ツールを使います。</p>
+
+<h3>セットアップ</h3>
+
+<p>まずは、ツールのインストール</p>
+
+<pre><code>sudo apt-get install python-pip
+sudo pip install awscli
+complete -C aws_completer aws
+</code></pre>
+
+<h3>Autoscaling設定</h3>
+
+<p>Launch Configの設定</p>
+
+<pre><code>aws autoscaling create-launch-configuration --image-id ami-4a12aa4b \
+--launch-configuration-name test-lc --instance-type t1.micro --key-name ijin-tokyo \
+--security-groups test --iam-instance-profile test_iam
+
+{
+    "ResponseMetadata": {
+        "RequestId": "c0e66974-7103-11e2-9780-a53199bac60e"
+    }
+}
+</code></pre>
+
+<p>Scaling Groupの設定</p>
+
+<pre><code>aws autoscaling create-auto-scaling-group --auto-scaling-group-name test-sg \
+--launch-configuration-name test-lc --min-size 1 --max-size 1 \
+--health-check-grace-period 180 --tags '{"key":"Name", "value":"as-test"}' \
+'{"key":"Use Case", "value":"test"}' --availability-zones ap-northeast-1a --health-check-type "EC2"
+
+{
+    "ResponseMetadata": {
+        "RequestId": "e3808ef3-7103-11e2-9780-a53199bac60e"
+    }
+}
+</code></pre>
+
+<p>通知</p>
+
+<pre><code>aws autoscaling put-notification-configuration --auto-scaling-group-name test-sg \
+--topic-arn arn:aws:sns:ap-northeast-1:521026608000:test \
+--notification-types autoscaling:EC2_INSTANCE_LAUNCH autoscaling:EC2_INSTANCE_TERMINATE \
+autoscaling:EC2_INSTANCE_LAUNCH_ERROR autoscaling:EC2_INSTANCE_TERMINATE_ERROR
+
+{
+    "ResponseMetadata": {
+        "RequestId": "f68359be-7103-11e2-9a1a-5f77b12b596e"
+    }
+}
+</code></pre>
+
+<p>レスポンスがjsonなのが良いですね。
+また、<a href="http://aws.amazon.com/developertools/2535">Auto Scaling Command Line Tool</a>と違って、tagでスペースが使えるようになったのが素晴らしい！</p>
+
+<p>以上の設定でAutoscalingによってインスタンスが1台立ち上がります。</p>
+
+<h3>自動復旧</h3>
+
+<p>最後にインスタンス不調（status check failure）をシミュレートする為にインスタンス内からネットワークを落とします。</p>
+
+<pre><code>ubuntu@ip-10-128-25-25:~$ sudo ifdown eth0
+</code></pre>
+
+<p>これでstatus checkがfailし、Autoscalingが自動的に新しいインスタンスと取り替えてくれるはず！</p>
+
+<p><img src="https://lh6.googleusercontent.com/-9FpM6ywjg84/URN6q29FD-I/AAAAAAAAAsw/paP8HBnisPE/s161/aws_status_check_2013-02-07+18.06.20.png"></p>
+
+<p><img src="https://lh5.googleusercontent.com/-5avxLvp5RH8/URN6n-ihwiI/AAAAAAAAAso/zOHxli4vM8o/s702/aws_instance_check_2013-02-07+18.09.19.png"></p>
+
+<p>と、期待して待っていたらなかなかアラートメールが来ません。。</p>
+
+<p>設定間違ったかなーっていろいろ見直していたら20分経った頃にやっと到着。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>Service: AWS Auto Scaling
+</span><span class='line'>Time: 2013-02-07T09:17:42.304Z
+</span><span class='line'>RequestId: f395660b-4847-4415-ad33-f8cc5091bdb3
+</span><span class='line'>Event: autoscaling:EC2_INSTANCE_TERMINATE
+</span><span class='line'>AccountId: 521026608000
+</span><span class='line'>AutoScalingGroupName: test-sg
+</span><span class='line'>AutoScalingGroupARN: arn:aws:autoscaling:ap-northeast-1:521026608000:autoScalingGroup:a036877b-dab7-4e5d-a6e1-1d3424b20d14:autoScalingGroupName/test-sg
+</span><span class='line'>ActivityId: f395660b-4837-4415-ad33-f8cc5071bdb3
+</span><span class='line'>Description: Terminating EC2 instance: i-15fadd17
+</span><span class='line'>Cause: At 2013-02-07T09:16:57Z an instance was taken out of service in response to a system health-check.
+</span><span class='line'>StartTime: 2013-02-07T09:16:57.389Z
+</span><span class='line'>EndTime: 2013-02-07T09:17:42.304Z
+</span><span class='line'>StatusCode: InProgress
+</span><span class='line'>StatusMessage:
+</span><span class='line'>Progress: 50
+</span><span class='line'>EC2InstanceId: i-15fadd17
+</span><span class='line'>Details: {}</span></code></pre></td></tr></table></div></figure>
+
+
+<p>うーん。動く事は動いたけど、ちょっと時間がかかるなぁ。</p>
+
+<p>この後何回か試してみたけど、Autoscaling発動までどれも20分ぐらいかかりました。</p>
+
+<h3>結論</h3>
+
+<p>20分程サーバダウンが許容できるようなゆるめの条件に限定した場合には非ELBでも使えるかな。まあ、それでも適用する場面は多々あるとは思いますが。（早める方法あるのかなー。）</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -782,6 +1277,18 @@ Varnishの<a href="https://www.varnish-software.com/static/book/_images/vcl.png"
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2019/04/18/serverless-days-hamburg-2019/">Serverless Days Hamburg 2019で発表してきた</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2018/12/27/aws-re-invent-2018/">AWS re:Invent 2018に参加してきた</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2018/06/16/rwanda-transform-africa-summit-2018/">ルワンダのTransform Africa Summit 2018に参加してきた</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2018/02/22/serverlessconf-paris-2018/">ServerlessConf Paris 2018で発表してきた</a>
       </li>
     
@@ -869,18 +1376,6 @@ Varnishの<a href="https://www.varnish-software.com/static/book/_images/vcl.png"
         <a href="/blog/2015/05/01/notes-on-ec2-auto-recovery/">EC2 Auto Recoveryの注意点</a>
       </li>
     
-      <li class="post">
-        <a href="/blog/2015/04/17/self-healing-with-non-elb-autoscaling4/">Auto Scalingによる自動復旧（AWS Lambda+SNS編）</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2015/03/27/serverfesta-2015-spring/">サバフェス！2015に参加してきた</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2014/12/31/isucon4-final/">ISUCON4の本戦の思い出</a>
-      </li>
-    
   </ul>
 </section>
 
@@ -911,7 +1406,7 @@ Varnishの<a href="https://www.varnish-software.com/static/book/_images/vcl.png"
     </div>
   </div>
   <footer role="contentinfo"><p>
-  Copyright &copy; 2018 - Michael H. Oshita -
+  Copyright &copy; 2019 - Michael H. Oshita -
   <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
 </p>
 

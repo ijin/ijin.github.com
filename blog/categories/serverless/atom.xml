@@ -4,7 +4,7 @@
   <title><![CDATA[Category: serverless | @ijin]]></title>
   <link href="http://ijin.github.io/blog/categories/serverless/atom.xml" rel="self"/>
   <link href="http://ijin.github.io/"/>
-  <updated>2018-02-23T16:02:31+09:00</updated>
+  <updated>2019-04-19T04:27:51+09:00</updated>
   <id>http://ijin.github.io/</id>
   <author>
     <name><![CDATA[Michael H. Oshita]]></name>
@@ -12,6 +12,110 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Serverless Days Hamburg 2019で発表してきた]]></title>
+    <link href="http://ijin.github.io/blog/2019/04/18/serverless-days-hamburg-2019/"/>
+    <updated>2019-04-18T20:59:00+09:00</updated>
+    <id>http://ijin.github.io/blog/2019/04/18/serverless-days-hamburg-2019</id>
+    <content type="html"><![CDATA[<p>去年、ServerlessConf Parisで<a href="/blog/2018/02/22/serverlessconf-paris-2018/">発表</a>してきて、今年はどうしようかなーって思ってたら<a href="https://hamburg.serverlessdays.io">Serverless Days Hamburg</a>のCFPを見つけて気軽に応募したら通っちゃったので発表してきました。</p>
+
+<h2>Serverless Days</h2>
+
+<p>元々<a href="https://www.jeffconf.com/">JeffConf</a>という名でヨーロッパ各地で数回開催されていたサーバーレスのカンファレンスですが、Severless Daysに<a href="https://serverless.zone/goodbye-jeffconf-hello-serverlessdays-9ae26791d3f">改名</a>されました。Serverless Confみたいな大規模カンファレンスではなく、「<strong>One Day. One Track. One Community.</strong>」というスローガンの元で行われるローカルコミュニティ主導の地域密着イベントです。奇しくも去年のServerlessConf Parisの翌日にJeffConf Hamburgが開催されたのですが、スピーカーの懇親会があってスケジュール的に断念したので、今回改めて発表という形で参加できたのは感慨深かったです。</p>
+
+<h2>Hamburg</h2>
+
+<p>場所は去年の美術館から変更されてサッカースタジアムの施設を利用</p>
+
+<p><img src="https://lh3.googleusercontent.com/TTPwH94B7oBmcs9sCcEYjZ9dVi5TRCFXR1VJwFWd2hKK0klA_rtFaKNXHqlFki-86fpNYPh-UNcTnUTw-WtJl0IbSskkcSJizBec2_7JAuwIoy9ZvGCD_oZtSYKNFcU16EQLl8Vk5A=w386-h514-no"></p>
+
+<p>ぎゅうぎゅうに詰められた会場がアットホームで良い感じ</p>
+
+<p><div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">始まる！<a href="https://twitter.com/hashtag/serverlessdayshamburg?src=hash&amp;ref_src=twsrc%5Etfw">#serverlessdayshamburg</a> <a href="https://twitter.com/hashtag/serverlessdays?src=hash&amp;ref_src=twsrc%5Etfw">#serverlessdays</a> <a href="https://t.co/FWjnRwGf0q">pic.twitter.com/FWjnRwGf0q</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/1096327866428547077?ref_src=twsrc%5Etfw">February 15, 2019</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div></p>
+
+<p>Keynoteは安定の<a href="https://twitter.com/theburningmonk">Yan Cui</a>さん。サーバーレスに関わる都市伝説を各個撃破してたw</p>
+
+<p>中でも名言は</p>
+
+<p><div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">「ベンダーロックインの心配をしている間にマーケットからロックアウトされるよ。」名言<a href="https://twitter.com/hashtag/serverlessdayshamburg?src=hash&amp;ref_src=twsrc%5Etfw">#serverlessdayshamburg</a> <a href="https://twitter.com/hashtag/serverlessdays?src=hash&amp;ref_src=twsrc%5Etfw">#serverlessdays</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/1096338823070576640?ref_src=twsrc%5Etfw">February 15, 2019</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div></p>
+
+<p>スピーカーは世界中から招待。覚えてるだけで</p>
+
+<ul>
+<li>アメリカ</li>
+<li>カナダ</li>
+<li>イギリス</li>
+<li>ドイツ</li>
+<li>セルビア</li>
+<li>ボスニア</li>
+<li>イスラエル</li>
+<li>インド</li>
+<li>日本（私）</li>
+</ul>
+
+
+<p>ご飯がドイツらしくビーガンだったけど美味！</p>
+
+<p><img src="https://lh3.googleusercontent.com/OAeojwnXTAdal-DoCsii4G4dJqOSAK6qK9J1BlWufZTEKgdCIMHtLnZRxqXQsNrZT3IGrnR0C3ggxxavjW0i-rmhV7AGGKtleMaac5XRxiCnXHOOEwzu7LF_AiDvDkaMKwKknOyv3Q=w440-h586-no"></p>
+
+<p>以下<a href="https://twitter.com/clairikine">Claire</a>さんによるSketch Note！</p>
+
+<p><div class='embed tweet'><blockquote class="twitter-tweet"><p lang="en" dir="ltr">Keynote: “Debunking Serverless Myths” by <a href="https://twitter.com/theburningmonk?ref_src=twsrc%5Etfw">@theburningmonk</a> <a href="https://twitter.com/hashtag/slsdayshamburg?src=hash&amp;ref_src=twsrc%5Etfw">#slsdayshamburg</a> <a href="https://twitter.com/hashtag/sketchnote?src=hash&amp;ref_src=twsrc%5Etfw">#sketchnote</a> <a href="https://t.co/wX0FQZhif2">pic.twitter.com/wX0FQZhif2</a></p>&mdash; Clairikine (@clairikine) <a href="https://twitter.com/clairikine/status/1096346818647080960?ref_src=twsrc%5Etfw">February 15, 2019</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="en" dir="ltr">“Designing Testable Serverless App Using Hexagonal Architectures” by <a href="https://twitter.com/slobodan_?ref_src=twsrc%5Etfw">@slobodan_</a> <a href="https://twitter.com/hashtag/slsdayshamburg?src=hash&amp;ref_src=twsrc%5Etfw">#slsdayshamburg</a> <a href="https://twitter.com/hashtag/sketchnote?src=hash&amp;ref_src=twsrc%5Etfw">#sketchnote</a> <a href="https://t.co/LTq1RVUo2r">pic.twitter.com/LTq1RVUo2r</a></p>&mdash; Clairikine (@clairikine) <a href="https://twitter.com/clairikine/status/1096370821373800451?ref_src=twsrc%5Etfw">February 15, 2019</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="en" dir="ltr">“Covering Your *aaS: Serverless Means More Than What You Think” by <a href="https://twitter.com/asciimike?ref_src=twsrc%5Etfw">@asciimike</a> <a href="https://twitter.com/hashtag/slsdayshamburg?src=hash&amp;ref_src=twsrc%5Etfw">#slsdayshamburg</a> <a href="https://twitter.com/hashtag/sketchnote?src=hash&amp;ref_src=twsrc%5Etfw">#sketchnote</a> <a href="https://t.co/TwRWVQNMfy">pic.twitter.com/TwRWVQNMfy</a></p>&mdash; Clairikine (@clairikine) <a href="https://twitter.com/clairikine/status/1096433528554864643?ref_src=twsrc%5Etfw">February 15, 2019</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="en" dir="ltr">“Serverless Communities” lightning talk by <a href="https://twitter.com/ijin?ref_src=twsrc%5Etfw">@ijin</a> <a href="https://twitter.com/hashtag/slsdayshamburg?src=hash&amp;ref_src=twsrc%5Etfw">#slsdayshamburg</a> <a href="https://twitter.com/hashtag/sketchnote?src=hash&amp;ref_src=twsrc%5Etfw">#sketchnote</a> <a href="https://t.co/Beob4KyByH">pic.twitter.com/Beob4KyByH</a></p>&mdash; Clairikine (@clairikine) <a href="https://twitter.com/clairikine/status/1096454978879868928?ref_src=twsrc%5Etfw">February 15, 2019</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="en" dir="ltr">“Escape The Lock-In: How Our Functions Run On AWS, Azure and Google Cloud” by <a href="https://twitter.com/c_neijenhuis?ref_src=twsrc%5Etfw">@c_neijenhuis</a> <a href="https://twitter.com/hashtag/slsdayshamburg?src=hash&amp;ref_src=twsrc%5Etfw">#slsdayshamburg</a> <a href="https://twitter.com/hashtag/sketchnote?src=hash&amp;ref_src=twsrc%5Etfw">#sketchnote</a> <a href="https://t.co/Q1K3in11B3">pic.twitter.com/Q1K3in11B3</a></p>&mdash; Clairikine (@clairikine) <a href="https://twitter.com/clairikine/status/1096455000656621568?ref_src=twsrc%5Etfw">February 15, 2019</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="en" dir="ltr">“Zen and the Art of Beer Fermentation Observability” by Ilya Libin <a href="https://twitter.com/hashtag/slsdayshamburg?src=hash&amp;ref_src=twsrc%5Etfw">#slsdayshamburg</a> <a href="https://twitter.com/hashtag/sketchnote?src=hash&amp;ref_src=twsrc%5Etfw">#sketchnote</a> <a href="https://t.co/GiD3nNxDK2">pic.twitter.com/GiD3nNxDK2</a></p>&mdash; Clairikine (@clairikine) <a href="https://twitter.com/clairikine/status/1096455021707907072?ref_src=twsrc%5Etfw">February 15, 2019</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div></p>
+
+<h2>Talk</h2>
+
+<p>技術的な発表が多い中、私のタイトルは<strong>Serverless Communities</strong>といって、サーバーレスのコミュニティにフォーカスした内容でした。日本でのサーバーレスコミュニティの運営に関わってきて得た経験、知見、活動などを共有し、コミュニティ参加の意義を（少し）エモく訴えて、他国のコミュニティやエンジニア達を少しでも刺激・喚起できればなという思いでした。</p>
+
+<p>ここではコミュニティ参加の意義や思いは詳細に書きませんが、一つだけ。</p>
+
+<p><strong>Give to the community. It will give back to you.</strong></p>
+
+<p>どんな些細な形でも良いのでコミュニティ活動に関われば、きっと将来いろんな思わぬ形でそれ以上リターンとして還ってきます。今の自分を（技術的にも仕事的にも）支えてるのは、振り返ればそういった活動から生まれた結果・繋がりだったりするので、是非皆さんにも体験して頂ければなと。（別にそれ目的で関わる必要はなく、むしろプロセス自体が面白いので、そんな事忘れて楽しめば良いと思います）</p>
+
+<p>そして、その繋がりが国を跨いで世界各国まで拡大すればきっと見える景色や可能性も違ってくるでしょう。</p>
+
+<p><img src="https://lh3.googleusercontent.com/ESz5C1v0gyEdGI3Tbj3OOrfnttQorWP9Ot7ZlbK-BqgTh3Hn6jtuQY55osrz3J6evqhKwT0GCwtwx12Tw0TPtCc1xUBTJsd51-9uLxn0zhT7yJBxoSnx7D9Ah2kt5HBsQetPk1GauQ=w514-h318-no"></p>
+
+<p>世界中に広がっていくDaysの予定地！</p>
+
+<h2>Serverless Days JAPAN</h2>
+
+<p>というわけで今年は日本でServerless Confではなく、方向性を変えてServerless Daysを開催します。スピーカー、スタッフ、スポンサー大募集なので、是非とも協力をお願いします！東京・福岡の2都市開催で秋頃開催予定です！</p>
+
+<p><div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">日本でServerless Daysやる為にグローバルチームに入った！</p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/1098937621596655616?ref_src=twsrc%5Etfw">February 22, 2019</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="en" dir="ltr">Yay, ServerlessDays Japan just announced by <a href="https://twitter.com/ijin?ref_src=twsrc%5Etfw">@ijin</a> - if we need an excuse to visit Japan!</p>&mdash; ServerlessDays Hamburg (@ServerlessHAM) <a href="https://twitter.com/ServerlessHAM/status/1096415586240921601?ref_src=twsrc%5Etfw">February 15, 2019</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div></p>
+
+<h3>Slides</h3>
+
+<p><script async="true" class="speakerdeck-embed" data-id="9adad8a7ea0d4066bf36d0f2ee1d424c" src="//speakerdeck.com/assets/embed.js"> </script></p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[ServerlessConf Paris 2018で発表してきた]]></title>

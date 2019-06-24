@@ -1,0 +1,547 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: serverless | @ijin]]></title>
+  <link href="http://ijin.github.io/blog/categories/serverless/atom.xml" rel="self"/>
+  <link href="http://ijin.github.io/"/>
+  <updated>2019-06-25T04:52:50+09:00</updated>
+  <id>http://ijin.github.io/</id>
+  <author>
+    <name><![CDATA[Michael H. Oshita]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Serverless Days Tokyo/Fukuoka 2019開催の告知]]></title>
+    <link href="http://ijin.github.io/blog/2019/06/25/serverless-days-tokyo-fukuoka-2019/"/>
+    <updated>2019-06-25T02:07:00+09:00</updated>
+    <id>http://ijin.github.io/blog/2019/06/25/serverless-days-tokyo-fukuoka-2019</id>
+    <content type="html"><![CDATA[<p>前回、Serverless Days Hamburg 2019で<a href="/blog/2019/04/18/serverless-days-hamburg-2019/">発表&amp;予告</a>した通り、サーバーレスコミュニティとして日本でも同イベントを開催する運びとなりました。東京と福岡の2都市開催です！</p>
+
+<h2>Serverless Days Tokyo 2019</h2>
+
+<h3>日付</h3>
+
+<ul>
+<li>2019年10月21日（月） - The Workshop Day</li>
+<li>2019年10月22日（火・祝） - The Conference Day</li>
+</ul>
+
+
+<h3>場所</h3>
+
+<ul>
+<li>Workshop - DMM.comラボ</li>
+<li>Conference - Tabloid</li>
+</ul>
+
+
+<p>カンファレンスは過去にServerlessConf Tokyo 2016をやったとこと同じ会場。</p>
+
+<h2>Serverless Days Fukuoka 2019</h2>
+
+<h3>日付</h3>
+
+<ul>
+<li>2019年12月13日（金） - The Workshop Day</li>
+<li>2019年12月14日（土） - The Conference Day</li>
+</ul>
+
+
+<h3>場所</h3>
+
+<ul>
+<li>Workshop - FGN</li>
+<li>Conference - FGN</li>
+</ul>
+
+
+<h2>CFP</h2>
+
+<p>他のServerless Daysにならって<a href="https://www.papercall.io">PaperCall</a>を使って募集します。選択バイアスを最小にするために匿名化して応募を受け付けれる為、コンテンツの内容によって判断しやすしようという試みです。</p>
+
+<p>3つのトーク尺とワークショップを募集しているのでどしどし応募を〜。</p>
+
+<h3>Talks</h3>
+
+<ul>
+<li>Long Talk 40min</li>
+<li>Short Talk 20min</li>
+<li>Lightning Talk 5min</li>
+<li>Workshop 120min</li>
+</ul>
+
+
+<h3>Mentoring</h3>
+
+<p>今回はちょっと喋ってみたいけど不安のある方・初めての方・自身のない方に対して<strong>メンター制度</strong>を導入しており、応募前のCFPレビューやスピーキングの指導も行えますので相談可能だったりします。</p>
+
+<h2>Staff &amp; Sponsors</h2>
+
+<p>イベントを成功させるには皆さんのお力が必要です。</p>
+
+<p>スタックやスポンサーをしてくださる方は是非ともご連絡ください！！</p>
+
+<p><a href="https://tokyo.serverless.io">Serverless Days Tokyo</a></p>
+
+<h2>Serverless is a Doctrine, not a Technology</h2>
+
+<p>先日、Serverless Daysの生みの親である<a href="https://medium.com/@PaulDJohnston">Paul Johnston</a>によって新しいサーバーレスに関するパラダイムが<a href="https://medium.com/@PaulDJohnston/serverless-is-a-doctrine-not-a-technology-4193ccb66cfc">提唱</a>されました。（<a href="https://qiita.com/toshi0607/items/42940d25ae77d9023302">日本語訳</a>）</p>
+
+<p><strong>サーバーレスは教義であり、テクノロジーではない</strong></p>
+
+<p>単に利用方法だけではなく、Serverless Daysではこういう一歩掘り下げたコンテキストをカバーできればなという思いです。</p>
+
+<ul>
+<li>コードから設定へ</li>
+<li>高LOCから少LOCへ</li>
+<li>サービスの構築から利用へ</li>
+<li>ワークロードの所有から放棄へ</li>
+<li>インスタンス、サーバー、コンテナの不使用（他の方法がない限り）</li>
+<li>サービスによるスケールアップとゼロスケール</li>
+<li>アプリケーション固有のデータレイヤ</li>
+<li>短期間の努力を犠牲にしても長期的な努力を最小限に抑える</li>
+<li>オブサーバビリティ重視の開発</li>
+<li>正当なビジネス・ケースなしに、新しいサービスや技術はなし</li>
+<li>ビジネスにおいて技術者はビジネス価値を提供する為に存在する</li>
+</ul>
+
+
+<p>乞うご期待ですね！</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Serverless Days Hamburg 2019で発表してきた]]></title>
+    <link href="http://ijin.github.io/blog/2019/04/18/serverless-days-hamburg-2019/"/>
+    <updated>2019-04-18T20:59:00+09:00</updated>
+    <id>http://ijin.github.io/blog/2019/04/18/serverless-days-hamburg-2019</id>
+    <content type="html"><![CDATA[<p>去年、ServerlessConf Parisで<a href="/blog/2018/02/22/serverlessconf-paris-2018/">発表</a>してきて、今年はどうしようかなーって思ってたら<a href="https://hamburg.serverlessdays.io">Serverless Days Hamburg</a>のCFPを見つけて気軽に応募したら通っちゃったので発表してきました。</p>
+
+<h2>Serverless Days</h2>
+
+<p>元々<a href="https://www.jeffconf.com/">JeffConf</a>という名でヨーロッパ各地で数回開催されていたサーバーレスのカンファレンスですが、Severless Daysに<a href="https://serverless.zone/goodbye-jeffconf-hello-serverlessdays-9ae26791d3f">改名</a>されました。Serverless Confみたいな大規模カンファレンスではなく、「<strong>One Day. One Track. One Community.</strong>」というスローガンの元で行われるローカルコミュニティ主導の地域密着イベントです。奇しくも去年のServerlessConf Parisの翌日にJeffConf Hamburgが開催されたのですが、スピーカーの懇親会があってスケジュール的に断念したので、今回改めて発表という形で参加できたのは感慨深かったです。</p>
+
+<h2>Hamburg</h2>
+
+<p>場所は去年の美術館から変更されてサッカースタジアムの施設を利用</p>
+
+<p><img src="https://lh3.googleusercontent.com/TTPwH94B7oBmcs9sCcEYjZ9dVi5TRCFXR1VJwFWd2hKK0klA_rtFaKNXHqlFki-86fpNYPh-UNcTnUTw-WtJl0IbSskkcSJizBec2_7JAuwIoy9ZvGCD_oZtSYKNFcU16EQLl8Vk5A=w386-h514-no"></p>
+
+<p>ぎゅうぎゅうに詰められた会場がアットホームで良い感じ</p>
+
+<p><div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">始まる！<a href="https://twitter.com/hashtag/serverlessdayshamburg?src=hash&amp;ref_src=twsrc%5Etfw">#serverlessdayshamburg</a> <a href="https://twitter.com/hashtag/serverlessdays?src=hash&amp;ref_src=twsrc%5Etfw">#serverlessdays</a> <a href="https://t.co/FWjnRwGf0q">pic.twitter.com/FWjnRwGf0q</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/1096327866428547077?ref_src=twsrc%5Etfw">February 15, 2019</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div></p>
+
+<p>Keynoteは安定の<a href="https://twitter.com/theburningmonk">Yan Cui</a>さん。サーバーレスに関わる都市伝説を各個撃破してたw</p>
+
+<p>中でも名言は</p>
+
+<p><div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">「ベンダーロックインの心配をしている間にマーケットからロックアウトされるよ。」名言<a href="https://twitter.com/hashtag/serverlessdayshamburg?src=hash&amp;ref_src=twsrc%5Etfw">#serverlessdayshamburg</a> <a href="https://twitter.com/hashtag/serverlessdays?src=hash&amp;ref_src=twsrc%5Etfw">#serverlessdays</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/1096338823070576640?ref_src=twsrc%5Etfw">February 15, 2019</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div></p>
+
+<p>スピーカーは世界中から招待。覚えてるだけで</p>
+
+<ul>
+<li>アメリカ</li>
+<li>カナダ</li>
+<li>イギリス</li>
+<li>ドイツ</li>
+<li>セルビア</li>
+<li>ボスニア</li>
+<li>イスラエル</li>
+<li>インド</li>
+<li>日本（私）</li>
+</ul>
+
+
+<p>ご飯がドイツらしくビーガンだったけど美味！</p>
+
+<p><img src="https://lh3.googleusercontent.com/OAeojwnXTAdal-DoCsii4G4dJqOSAK6qK9J1BlWufZTEKgdCIMHtLnZRxqXQsNrZT3IGrnR0C3ggxxavjW0i-rmhV7AGGKtleMaac5XRxiCnXHOOEwzu7LF_AiDvDkaMKwKknOyv3Q=w440-h586-no"></p>
+
+<p>以下<a href="https://twitter.com/clairikine">Claire</a>さんによるSketch Note！</p>
+
+<p><div class='embed tweet'><blockquote class="twitter-tweet"><p lang="en" dir="ltr">Keynote: “Debunking Serverless Myths” by <a href="https://twitter.com/theburningmonk?ref_src=twsrc%5Etfw">@theburningmonk</a> <a href="https://twitter.com/hashtag/slsdayshamburg?src=hash&amp;ref_src=twsrc%5Etfw">#slsdayshamburg</a> <a href="https://twitter.com/hashtag/sketchnote?src=hash&amp;ref_src=twsrc%5Etfw">#sketchnote</a> <a href="https://t.co/wX0FQZhif2">pic.twitter.com/wX0FQZhif2</a></p>&mdash; Clairikine (@clairikine) <a href="https://twitter.com/clairikine/status/1096346818647080960?ref_src=twsrc%5Etfw">February 15, 2019</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="en" dir="ltr">“Designing Testable Serverless App Using Hexagonal Architectures” by <a href="https://twitter.com/slobodan_?ref_src=twsrc%5Etfw">@slobodan_</a> <a href="https://twitter.com/hashtag/slsdayshamburg?src=hash&amp;ref_src=twsrc%5Etfw">#slsdayshamburg</a> <a href="https://twitter.com/hashtag/sketchnote?src=hash&amp;ref_src=twsrc%5Etfw">#sketchnote</a> <a href="https://t.co/LTq1RVUo2r">pic.twitter.com/LTq1RVUo2r</a></p>&mdash; Clairikine (@clairikine) <a href="https://twitter.com/clairikine/status/1096370821373800451?ref_src=twsrc%5Etfw">February 15, 2019</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="en" dir="ltr">“Covering Your *aaS: Serverless Means More Than What You Think” by <a href="https://twitter.com/asciimike?ref_src=twsrc%5Etfw">@asciimike</a> <a href="https://twitter.com/hashtag/slsdayshamburg?src=hash&amp;ref_src=twsrc%5Etfw">#slsdayshamburg</a> <a href="https://twitter.com/hashtag/sketchnote?src=hash&amp;ref_src=twsrc%5Etfw">#sketchnote</a> <a href="https://t.co/TwRWVQNMfy">pic.twitter.com/TwRWVQNMfy</a></p>&mdash; Clairikine (@clairikine) <a href="https://twitter.com/clairikine/status/1096433528554864643?ref_src=twsrc%5Etfw">February 15, 2019</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="en" dir="ltr">“Serverless Communities” lightning talk by <a href="https://twitter.com/ijin?ref_src=twsrc%5Etfw">@ijin</a> <a href="https://twitter.com/hashtag/slsdayshamburg?src=hash&amp;ref_src=twsrc%5Etfw">#slsdayshamburg</a> <a href="https://twitter.com/hashtag/sketchnote?src=hash&amp;ref_src=twsrc%5Etfw">#sketchnote</a> <a href="https://t.co/Beob4KyByH">pic.twitter.com/Beob4KyByH</a></p>&mdash; Clairikine (@clairikine) <a href="https://twitter.com/clairikine/status/1096454978879868928?ref_src=twsrc%5Etfw">February 15, 2019</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="en" dir="ltr">“Escape The Lock-In: How Our Functions Run On AWS, Azure and Google Cloud” by <a href="https://twitter.com/c_neijenhuis?ref_src=twsrc%5Etfw">@c_neijenhuis</a> <a href="https://twitter.com/hashtag/slsdayshamburg?src=hash&amp;ref_src=twsrc%5Etfw">#slsdayshamburg</a> <a href="https://twitter.com/hashtag/sketchnote?src=hash&amp;ref_src=twsrc%5Etfw">#sketchnote</a> <a href="https://t.co/Q1K3in11B3">pic.twitter.com/Q1K3in11B3</a></p>&mdash; Clairikine (@clairikine) <a href="https://twitter.com/clairikine/status/1096455000656621568?ref_src=twsrc%5Etfw">February 15, 2019</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="en" dir="ltr">“Zen and the Art of Beer Fermentation Observability” by Ilya Libin <a href="https://twitter.com/hashtag/slsdayshamburg?src=hash&amp;ref_src=twsrc%5Etfw">#slsdayshamburg</a> <a href="https://twitter.com/hashtag/sketchnote?src=hash&amp;ref_src=twsrc%5Etfw">#sketchnote</a> <a href="https://t.co/GiD3nNxDK2">pic.twitter.com/GiD3nNxDK2</a></p>&mdash; Clairikine (@clairikine) <a href="https://twitter.com/clairikine/status/1096455021707907072?ref_src=twsrc%5Etfw">February 15, 2019</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div></p>
+
+<h2>Talk</h2>
+
+<p>技術的な発表が多い中、私のタイトルは<strong>Serverless Communities</strong>といって、サーバーレスのコミュニティにフォーカスした内容でした。日本でのサーバーレスコミュニティの運営に関わってきて得た経験、知見、活動などを共有し、コミュニティ参加の意義を（少し）エモく訴えて、他国のコミュニティやエンジニア達を少しでも刺激・喚起できればなという思いでした。</p>
+
+<p>ここではコミュニティ参加の意義や思いは詳細に書きませんが、一つだけ。</p>
+
+<p><strong>Give to the community. It will give back to you.</strong></p>
+
+<p>どんな些細な形でも良いのでコミュニティ活動に関われば、きっと将来いろんな思わぬ形でそれ以上リターンとして還ってきます。今の自分を（技術的にも仕事的にも）支えてるのは、振り返ればそういった活動から生まれた結果・繋がりだったりするので、是非皆さんにも体験して頂ければなと。（別にそれ目的で関わる必要はなく、むしろプロセス自体が面白いので、そんな事忘れて楽しめば良いと思います）</p>
+
+<p>そして、その繋がりが国を跨いで世界各国まで拡大すればきっと見える景色や可能性も違ってくるでしょう。</p>
+
+<p><img src="https://lh3.googleusercontent.com/ESz5C1v0gyEdGI3Tbj3OOrfnttQorWP9Ot7ZlbK-BqgTh3Hn6jtuQY55osrz3J6evqhKwT0GCwtwx12Tw0TPtCc1xUBTJsd51-9uLxn0zhT7yJBxoSnx7D9Ah2kt5HBsQetPk1GauQ=w514-h318-no"></p>
+
+<p>世界中に広がっていくDaysの予定地！</p>
+
+<h2>Serverless Days JAPAN</h2>
+
+<p>というわけで今年は日本でServerless Confではなく、方向性を変えてServerless Daysを開催します。スピーカー、スタッフ、スポンサー大募集なので、是非とも協力をお願いします！東京・福岡の2都市開催で秋頃開催予定です！</p>
+
+<p><div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">日本でServerless Daysやる為にグローバルチームに入った！</p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/1098937621596655616?ref_src=twsrc%5Etfw">February 22, 2019</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="en" dir="ltr">Yay, ServerlessDays Japan just announced by <a href="https://twitter.com/ijin?ref_src=twsrc%5Etfw">@ijin</a> - if we need an excuse to visit Japan!</p>&mdash; ServerlessDays Hamburg (@ServerlessHAM) <a href="https://twitter.com/ServerlessHAM/status/1096415586240921601?ref_src=twsrc%5Etfw">February 15, 2019</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div></p>
+
+<h3>Slides</h3>
+
+<p><script async="true" class="speakerdeck-embed" data-id="9adad8a7ea0d4066bf36d0f2ee1d424c" src="//speakerdeck.com/assets/embed.js"> </script></p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[ServerlessConf Paris 2018で発表してきた]]></title>
+    <link href="http://ijin.github.io/blog/2018/02/22/serverlessconf-paris-2018/"/>
+    <updated>2018-02-22T02:29:00+09:00</updated>
+    <id>http://ijin.github.io/blog/2018/02/22/serverlessconf-paris-2018</id>
+    <content type="html"><![CDATA[<p>既に世界数カ所の都市で行われている<a href="http://serverlessconf.io">ServerlessConf</a>がフランスのパリで開催されるという事でCFPに応募したら通ってしまったので<a href="http://paris.serverlessconf.io/speakers.html">発表</a>してきました。75個の応募の中から選んで頂いて光栄ですね。</p>
+
+<p>タイトルは<strong>Accelerating DevOps with Serverless</strong>で、DevOpsを手助けする為にServerlessを使って解決したストーリーや仕組み。</p>
+
+<p><script async="true" class="speakerdeck-embed" data-id="b0bc56c91fa54b1eadde7e7d2b5c169f" src="//speakerdeck.com/assets/embed.js"> </script></p>
+
+<hr />
+
+<p>内容としてはシンプルでgithubのbranchに応じて、テスト環境用のECSクラスタ内にrandom portでALBにtarget group, listenerを割り当ててservice作ってコンテナを配置するだけです。branch delete時にはtaskを停止し、逆順に削除していきます。通知はSNSでslack等へ連携可能。</p>
+
+<p>少し特色があるとすれば、serviceを作成したりtaskを停止するのにかなり時間を要する場合があるので、単一のlambdaではなく<a href="https://aws.amazon.com/step-functions/">step functions</a>で制御した事ですかね。今回、<a href="https://serverless.com">serverless framework</a>の<a href="https://github.com/horike37/serverless-step-functions">step functions plugin</a>のおかげで<a href="https://docs.aws.amazon.com/step-functions/latest/dg/concepts-state-machine-data.html">state machine data</a>をjsonで書かなくて済んだので作者の<a href="https://twitter.com/horike37">horike</a>さんには感謝です。</p>
+
+<p><img src="https://lh3.googleusercontent.com/FdRvgy-OwOnIN0ouQWsNV-JeiBURfOujH49arMUpqkCZZTBnYRcpUTuO1xwc4fvHQqCcgzDpyWIe-yUkMh55_GUGMJaotRqhjdj7QfVi7dBv4UyJOF9A4WCggIlouYDDtCxHujluaw=w600-h346-no"></p>
+
+<p>発表した内容のモノは現在、複数プロジェクトで使えるようになるべく汎用的な作りにして<strong>ECS deity</strong>として公開しています。参考にでもなれば。</p>
+
+<p><a href="https://github.com/ijin/ecs-deity">https://github.com/ijin/ecs-deity</a></p>
+
+<p>尚、GitHub eventによる自動デプロイだと毎回煩わしい場合もある（特定のbranch prefixが対象であるにせよ）ので、slackによるchatops手動デプロイも実装中です。</p>
+
+<p>と、まあやってる事はそんなに難しくないので、海外カンファレンスのCFPがあれば誰でも気軽に応募してみると良いと思います！</p>
+
+<h3>Afterthoughts</h3>
+
+<p>やはり、serverlessだとログ周りが様々なCloudWatch logsのlog streamsに分散（api gw, lambda, step functions）しているので、トレーシングがしんどかったりしたけど今回のConfで何度も取り上げられたトピックが<strong>Obervability</strong>だったので皆同様に苦労しているんだなぁと感じました。ブースにもその解決に取り込もうとしている企業がいくつかいたので、今後に期待ですね。</p>
+
+<p>この辺は一緒に行った<a href="https://twitter.com/yoshidashingo">yoshidashingo</a>さんが<a href="http://yoshidashingo.hatenablog.com/entry/serverlessconfparis18">ブログ</a>でよく考察してくれています。</p>
+
+<p>後、Keynote Speakerの<a href="https://twitter.com/theburningmonk">Yan Cui</a>さんのトークが重厚で実に素晴らしかったのでYouTubeに上がったら是非観てください。内容もテンポもスライドも勉強になります。</p>
+
+<h3>最後に</h3>
+
+<ul>
+<li>海外カンファレンスだと世界中からのエンジニアと話せるので非常に良い刺激になりますよ（可能なら発表を！！）</li>
+<li>2月のパリは寒い！行くなら観光客が少なく暖かい6月をオススメされた</li>
+<li>ご飯はどこ行っても美味しい！</li>
+</ul>
+
+
+<p><img src="https://lh3.googleusercontent.com/vcaTvpcnns1YSEmeRfwgBG3Mtsgfv_dJC0UgksXLE7usl7y4lInNrkJKiRkrsPUwdkkby8zrxs-wIZhSngHL7kQlg3c6tSd1HRG849GzQdnXFlYB1FHtu4_Pb9wVYANNR-NffEBshw=w675-h900-no">
+<img src="https://lh3.googleusercontent.com/HFNnHhADFLYTxW1V5qyUqRtr762bCGbeDsCBXbt6Lov_W1tSBAWrlp96IEWFt2hj6WTFa70R6nIVlGiGUq-RDVSOuRBpH3u0zkEQ5RtrVVYjmAAoJdbC9qQOCCjJg4cH2oZ2GK1TZw=w675-h900-no"></p>
+
+<p><div class="embed-video-container"><iframe src="http://www.youtube.com/embed/qcKKwuVJQPk "></iframe></div></p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[ServerlessConf Austin 2017に参加してきた]]></title>
+    <link href="http://ijin.github.io/blog/2017/04/30/serverlessconf-austin-2017/"/>
+    <updated>2017-04-30T17:40:00+09:00</updated>
+    <id>http://ijin.github.io/blog/2017/04/30/serverlessconf-austin-2017</id>
+    <content type="html"><![CDATA[<p><a href="https://austin.serverlessconf.io/">ServerlessConf Austin 2017</a>に参加したので、端的なメモ。</p>
+
+<p>Day 1の終わりに着いて、ほぼDay 2のみ</p>
+
+<p><img src="https://lh3.googleusercontent.com/PU0qf-q97mQXg0frh0vEyY_yzmiTrUUIISKS3Lr4hrqMvimTogqZEge-lg3N76kvUqS-4XnlW23ATuuguLNqGkDcODQOn393OKl2XZtpDsnXjxUSKfeDn1r12OI15QFiec36CPO8ag=w1122-h842-no"></p>
+
+<h3>Self Replicating Serverless Function -  Michael Adda</h3>
+
+<p><a href="https://en.wikipedia.org/wiki/Quine_(computing">Quine</a>おじさんによるウロボロス的lambda実装のお話。思考実験としては面白かった。</p>
+
+<p><div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">quineおじさん  <a href="https://twitter.com/hashtag/ServerlessConf?src=hash&amp;ref_src=twsrc%5Etfw">#ServerlessConf</a> <a href="https://t.co/FOisTd9AUD">pic.twitter.com/FOisTd9AUD</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/857961545015242752?ref_src=twsrc%5Etfw">April 28, 2017</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">ウロボロス！  <a href="https://twitter.com/hashtag/ServerlessConf?src=hash&amp;ref_src=twsrc%5Etfw">#ServerlessConf</a> <a href="https://t.co/hSmps3fWKj">pic.twitter.com/hSmps3fWKj</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/857962397281144832?ref_src=twsrc%5Etfw">April 28, 2017</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div></p>
+
+<h3>Harmonizing Serverless &amp; Traditional Applications - Ryan Brown</h3>
+
+<p><div class='embed tweet'><blockquote class="twitter-tweet"><p lang="fr" dir="ltr">Queueueueueuing! <a href="https://twitter.com/hashtag/ServerlessConf?src=hash&amp;ref_src=twsrc%5Etfw">#ServerlessConf</a> <a href="https://t.co/mL67Gt9UU9">pic.twitter.com/mL67Gt9UU9</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/857965198698835968?ref_src=twsrc%5Etfw">April 28, 2017</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div></p>
+
+<h3>Serverless Security: What’s Left To Protect? - Guy Podjarny</h3>
+
+<p><div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">元Akami CTOによるサーバーレスセキュリティのセッション <a href="https://twitter.com/hashtag/ServerlessConf?src=hash&amp;ref_src=twsrc%5Etfw">#ServerlessConf</a> <a href="https://t.co/nGYiTuYys8">pic.twitter.com/nGYiTuYys8</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/858005309104693248?ref_src=twsrc%5Etfw">April 28, 2017</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">今はSnykというセキュリティ・監視サービスをやってる。後で見てみよう。 <a href="https://t.co/u91czC6gPE">https://t.co/u91czC6gPE</a> <a href="https://twitter.com/hashtag/ServerlessConf?src=hash&amp;ref_src=twsrc%5Etfw">#ServerlessConf</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/858005655960961026?ref_src=twsrc%5Etfw">April 28, 2017</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div></p>
+
+<h3>Single Page Apps &amp; Serverless without Compromise (or as little as possible) - Jared Short</h3>
+
+<p><div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">GOAD - LamdaとGoによる分散負荷テストツール。便利そう。 <a href="https://t.co/bUDyL0OHYz">https://t.co/bUDyL0OHYz</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/858029124899794944?ref_src=twsrc%5Etfw">April 28, 2017</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">GraphQLかー。 <a href="https://twitter.com/hashtag/ServerlessConf?src=hash&amp;ref_src=twsrc%5Etfw">#ServerlessConf</a> <a href="https://t.co/Ti2EgaXZVt">pic.twitter.com/Ti2EgaXZVt</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/858032484273074176?ref_src=twsrc%5Etfw">April 28, 2017</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">おお、GraphQLとLambdaのプラットフォーム <a href="https://t.co/Cn0FK5MV0c">https://t.co/Cn0FK5MV0c</a> <a href="https://twitter.com/hashtag/ServerlessConf?src=hash&amp;ref_src=twsrc%5Etfw">#ServerlessConf</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/858033058661924865?ref_src=twsrc%5Etfw">April 28, 2017</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="en" dir="ltr">Server Smoothie! <a href="https://twitter.com/hashtag/ServerlessConf?src=hash&amp;ref_src=twsrc%5Etfw">#ServerlessConf</a> <a href="https://t.co/qg84hSy2qQ">pic.twitter.com/qg84hSy2qQ</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/858080490104004608?ref_src=twsrc%5Etfw">April 28, 2017</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div></p>
+
+<h3>Serverless Workflows in AWS: A Journey from SWF to Step Functions - Forrest Brazeal</h3>
+
+<p>最後にRAP!!!新しいwww</p>
+
+<p><div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">この人、セッションの最後でサーバーレスのラップを約束したぞ。 <a href="https://twitter.com/hashtag/serverlessconf?src=hash&amp;ref_src=twsrc%5Etfw">#serverlessconf</a> <a href="https://t.co/ajDs6VR2Ne">pic.twitter.com/ajDs6VR2Ne</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/858043060508401664?ref_src=twsrc%5Etfw">April 28, 2017</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="en" dir="ltr">Serverless Rap!? <a href="https://twitter.com/hashtag/ServerlessConf?src=hash&amp;ref_src=twsrc%5Etfw">#ServerlessConf</a> <a href="https://t.co/iRRVS48KNa">pic.twitter.com/iRRVS48KNa</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/858051472830889986?ref_src=twsrc%5Etfw">April 28, 2017</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div></p>
+
+<h3>Keynote by Tim Wagner</h3>
+
+<p><div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">今回のTimはどんな風にサーバを破壊するんだろう。ステージ横の布が気になる。 <a href="https://twitter.com/hashtag/ServerlessConf?src=hash&amp;ref_src=twsrc%5Etfw">#ServerlessConf</a> <a href="https://t.co/mxzwQfrfWL">pic.twitter.com/mxzwQfrfWL</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/858069201797468161?ref_src=twsrc%5Etfw">April 28, 2017</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">ドラクエだ！ <a href="https://twitter.com/hashtag/ServerlessConf?src=hash&amp;ref_src=twsrc%5Etfw">#ServerlessConf</a> <a href="https://t.co/iiRJnhiiGO">pic.twitter.com/iiRJnhiiGO</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/858073465315831808?ref_src=twsrc%5Etfw">April 28, 2017</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="en" dir="ltr">PyWren - lambda map/reduce framework. 25TFLOPS! <a href="https://t.co/kEhLd2scbF">https://t.co/kEhLd2scbF</a> <a href="https://twitter.com/hashtag/ServerlessConf?src=hash&amp;ref_src=twsrc%5Etfw">#ServerlessConf</a> <a href="https://t.co/dWeQS0tkIC">pic.twitter.com/dWeQS0tkIC</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/858075062045487104?ref_src=twsrc%5Etfw">April 28, 2017</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">お！ <a href="https://twitter.com/hashtag/ServerlessConf?src=hash&amp;ref_src=twsrc%5Etfw">#ServerlessConf</a> <a href="https://t.co/61PH6xI1mS">pic.twitter.com/61PH6xI1mS</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/858079838577598464?ref_src=twsrc%5Etfw">April 28, 2017</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div></p>
+
+<h2>おまけ</h2>
+
+<ul>
+<li>オースティンめっちゃ暑かった（日陰に入ると涼しい）</li>
+<li>シュラスコ美味かった！</li>
+<li>Uberが締め出されたのでローカルアプリが必要</li>
+<li>下記コメントが印象的だった</li>
+</ul>
+
+
+<p><div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">Uber/Lyftが出て行って沢山のクローンサービスが立ち上がったけど、その中の一つのRide Austinでドライバーと雑談。「NPOだから、俺たちの手取りが大幅に増えて大変助かってる。前はガス代ぐらいにしかならなくて、生きていくのがやっとだった。出て行ってくれて良かったよ」</p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/857749605039063040?ref_src=twsrc%5Etfw">April 28, 2017</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div></p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[ServerlessConf London 2016に参加してきた。]]></title>
+    <link href="http://ijin.github.io/blog/2016/11/09/serverlessconf-london-2016/"/>
+    <updated>2016-11-09T01:36:00+09:00</updated>
+    <id>http://ijin.github.io/blog/2016/11/09/serverlessconf-london-2016</id>
+    <content type="html"><![CDATA[<p>先日、<a href="http://london.serverlessconf.io/">ServerlessConf London 2016</a>に参加したので、そのメモ（例によってtogetter風）。</p>
+
+<p>少し前に話題の「サーバーレス」アーキテクチャに関するイベントである<a href="http://tokyo.serverlessconf.io/">ServerlessConf Tokyo 2016</a>をお手伝いしたことから、ロンドン版開催のお誘いが来たので行ってみました。</p>
+
+<p><img src="https://lh3.googleusercontent.com/Uk-VZ2mRZ3DL0wef_4E83hYAFqaoyJmf6trHOZKlWqGur9uLBzCvlG3piGup5OlD2jNFehq3TsCg=w320-h425-no"></p>
+
+<p>開催場所は<strong>etc.venues</strong>という施設。</p>
+
+<p><img src="https://lh3.googleusercontent.com/QuQBUW9pBQxRt6_k0P4blgtq9dzm9sQhdumHPcJgGZWASNszAq4vAzeGNpD1IUB7_rW04y1-UMGE=w433-h319-no"></p>
+
+<h2>Day 1</h2>
+
+<h3>Keynote by Patrick Debois</h3>
+
+<p>サーバーレスについてのカンファレンスなのに、キーノートでジャブ撃ちまくりが面白かった。</p>
+
+<p><div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">DevOpsの名付け親のPatrick Deboisによるキーノート <a href="https://twitter.com/hashtag/serverlessconf?src=hash">#serverlessconf</a> <a href="https://t.co/9bStBPgR1s">pic.twitter.com/9bStBPgR1s</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/791559728715268096">October 27, 2016</a></blockquote>
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">開発速度は上がるかもだけど、レイテンシーによる実行速度のトレードオフについて。 <a href="https://twitter.com/hashtag/serverlessconf?src=hash">#serverlessconf</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/791561074734604289">October 27, 2016</a></blockquote>
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">サービスの信頼性について。lambdaはディスクやメモリが共有されてるので、よく考えて。スケールした場合のtcp connectionsに注意 <a href="https://twitter.com/hashtag/serverlessconf?src=hash">#serverlessconf</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/791562423224283136">October 27, 2016</a></blockquote>
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">セキュリティについて。フィルタリングやDOS対策等がなかったり。lambdaのlimitを 30,000まで上げた事がある。<a href="https://twitter.com/hashtag/serverlessconf?src=hash">#serverlessconf</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/791563104345731072">October 27, 2016</a></blockquote>
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">見積もりについて。既存のツールセットでは結構難しい。バーストの制限とかあると良い。 <a href="https://twitter.com/hashtag/serverlessconf?src=hash">#serverlessconf</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/791563738566451200">October 27, 2016</a></blockquote>
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">コストについて。OSのパッチ等はいらなくなるけど、結局サービスの進化を追随しないといけないので、ラーニングコストは発生し続ける。 <a href="https://twitter.com/hashtag/serverlessconf?src=hash">#serverlessconf</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/791564385244241920">October 27, 2016</a></blockquote>
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">新機能。統合テストの難しさ。開発速度は上がるけど、複雑さが増してテスト実行時間が延びたり。 <a href="https://twitter.com/hashtag/serverlessconf?src=hash">#serverlessconf</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/791565224239169537">October 27, 2016</a></blockquote>
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">過去にも、未来は明るかったよw <a href="https://twitter.com/hashtag/serverlessconf?src=hash">#serverlessconf</a> <a href="https://t.co/LrbzhAe5vL">pic.twitter.com/LrbzhAe5vL</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/791565471787003904">October 27, 2016</a></blockquote>
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">新しいテクノロジーだからってサーバーレスに盲目的に飛びつくんじゃなく、よく考えて使いましょうって事。まあ、そうだよね。 <a href="https://twitter.com/hashtag/serverlessconf?src=hash">#serverlessconf</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/791566041629331456">October 27, 2016</a></blockquote>
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div></p>
+
+<h3>Sessions</h3>
+
+<p>iRobotや<a href="https://github.com/capitalone/cloud-custodian">Cloud Custodian</a>を公開したCapitalOneのセッションも面白かったけど、一番は元Parseのエンジニアである<strong>Charity Majors</strong>のセッション（<strong>Serverlessness, NoOps and the Tooth Fairy</strong>）。サーバーレスを採用しても結局サービスの責任は自分で負わないといけない啓蒙的な話を様々な例を交えつつ、パッションを持って話してくれた。</p>
+
+<ul>
+<li><strong>Serverless architecture at iRobot</strong> by Ben Kehoe</li>
+<li><strong>Serverless for the Enterprise</strong> by Rafal Gancarz</li>
+<li><strong>Real-time Data Processing Using AWS Lambda</strong> by Ken Payne</li>
+<li><strong>Cloud Custodian, a serverless rules engine for the cloud</strong> by Kapil Thangavelu</li>
+<li><strong>The Serverless Cloud Integration Pattern</strong> by Lars Trieloff</li>
+<li><strong>Serverlessness, NoOps and the Tooth Fairy</strong> by Charity Majors</li>
+<li><strong>Serverless Operations</strong> by Ben Bridts</li>
+</ul>
+
+
+<p><div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">iRobotがAPI gatewayを辞めた理由。end to endのレイテンシー。276ms vs 15ms <a href="https://twitter.com/hashtag/serverlessconf?src=hash">#serverlessconf</a> <a href="https://t.co/z2ViIf8YhX">pic.twitter.com/z2ViIf8YhX</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/791571380621807620">October 27, 2016</a></blockquote>
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">API gwの切り替えはred black deploymentだけど、route53によるdns変更ではなく、エンドポイントを知らせるAPI gwを別途使ってた。 <a href="https://twitter.com/hashtag/serverlessconf?src=hash">#serverlessconf</a> <a href="https://t.co/rBLa2lrRox">pic.twitter.com/rBLa2lrRox</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/791573027251257348">October 27, 2016</a></blockquote>
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">モノリシックなサーバーレス。。 <a href="https://twitter.com/hashtag/serverlessconf?src=hash">#serverlessconf</a> <a href="https://t.co/jqLifv0LVc">pic.twitter.com/jqLifv0LVc</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/791588644486275072">October 27, 2016</a></blockquote>
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">この時間、聞きたいトラックがなかったので、とりあえずエンプラのセッション覗いてみたけどスライド内の文字の多い事よ。 <a href="https://twitter.com/hashtag/serverlessconf?src=hash">#serverlessconf</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/791595279661359109">October 27, 2016</a></blockquote>
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">Cloud Custodianの対応リソースが結構増えてる。 <a href="https://t.co/jF1aywI73B">https://t.co/jF1aywI73B</a> <a href="https://twitter.com/hashtag/serverlessconf?src=hash">#serverlessconf</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/791624537326649344">October 27, 2016</a></blockquote>
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="en" dir="ltr">What developers want. <a href="https://twitter.com/hashtag/serverlessconf?src=hash">#serverlessconf</a> <a href="https://t.co/Yf8JKja8uu">pic.twitter.com/Yf8JKja8uu</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/791634525298253826">October 27, 2016</a></blockquote>
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">AdobeはAWSと結婚して一生過ごすより、カジュアルにデートする程度のお付き合いに留めてる。 <a href="https://twitter.com/hashtag/serverlessconf?src=hash">#serverlessconf</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/791637330742353920">October 27, 2016</a></blockquote>
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">おお、AlexaからAPI gw経由でOpenwiskを呼び出すデモだ。 <a href="https://twitter.com/hashtag/serverlessconf?src=hash">#serverlessconf</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/791638343226392576">October 27, 2016</a></blockquote>
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div></p>
+
+<h3>LT</h3>
+
+<p>LTという割にはミニセッションな感じ。日本のLTみたいな笑い所はあまりなし。最後の火星探査機もどきのやつは少し興味深かったけど。</p>
+
+<ul>
+<li><strong>Migrating to Serverless: MindMup 2.0 case study</strong> by Gojko Adzic</li>
+<li><strong>Serverless with Ansible</strong> by Ryan Brown</li>
+<li><strong>Cloud Detour - Automation Tool for testing Cloud Applications Resiliency</strong> by Sathiya Shunmugasundaram &amp; Gnani Dathathreya</li>
+<li><strong>Mission to Mars: Exploring new worlds with AWS IoT</strong> by Jeroen Resoort</li>
+</ul>
+
+
+<p><div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">LT始まったけど、ICD-10 codeの余計な知識が増えていくw W220.2XDやR461等 <a href="https://twitter.com/hashtag/serverlessconf?src=hash">#serverlessconf</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/791677468252004352">October 27, 2016</a></blockquote>
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">NetflixのChaos Monkeyがユースケースに合わなかったので、CapitalOneが自作したサーバーレスなCloud Detourが近日オープンソース予定 <a href="https://twitter.com/hashtag/serverlessconf?src=hash">#serverlessconf</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/791688150833852416">October 27, 2016</a></blockquote>
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">RasPI+mBotで小型MarsBotを作ってAWS IoT経由でs3上のコントロールパネルから操作するデモ <a href="https://twitter.com/hashtag/serverlessconf?src=hash">#serverlessconf</a> <a href="https://t.co/tItS1fqfdG">pic.twitter.com/tItS1fqfdG</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/791693673222340608">October 27, 2016</a></blockquote>
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div></p>
+
+<h3>After Party</h3>
+
+<p><div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">アフターパーティでAppleのイベントをストリーミングしてるw <a href="https://twitter.com/hashtag/serverlessconf?src=hash">#serverlessconf</a> <a href="https://t.co/69rcbmwsKI">pic.twitter.com/69rcbmwsKI</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/791695401632010241">October 27, 2016</a></blockquote>
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div></p>
+
+<h2>Day 2</h2>
+
+<h3>Sessions</h3>
+
+<p>興味深かったのはnewrelic apm風なlambda専用の解析ツール<a href="https://www.iopipe.com/">IOPipe</a>を作ってる人による<strong>Ops for NoOps</strong>や<a href="https://realm.io/">Realm</a>のFounderによる<strong>Serverless in an Offline-First world</strong>。どちらも自社プロダクトを紹介しつつも結構サーバーレスアーキテクチャでの設計やオペレーションを深掘りした話だった。他は<a href="https://github.com/Miserlou/Zappa">Zappa</a>の作者による<strong>Globally Available Serverless Architectures</strong>がテンポよく進んで見てて飽きなかった。</p>
+
+<ul>
+<li><strong>Ops for NoOps: Operational Challenges for Serverless Apps</strong> by Eric Windisch &amp; Pam Selle</li>
+<li><strong>Serverless in an Offline-First world</strong> by Alexander Stigsen</li>
+<li><strong>The future of serverless</strong> by Paul Johnston</li>
+<li><strong>Getting the most out of the Serverless Framework</strong> by Florian Motlik</li>
+<li><strong>Serverless API in the Enterprise</strong> by Scott Patterson &amp; Simon Coward</li>
+<li><strong>Globally Available Serverless Architectures</strong> by Rich Jones</li>
+<li><strong>Serverless Microservices with Google Cloud Functions</strong> by Bret McGowen</li>
+</ul>
+
+
+<p><div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">Lambdaのコンテナの最大保存期間は4時間らしい。 <a href="https://twitter.com/hashtag/serverlessconf?src=hash">#serverlessconf</a> <a href="https://t.co/lH9myDtlAa">pic.twitter.com/lH9myDtlAa</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/791916637762957312">October 28, 2016</a></blockquote>
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">Alexa連携のLambdaの中からメトリックを送信して、グラフ化。便利そう。 <a href="https://twitter.com/hashtag/serverlessconf?src=hash">#serverlessconf</a> <a href="https://t.co/IaBMteqy5e">pic.twitter.com/IaBMteqy5e</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/791919435934146560">October 28, 2016</a></blockquote>
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">RealmのCEOだ！ <a href="https://twitter.com/hashtag/serverlessconf?src=hash">#serverlessconf</a> <a href="https://t.co/eQDbgB8yju">pic.twitter.com/eQDbgB8yju</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/791926072568713216">October 28, 2016</a></blockquote>
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">RESTの理想と現実w <a href="https://twitter.com/hashtag/serverlessconf?src=hash">#serverlessconf</a> <a href="https://t.co/luadl5zKlZ">pic.twitter.com/luadl5zKlZ</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/791928441410981888">October 28, 2016</a></blockquote>
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">The future if serverless. 大層なタイトルだな。 <a href="https://twitter.com/hashtag/serverlessconf?src=hash">#serverlessconf</a> <a href="https://t.co/7XAoRlxFsr">pic.twitter.com/7XAoRlxFsr</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/791940529365790720">October 28, 2016</a></blockquote>
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">ああ、この人か。 <a href="https://t.co/qvQdsXfD14">https://t.co/qvQdsXfD14</a> <a href="https://twitter.com/hashtag/serverlessconf?src=hash">#serverlessconf</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/791942085750292480">October 28, 2016</a></blockquote>
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">Serverless Frameworkの今後について。 <a href="https://twitter.com/hashtag/serverlessconf?src=hash">#serverlessconf</a> <a href="https://t.co/klOi06BfBW">pic.twitter.com/klOi06BfBW</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/791958743755788289">October 28, 2016</a></blockquote>
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">昔のサーバーレステクノロジー！ <a href="https://twitter.com/hashtag/serverlessconf?src=hash">#serverlessconf</a> <a href="https://t.co/3jOrRJpU4Q">pic.twitter.com/3jOrRJpU4Q</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/791973348716797952">October 28, 2016</a></blockquote>
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="es" dir="ltr">ACID 2.0 <a href="https://twitter.com/hashtag/serverlessconf?src=hash">#serverlessconf</a> <a href="https://t.co/dMxqIZLutf">pic.twitter.com/dMxqIZLutf</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/791975593407574016">October 28, 2016</a></blockquote>
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">高橋メソッドだ！ <a href="https://twitter.com/hashtag/serverlessconf?src=hash">#serverlessconf</a> <a href="https://t.co/fPrQVQu6r8">pic.twitter.com/fPrQVQu6r8</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/791986231051685888">October 28, 2016</a></blockquote>
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">Zappaの人か。 <a href="https://t.co/nn0YyfUarm">https://t.co/nn0YyfUarm</a> <a href="https://twitter.com/hashtag/serverlessconf?src=hash">#serverlessconf</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/791988939729100800">October 28, 2016</a></blockquote>
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div></p>
+
+<h3>LT</h3>
+
+<p>MSの人達によるAzureの高速棒読み寸劇が笑えた。</p>
+
+<ul>
+<li><strong>Why PubNub moved Serverless Computing into the Network</strong> by Girish Dusane</li>
+<li><strong>DevOps for Serverless Applications</strong> by Yochay Kiriaty</li>
+<li><strong>Writing Serverless Plugins</strong> by Anna Doubkova</li>
+<li><strong>Serverless real-time aggregates</strong> by Christian Blunden</li>
+<li><strong>Big data processing simplified with Serverless Map Reduce</strong> by Sunil Mallya</li>
+</ul>
+
+
+<p><div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">Azure Functions の実装デモLT。下手な寸劇だw <a href="https://twitter.com/hashtag/serverlessconf?src=hash">#serverlessconf</a> <a href="https://t.co/4GEhceY8ck">pic.twitter.com/4GEhceY8ck</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/792021382066479104">October 28, 2016</a></blockquote>
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">高速棒読みw <a href="https://twitter.com/hashtag/serverlessconf?src=hash">#serverlessconf</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/792021542867705857">October 28, 2016</a></blockquote>
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="en" dir="ltr">How to write Serverless Framework plugins <a href="https://twitter.com/hashtag/serverlessconf?src=hash">#serverlessconf</a> <a href="https://t.co/Iy7tJAqZSs">pic.twitter.com/Iy7tJAqZSs</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/792027607088918528">October 28, 2016</a></blockquote>
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">LambdaによるMapReduceのframework <a href="https://t.co/HyTefArWmQ">https://t.co/HyTefArWmQ</a> <a href="https://twitter.com/hashtag/serverlessconf?src=hash">#serverlessconf</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/792033437452472325">October 28, 2016</a></blockquote>
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="es" dir="ltr">Policies! <a href="https://twitter.com/hashtag/serverlessconf?src=hash">#serverlessconf</a> <a href="https://t.co/4AL95D6hBW">pic.twitter.com/4AL95D6hBW</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/792035672366452736">October 28, 2016</a></blockquote>
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="en" dir="ltr">YAML Hell <a href="https://twitter.com/hashtag/serverlessconf?src=hash">#serverlessconf</a> <a href="https://t.co/Z8ZRDWDRvB">pic.twitter.com/Z8ZRDWDRvB</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/792036230204624896">October 28, 2016</a></blockquote>
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="en" dir="ltr">AWS is like crack! <a href="https://twitter.com/hashtag/serverlessconf?src=hash">#serverlessconf</a> <a href="https://t.co/7e9TYfBfgG">pic.twitter.com/7e9TYfBfgG</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/792036685513101312">October 28, 2016</a></blockquote>
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div></p>
+
+<h3>感想</h3>
+
+<p>セッションもまあまあ面白かったりしたけど、<a href="https://serverless.com/">Serverless Framework</a>等各種ツールの作者と直接話したり、各国のエンジニアとサービス運用について細かく議論できるのが有意義でした。ヨーロッパ圏の人がメインだけど、意外とアメリカからも沢山来てて終始盛り上がりました。日本からはServerlessConf Tokyoの主催者のセクションナイン<a href="https://twitter.com/yoshidashingo/">吉田さん</a>や<a href="https://twitter.com/toricls/">もっぱらさん</a>等が来英した他、クラスメソッドのベルリンリージョンにいる吉田さんがわざわざ<a href="http://dev.classmethod.jp/series/serverlessconf-london/">メソりに</a>来てて、ノルマ大変そうだなぁと思ったり。</p>
+
+<p>後、LTに関しては日本の方が絶対レベルが上だと思う！自社プロダクトの紹介とかやめて。。</p>
+
+<h3>Videos</h3>
+
+<p>ちなみにセッションの動画は<a href="https://www.youtube.com/channel/UCqlcVgk8SkUmve4Kw4xSlgw/feed">ここ</a>から見れます。</p>
+
+<h3>おまけ</h3>
+
+<p>カンファレンスの雰囲気。インタビューされちゃいました。</p>
+
+<p><div class="embed-video-container"><iframe src="http://www.youtube.com/embed/bl1IuuqBwo4 "></iframe></div></p>
+]]></content>
+  </entry>
+  
+</feed>

@@ -1,0 +1,2342 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>@ijin</title>
+  <meta name="author" content="Michael H. Oshita">
+
+  
+  <meta name="description" content="Portlandで開催されたHashiConf 2015に参加してきました。 Day 1 Keynote Founder &amp; CEOのMitchell Hashimotoが登壇。
+今までのHashiCorpプロダクトを紹介した上で、新プロダクトの紹介！ Nomad コンテナスケジューラ。 &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://ijin.github.io/blog/page/3/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/stylesheets/data-table.css" rel="stylesheet" type="text/css" />
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="@ijin" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<!--<script type="text/javascript">
+document.base_document_write = document.write;
+document.write = function(html) {
+    if (html.match(/^<link rel="stylesheet".+gist-assets\.github\.com\/assets\/embed.*/) == null) {
+        document.base_document_write(html);
+    }
+}
+</script>
+
+-->
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-33110241-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">@ijin</a></h1>
+  
+    <h2>[Michael H. Oshita]</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:ijin.github.io" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div class="blog-index">
+  
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2015/09/30/hashiconf-2015/">#HashiConf 2015に参加してきた</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2015-09-30T03:11:00+09:00" pubdate data-updated="true">Sep 30<span>th</span>, 2015</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>Portlandで開催された<a href="https://www.hashiconf.com">HashiConf 2015</a>に参加してきました。</p>
+
+<h2>Day 1</h2>
+
+<h3>Keynote</h3>
+
+<p>Founder &amp; CEOのMitchell Hashimotoが登壇。
+今までのHashiCorpプロダクトを紹介した上で、新プロダクトの紹介！</p>
+
+<p><img src="https://lh3.googleusercontent.com/kV2iR87ZYBN9LuPjMxGmuPxg1t1xzZLlcgi5LV_y8TwzSvsIOVE=w479-h638-no"></p>
+
+<p><a href="https://nomadproject.io">Nomad</a></p>
+
+<p>コンテナスケジューラ。ちょうどあるサービスの一部のDocker化でスケジューリング方法を考えていたので、グッドタイミング。</p>
+
+<p><img src="https://lh3.googleusercontent.com/PaK-SUH-tybvL7ILwZFFXrYVdylvzw1cu0bFR8rKDadbIRgA8cA=w479-h638-no"></p>
+
+<p><a href="https://ottoproject.io">Otto</a></p>
+
+<p>開発からデプロイまで対応したmicroservicesを念頭に入れたVagrantの後継。</p>
+
+<h3>Operating Consul as an Early Adopter</h3>
+
+<ul>
+<li>初期の頃からconsulを運用した苦労話</li>
+<li>v0.2から始めた</li>
+<li><code>consule-template</code>
+
+<ul>
+<li>スケールしない。v0.6ではマシに</li>
+<li>大きいクラスタで自身をDDOSする</li>
+<li>watchesを使わないでcronで<code>-once</code></li>
+</ul>
+</li>
+<li>consulのDNSが不安定な時期があったので、15秒毎にzone fileを書き出し内部DNSで運用</li>
+<li>その他初期バージョンで諸々不具合を発見してArmonと一緒に修正</li>
+<li>ご苦労様</li>
+</ul>
+
+
+<h3>HashiCorp Tools in the Modern Enterprise</h3>
+
+<ul>
+<li>エンプラだって頑張ってDevOpsしてるもん！</li>
+<li>文字多めで眠くなっちゃった。。</li>
+<li><a href="https://atlas.hashicorp.com/izanamee">Izanamee</a> イザナミ？</li>
+</ul>
+
+
+<h3>Resillient Infrastructure with Serf</h3>
+
+<ul>
+<li>Pagerdutyの人</li>
+<li>SerfとChefと自社ツールを組み合わせて堅牢なインフラを構築</li>
+<li><a href="https://github.com/PagerDuty/blender">Blender</a> - a modular remote command execution framework</li>
+<li><a href="https://github.com/ranjib/serfx">SerfX</a> - a bare minimum ruby client for serf</li>
+</ul>
+
+
+<h3>Genesis: Terraforming a new Firefox crash stat infrastructure</h3>
+
+<ul>
+<li>Mozillaの人達による漫才ベースのプレゼン</li>
+<li>Firefoxのクラッシュ統計データを受信するインフラの構築について</li>
+<li>結構笑いがとれてた</li>
+</ul>
+
+
+<h3>The future of management, and how we&#8217;ll get there</h3>
+
+<p>Puppetの作者Lukeさん。未来に観するディープで知見溢れるトーク</p>
+
+<h2>Day 2</h2>
+
+<h3>Keynote</h3>
+
+<p>HashiCorpの哲学とAtlasの説明（2日目は新製品の発表はなし）</p>
+
+<p><img src="https://lh3.googleusercontent.com/XzbJrBKpfWU73lMGv5tVFmfV90Uvyec7WWiizweiv_uTbZEEusY=w619-h465-no"></p>
+
+<h3>Dockerizing all the Things</h3>
+
+<ul>
+<li>Docker社内でのCIでconsul使ってるよって話</li>
+<li>あまり面白くなかった</li>
+<li>20分も残して終了。。</li>
+</ul>
+
+
+<h3>Automate your Infrastructure</h3>
+
+<p>以下のツールでいろいろ自動化してるよ（ﾌｰﾝ）</p>
+
+<ul>
+<li>Terraform</li>
+<li>CircleCI</li>
+<li>Docker (ECS)</li>
+<li>Datadog</li>
+<li>Slack</li>
+</ul>
+
+
+<h3>Managing Applications at Scale</h3>
+
+<ul>
+<li>CoreOSの人</li>
+<li>Nomad vs Kubernetes</li>
+<li>CLI demo</li>
+</ul>
+
+
+<h3>Repeatable, Extensible Infra at Yelp</h3>
+
+<ul>
+<li>YelpのSite Reliability Engineer</li>
+<li>内部ツールで起動、puppetでプロビジョニング</li>
+<li>Packerやpuppet managed VPCだったけど、今はTerraform</li>
+<li>Smartstack (Service discovery)
+
+<ul>
+<li>Nerve</li>
+<li>Synapse</li>
+<li>Hacheck</li>
+<li>qdisc_tools</li>
+</ul>
+</li>
+<li>Sensu</li>
+<li>nsone</li>
+<li><a href="https://github.com/terraform-community-modules">terraform community modules</a>をたくさん書いたよ</li>
+</ul>
+
+
+<h3>Virtual Machines, Containers, Lambdas? Oh my!</h3>
+
+<ul>
+<li>AWSの中の人（DevOps担当）</li>
+<li>Microservicesについて</li>
+<li>導入の判断基準</li>
+<li>VM（EC2, Packer, Terraform/Cloudformatio, Consul)</li>
+<li>Container (ECS, Nomad)</li>
+<li>Lambda (サーバレスアーキテクチャ。例：<a href="http://squirrelbin.com">SquirrelBin</a></li>
+<li>さらっと自社サービスをたっくさん紹介した後、結論はLambdaとAPI Gateway押し</li>
+<li>そんなにサービスを詰めこめなくても。。</li>
+</ul>
+
+
+<h2>感想</h2>
+
+<p>Nomadの発表が一番エキサイティングだったけど、こういうカンファレンスは中の人やスピーカーや他のユーザーと直接話せるのが醍醐味。プロダクトの担当者に直接フィードバックを伝えたり、展望を聞いたりできて楽しかったです。また、会場で話した参加者も多種多様でアメリカ以外だとスペイン、オーストラリア、ニュージーランド、インド、日本等がいて、世界中から注目されている感じでした。</p>
+
+<p>第一回目ということで約300人の中規模だけど、このぐらいが皆の距離感近くて良い雰囲気。</p>
+
+<h2>その他</h2>
+
+<ul>
+<li>懇親会で飛び込みLTしたかったが会場設備が対応できなく、断念</li>
+<li>Portland心地良くて過ごしやすい！</li>
+<li>記念にもらったHashiCorpとハシ（箸）をかけたジュークは誰も理解してなかった
+（Mitchellが言うには日本人参加者が理解してくれるから良いんだと）</li>
+</ul>
+
+
+<p><img src="https://lh3.googleusercontent.com/50dhedo-8s4QS_7Chw6v1U6Ow58b4d53HHYlVQGQ6hwwuN6CT7c=w427-h320-no"></p>
+
+<p>さて、来週はre:Inventだ！</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2015/09/27/isucon5-qualifier/">ISUCON5の予選に記念参加してきた</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2015-09-27T17:01:00+09:00" pubdate data-updated="true">Sep 27<span>th</span>, 2015</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>とあるエンジニアが言い放ちました。</p>
+
+<p>「<em>上位に届かないチームはただの記念参加だよねー。</em>」</p>
+
+<p>というわけで、今年のISUCONは見事に予選落ちしました。</p>
+
+<h3>お題</h3>
+
+<p>「<strong>ISUx</strong>i」というどこか懐かしい響きの「高負荷に耐えられるSNSコミュニティサイト」</p>
+
+<p>友達、記事、コメント、足あと機能が揃っており、以前より複雑度が増したなかなかの凝った作り。</p>
+
+<h3>起こったこと</h3>
+
+<p>これはESIによるpartial cachingが出来るので、Varnishでやってみよう！</p>
+
+<p>と意気込んだものの、エラーが解決できず結局は間に合わずに終了ーーっ。</p>
+
+<h3>やりたかったこと</h3>
+
+<ul>
+<li>Varnish + ESI + Redis &amp; MySQL</li>
+</ul>
+
+
+<h3>やれたこと</h3>
+
+<p>具体的な作業内容は今手元にないので、ぼんやりと。</p>
+
+<ul>
+<li>MySQLのクエリー修正、パラメータ、Indexの追加</li>
+<li>nginxのパラメータ追加</li>
+<li>kernelのパラメータ追加</li>
+<li>一部 redis化</li>
+<li>rubyプロセスの調整</li>
+<li>sidekiqのワーカーで遅延書き込み</li>
+</ul>
+
+
+<h3>はまったとこ</h3>
+
+<p>今回はいろいろ初めてがあったので無駄に時間を潰した感じ。</p>
+
+<ul>
+<li><code>systemd</code> -
+最新のUbuntu 15.04はsystemdなんですね。ずっと14.04 LTSのupstartに慣れていたので、こっちは初めて触わった。</li>
+<li><code>apparmor</code> -
+設定ファイルをsymlinkでやろうとすると読み込まれず。。こいつのせいだと気づくのにちょっと手間取った。いらない子には怒りの<code>apt-get purge</code>を。</li>
+<li><code>mysql</code> -
+なんか設定ファイルが/etc/mysql/my.cnf単体じゃなくて、symlinkされたりいろんなディレクトリに散らばってたりで若干戸惑った。後、上記のapparmor関連で設定ファイルがしばらく全然反映されずに。。</li>
+<li><code>varnish</code> -
+こちらもvclやパラメータ指定が本来<code>/etc/default/varnish</code>で出来るはずが、なかなか反映されずに苦労した。Varnish 4.0のパッケージはapt-getですんなり入るんだけど、起動スクリプトが<code>/etc/init.d/varnish</code>に設置されるのに、そちらは無視され、systemdの方が優先される模様。カスタマイズするには<code>/lib/systemd/system/varnish.service</code>をコピって編集して<code>daemon-reload</code>が必要。詳しくは<a href="http://deshack.net/how-to-varnish-listen-port-80-systemd/">こちら</a></li>
+</ul>
+
+
+<h3>終わりに</h3>
+
+<p>競技内容が確実に進化していて、非常ーーに楽しめました！その分、出題者の苦労が計り知れず。。こんどビールでも奢ります。今年の本戦は残念ながら行けないけど、外野として楽しくポップコーンでも食べながら観戦したい所ですね。</p>
+
+<h3>おまけ</h3>
+
+<p>現在はHashiConfに向けての飛行機の中だけど、悔しいので機内で復習しておきます！</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2015/08/23/yapc-asia-tokyo-2015/">YAPC::Asia Tokyo 2015に参加してきた</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2015-08-23T15:27:00+09:00" pubdate data-updated="true">Aug 23<span>rd</span>, 2015</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>例年この時期は海外にいるので、なかなか行けなかったYAPC::Asia Tokyo 2015にやっと参加してきた。</p>
+
+<p>スケジュール上、今年は参加できるぞって意気込んでいたら、まさかのSold Out&#8230;</p>
+
+<p>それをtwitter上で嘆いていたら、<a href="https://twitter.com/kenjiskywalker">@kenjiskywalker</a>さんから救いの手が！</p>
+
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr"><a href="https://twitter.com/ijin">@ijin</a> Tシャツ付きの前売り券購入したのですが、スピーカー枠で参加できそうなのでお譲りしましょうか？</p>&mdash; kenjiskywalker (@kenjiskywalker) <a href="https://twitter.com/kenjiskywalker/status/619079064880463872">July 9, 2015</a></blockquote>
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
+
+
+<p>感謝！</p>
+
+<p>さて、一口コメント</p>
+
+<p><strong>Consulと自作OSSを活用した100台規模のWebサービス運用</strong>] - <a href="https://twitter.com/fujiwara">@fujiwara</a></p>
+
+<p><a href="https://github.com/sorah/mamiya">mamiya</a>や<a href="http://aws.amazon.com/codedeploy/">AWS CodeDeploy</a>にインスパイアされた<a href="https://github.com/fujiwara/stretcher">stretcher</a>を使ったイベントベースのdeploy周りが面白かった。s3からの取得失敗時の処理は考えてないといけない。</p>
+
+<p><strong>Conway&#8217;s Law of Distributed Work</strong> - Casey West</p>
+
+<p>最近はリモートワークが殆どなので、なかなか共感できる部分が多かった。コミュニケーション大事。</p>
+
+<p><strong>大規模でも小中規模サービスでも捗る microservices な Web サービスのつくりかた</strong> - <a href="https://twitter.com/yappo">@Yappo</a></p>
+
+<p>どのタイミングでコンポーネントの分割をするか。ちゃんと設計しようねって話</p>
+
+<p><strong>ISUCONの勝ち方</strong> - <a href="https://twitter.com/kazeburo">@kazeburo</a></p>
+
+<p>ポイントがよく纏められていて、うちらのチームでも多くを実践していた。まだ勝ててないけど。
+CPUやB+ Treeの気持ちになって考える事が大事。</p>
+
+<p><strong>我々はどのように冗長化を失敗したのか</strong> - <a href="https://twitter.com/kenjiskywalker">@kenjiskywalker</a></p>
+
+<p>Networkが不安定だと、様々な冗長化に仕組みがうまく作動しない。検証はProductionと同じ環境でやりましょう。</p>
+
+<p><strong>Profiling &amp; Optimizing in Go</strong> - Brad Fitzpatrick</p>
+
+<p>Bradさんのライブコーディング。奥が深かった。</p>
+
+<p><strong>LT</strong></p>
+
+<p>どれもこれもハイレベル！</p>
+
+<p>特に素晴らしかったのが、テンポの良い<a href="https://twitter.com/yoku0825">@yoku0825</a>さんの<strong>MySQL 5.7の罠があなたを狙っている</strong> と超早業を披露した<a href="http://conbu.net">CONBU</a>さんの<strong>CONBUの道具箱</strong></p>
+
+<iframe allowfullscreen="" frameborder="0" height="355" marginheight="0" marginwidth="0" scrolling="no" src="//www.slideshare.net/slideshow/embed_code/key/dJ6c2p0tc7QM3B" style="border-width: 1px; border: 1px solid #CCC; margin-bottom: 5px; max-width: 100%;" width="425"> </iframe>
+
+
+<p> <br /></p>
+
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">突然目の前に無線APが生えてきた <a href="https://twitter.com/hashtag/yapcasia?src=hash">#yapcasia</a> <a href="http://t.co/UWcSzvRv08">pic.twitter.com/UWcSzvRv08</a></p>&mdash; ぷりんたいは求職中です、 (@spacepro_be) <a href="https://twitter.com/spacepro_be/status/635004222291902464">August 22, 2015</a></blockquote>
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
+
+
+<p>いやー、非常に楽しめました。運営の皆様、ありがとうございました！！</p>
+
+<p>さて、これから出国ー。</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2015/08/06/github-to-lambda-to-slack/">GitHubのeventをLambdaで処理してSlackへ通知</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2015-08-06T01:46:00+09:00" pubdate data-updated="true">Aug 6<span>th</span>, 2015</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>ちょっと前にGitHubのeventを<a href="https://aws.amazon.com/lambda/">AWS Lambda</a>で処理して、GitHubやSlackのAPIを叩く仕組みを作ったので、メモ。</p>
+
+<p>材料</p>
+
+<ul>
+<li>Github</li>
+<li>SNS</li>
+<li>KMS</li>
+<li>Lambda</li>
+<li>Slack</li>
+</ul>
+
+
+<p>やりたいことはこんな感じ。</p>
+
+<p><img src="https://lh3.googleusercontent.com/-aep_hTkw5Mo/VjkHcm612yI/AAAAAAAABbo/00aae3JXUkc/s548-Ic42/github%25252Blambda%25252Bslack%252520%2525281%252529.png"></p>
+
+<p>あるGitHubリポジトリのissuesに特定のコメントが書き込まれると、そのユーザはプロジェクトのteamに自動で追加されて、Slackへ通知が流れるというモノです。</p>
+
+<h2>SNS</h2>
+
+<p>まずは媒介となるSNSの作成。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ aws sns create-topic --name github --region ap-northeast-1
+</span><span class='line'>{
+</span><span class='line'>    "TopicArn": "arn:aws:sns:ap-northeast-1:123456789012:github"
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+
+
+<p>次にSNSに対してpublishできるIAM userを作成</p>
+
+<p>IAM Policy</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>{
+</span><span class='line'>  "Version": "2012-10-17",
+</span><span class='line'>  "Statement": [
+</span><span class='line'>    {
+</span><span class='line'>      "Action": [
+</span><span class='line'>        "sns:Publish"
+</span><span class='line'>      ],
+</span><span class='line'>      "Sid": "Stmt0000000000000",
+</span><span class='line'>      "Resource": [
+</span><span class='line'>        "arn:aws:sns:ap-northeast-1:123456789012:github"
+</span><span class='line'>      ],
+</span><span class='line'>      "Effect": "Allow"
+</span><span class='line'>    }
+</span><span class='line'>  ]
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>GitHub</h2>
+
+<ul>
+<li>organization: <code>my_org</code></li>
+<li>repository: <code>test</code></li>
+<li>team: <code>reader</code></li>
+</ul>
+
+
+<h3>SNS連携</h3>
+
+<p><em>Webhooks &amp; Services</em> からAmazonSNSと連携</p>
+
+<p><img src="https://lh3.googleusercontent.com/u4I9Z_Ing9YzhmVCQhMACwYDVIJxJM7C-aDmyMsNL3o=w328-h190-no"></p>
+
+<p>AWS KEYには先ほど作成したIAMユーザのを利用。SNS topicのarnにはregionが書かれているにも関わらず、GitHubの方では明示的に指定が必要。</p>
+
+<p><img src="https://lh3.googleusercontent.com/kppZQx_RdhyC11LB7a0cPtppDUiKgfZBm6laYvRG3zA=w382-h289-no"></p>
+
+<h3>通知するeventの有効化</h3>
+
+<p>さて、GitHubではSNSの場合、<a href="https://api.github.com/hooks">hooksのjson</a>にある通り、<code>push</code>時のeventにしか対応していないので、</p>
+
+<figure class='code'><figcaption><span>hooks </span><a href='https://api.github.com/hooks'>link</a></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='json'><span class='line'><span class="s2">&quot;name&quot;</span><span class="err">:</span> <span class="s2">&quot;amazonsns&quot;</span><span class="err">,</span>
+</span><span class='line'><span class="s2">&quot;events&quot;</span><span class="err">:</span> <span class="p">[</span>
+</span><span class='line'>  <span class="s2">&quot;push&quot;</span>
+</span><span class='line'><span class="p">]</span><span class="err">,</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>GitHubの<a href="https://developer.github.com/v3/orgs/hooks/">Webhook API</a>に従って<code>issue_comment</code>を追加してやります。</p>
+
+<p>先ほどのSNS連携のhook idを取得するには<code>GET /orgs/:org/hooks</code></p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nb">export </span><span class="nv">HOOK_ID</span><span class="o">=</span><span class="k">$(</span>curl -H <span class="s1">&#39;Uer-Agent: ijin&#39;</span> -X GET -s -H <span class="s2">&quot;Authorization: token xxxxxxxxxx&quot;</span> <span class="se">\</span>
+</span><span class='line'>https://api.github.com/repos/my_org/test/hooks | jq <span class="s1">&#39;.[].id&#39;</span><span class="k">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>編集するには<code>PATCH /orgs/:org/hooks/:id</code></p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>curl -H <span class="s1">&#39;Uer-Agent: ijin&#39;</span> -X PATCH -s -H <span class="s2">&quot;Authorization: token xxxxxxxxxx&quot;</span> <span class="se">\</span>
+</span><span class='line'>https://api.github.com/repos/my_org/test/hooks/<span class="nv">$HOOK_ID</span> -d <span class="s1">&#39;{&quot;add_events&quot;: [&quot;issue_comment&quot;]}&#39;</span> | jq .
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Web UIからは分からないので、ついでに<code>reader</code> teamのIDも取得しておく</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>curl -H <span class="s1">&#39;Uer-Agent: ijin&#39;</span> -X GET -s -H <span class="s2">&quot;Authorization: token xxxxxxxxxx&quot;</span> <span class="se">\</span>
+</span><span class='line'>https://api.github.com/orgs/my_org/teams | jq <span class="s1">&#39;.[] | select(.name==&quot;reader&quot;)&#39;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>（※）User-Agentは<a href="https://developer.github.com/v3/#user-agent-required">必須</a></p>
+
+<p>これで、誰かがコメントをした時にもSNSが飛びます。</p>
+
+<h2>KMS</h2>
+
+<p>lambdaでは以下の認証情報を使うので、予めKMSで暗号化しておく。</p>
+
+<ul>
+<li>GitHub token</li>
+<li>Slack webhook</li>
+</ul>
+
+
+<p>rubyで暗号化する場合</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="nb">require</span> <span class="s1">&#39;aws-sdk&#39;</span>
+</span><span class='line'><span class="nb">require</span> <span class="s1">&#39;base64&#39;</span>
+</span><span class='line'><span class="n">kms</span> <span class="o">=</span> <span class="ss">Aws</span><span class="p">:</span><span class="ss">:KMS</span><span class="o">::</span><span class="no">Client</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="ss">region</span><span class="p">:</span> <span class="s1">&#39;us-east-1&#39;</span><span class="p">)</span>
+</span><span class='line'><span class="no">Base64</span><span class="o">.</span><span class="n">encode64</span> <span class="n">kms</span><span class="o">.</span><span class="n">encrypt</span><span class="p">(</span><span class="n">key_id</span><span class="p">:</span> <span class="s2">&quot;alias/ijin&quot;</span><span class="p">,</span> <span class="ss">plaintext</span><span class="p">:</span> <span class="s1">&#39;my plain text code&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">ciphertext_blob</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>javascriptの場合</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">var</span> <span class="nx">aws</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;aws-sdk&#39;</span><span class="p">);</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">kms</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">aws</span><span class="p">.</span><span class="nx">KMS</span><span class="p">({</span> <span class="nx">region</span><span class="o">:</span> <span class="s1">&#39;us-east-1&#39;</span> <span class="p">});</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">text</span> <span class="o">=</span> <span class="s1">&#39;my plain text code&#39;</span><span class="p">;</span>
+</span><span class='line'><span class="nx">kms</span><span class="p">.</span><span class="nx">encrypt</span><span class="p">({</span><span class="nx">KeyId</span><span class="o">:</span> <span class="s1">&#39;alias/ijin&#39;</span><span class="p">,</span> <span class="nx">Plaintext</span><span class="o">:</span> <span class="nx">text</span><span class="p">},</span> <span class="kd">function</span><span class="p">(</span><span class="nx">err</span><span class="p">,</span> <span class="nx">data</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>  <span class="k">if</span> <span class="p">(</span><span class="nx">err</span><span class="p">)</span> <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">err</span><span class="p">,</span> <span class="nx">err</span><span class="p">.</span><span class="nx">stack</span><span class="p">);</span>
+</span><span class='line'>  <span class="k">else</span> <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">data</span><span class="p">.</span><span class="nx">CiphertextBlob</span><span class="p">.</span><span class="nx">toString</span><span class="p">(</span><span class="s1">&#39;base64&#39;</span><span class="p">));</span>
+</span><span class='line'><span class="p">});</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>こうしておくと、SCMに入れても安心。</p>
+
+<p>また、KMSキーの実行権限もlambdaのroleに紐づけておく。</p>
+
+<p><img src="https://lh3.googleusercontent.com/oMHQ76XC7RQUCR_fEo9JyaMhPKSbnIdhCzjIWurEJ9c=w542-h358-no"></p>
+
+<h2>Lambda</h2>
+
+<p>Lambda function作成時にはSNSをevent sourceとして指定。</p>
+
+<p><img src="https://lh3.googleusercontent.com/uDXkEVLrXT1BdUSbiMu3v5lnwTqCoXOkv_nu07XVxkk=w555-h235-no"></p>
+
+<p>(※) KMSは現在us-eastにしかないので、そこ以外のregionでlambdaを実行する場合は、<code>timeout</code>は若干長めに指定して置くと良さげ</p>
+
+<p>コードはこんな感じ。</p>
+
+<ol>
+<li>GitHubからSNS hookを受け取って</li>
+<li>コメントした内容が<code>join</code>の場合</li>
+<li>KMSによってGitHubのtokenを復号化し</li>
+<li>そのユーザをteamへ追加する</li>
+<li>その後、別lambda functionでslackへ通知する</li>
+</ol>
+
+
+<div><script src='https://gist.github.com/ef105e192a030571d83f.js?file='></script>
+<noscript><pre><code></code></pre></noscript></div>
+
+
+
+
+<div><script src='https://gist.github.com/f83e33a6ae0acd83902a.js?file='></script>
+<noscript><pre><code></code></pre></noscript></div>
+
+
+<p>nodeのlibraryを使うともっとスッキリ書けたけど、1 function 1 fileで纏めたかったのでやや冗長なコードになっちゃいました。。</p>
+
+<h2>実行</h2>
+
+<p>GitHubでコメント</p>
+
+<p><img src="https://lh3.googleusercontent.com/KY7fwR-laXAJBQhJFv9VKzo_ydWFzeKep0G-3kgS0mM=w388-h128-no"></p>
+
+<p>Lambda発動</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="mi">2015</span><span class="o">-</span><span class="mi">08</span><span class="o">-</span><span class="mi">11</span><span class="nx">T15</span><span class="o">:</span><span class="mi">42</span><span class="o">:</span><span class="mf">53.108</span><span class="nx">Z</span>   <span class="nx">a09e3c80</span><span class="o">-</span><span class="mi">403</span><span class="nx">f</span><span class="o">-</span><span class="mi">1</span><span class="nx">e15</span><span class="o">-</span><span class="nx">bbb5</span><span class="o">-</span><span class="mi">55</span><span class="nx">b693433c0e</span>    <span class="nx">user</span><span class="o">:</span> <span class="nx">ijin2</span>
+</span><span class='line'><span class="mi">2015</span><span class="o">-</span><span class="mi">08</span><span class="o">-</span><span class="mi">11</span><span class="nx">T15</span><span class="o">:</span><span class="mi">42</span><span class="o">:</span><span class="mf">53.108</span><span class="nx">Z</span>  <span class="nx">a09e3c80</span><span class="o">-</span><span class="mi">403</span><span class="nx">f</span><span class="o">-</span><span class="mi">1</span><span class="nx">e15</span><span class="o">-</span><span class="nx">bbb5</span><span class="o">-</span><span class="mi">55</span><span class="nx">b693433c0e</span>    <span class="nx">comment</span><span class="o">:</span> <span class="nx">join</span>
+</span><span class='line'><span class="mi">2015</span><span class="o">-</span><span class="mi">08</span><span class="o">-</span><span class="mi">11</span><span class="nx">T15</span><span class="o">:</span><span class="mi">42</span><span class="o">:</span><span class="mf">55.417</span><span class="nx">Z</span>  <span class="nx">a09e3c80</span><span class="o">-</span><span class="mi">403</span><span class="nx">f</span><span class="o">-</span><span class="mi">1</span><span class="nx">e15</span><span class="o">-</span><span class="nx">bbb5</span><span class="o">-</span><span class="mi">55</span><span class="nx">b693433c0e</span>    <span class="nx">status</span> <span class="nx">code</span><span class="o">:</span> <span class="mi">200</span>
+</span><span class='line'><span class="mi">2015</span><span class="o">-</span><span class="mi">08</span><span class="o">-</span><span class="mi">11</span><span class="nx">T15</span><span class="o">:</span><span class="mi">42</span><span class="o">:</span><span class="mf">55.418</span><span class="nx">Z</span>  <span class="nx">a09e3c80</span><span class="o">-</span><span class="mi">403</span><span class="nx">f</span><span class="o">-</span><span class="mi">1</span><span class="nx">e15</span><span class="o">-</span><span class="nx">bbb5</span><span class="o">-</span><span class="mi">55</span><span class="nx">b693433c0e</span>    <span class="nx">response</span><span class="o">:</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="s2">&quot;state&quot;</span><span class="o">:</span> <span class="s2">&quot;pending&quot;</span><span class="p">,</span>
+</span><span class='line'>    <span class="s2">&quot;url&quot;</span><span class="o">:</span> <span class="s2">&quot;https://api.github.com/teams/1234567/memberships/ijin2&quot;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="mi">2015</span><span class="o">-</span><span class="mi">08</span><span class="o">-</span><span class="mi">11</span><span class="nx">T15</span><span class="o">:</span><span class="mi">42</span><span class="o">:</span><span class="mf">55.418</span><span class="nx">Z</span>  <span class="nx">a09e3c80</span><span class="o">-</span><span class="mi">403</span><span class="nx">f</span><span class="o">-</span><span class="mi">1</span><span class="nx">e15</span><span class="o">-</span><span class="nx">bbb5</span><span class="o">-</span><span class="mi">55</span><span class="nx">b693433c0e</span>    <span class="nx">Added</span> <span class="nx">to</span> <span class="nx">the</span> <span class="nx">team</span>
+</span><span class='line'><span class="nx">END</span> <span class="nx">RequestId</span><span class="o">:</span> <span class="nx">a09e3c80</span><span class="o">-</span><span class="mi">403</span><span class="nx">f</span><span class="o">-</span><span class="mi">1</span><span class="nx">e15</span><span class="o">-</span><span class="nx">bbb5</span><span class="o">-</span><span class="mi">55</span><span class="nx">b693433c0e</span>
+</span><span class='line'><span class="nx">REPORT</span> <span class="nx">RequestId</span><span class="o">:</span> <span class="nx">a09e3c80</span><span class="o">-</span><span class="mi">403</span><span class="nx">f</span><span class="o">-</span><span class="mi">1</span><span class="nx">e15</span><span class="o">-</span><span class="nx">bbb5</span><span class="o">-</span><span class="mi">55</span><span class="nx">b693433c0e</span> <span class="nx">Duration</span><span class="o">:</span> <span class="mf">5211.48</span> <span class="nx">ms</span> <span class="nx">Billed</span> <span class="nx">Duration</span><span class="o">:</span> <span class="mi">5300</span> <span class="nx">ms</span> <span class="nx">Memory</span> <span class="nx">Size</span><span class="o">:</span> <span class="mi">128</span> <span class="nx">MB</span>  <span class="nx">Max</span> <span class="nx">Memory</span> <span class="nx">Used</span><span class="o">:</span> <span class="mi">14</span> <span class="nx">MB</span>   
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="mi">2015</span><span class="o">-</span><span class="mi">08</span><span class="o">-</span><span class="mi">11</span><span class="nx">T15</span><span class="o">:</span><span class="mi">42</span><span class="o">:</span><span class="mf">56.058</span><span class="nx">Z</span>   <span class="nx">a25c66fc</span><span class="o">-</span><span class="mi">403</span><span class="nx">f</span><span class="o">-</span><span class="mi">11</span><span class="nx">e5</span><span class="o">-</span><span class="nx">b291</span><span class="o">-</span><span class="mi">25</span><span class="nx">d4ee441689</span>    <span class="nx">Received</span> <span class="nx">event</span><span class="o">:</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="s2">&quot;username&quot;</span><span class="o">:</span> <span class="s2">&quot;ijin2&quot;</span><span class="p">,</span>
+</span><span class='line'>    <span class="s2">&quot;icon_url&quot;</span><span class="o">:</span> <span class="s2">&quot;https://avatars.githubusercontent.com/u/12809425?v=3&quot;</span><span class="p">,</span>
+</span><span class='line'>    <span class="s2">&quot;text&quot;</span><span class="o">:</span> <span class="s2">&quot;Added to the team&quot;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="mi">2015</span><span class="o">-</span><span class="mi">08</span><span class="o">-</span><span class="mi">11</span><span class="nx">T15</span><span class="o">:</span><span class="mi">42</span><span class="o">:</span><span class="mf">58.310</span><span class="nx">Z</span>  <span class="nx">a25c66fc</span><span class="o">-</span><span class="mi">403</span><span class="nx">f</span><span class="o">-</span><span class="mi">1</span><span class="nx">e15</span><span class="o">-</span><span class="nx">b291</span><span class="o">-</span><span class="mi">25</span><span class="nx">d4ee441689</span>    <span class="mi">200</span>
+</span><span class='line'><span class="mi">2015</span><span class="o">-</span><span class="mi">08</span><span class="o">-</span><span class="mi">11</span><span class="nx">T15</span><span class="o">:</span><span class="mi">42</span><span class="o">:</span><span class="mf">58.311</span><span class="nx">Z</span>  <span class="nx">a25c66fc</span><span class="o">-</span><span class="mi">403</span><span class="nx">f</span><span class="o">-</span><span class="mi">1</span><span class="nx">e15</span><span class="o">-</span><span class="nx">b291</span><span class="o">-</span><span class="mi">25</span><span class="nx">d4ee441689</span>    <span class="nx">ok</span>
+</span><span class='line'><span class="mi">2015</span><span class="o">-</span><span class="mi">08</span><span class="o">-</span><span class="mi">11</span><span class="nx">T15</span><span class="o">:</span><span class="mi">42</span><span class="o">:</span><span class="mf">58.311</span><span class="nx">Z</span>  <span class="nx">a25c66fc</span><span class="o">-</span><span class="mi">403</span><span class="nx">f</span><span class="o">-</span><span class="mi">1</span><span class="nx">e15</span><span class="o">-</span><span class="nx">b291</span><span class="o">-</span><span class="mi">25</span><span class="nx">d4ee441689</span>    <span class="nx">Successfully</span> <span class="nx">posted</span> <span class="nx">to</span> <span class="nx">Slack</span><span class="o">!</span>
+</span><span class='line'><span class="nx">END</span> <span class="nx">RequestId</span><span class="o">:</span> <span class="nx">a25c66fc</span><span class="o">-</span><span class="mi">403</span><span class="nx">f</span><span class="o">-</span><span class="mi">11</span><span class="nx">e5</span><span class="o">-</span><span class="nx">b291</span><span class="o">-</span><span class="mi">25</span><span class="nx">d4ee441689</span>
+</span><span class='line'><span class="nx">REPORT</span> <span class="nx">RequestId</span><span class="o">:</span> <span class="nx">a25c66fc</span><span class="o">-</span><span class="mi">403</span><span class="nx">f</span><span class="o">-</span><span class="mi">1</span><span class="nx">e15</span><span class="o">-</span><span class="nx">b291</span><span class="o">-</span><span class="mi">25</span><span class="nx">d4ee441689</span> <span class="nx">Duration</span><span class="o">:</span> <span class="mf">2268.06</span> <span class="nx">ms</span> <span class="nx">Billed</span> <span class="nx">Duration</span><span class="o">:</span> <span class="mi">2300</span> <span class="nx">ms</span> <span class="nx">Memory</span> <span class="nx">Size</span><span class="o">:</span> <span class="mi">128</span> <span class="nx">MB</span>  <span class="nx">Max</span> <span class="nx">Memory</span> <span class="nx">Used</span><span class="o">:</span> <span class="mi">14</span> <span class="nx">MB</span>   
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>teamへの追加（招待）</p>
+
+<p><img src="https://lh3.googleusercontent.com/lzamiiNraeHYD7FI6rrb8-403hxjzVRrAqGG6k3sBcc=w474-h191-no"></p>
+
+<p>Slackへ通知</p>
+
+<p><img src="https://lh3.googleusercontent.com/EeEiHydBDc29YhVI6MBUcdj1WUzMXnf_Sis3U-URqhw=w388-h147-no"></p>
+
+<h2>結論</h2>
+
+<p>簡単にできますね。実はこんな風に作っちゃった2週間後ぐらいにAWSの人も似たような<a href="https://aws.amazon.com/blogs/compute/dynamic-github-actions-with-aws-lambda/">ブログ</a>を書いていた事を発見しましたが。まあ、こっちはKMSとSlack使ってるので。。</p>
+
+<p>後、KMSのアイコンが欲しい！</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2015/07/02/dynamodb-export-with-datapipeline/">Data PipelineによるDynamoDBのexport</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2015-07-02T20:28:00+09:00" pubdate data-updated="true">Jul 2<span>nd</span>, 2015</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>ちょっとハマったのでメモ。</p>
+
+<p>DynamoDBにはRDSみたいなスナップショットによるバックアップ機能がなく、データを一括でexportするにはフルスキャンしかありません。
+AWSではData Pipelineによるs3へのexportテンプレートがあって、それを使うとEMRクラスタが立ち上がりHive経由で大量の処理をして、s3へ書き出してくれます。</p>
+
+<p>1000万件程度の小さな件数だとデフォルトのテンプレートがそのまま使えるけど、1億件近くになると失敗したりタイムアウトしたりするので、パラメータの調整が必要になってきます。</p>
+
+<h3>前提</h3>
+
+<ul>
+<li>約1億件</li>
+<li>20GB</li>
+<li>Provisioned Throughput (reads): 1000</li>
+<li>Read Throughput Percent: 1.0</li>
+<li>2時間以内のexport</li>
+</ul>
+
+
+<h3>エラー</h3>
+
+<p>具体的には以下のようなエラーに遭遇しました。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>Caused by: org.apache.hadoop.hive.ql.metadata.HiveException: Hive Runtime Error
+</span><span class='line'> while processing row {"item":{"id_list":"{\"l\":[{\"n\":\"958\"},
+</span><span class='line'>{\"n\":\"704\"},{\"n\":\"847\"},{\"n\":\"232\"},{\"n\":\"72\"}]}",
+</span><span class='line'>"code":"{\"s\":\"adarea9\"}","user_area":"{\"s\":\"91657-adarea9\"}",
+</span><span class='line'>"user":"{\"s\":\"91657\"}","app_code":"{\"s\":\"xxx\"}","last_seen_at":
+</span><span class='line'>"{\"s\":\"2010-06-23 22:57:49 +0000\"}","target_id":"{\"n\":\"395\"}",
+</span><span class='line'>"count":"{\"n\":\"44\"}","promo_id":"{\"n\":\"125\"}"}} at 
+</span><span class='line'>org.apache.hadoop.hive.ql.exec.MapOperator.process(MapOperator.java:550) at 
+</span><span class='line'>org.apache.hadoop.hive.ql.exec.mr.ExecMapper.map(ExecMapper.java:177) 
+</span><span class='line'>... 8 more Caused by: org.apache.hadoop.hive.ql.metadata.HiveException: 
+</span><span class='line'>java.io.IOException: All datanodes 10.160.102.191:9200 are bad. Aborting... at 
+</span><span class='line'>org.apache.hadoop.hive.ql.exec.FileSinkOperator.processOp(FileSinkOperator.java:651) at 
+</span><span class='line'>org.apache.hadoop.hive.ql.exec.Operator.forward(Operator.java:793) at org.apach</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>2015-06-29 13:33:31,610 Stage-1 map = 100%, reduce = 0% MapReduce Total cumulative 
+</span><span class='line'>CPU time: 14 minutes 19 seconds 0 msec Ended Job = job_1435578726935_0002 with 
+</span><span class='line'>errors Error during job, obtaining debugging information... 
+</span><span class='line'>Examining task ID: task_1435578726935_0002_m_000008 (and more) from job job_1435578726935_0002 
+</span><span class='line'>Examining task ID: task_1435578726935_0002_m_000000 (and more) from job job_1435578726935_0002 
+</span><span class='line'>Examining task ID: task_1435578726935_0002_m_000000 (and more) from job job_1435578726935_0002 
+</span><span class='line'>Task with the most failures(4): 
+</span><span class='line'>----- Task ID: task_1435578726935_0002_m_000003 URL: http://ip-10-160-25-23.ap-northeast-1.compute.
+</span><span class='line'>internal:9026/taskdetails.jsp?jobid=job_1435578726935_0002&tipid=task_1435578726935_0002_m_000003
+</span><span class='line'>----- Diagnostic Messages for this Task: Error: GC overhead limit exceeded FAILED: 
+</span><span class='line'>Execution Error, return code 2 from org.apache.hadoop.hive.ql.exec.mr.MapRedTask 
+</span><span class='line'>MapReduce Jobs Launched: Job 0: Map: 10 Cumulative CPU: 859.0 sec HDFS Read: 0 HDFS Write: 0 FAIL Total MapRed</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>2015-06-30 02:32:17,929 Stage-1 map = 100%, reduce = 0%, Cumulative CPU 1605.94 sec 
+</span><span class='line'>MapReduce Total cumulative CPU time: 26 minutes 45 seconds 940 msec Ended Job = 
+</span><span class='line'>job_1435627213542_0001 with errors Error during job, obtaining debugging information... 
+</span><span class='line'>Examining task ID: task_1435627213542_0001_m_000004 (and more) from job job_1435627213542_0001 
+</span><span class='line'>Examining task ID: task_1435627213542_0001_m_000004 (and more) from job job_1435627213542_0001 
+</span><span class='line'>Examining task ID: task_1435627213542_0001_m_000004 (and more) from job job_1435627213542_0001 
+</span><span class='line'>Task with the most failures(4): ----- Task ID: task_1435627213542_0001_m_000000 URL: 
+</span><span class='line'>http://ip-10-150-205-59.ap-northeast-1.compute.internal:9026/taskdetails.jsp?
+</span><span class='line'>jobid=job_1435627213542_0001&tipid=task_1435627213542_0001_m_000000 ----- 
+</span><span class='line'>Diagnostic Messages for this Task: AttemptID:attempt_1435627213542_0001_m_000000_3 
+</span><span class='line'>Timed out after 600 secs FAILED: Execution Error, return code 2 from 
+</span><span class='line'>org.apache.hadoop.hive.ql.exec.mr.MapRedTask MapReduce Jobs Launched: Job 0: Map: 10 Cu</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>Error: java.lang.RuntimeException: Hive Runtime Error while closing operators at 
+</span><span class='line'>org.apache.hadoop.hive.ql.exec.mr.ExecMapper.close(ExecMapper.java:260) at 
+</span><span class='line'>org.apache.hadoop.mapred.MapRunner.run(MapRunner.java:81) at 
+</span><span class='line'>org.apache.hadoop.mapred.MapTask.runOldMapper(MapTask.java:432) at 
+</span><span class='line'>org.apache.hadoop.mapred.MapTask.run(MapTask.java:343) at 
+</span><span class='line'>org.apache.hadoop.mapred.YarnChild$2.run(YarnChild.java:175) at 
+</span><span class='line'>java.security.AccessController.doPrivileged(Native Method) at 
+</span><span class='line'>javax.security.auth.Subject.doAs(Subject.java:415) at 
+</span><span class='line'>org.apache.hadoop.security.UserGroupInformation.doAs(UserGroupInformation.java:1548) at 
+</span><span class='line'>org.apache.hadoop.mapred.YarnChild.main(YarnChild.java:170) 
+</span><span class='line'>Caused by: org.apache.hadoop.hive.ql.metadata.HiveException: 
+</span><span class='line'>java.io.IOException: All datanodes 10.186.28.181:9200 are bad. 
+</span><span class='line'>Aborting... at org.apache.hadoop.hive.ql.exec.FileSinkOperator$FSPaths.closeWriters(FileSinkOperator.java:168) at 
+</span><span class='line'>org.apache.hadoop.hive.ql.exec.FileSinkOperator.closeOp(FileSinkOperator.java:882) at org.apache.hadoop.</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Hive Runtime ErrorやGCエラー等が出てますね。</p>
+
+<h3>原因</h3>
+
+<p>通常のexportテンプレートではEMRはなんと<strong>m1.medium</strong>のcore taskが一台のみ起動して処理が走ります。
+各種ヒープサイズの設定（<code>YARN_RESOURCEMANAGER_HEAPSIZE</code> 等）は<a href="https://docs.aws.amazon.com/ElasticMapReduce/latest/DeveloperGuide/HadoopMemoryDefault_H2.html">instance typeによって決まって</a>おり、この件数とデータサイズではHEAPSIZEが不足し、GCエラー等が発生してOut of Memory状態になって処理が落ちるようです。
+そこで、メモリをもっと搭載している大きめのインスタンスでHEAPSIZEを確保してあげる必要があります。</p>
+
+<h3>解決策</h3>
+
+<p>こんな感じ。</p>
+
+<p><img src="https://lh3.googleusercontent.com/ghExdELQB1cIE9K-d97gDqz7a634413GOTxAHhvJsBg"></p>
+
+<table>
+<thead>
+<tr>
+<th></th>
+<th>parameter</th>
+<th>default value</th>
+<th>new value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td></td>
+<td>core &amp; master instance type</td>
+<td>m1.medium</td>
+<td>m3.xlarge</td>
+</tr>
+<tr>
+<td></td>
+<td>core instance count</td>
+<td>1</td>
+<td>2</td>
+</tr>
+<tr>
+<td></td>
+<td>AMI version</td>
+<td>3.3.2</td>
+<td>3.8.0</td>
+</tr>
+</tbody>
+</table>
+
+
+<p>m3.xlargeにした事で処理が落ちる事なくスムーズに実行されるようになりました。core countを増やしたのは、exportテンプレートのデフォルト設定だとcountが1なので、mapperが不足し、DynamoDBで設定したthroughput (1000)をフルに使い切る事ができなく、デフォルトのタイムアウト時間（2時間）に達して処理自体がキャンセルされてしまうからです。EMR側のスループットも上げる為に必要な変更でした。また、Hadoopの<a href="http://docs.aws.amazon.com/ElasticMapReduce/latest/DeveloperGuide/ami-versions-supported.html">AMI version</a>も古い3.3.2から最新の3.8.0にしてあります。</p>
+
+<p>これらによって、export処理がだいたい1時間ちょいで完了します。</p>
+
+<p>その時の試行錯誤がこれ。</p>
+
+<p><img src="https://lh3.googleusercontent.com/xatqR0hx1M6PhroKFNAksOplqgqYgqsaCJgonanQyzA=w437-h197-no"></p>
+
+<h3>計算</h3>
+
+<p>provisioned throughputに対するバックアップ時間の目安を計算するには以下の通り。</p>
+
+<p>20GBのデータ、1億件のレコード、1000 throughputとして、</p>
+
+<p><code>平均item size = 20*1024*1024*1024/100000000 =~  215 byte</code></p>
+
+<p>4KB以下なので4KB blockのreadとなります。
+Hive Queryのread処理は<a href="http://hipsterdevblog.com/blog/2015/05/30/analysing-dynamodb-index-usage-in-hive-queries/">eventually consistentになる</a>ので、1 IOPSに対して8KBのデータが読み込めます。
+そうすると</p>
+
+<p><code>DynamoDB scan時間 = (20*1024*1024*1024)/(1000*8*1024*60) = 43.7分</code></p>
+
+<p>実際にはEMRクラスタのオーバーヘッドが20分弱程度あるので、これに若干加算します。</p>
+
+<p>図にするとこんな風になります。</p>
+
+<iframe width="670" height="412" seamless frameborder="0" scrolling="no" src="https://docs.google.com/spreadsheets/d/14oyOry-bnrqIgYxdN36Qdwv3VC1lhdku4QffzFh8iIc/pubchart?oid=1201814511&amp;format=interactive"></iframe>
+
+
+<p>バックアップのタイミングでDynamoDBのthroughputをガツンと上げれば、件数によっては短時間で済む場合もあるので、参考にでも！</p>
+
+<p>（※ Production Trafficに影響がないように、Read Throughput Percentは適切に設定する必要があります）</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2015/05/01/notes-on-ec2-auto-recovery/">EC2 Auto Recoveryの注意点</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2015-05-01T11:45:00+09:00" pubdate data-updated="true">May 1<span>st</span>, 2015</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>先日、EC2のAuto Recoveryでちょっとハマったのでメモ。</p>
+
+<p>Cloudwatchの<code>StatusCheckFailed_System</code>アラームを設定すると、インスタンスを自動的に復旧してくれるEC2 Auto Recoveryという機能があり、使うためには条件がいくつかあります。</p>
+
+<ul>
+<li>特定のリージョン</li>
+<li>C3, C4, M3, R3, T2 instances</li>
+<li>VPC</li>
+<li>共有tenancy</li>
+<li>EBSストレージのみのサーバ</li>
+</ul>
+
+
+<p><a href="http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-instance-recover.html">Recover Your Instance</a></p>
+
+<p>しかし、上記を満たしているのに、特定のAMIをCLI経由で起動するとEC2 Auto Recoveryを設定できなくなります。</p>
+
+<p>（AWSコンソールでラジオボタンが押せない。CLIで設定しても効かない）
+<img src="https://lh5.googleusercontent.com/-dwWUcfCssA4/VULwrOsgxNI/AAAAAAAABFo/VQy-GnIYQXg/w448-h186-no/Screenshot%2B2015-05-01%2B12.18.16.png"></p>
+
+<p>原因はAMIにephemeral disk等のblock device mappingが設定されていて、T2やC4等のEBS onlyなinstance typeで起動しているにも関わらず、AWS側がephemeral diskが付与されていると認識してしまう所にあります。なお、AWSコンソールからの起動だとこの現象は発生しません。</p>
+
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+
+
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/gist-embed/2.1/gist-embed.min.js"></script>
+
+
+<p>AMIでblock device mappingが埋め込まれている</p>
+
+<pre><code>aws ec2 describe-images --image-ids ami-e74b60e6 --region ap-northeast-1
+</code></pre>
+
+<p><code data-gist-id="55659515d54593c29618" data-gist-highlight-line="21-28"></code></p>
+
+<p>本来はEBS onlyなinstance typeだとblock device mappingの設定如何に関わらず、付与自体が不可能なので、全く関係ないはずです。</p>
+
+<p>解決方法は現時点（2015/5/1）では3通り</p>
+
+<ul>
+<li>extraなmappingが設定されていないAMIを使う（Amazon Linux等）</li>
+<li>AWSコンソールから起動する</li>
+<li>明示的に<code>--block-device-mappings</code>パラメータで<code>NoDevice</code>と指定
+<code>aws ec2 run-instances --image-id ami-e74b60e6 --instance-type t2.small --subnet-id subnet-xxxxxxxx --block-device-mappings "[{\"DeviceName\": \"/dev/sdb\",  \"NoDevice\": \"\"}, {\"DeviceName\": \"/dev/sdc\",  \"NoDevice\": \"\"}]"</code></li>
+</ul>
+
+
+<p>これは明らかにAWS側のバグなので早く治って欲しいものですね。</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2015/04/17/self-healing-with-non-elb-autoscaling4/">Auto Scalingによる自動復旧（AWS Lambda+SNS編）</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2015-04-17T14:01:00+09:00" pubdate data-updated="true">Apr 17<span>th</span>, 2015</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>先週の<a href="http://aws.amazon.com/summits/san-francisco/">AWS Summit San Fransisco</a>にて、ついにLambdaがSNSに<a href="http://docs.aws.amazon.com/sns/latest/dg/sns-lambda.html">対応</a>しました。
+様々なサービスが発表された中、個人的にはこれが一番のヒットです！というのも、この機能によってAWS間のサービスがより連携しやすくなり、新しいリアクティブなアーキテクチャをどんどん実現できそうだからです。</p>
+
+<p>というわけで、少し試してみました。</p>
+
+<p>お題は去年12月に試したAutoScaling + Lambda。（当時はLambdaはまだこの機能がなかったのでSNS→SQSにてイベントをプロセスする仕組みを<a href="/blog/2014/12/05/self-healing-with-non-elb-autoscaling3/">作りました</a>。）</p>
+
+<p>SNS連携によって前回のこれが</p>
+
+<p><img src="https://lh4.googleusercontent.com/-IxSeVgkwfQU/VIIapiet4tI/AAAAAAAABBw/ukic0BIBIT0/w529-h393-no/aws-advent-2014.png"></p>
+
+<p>こうなります。（Lambdaのアイコンが出たので差し替えてます）</p>
+
+<p><img src="https://lh3.googleusercontent.com/-ejPyB1qrZyQ/VTCEjbhe2cI/AAAAAAAABFI/VCYVIo5hFao/w404-h393-no/as-sns-lambda2.png"></p>
+
+<p>うーん、シンプル！</p>
+
+<h3>設定</h3>
+
+<p>前回とほぼ同様。</p>
+
+<p>SNS作成</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ aws sns create-topic --name instance-alert --region ap-northeast-1
+</span><span class='line'>{
+</span><span class='line'>    "TopicArn": "arn:aws:sns:ap-northeast-1:123456789012:instance-alert"
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+
+
+<p>LambdaとSNS連携できるようにポリシーを付与</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ aws lambda add-permission --function-name makeASUnhealty --statement-id sns-instance-alert \
+</span><span class='line'>--action "lambda:invokeFunction" --principal sns.amazonaws.com \
+</span><span class='line'>--source-arn arn:aws:sns:ap-northeast-1:123456789012:instance-alert --region us-west-2                                                                                                                                                                                                  
+</span><span class='line'>{
+</span><span class='line'>    "Statement": "{\"Condition\":{\"ArnLike\":{\"AWS:SourceArn\":\"arn:aws:sns:ap-northeast-1:123456789012:instance-alert\"}},\"Resource\":\"arn:aws:lambda:us-west-2:123456789012:function:makeASUnhealty\",\"Action\":[\"lambda:invokeFunction\"],\"Principal\":{\"Service\":\"sns.amazonaws.com\"},\"Sid\":\"sns-instance-alert\",\"Effect\":\"Allow\"}"
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Subscribe</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ aws sns subscribe --topic-arn arn:aws:sns:ap-northeast-1:123456789012:instance- --protocol lambda \
+</span><span class='line'>--notification-endpoint arn:aws:lambda:us-west-2:123456789012:function:makeASUnhealty --region ap-northeast-1
+</span><span class='line'>{
+</span><span class='line'>    "SubscriptionArn": "arn:aws:sns:ap-northeast-1:123456789012:as-test:4b22eec6-aeb5-4421-7a2f-99ca33a4b8ab"
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+
+
+<p>aws cliはのヘルプにはまだSNSをLambdaへsubscribeするやり方は書いてませんが、上記のようにやればできます。 <a href="http://alestic.com/2015/04/aws-cli-sns-lambda">Thanks Eric!</a></p>
+
+<p>EC2 Status Check</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ export INSTANCE=i-xxxxxxxx
+</span><span class='line'>$ aws cloudwatch put-metric-alarm --alarm-name StatusCheckFailed-Alarm-for-$INSTANCE \
+</span><span class='line'>--alarm-description "Instance $INSTANCE has failed" --metric-name StatusCheckFailed \
+</span><span class='line'>--namespace AWS/EC2 --statistic Maximum --dimensions Name=InstanceId,Value=$INSTANCE \
+</span><span class='line'>--period 60 --unit Count --evaluation-periods 2 --threshold 1 --comparison-operator \
+</span><span class='line'>  GreaterThanOrEqualToThreshold --alarm-actions arn:aws:sns:ap-northeast-1:560336700862:instance-alert \
+</span><span class='line'>--region ap-northeast-1</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Lambda Function</p>
+
+<div><script src='https://gist.github.com/52033eb3b9b02c1fe975.js?file='></script>
+<noscript><pre><code></code></pre></noscript></div>
+
+
+<h3>自動復旧</h3>
+
+<p>通信を遮断し、Status Check Failを発動させる</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ date; sudo ifdown eth0
+</span><span class='line'>Fri Apr 17 03:08:39 UTC 2015</span></code></pre></td></tr></table></div></figure>
+
+
+<p>EC2 Status Check。2分でfail検知</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>Fri Apr 17 12:10:25 JST 2015
+</span><span class='line'>ok
+</span><span class='line'>DETAILS reachability    passed
+</span><span class='line'>
+</span><span class='line'>Fri Apr 17 12:10:31 JST 2015
+</span><span class='line'>impaired
+</span><span class='line'>DETAILS 2015-04-17T03:10:00.000Z        reachability    failed</span></code></pre></td></tr></table></div></figure>
+
+
+<p>SNS通知。さらに2分ちょい。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>Alarm Details:
+</span><span class='line'>- Name:                       StatusCheckFailed-Alarm-for-i-xxxxxxxx
+</span><span class='line'>- Description:                Instance i-xxxxxxxx has failed
+</span><span class='line'>- State Change:               OK -&gt; ALARM
+</span><span class='line'>- Reason for State Change:    Threshold Crossed: 2 datapoints were greater than or equal to the threshold (1.0). The most recent datapoints: [1.0, 1.0].
+</span><span class='line'>- Timestamp:                  Friday 17 April, 2015 03:13:09 UTC
+</span><span class='line'>- AWS Account:                123456789012
+</span><span class='line'>
+</span><span class='line'>Threshold:
+</span><span class='line'>- The alarm is in the ALARM state when the metric is GreaterThanOrEqualToThreshold 1.0 for 60 seconds.
+</span><span class='line'>
+</span><span class='line'>Monitored Metric:
+</span><span class='line'>- MetricNamespace:            AWS/EC2
+</span><span class='line'>- MetricName:                 StatusCheckFailed
+</span><span class='line'>- Dimensions:                 [InstanceId = i-xxxxxxxx]
+</span><span class='line'>- Period:                     60 seconds
+</span><span class='line'>- Statistic:                  Maximum
+</span><span class='line'>- Unit:                       Count</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Lambdaログ</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>2015-04-17T03:13:14.504Z  ac9ed52f-e4af-1e14-b826-ee9008a99db9   Received event:..
+</span><span class='line'>2015-04-17T03:13:14.504Z  ace9d52f-e4af-1e14-b826-ee9008a99db9    Changing instance health for: i-xxxxxxxx
+</span><span class='line'>2015-04-17T03:13:15.682Z  ace9d25f-e4af-1e14-b826-ee9008a99db9    { ResponseMetadata: { RequestId: 'b0194dfb-e4af-1e14-895f-abdf96b0b593' } }
+</span><span class='line'>2015-04-17T03:13:15.684Z  ace9d25f-e4af-1e14-b826-ee9008a99db9    result: ""</span></code></pre></td></tr></table></div></figure>
+
+
+<p>タイムスタンプによるとSNS発砲されてたからLambda発火まで5秒！</p>
+
+<p>Auto ScalingのHealth Status</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>Fri Apr 17 12:13:10 JST 2015
+</span><span class='line'>as-sg   ap-northeast-1a HEALTHY i-ce02563d      as-lc   InService
+</span><span class='line'>
+</span><span class='line'>Fri Apr 17 12:13:15 JST 2015
+</span><span class='line'>as-sg   ap-northeast-1a UNHEALTHY       i-ce02563d      as-lc   InService
+</span><span class='line'>
+</span><span class='line'>Fri Apr 17 12:13:20 JST 2015
+</span><span class='line'>as-sg   ap-northeast-1a UNHEALTHY       i-ce02563d      as-lc   InService
+</span><span class='line'>
+</span><span class='line'>Fri Apr 17 12:13:26 JST 2015
+</span><span class='line'>as-sg   ap-northeast-1a UNHEALTHY       i-ce02563d      as-lc   InService
+</span><span class='line'>
+</span><span class='line'>Fri Apr 17 12:13:31 JST 2015
+</span><span class='line'>as-sg   ap-northeast-1a UNHEALTHY       i-ce02563d      as-lc   InService
+</span><span class='line'>
+</span><span class='line'>Fri Apr 17 12:13:37 JST 2015
+</span><span class='line'>as-sg   ap-northeast-1a UNHEALTHY       i-ce02563d      as-lc   Terminating
+</span><span class='line'>
+</span><span class='line'>Fri Apr 17 12:13:43 JST 2015
+</span><span class='line'>as-sg   ap-northeast-1a UNHEALTHY       i-ce02563d      as-lc   Terminating
+</span><span class='line'>
+</span><span class='line'>Fri Apr 17 12:13:49 JST 2015
+</span><span class='line'>as-sg   ap-northeast-1a UNHEALTHY       i-ce02563d      as-lc   Terminating
+</span><span class='line'>
+</span><span class='line'>Fri Apr 17 12:13:54 JST 2015
+</span><span class='line'>as-sg   ap-northeast-1a UNHEALTHY       i-ce02563d      as-lc   Terminating
+</span><span class='line'>
+</span><span class='line'>Fri Apr 17 12:13:59 JST 2015
+</span><span class='line'>
+</span><span class='line'>Fri Apr 17 12:14:05 JST 2015
+</span><span class='line'>as-sg   ap-northeast-1a HEALTHY i-525601a1      as-lc   Pending
+</span><span class='line'>
+</span><span class='line'>Fri Apr 17 12:14:10 JST 2015
+</span><span class='line'>as-sg   ap-northeast-1a HEALTHY i-525601a1      as-lc   Pending
+</span><span class='line'>
+</span><span class='line'>Fri Apr 17 12:14:16 JST 2015
+</span><span class='line'>as-sg   ap-northeast-1a HEALTHY i-525601a1      as-lc   Pending
+</span><span class='line'>
+</span><span class='line'>Fri Apr 17 12:14:21 JST 2015
+</span><span class='line'>as-sg   ap-northeast-1a HEALTHY i-525601a1      as-lc   Pending
+</span><span class='line'>
+</span><span class='line'>Fri Apr 17 12:14:26 JST 2015
+</span><span class='line'>as-sg   ap-northeast-1a HEALTHY i-525601a1      as-lc   Pending
+</span><span class='line'>
+</span><span class='line'>Fri Apr 17 12:14:32 JST 2015
+</span><span class='line'>as-sg   ap-northeast-1a HEALTHY i-525601a1      as-lc   Pending
+</span><span class='line'>
+</span><span class='line'>Fri Apr 17 12:14:37 JST 2015
+</span><span class='line'>as-sg   ap-northeast-1a HEALTHY i-525601a1      as-lc   InService</span></code></pre></td></tr></table></div></figure>
+
+
+<p>ちゃんとTerminateされてリプレースされてますね。</p>
+
+<p>AutoScalingの通知</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>Service: AWS Auto Scaling
+</span><span class='line'>Time: 2015-04-17T03:13:59.367Z
+</span><span class='line'>RequestId: efa97137-fa15-4aa4-9c8c-5241961a2d0e
+</span><span class='line'>Event: autoscaling:EC2_INSTANCE_TERMINATE
+</span><span class='line'>AccountId: 123456789012
+</span><span class='line'>AutoScalingGroupName: as-sg
+</span><span class='line'>AutoScalingGroupARN: arn:aws:autoscaling:ap-northeast-1:123456789012:autoScalingGroup:c395c157-3a7e-4d56-287b-5ad9b26eb464:autoScalingGroupName/as-sg
+</span><span class='line'>ActivityId: efa97137-fa15-4aa4-9c8c-5241961a2d0e
+</span><span class='line'>Description: Terminating EC2 instance: i-xxxxxxxx
+</span><span class='line'>Cause: At 2015-04-17T03:13:36Z an instance was taken out of service in response to a user health-check.
+</span><span class='line'>StartTime: 2015-04-17T03:13:36.342Z
+</span><span class='line'>EndTime: 2015-04-17T03:13:59.367Z
+</span><span class='line'>StatusCode: InProgress
+</span><span class='line'>StatusMessage:
+</span><span class='line'>Progress: 50
+</span><span class='line'>EC2InstanceId: i-xxxxxxxx
+</span><span class='line'>Details: {"Availability Zone":"ap-northeast-1a","Subnet ID":"subnet-bbbbbbbb"}</span></code></pre></td></tr></table></div></figure>
+
+
+<p>通常は<code>Cause</code>が<code>an instance was taken out of service in response to a EC2 health check indicating it has been terminated or stopped.</code>となるのが<code>an instance was taken out of service in response to a user health-check.</code>となっているのでAutoScalingのEC2 Health Checkより前にアクションが起こされた事が分かります。</p>
+
+<p>障害発生からInstanceがリプレースされて<code>InService</code>になるAuto Healingのトータル時間は6分ちょいになりました。
+<a href="http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-instance-recover.html">EC2 Auto Recovery</a>を使えば済む場合もありますが、あちらはAWS側の障害に起因する<code>StatusCheckFailed_System</code>のみで<code>StatusCheckFailed_Instance</code>はトリガー対象じゃないのと、特定のインスタンスタイプやVPC等若干制限があります。</p>
+
+<h3>終わりに</h3>
+
+<p>ちなみに今回はinstanceやSNSは東京リージョン（ap-northeast-1）、Lambdaはオレゴンリージョン（us-west-2）というリージョンを跨いだ連携も可能という事が分かりました。まだ東京に来てないけど、既にproduction readyなのでもう普通に使っていけます。</p>
+
+<p>いやー。SNS連携によって夢は広がりますねぇ。</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2015/03/27/serverfesta-2015-spring/">サバフェス！2015に参加してきた</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2015-03-27T12:56:00+09:00" pubdate data-updated="true">Mar 27<span>th</span>, 2015</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p><a href="http://connpass.com/event/11571/">サバフェス！2015 Spring</a>に参加してきました。
+やった内容を少々。</p>
+
+<p><a href="/blog/2013/12/13/serverfesta-2013-autumn">前回</a>と同じくチーム@ijinとして1人で参戦して、順位は「<strong>4位</strong>」。</p>
+
+<p>スコアは<strong>44988.867 TpmC</strong>でした。</p>
+
+<h2>お題</h2>
+
+<p>Mysql on ioDriveでtpcc-mysqlベンチマークのtransaction throughput競争。</p>
+
+<p>第1陣と第2陣に分かれていて、今回は後者での参戦。</p>
+
+<h2>はじめに</h2>
+
+<p>競技期間は5日間あったものの、第1陣で<a href="http://netmark.jp/2015/03/svfes-2.html">結構な地雷があった</a>のと、Fusion-IO（現SanDisk）のioDriveとtpcc-mysqlは2年前に<a href="/blog/2013/02/22/mysql-benchmarks-on-aws-ssd-vs-fusion-io/">触った</a>ので最初はあんまりやる気が起きなくて困ってました。後は前回と違って施せる施策がかなり限定されるというので、正直5日間は長過ぎるのではないかという印象でした。（結果的に第1陣のトラブルとかを鑑みると長さ的には良かったのかも知れないけど）</p>
+
+<p>という事で初日はログインとベンチで基準値を取るだけして終了。</p>
+
+<p>その後、最近のMySQLやioDrive周りの情報収集を軽ーくして数日が経過。。</p>
+
+<p>そして最終日の夜中になって、なんとか本腰を入れてチューニング開始。まあ、やりだしたら楽しいんですけどね。</p>
+
+<h2>マシンスペック</h2>
+
+<ul>
+<li>CentOS 6.4</li>
+<li>Intel(R) Xeon(R) CPU E5-2650 v2 @ 2.60GHz x 32</li>
+<li>32GB RAM</li>
+<li>40G HDD</li>
+<li>320GB ioDrive</li>
+</ul>
+
+
+<h2>制限</h2>
+
+<pre><code>innodb_doublewrite = 1
+innodb_flush_log_at_trx_commit = 1
+</code></pre>
+
+<p>その他レギューレーションは<a href="https://2015spring.serverfesta.info/?page_id=299">こちら</a></p>
+
+<h2>方針</h2>
+
+<p>今までのtwitterの<a href="https://twitter.com/search?q=%23%E3%82%B5%E3%83%90%E3%83%95%E3%82%A7%E3%82%B9">タイムライン</a>からして、どうもベンチをウェブ画面から要求しても並列実行の数とキューイング、及び非常に長い実行時間からして1時間に一回実行できるかどうかも怪しかったのでローカルでこまめに回す方向に。</p>
+
+<p>本番データはtpccの1000 warehouse（70GB+）、16GB Buffer Pool、900sの実行時間だったのでそれを250 warehouse, 4GB Buffer Poolと縮小し120sと短めに設定。こうすることによってローカルでのデータコピー時間やベンチ実行時感が短縮され、時間がない中での細かいパラメータのチューニングに専念できる。Buffer Poolはどうせ一番効くと分かりきってるので、あえて後回し。DBは6年前（MySQL 5.0時代）から手に滲んで愛用しているPercona Serverの5.6版を選択。</p>
+
+<p>スコアの推移はこんな感じ。データセットが小さい分、スコアは大きめ。</p>
+
+<p><img src="https://docs.google.com/spreadsheets/d/1zm6-THRYR_EcLoHgacRScxlhSzeQAkbJ0RXiAI4fiRU/pubchart?oid=1067951178&amp;format=image"></p>
+
+<p>終盤になってやっと本番に近いデータセットや実行時感で細かいチューニング。</p>
+
+<p><img src="https://docs.google.com/spreadsheets/d/1zm6-THRYR_EcLoHgacRScxlhSzeQAkbJ0RXiAI4fiRU/pubchart?oid=2026636320&amp;format=image"></p>
+
+<p>最終的にローカルでのベストスコアは<strong>53420.332 TpmC</strong>でした。</p>
+
+<h2>設定ファイル</h2>
+
+<script src="https://gist.github.com/ijin/341bab7569e372e1addb.js"></script>
+
+
+<h2>効果があったもの</h2>
+
+<p>細かいおまじないレベルでのパラメータも他にいくつあったけど、割と効いたのをピックアップ。また、既に設定されていたパラメータは除外（innodb_io_capacity等）</p>
+
+<p>mysql</p>
+
+<pre><code>datadir=/fioa/mysql
+tmpdir=/fioa/tmp
+sync_binlog=0
+innodb_buffer_pool_size = 28150M
+innodb_buffer_pool_instances=16
+innodb_log_file_size=4G
+innodb_log_files_in_group=3
+innodb_log_group_home_dir=/var/log/mysql
+innodb_log_buffer_size=64M
+innodb_data_file_path=ibdata1:76M;../../var/log/mysql/ibdata2:500M:autoextend
+innodb_checksum_algorithm=0
+innodb_max_dirty_pages_pct=90
+innodb_lru_scan_depth=2000
+numa_interleave=1
+flush_caches
+malloc-lib=/usr/lib64/libjemalloc.so.1
+</code></pre>
+
+<p>etc</p>
+
+<pre><code>vm.swappiness=1
+mount option (noatime,nodiratime,  max_batch_time=0,nobarrier,discard)
+cache warmup
+</code></pre>
+
+<p>基本的にはioDriveにIOをなるべく発生させない、もしくは遅延させる関連のパラメータが効いた感じ。この辺は割と正統なチューニング方法。一つ、若干工夫したのは、doublewrite buffer fileの指定方法。シーケンシャルなIOが発生するログ周りの処理はHDDに逃がした方がioDrive/SSD的には負荷低減になるけど、Percona 5.5までは<strong>innodb_doublewrite_file</strong>というパラメータでいつも指定していたのが、5.6ではなんと未実装！なのでベンチマーク前にコピーされるibdata1の予めのサイズを計っておいて、以降の書き込みをHDD側へ逃がすように<strong>innodb_data_file_path</strong>で調整。</p>
+
+<p>他はNUMAによるメモリの偏り調整とmallocライブラリを使う指定。この辺もPerconaやMariaDB専用オプション。</p>
+
+<p>後は一応初動のスコアをちょっとだけ稼ぐためにmysqlのstartup script内にてテーブルをcount(*)してindexをbuffer poolに乗せたぐらい。</p>
+
+<h2>効果が微妙だったもの</h2>
+
+<p>mysql</p>
+
+<pre><code>innodb_flush_method=ALL_O_DIRECT
+innodb_support_xa=0
+innodb_thread_concurrency=N
+innodb_flush_neighbors=0
+query_cache_size=0
+large-pages
+</code></pre>
+
+<p>etc</p>
+
+<pre><code>echo 'noop' &gt; /sys/block/fioa/queue/scheduler
+echo 4096 &gt; /sys/block/fioa/queue/nr_requests
+echo 2 &gt; /sys/block/fioa/queue/rq_affinity
+renice -n19 -p `ps auxf | grep mackerel | grep -v grep | awk ‘{print $2}’`
+</code></pre>
+
+<p>large-pagesでページサイズを大きく設定すればメモリ効率は向上するはずが、少なくともベンチマークにおいては効果なし。また、スケジューラをnoopやdeadlineと変えたり、nr_requestsやrq_affinityを調整してみたけど、デフォルトのOS bypass設定と比べてあまり変化なし。</p>
+
+<h2>試したかったもの</h2>
+
+<ul>
+<li>ioDrvieのblock sizeのリサイズ</li>
+<li>C0 state（CPUのC stateを制御して変動させずにioDriveの処理向上の期待）</li>
+<li>numa_node_forced_local（IO処理をメモリに一番近接しているCPUで行う）</li>
+<li>IRQ pinning（ioDriveのIRQを固定）</li>
+<li>network tuning</li>
+</ul>
+
+
+<p>この中で最後やることリストに乗っけていながらやらなかったネットワーク周りのチューニング。多分、これが敗因。（1位のチームzzz(<a href="https://twitter.com/ttkzw">@ttkzwさん</a>)はローカルベンチマークで51000ぐらいだったので）もっとリモートからベンチが実行される事に意識を向ければ良かったのかもしれないですね。とはいえ、最後はキュー待ちが8チームだったり、結果が不具合で見れなかったりと、バダバタしてたのでそっちに気を取られたのもまた事実。まあ、半日ちょいのチューニングにしてはそこそこ行った感じでしょうか。</p>
+
+<h2>終わりに</h2>
+
+<p>最初は運営側が「目下実装中です！」といいながら<strong>#トラしゅ</strong>をしているような感じでちょっと不安でしたが、最後は（第2陣という事もあり）それなりに楽しめました。ベンチマーク時間の短縮と並列実行数がもうちょっと増やせたらよかったですかね。運営側の皆様、大変お疲れさまでした！</p>
+
+<h2>おまけ</h2>
+
+<p>賞品として3DマッサージピローとSSDを頂きました！</p>
+
+<div class='embed tweet'><blockquote class="twitter-tweet"><p>3DマッサージピローとSSDをもらった。 <a href="https://twitter.com/hashtag/%E3%82%B5%E3%83%90%E3%83%95%E3%82%A7%E3%82%B9?src=hash">#サバフェス</a> <a href="http://t.co/mKczn9mflZ">pic.twitter.com/mKczn9mflZ</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/581048257171820544">March 26, 2015</a></blockquote>
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
+
+
+<p>個人敵には飛び込みLTした人がもらったDroneの方が良さそうだったけど、ピローは家族に好評でした。</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/12/31/isucon4-final/">ISUCON4の本戦の思い出</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-12-31T20:52:00+09:00" pubdate data-updated="true">Dec 31<span>st</span>, 2014</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>ISUCON4の本戦の直後にそのままAWS re:Inventへ行ったきりエントリを書いてなかったので思い出だけでも年内に書いておく。</p>
+
+<p>内容の<a href="http://isucon.net/archives/41252218.html">エントリ</a>はたくさんあるので、詳しい内容なそちらに任せます。</p>
+
+<p>結果は予選よりちょい上の<strong>15位</strong>。まあ、中間層は結構団子状態だったので誤差の範囲とも言えますが。。</p>
+
+<h2>Cache-Control</h2>
+
+<p>結局はCache-Controlヘッダーに気づくかどうかという点にかかっていて、達成したのは<a href="http://isucon.net/archives/41634734.html">2チーム</a>のみ。優勝チームのモリスさんが「頭から煙が出る程考えて」やっと直前に答えにたどり着いた事を考えると、ベンチマークツールの挙動が若干不思議な実装になっていたとはいえ、思慮深さが足りなかったと反省。</p>
+
+<h2>冒険しすぎた</h2>
+
+<p>今回はrubyとGoのハイブリッド構成でもろもろチューニング。が、しばらくして帯域が頭打ちに。。
+また、その間にメンバーの一人の<a href="https://twitter.com/fruwe">@fruwe</a>に<a href="http://undertow.io/">Undertow</a>というjavaのフレームワークでチャレンジしてもらうものの（事前の技術検証では結構期待できそうだった）、実装完走にはいたらず。この辺は冒険し過ぎたかな。。振り返ってみれば、結局2位のチームがブレークスルーをしたのを見て、全作業を一旦ストップしてでも皆で考えなおす行動を取れば良かったのかもしれないですね。ただ、当時は予選でのベンチマークツールがいささか不安定だった事と運営側もリアルタイムでバグフィックスをしてたという事情もあり、きっとバグか何かだろうとあまり気にしてなかったのも確か。</p>
+
+<h2>最後に</h2>
+
+<p>とまあ、不完全燃焼だったけど、なんだかんだで面白かったです。運営＆参加者の皆様お疲れ様でした。来年またあるか分からないけど、楽しみにしています。</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/12/05/self-healing-with-non-elb-autoscaling3/">Auto Scalingによる自動復旧（AWS Lambda編）</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-12-05T23:14:00+09:00" pubdate data-updated="true">Dec 5<span>th</span>, 2014</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>ちょうど1年程前に「<a href="/blog/2013/02/08/self-healing-with-non-elb-autoscaling/">非ELBなAutoscalingによる自動復旧</a>」の<a href="/blog/2013/12/14/self-healing-with-non-elb-autoscaling2/">再検証</a>をしました。前回も復旧までのタイムラグが20分だったので、この1年で変わったかまた検証してみました。</p>
+
+<p>(*) このエントリは<a href="http://qiita.com/advent-calendar/2014/aws">AWS Advent Calendar 2014</a>の5日目分です。</p>
+
+<h3>設定</h3>
+
+<p><a href="/blog/2013/12/14/self-healing-with-non-elb-autoscaling2/">前回</a>とほぼ一種ですが、今回はついでにEC2 Status AlarmをCloudwatch経由でSNSでアラートを飛ばします。</p>
+
+<p>SNS作成 &amp; Subscribe（送られてくる確認メールは手動で承認）</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ aws sns create-topic --name instance-alert
+</span><span class='line'>{
+</span><span class='line'>    "TopicArn": "arn:aws:sns:us-west-2:123456789012:instance-alert"
+</span><span class='line'>}
+</span><span class='line'>
+</span><span class='line'>$ aws sns subscribe --topic-arn arn:aws:sns:us-west-2:123456789012:instance-alert --protocol email --notification-endpoint user@example.com                               
+</span><span class='line'>{
+</span><span class='line'>    "SubscriptionArn": "pending confirmation"
+</span><span class='line'>}
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>EC2 Status Alarm登録</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>export INSTANCE=i-xxxxxxxx
+</span><span class='line'>aws cloudwatch put-metric-alarm --alarm-name StatusCheckFailed-Alarm-for-$INSTANCE \
+</span><span class='line'>--alarm-description "Instance $INSTANCE has failed" --metric-name StatusCheckFailed \
+</span><span class='line'>--namespace AWS/EC2 --statistic Maximum --dimensions Name=InstanceId,Value=$INSTANCE \
+</span><span class='line'>--period 60 --unit Count --evaluation-periods 2 --threshold 1 --comparison-operator \
+</span><span class='line'>  GreaterThanOrEqualToThreshold --alarm-actions arn:aws:sns:us-west-2:123456789012:instance-alert</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>自動復旧</h3>
+
+<p>通信を遮断し、Status Check Failを発動させる</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>ubuntu@ip-172-31-19-185:~$ date; sudo ifdown eth0
+</span><span class='line'>Fri Dec  5 13:02:39 UTC 2014</span></code></pre></td></tr></table></div></figure>
+
+
+<p>EC2のStatus Check。前回同様、3分ぐらいでfail検知</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>Fri Dec  5 22:05:22 JST 2014
+</span><span class='line'>ok
+</span><span class='line'>DETAILS reachability    passed
+</span><span class='line'>
+</span><span class='line'>Fri Dec  5 22:05:28 JST 2014
+</span><span class='line'>ok
+</span><span class='line'>DETAILS reachability    passed
+</span><span class='line'>
+</span><span class='line'>Fri Dec  5 22:05:34 JST 2014
+</span><span class='line'>impaired
+</span><span class='line'>DETAILS 2014-12-05T13:05:00.000Z        reachability    failed
+</span><span class='line'>
+</span><span class='line'>Fri Dec  5 22:05:40 JST 2014
+</span><span class='line'>impaired
+</span><span class='line'>DETAILS 2014-12-05T13:05:00.000Z        reachability    failed</span></code></pre></td></tr></table></div></figure>
+
+
+<p>SNS通知。飛ぶまで2分弱</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>Alarm Details:
+</span><span class='line'>- Name:                       StatusCheckFailed-Alarm-for-i-xxxxxxxx
+</span><span class='line'>- Description:                Instance i-xxxxxxxx has failed
+</span><span class='line'>- State Change:               OK -&gt; ALARM
+</span><span class='line'>- Reason for State Change:    Threshold Crossed: 2 datapoints were greater than or equal to the threshold (1.0). The most recent datapoints: [1.0, 1.0].
+</span><span class='line'>- Timestamp:                  Friday 05 December, 2014 13:07:19 UTC
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'>- AWS Account:                123456789012
+</span><span class='line'>
+</span><span class='line'>Threshold:
+</span><span class='line'>- The alarm is in the ALARM state when the metric is GreaterThanOrEqualToThreshold 1.0 for 60 seconds.
+</span><span class='line'>
+</span><span class='line'>Monitored Metric:
+</span><span class='line'>- MetricNamespace:            AWS/EC2
+</span><span class='line'>- MetricName:                 StatusCheckFailed
+</span><span class='line'>- Dimensions:                 [InstanceId = i-xxxxxxxx]
+</span><span class='line'>- Period:                     60 seconds
+</span><span class='line'>- Statistic:                  Maximum
+</span><span class='line'>- Unit:                       Count</span></code></pre></td></tr></table></div></figure>
+
+
+<p>AutoscalingのHealth Status</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>Fri Dec  5 22:11:08 JST 2014
+</span><span class='line'>aws-advent2014-sg       us-west-2a      HEALTHY i-xxxxxxxx      aws-advent2014-lc       InService
+</span><span class='line'>
+</span><span class='line'>Fri Dec  5 22:11:14 JST 2014
+</span><span class='line'>aws-advent2014-sg       us-west-2a      HEALTHY i-xxxxxxxx      aws-advent2014-lc       InService
+</span><span class='line'>
+</span><span class='line'>Fri Dec  5 22:11:20 JST 2014
+</span><span class='line'>aws-advent2014-sg       us-west-2a      UNHEALTHY       i-xxxxxxxx      aws-advent2014-lc       InService
+</span><span class='line'>
+</span><span class='line'>Fri Dec  5 22:11:26 JST 2014
+</span><span class='line'>aws-advent2014-sg       us-west-2a      UNHEALTHY       i-xxxxxxxx      aws-advent2014-lc       InService
+</span><span class='line'>
+</span><span class='line'>Fri Dec  5 22:11:32 JST 2014
+</span><span class='line'>aws-advent2014-sg       us-west-2a      UNHEALTHY       i-xxxxxxxx      aws-advent2014-lc       Terminating
+</span><span class='line'>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>お、4分ぐらいでAuto ScalingがUnhealthyと認識。</p>
+
+<p>何回か繰り返したところ、トータルで障害から復旧までの時間が10分を切りました！</p>
+
+<p>なんと1年前と比べて時間が半分に短縮されてますねぇ。</p>
+
+<h2>Lambda</h2>
+
+<p>さて。改善されたものの、Auto ScalingがEC2 status checkの状態を検知するまでタイムラグがまだあるので、もうちょっと短縮したいですよね。できればSNSが発行されたタイミングで。</p>
+
+<p>そこで、AWSの新サービス「<a href="http://aws.amazon.com/lambda/">Lambda</a>」を使ってイベント通知できたら良いかも！！。。と思ったものの、残念ながらLambdaはまだSNSには対応してません。</p>
+
+<p>なので、ひとまずSQSをSNSにsubscribeして、messageが届いたらLambda functionへ渡してinvokeへしてくれるsqs-to-lambdaを使ってAuto ScalingのHealthStatusを直接API経由でLambdaが叩く仕組みを試しました。
+図にするとこんな感じですね。</p>
+
+<p><img src="https://lh4.googleusercontent.com/-IxSeVgkwfQU/VIIapiet4tI/AAAAAAAABBw/ukic0BIBIT0/w529-h393-no/aws-advent-2014.png"></p>
+
+<p>ELB付けた方が楽な気もするけど、まあ集約できるのと検証も兼ねて。。</p>
+
+<h3>設定</h3>
+
+<p>SQSの作成</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ aws sqs create-queue --queue-name instance-failed
+</span><span class='line'>{
+</span><span class='line'>    "QueueUrl": "https://us-west-2.queue.amazonaws.com/123456789012/instance-failed"
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+
+
+<p>SQSをSNSへsubscribe</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ aws sqs add-permission --queue-url https://us-west-2.queue.amazonaws.com/123456789012/instance-failed \
+</span><span class='line'> --label SQSDefaultPolicy --aws-account-ids  --actions SendMessage
+</span><span class='line'>$ aws sqs set-queue-attributes --queue-url https://us-west-2.queue.amazonaws.com/123456789012/instance-failed  \
+</span><span class='line'> --attributes '{"Policy": "{\"Version\":\"2008-10-17\",\"Id\":\"arn:aws:sqs:us-west-2:123456789012:instance-failed/SQSDefaultPolicy\",\"Statement\":[{\"Sid\":\"Sid1417796380309\",\"Effect\":\"Allow\",\"Principal\":{\"AWS\":\"*\"},\"Action\":\"SQS:SendMessage\",\"Resource\":\"arn:aws:sqs:us-west-2:123456789012:instance-failed\",\"Condition\":{\"ArnEquals\":{\"aws:SourceArn\":\"arn:aws:sns:us-west-2:123456789012:instance-alert\"}}}]}"}'</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Lambda function</p>
+
+<div><script src='https://gist.github.com/7bcba3354814d3ca704d.js?file='></script>
+<noscript><pre><code>console.log(&#39;Loading event&#39;);
+var aws = require(&#39;aws-sdk&#39;);
+var s3 = new aws.S3({apiVersion: &#39;2006-03-01&#39;});
+var autoscaling = new aws.AutoScaling({apiVersion: &#39;2011-01-01&#39;});
+
+exports.handler = function(event, context) {
+   console.log(&#39;Received event:&#39;);
+   console.log(event);
+   //console.log(typeof event.Subject);
+   if (event.hasOwnProperty(&#39;Message&#39;)) {
+       var msg = event.Message.replace(/!!/g,&#39;&quot;&#39;);
+       var instance_id = JSON.parse(msg).Trigger.Dimensions[0].value;
+       console.log(&#39;Changing instance health for: &#39; + instance_id);
+       var params = {
+           HealthStatus: &#39;Unhealthy&#39;, /* required */
+           InstanceId: instance_id, /* required */
+           ShouldRespectGracePeriod: false
+       };
+    
+        autoscaling.setInstanceHealth(params, function(err, data) {
+            if (err) {
+                console.log(err, err.stack); // an error occurred
+                context.done(&#39;error&#39;,&#39;error: &#39;+err);
+            }
+            else {
+                console.log(data);           // successful response
+                context.done(null,&#39;&#39;);
+            }
+        });
+   }
+   else {
+       console.log(&#39;No message&#39;);
+       context.done(null,&#39;&#39;);
+   }
+};</code></pre></noscript></div>
+
+
+<p>node.js製のsqs-to-lambda。long pollingしつつ、messageを取得後にLambda functionをinvokeしてくれる。12/5現在ではEscape characterがAWS/JDKやCLIから送信できないという<a href="https://forums.aws.amazon.com/thread.jspa?threadID=166893&amp;tstart=0">大きな問題</a>がある為、<a href="https://github.com/robinjmurphy/sqs-to-lambda">upstream</a>を少し<a href="https://github.com/ijin/sqs-to-lambda/commit/080f1dcbf5f8bb3f7f4a6e0abdde72dce7ce5553">改修</a></p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>sudo apt-get install nodejs npm
+</span><span class='line'>sudo ln -s /usr/bin/nodejs /usr/local/bin/node
+</span><span class='line'>git@github.com:ijin/sqs-to-lambda.git
+</span><span class='line'>cd sqs-to-lambda
+</span><span class='line'>npm install
+</span><span class='line'>./index.js --queueUrl https://sqs.us-west-2.amazonaws.com/123456789012/instance-failed --functionName myFunction --region us-west-2  </span></code></pre></td></tr></table></div></figure>
+
+
+<h3>Lambdaによる復旧</h3>
+
+<p>通信を遮断し、Status Check Failを発動させる</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>ubuntu@ip-172-31-21-180:~$ date; sudo ifdown eth0
+</span><span class='line'>Fri Dec  5 19:37:32 UTC 2014</span></code></pre></td></tr></table></div></figure>
+
+
+<p>EC2のStatus Check。約3分ぐらいでfail検知</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>Sat Dec  6 04:40:09 JST 2014
+</span><span class='line'>ok
+</span><span class='line'>DETAILS reachability    passed
+</span><span class='line'>
+</span><span class='line'>Sat Dec  6 04:40:16 JST 2014
+</span><span class='line'>impaired
+</span><span class='line'>DETAILS 2014-12-05T19:40:00.000Z        reachability    failed
+</span><span class='line'>
+</span><span class='line'>Sat Dec  6 04:40:22 JST 2014
+</span><span class='line'>impaired
+</span><span class='line'>DETAILS 2014-12-05T19:40:00.000Z        reachability    failed</span></code></pre></td></tr></table></div></figure>
+
+
+<p>SNS通知。飛ぶまで2分弱</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>Alarm Details:
+</span><span class='line'>- Name:                       StatusCheckFailed-Alarm-for-i-yyyyyyyy
+</span><span class='line'>- Description:                Instance i-yyyyyyyy has failed
+</span><span class='line'>- State Change:               OK -&gt; ALARM
+</span><span class='line'>- Reason for State Change:    Threshold Crossed: 2 datapoints were greater than or equal to the threshold (1.0). The most recent datapoints: [1.0, 1.0].
+</span><span class='line'>- Timestamp:                  Friday 05 December, 2014 19:42:33 UTC
+</span><span class='line'>- AWS Account:                123456789012 </span></code></pre></td></tr></table></div></figure>
+
+
+<p>そしてLambda発動！</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>START RequestId: e64849be-7cb6-12e4-9951-11b87edac46e
+</span><span class='line'>2014-12-05T19:42:36.728Z        e64849be-7cb6-12e4-9951-11b87edac46e    Received event:
+</span><span class='line'>2014-12-05T19:42:36.728Z        e64849be-7cb6-12e4-9951-11b87edac46e    { Type: 'Notification', MessageId: '2d85a5d8-c596-5f83-94a9-e924c97fd676', TopicArn: 'arn:aws:sns:us-west-2:123456789012:instance-alert', Subject: 'Status Check Alarm: !!StatusCheckFailed-Alarm-for-i-yyyyyyyy!! in US-West-2', Message: '{!!AlarmName!!:!!StatusCheckFailed-Alarm-for-i-yyyyyyyy!!,!!AlarmDescription!!:!!Instance i-yyyyyyyy has failed!!,!!AWSAccountId!!:!!123456789012!!,!!NewStateValue!!:!!ALARM!!,!!NewStateReason!!:!!Threshold Crossed: 2 datapoints were greater than or equal to the threshold (1.0). The most recent datapoints: [1.0, 1.0].!!,!!StateChangeTime!!:!!2014-12-05T19:42:33.757+0000!!,!!Region!!:!!US-West-2!!,!!OldStateValue!!:!!OK!!,!!Trigger!!:{!!MetricName!!:!!StatusCheckFailed!!,!!Namespace!!:!!AWS/EC2!!,!!Statistic!!:!!MAXIMUM!!,!!Unit!!:!!Count!!,!!Dimensions!!:[{!!name!!:!!InstanceId!!,!!value!!:!!i-yyyyyyyy!!}],!!Period!!:60,!!EvaluationPeriods!!:2,!!ComparisonOperator!!:!!GreaterThanOrEqualToThreshold!!,!!Threshold!!:1.0}}', Timestamp: '2014-12-05T19:42:33.841Z', SignatureVersion: '1', Signature: '1IYhSVfZmNxWWzoc539jBDN2HCo0Y5k/dUhWbaAEZSt/tkISjFkNTb9VsVwNAfZDOaLneO/sE2PwfUc/3aU9eedlAassxHOXAB6h844NVKxJzR5Xwg4dUx0mIb+fk9pMy/elcwk13GbDxLJ1cCTef7Bu7zyJU3TAF626YfAVhI9QdEo4o44g/y2osEXb+CuvFc5ICYpIWAad7gM5YPYxCU6tJ/CEtWGzaPz+O5Vk4NLm2/AizZ6LKA8/zqhQkqwnUwhzQDwuDGbJ2DXtTJwAO2r4M+zU8RwOxwPgEdgxA270xrmB6AlWV0mhsQIqqJVxo5Xm2v7y3iNUjKfov5DCZm==', SigningCertURL: 'https://sns.us-west-2.amazonaws.com/SimpleNotificationService-ad6697a11189d5c6f9eccf214ff9e123.pem', UnsubscribeURL: 'https://sns.us-west-2.amazonaws.com/?Action=Unsubscribe&SubscriptionArn=arn:aws:sns:us-west-2:123456789012:instance-alert:2d85a5d8-faea-5f83-baa1-9fecd7a5e71b' }
+</span><span class='line'>2014-12-05T19:42:36.728Z        e64849be-7cb6-12e4-9951-11b87edac46e    Changing instance health for: i-yyyyyyyy
+</span><span class='line'>014-12-05T19:42:36.831Z e64849be-7cb6-12e4-9951-11b87edac46e    { ResponseMetadata: { RequestId: 'dd605f39-7cb6-12e4-a2c2-d57010899d82' } }
+</span><span class='line'>END RequestId: e64849be-7cb6-12e4-9951-11b87edac46e
+</span><span class='line'>REPORT RequestId: e64849be-7cb6-12e4-9951-11b87edac46e  Duration: 175.86 ms     Billed Duration: 200 ms Memory Size: 128 MB     Max Memory Used: 18 MB</span></code></pre></td></tr></table></div></figure>
+
+
+<p>AutoscalingのHealth Status</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>Sat Dec  6 04:42:18 JST 2014
+</span><span class='line'>aws-advent2014-sg       us-west-2a      HEALTHY i-yyyyyyyy      aws-advent2014-lc       InService
+</span><span class='line'>
+</span><span class='line'>Sat Dec  6 04:42:24 JST 2014
+</span><span class='line'>aws-advent2014-sg       us-west-2a      HEALTHY i-yyyyyyyy      aws-advent2014-lc       InService
+</span><span class='line'>
+</span><span class='line'>Sat Dec  6 04:42:30 JST 2014
+</span><span class='line'>aws-advent2014-sg       us-west-2a      UNHEALTHY       i-yyyyyyyy      aws-advent2014-lc       InService
+</span><span class='line'>
+</span><span class='line'>Sat Dec  6 04:42:35 JST 2014
+</span><span class='line'>aws-advent2014-sg       us-west-2a      UNHEALTHY       i-yyyyyyyy      aws-advent2014-lc       InService
+</span><span class='line'>
+</span><span class='line'>Sat Dec  6 04:42:42 JST 2014
+</span><span class='line'>aws-advent2014-sg       us-west-2a      UNHEALTHY       i-yyyyyyyy      aws-advent2014-lc       InService
+</span><span class='line'>
+</span><span class='line'>jSat Dec  6 04:42:48 JST 2014
+</span><span class='line'>aws-advent2014-sg       us-west-2a      UNHEALTHY       i-yyyyyyyy      aws-advent2014-lc       Terminating</span></code></pre></td></tr></table></div></figure>
+
+
+<p>おお。さらに短く5分ぐらいに短縮！！</p>
+
+<h3>終わりに</h3>
+
+<p>Lambdaと組み合わせる事によってSNS通知によるELBを使わないレスポンシブなAuto Scalingの自動復旧が実現できました。</p>
+
+<p>折角のサーバいらずのLambdaの良さが全く活かされてないけど。。早くSNSにも対応して欲しいものです。</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  <div class="pagination">
+    
+      <a class="prev" href="/blog/page/4/">&larr; Older</a>
+    
+    <a href="/blog/archives">Blog Archives</a>
+    
+    <a class="next" href="/blog/page/2/">Newer &rarr;</a>
+    
+  </div>
+</div>
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2019/06/25/serverless-days-tokyo-fukuoka-2019/">Serverless Days Tokyo/Fukuoka 2019開催の告知</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2019/04/18/serverless-days-hamburg-2019/">Serverless Days Hamburg 2019で発表してきた</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2018/12/27/aws-re-invent-2018/">AWS re:Invent 2018に参加してきた</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2018/06/16/rwanda-transform-africa-summit-2018/">ルワンダのTransform Africa Summit 2018に参加してきた</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2018/02/22/serverlessconf-paris-2018/">ServerlessConf Paris 2018で発表してきた</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2017/12/31/aws-re-invent-2017/">AWS re:Invent 2017に参加してきた</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2017/04/30/serverlessconf-austin-2017/">ServerlessConf Austin 2017に参加してきた</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2017/03/27/ruboty-github-pr-release/">ruboty-github_pr_releaseを作った</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2016/12/31/aws-re-invent-2016/">AWS re:Invent 2016に参加してきた</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2016/11/09/serverlessconf-london-2016/">ServerlessConf London 2016に参加してきた。</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2016/07/29/aws-gameday-japan-2016/">AWS GameDay Japan 2016を開催してきた</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2016/06/28/dockercon-2016/">DockerCon 2016に参加してきた</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2016/04/28/terraforming-api-gatewways/">TerraformでAPI Gatewway</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2016/03/31/using-terraform-dev-versions/">Terraformで特定のブランチを使う</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2016/02/18/ssh-and-git-on-aws-lambda/">LambdaでSSHやGitを使ってみよう</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2016/01/14/monitor-lambda-capacity/">Lambdaの容量を監視しよう</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/12/18/co-working-in-hubud/">バリ島のHubudでコワークしてきた</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/12/10/post-lambda-logs-to-slack/">LambdaのログをSlackで見よう</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/11/04/elastic-beanstalk-easy-ssh/">Elastic Beanstalkへの簡単ssh</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/10/26/aws-re-invent-2015/">AWS re:Invent 2015に参加してきた</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/09/30/hashiconf-2015/">#HashiConf 2015に参加してきた</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/09/27/isucon5-qualifier/">ISUCON5の予選に記念参加してきた</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/08/23/yapc-asia-tokyo-2015/">YAPC::Asia Tokyo 2015に参加してきた</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/08/06/github-to-lambda-to-slack/">GitHubのeventをLambdaで処理してSlackへ通知</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/07/02/dynamodb-export-with-datapipeline/">Data PipelineによるDynamoDBのexport</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+<section>
+  <h1>Latest Tweets</h1>
+  <ul id="tweets">
+    <li class="loading">Status updating&#8230;</li>
+  </ul>
+  <script type="text/javascript">
+    $.domReady(function(){
+      getTwitterFeed("ijin", 4, false);
+    });
+  </script>
+  <script src="/javascripts/twitter.js" type="text/javascript"> </script>
+  
+    <a href="http://twitter.com/ijin" class="twitter-follow-button" data-show-count="false">Follow @ijin</a>
+  
+</section>
+
+
+
+
+
+  
+</aside>
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2019 - Michael H. Oshita -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'ijin';
+      
+        
+        var disqus_script = 'count.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

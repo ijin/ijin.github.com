@@ -1,0 +1,576 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Data PipelineによるDynamoDBのexport - @ijin</title>
+  <meta name="author" content="Michael H. Oshita">
+
+  
+  <meta name="description" content="ちょっとハマったのでメモ。 DynamoDBにはRDSみたいなスナップショットによるバックアップ機能がなく、データを一括でexportするにはフルスキャンしかありません。
+AWSではData Pipelineによるs3へのexportテンプレートがあって、 &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://ijin.github.io/blog/2015/07/02/dynamodb-export-with-datapipeline/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/stylesheets/data-table.css" rel="stylesheet" type="text/css" />
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="@ijin" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<!--<script type="text/javascript">
+document.base_document_write = document.write;
+document.write = function(html) {
+    if (html.match(/^<link rel="stylesheet".+gist-assets\.github\.com\/assets\/embed.*/) == null) {
+        document.base_document_write(html);
+    }
+}
+</script>
+
+-->
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-33110241-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">@ijin</a></h1>
+  
+    <h2>[Michael H. Oshita]</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:ijin.github.io" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Data PipelineによるDynamoDBのexport</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2015-07-02T20:28:00+09:00" pubdate data-updated="true">Jul 2<span>nd</span>, 2015</time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>ちょっとハマったのでメモ。</p>
+
+<p>DynamoDBにはRDSみたいなスナップショットによるバックアップ機能がなく、データを一括でexportするにはフルスキャンしかありません。
+AWSではData Pipelineによるs3へのexportテンプレートがあって、それを使うとEMRクラスタが立ち上がりHive経由で大量の処理をして、s3へ書き出してくれます。</p>
+
+<p>1000万件程度の小さな件数だとデフォルトのテンプレートがそのまま使えるけど、1億件近くになると失敗したりタイムアウトしたりするので、パラメータの調整が必要になってきます。</p>
+
+<h3>前提</h3>
+
+<ul>
+<li>約1億件</li>
+<li>20GB</li>
+<li>Provisioned Throughput (reads): 1000</li>
+<li>Read Throughput Percent: 1.0</li>
+<li>2時間以内のexport</li>
+</ul>
+
+
+<h3>エラー</h3>
+
+<p>具体的には以下のようなエラーに遭遇しました。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>Caused by: org.apache.hadoop.hive.ql.metadata.HiveException: Hive Runtime Error
+</span><span class='line'> while processing row {"item":{"id_list":"{\"l\":[{\"n\":\"958\"},
+</span><span class='line'>{\"n\":\"704\"},{\"n\":\"847\"},{\"n\":\"232\"},{\"n\":\"72\"}]}",
+</span><span class='line'>"code":"{\"s\":\"adarea9\"}","user_area":"{\"s\":\"91657-adarea9\"}",
+</span><span class='line'>"user":"{\"s\":\"91657\"}","app_code":"{\"s\":\"xxx\"}","last_seen_at":
+</span><span class='line'>"{\"s\":\"2010-06-23 22:57:49 +0000\"}","target_id":"{\"n\":\"395\"}",
+</span><span class='line'>"count":"{\"n\":\"44\"}","promo_id":"{\"n\":\"125\"}"}} at 
+</span><span class='line'>org.apache.hadoop.hive.ql.exec.MapOperator.process(MapOperator.java:550) at 
+</span><span class='line'>org.apache.hadoop.hive.ql.exec.mr.ExecMapper.map(ExecMapper.java:177) 
+</span><span class='line'>... 8 more Caused by: org.apache.hadoop.hive.ql.metadata.HiveException: 
+</span><span class='line'>java.io.IOException: All datanodes 10.160.102.191:9200 are bad. Aborting... at 
+</span><span class='line'>org.apache.hadoop.hive.ql.exec.FileSinkOperator.processOp(FileSinkOperator.java:651) at 
+</span><span class='line'>org.apache.hadoop.hive.ql.exec.Operator.forward(Operator.java:793) at org.apach</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>2015-06-29 13:33:31,610 Stage-1 map = 100%, reduce = 0% MapReduce Total cumulative 
+</span><span class='line'>CPU time: 14 minutes 19 seconds 0 msec Ended Job = job_1435578726935_0002 with 
+</span><span class='line'>errors Error during job, obtaining debugging information... 
+</span><span class='line'>Examining task ID: task_1435578726935_0002_m_000008 (and more) from job job_1435578726935_0002 
+</span><span class='line'>Examining task ID: task_1435578726935_0002_m_000000 (and more) from job job_1435578726935_0002 
+</span><span class='line'>Examining task ID: task_1435578726935_0002_m_000000 (and more) from job job_1435578726935_0002 
+</span><span class='line'>Task with the most failures(4): 
+</span><span class='line'>----- Task ID: task_1435578726935_0002_m_000003 URL: http://ip-10-160-25-23.ap-northeast-1.compute.
+</span><span class='line'>internal:9026/taskdetails.jsp?jobid=job_1435578726935_0002&tipid=task_1435578726935_0002_m_000003
+</span><span class='line'>----- Diagnostic Messages for this Task: Error: GC overhead limit exceeded FAILED: 
+</span><span class='line'>Execution Error, return code 2 from org.apache.hadoop.hive.ql.exec.mr.MapRedTask 
+</span><span class='line'>MapReduce Jobs Launched: Job 0: Map: 10 Cumulative CPU: 859.0 sec HDFS Read: 0 HDFS Write: 0 FAIL Total MapRed</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>2015-06-30 02:32:17,929 Stage-1 map = 100%, reduce = 0%, Cumulative CPU 1605.94 sec 
+</span><span class='line'>MapReduce Total cumulative CPU time: 26 minutes 45 seconds 940 msec Ended Job = 
+</span><span class='line'>job_1435627213542_0001 with errors Error during job, obtaining debugging information... 
+</span><span class='line'>Examining task ID: task_1435627213542_0001_m_000004 (and more) from job job_1435627213542_0001 
+</span><span class='line'>Examining task ID: task_1435627213542_0001_m_000004 (and more) from job job_1435627213542_0001 
+</span><span class='line'>Examining task ID: task_1435627213542_0001_m_000004 (and more) from job job_1435627213542_0001 
+</span><span class='line'>Task with the most failures(4): ----- Task ID: task_1435627213542_0001_m_000000 URL: 
+</span><span class='line'>http://ip-10-150-205-59.ap-northeast-1.compute.internal:9026/taskdetails.jsp?
+</span><span class='line'>jobid=job_1435627213542_0001&tipid=task_1435627213542_0001_m_000000 ----- 
+</span><span class='line'>Diagnostic Messages for this Task: AttemptID:attempt_1435627213542_0001_m_000000_3 
+</span><span class='line'>Timed out after 600 secs FAILED: Execution Error, return code 2 from 
+</span><span class='line'>org.apache.hadoop.hive.ql.exec.mr.MapRedTask MapReduce Jobs Launched: Job 0: Map: 10 Cu</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>Error: java.lang.RuntimeException: Hive Runtime Error while closing operators at 
+</span><span class='line'>org.apache.hadoop.hive.ql.exec.mr.ExecMapper.close(ExecMapper.java:260) at 
+</span><span class='line'>org.apache.hadoop.mapred.MapRunner.run(MapRunner.java:81) at 
+</span><span class='line'>org.apache.hadoop.mapred.MapTask.runOldMapper(MapTask.java:432) at 
+</span><span class='line'>org.apache.hadoop.mapred.MapTask.run(MapTask.java:343) at 
+</span><span class='line'>org.apache.hadoop.mapred.YarnChild$2.run(YarnChild.java:175) at 
+</span><span class='line'>java.security.AccessController.doPrivileged(Native Method) at 
+</span><span class='line'>javax.security.auth.Subject.doAs(Subject.java:415) at 
+</span><span class='line'>org.apache.hadoop.security.UserGroupInformation.doAs(UserGroupInformation.java:1548) at 
+</span><span class='line'>org.apache.hadoop.mapred.YarnChild.main(YarnChild.java:170) 
+</span><span class='line'>Caused by: org.apache.hadoop.hive.ql.metadata.HiveException: 
+</span><span class='line'>java.io.IOException: All datanodes 10.186.28.181:9200 are bad. 
+</span><span class='line'>Aborting... at org.apache.hadoop.hive.ql.exec.FileSinkOperator$FSPaths.closeWriters(FileSinkOperator.java:168) at 
+</span><span class='line'>org.apache.hadoop.hive.ql.exec.FileSinkOperator.closeOp(FileSinkOperator.java:882) at org.apache.hadoop.</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Hive Runtime ErrorやGCエラー等が出てますね。</p>
+
+<h3>原因</h3>
+
+<p>通常のexportテンプレートではEMRはなんと<strong>m1.medium</strong>のcore taskが一台のみ起動して処理が走ります。
+各種ヒープサイズの設定（<code>YARN_RESOURCEMANAGER_HEAPSIZE</code> 等）は<a href="https://docs.aws.amazon.com/ElasticMapReduce/latest/DeveloperGuide/HadoopMemoryDefault_H2.html">instance typeによって決まって</a>おり、この件数とデータサイズではHEAPSIZEが不足し、GCエラー等が発生してOut of Memory状態になって処理が落ちるようです。
+そこで、メモリをもっと搭載している大きめのインスタンスでHEAPSIZEを確保してあげる必要があります。</p>
+
+<h3>解決策</h3>
+
+<p>こんな感じ。</p>
+
+<p><img src="https://lh3.googleusercontent.com/ghExdELQB1cIE9K-d97gDqz7a634413GOTxAHhvJsBg"></p>
+
+<table>
+<thead>
+<tr>
+<th></th>
+<th>parameter</th>
+<th>default value</th>
+<th>new value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td></td>
+<td>core &amp; master instance type</td>
+<td>m1.medium</td>
+<td>m3.xlarge</td>
+</tr>
+<tr>
+<td></td>
+<td>core instance count</td>
+<td>1</td>
+<td>2</td>
+</tr>
+<tr>
+<td></td>
+<td>AMI version</td>
+<td>3.3.2</td>
+<td>3.8.0</td>
+</tr>
+</tbody>
+</table>
+
+
+<p>m3.xlargeにした事で処理が落ちる事なくスムーズに実行されるようになりました。core countを増やしたのは、exportテンプレートのデフォルト設定だとcountが1なので、mapperが不足し、DynamoDBで設定したthroughput (1000)をフルに使い切る事ができなく、デフォルトのタイムアウト時間（2時間）に達して処理自体がキャンセルされてしまうからです。EMR側のスループットも上げる為に必要な変更でした。また、Hadoopの<a href="http://docs.aws.amazon.com/ElasticMapReduce/latest/DeveloperGuide/ami-versions-supported.html">AMI version</a>も古い3.3.2から最新の3.8.0にしてあります。</p>
+
+<p>これらによって、export処理がだいたい1時間ちょいで完了します。</p>
+
+<p>その時の試行錯誤がこれ。</p>
+
+<p><img src="https://lh3.googleusercontent.com/xatqR0hx1M6PhroKFNAksOplqgqYgqsaCJgonanQyzA=w437-h197-no"></p>
+
+<h3>計算</h3>
+
+<p>provisioned throughputに対するバックアップ時間の目安を計算するには以下の通り。</p>
+
+<p>20GBのデータ、1億件のレコード、1000 throughputとして、</p>
+
+<p><code>平均item size = 20*1024*1024*1024/100000000 =~  215 byte</code></p>
+
+<p>4KB以下なので4KB blockのreadとなります。
+Hive Queryのread処理は<a href="http://hipsterdevblog.com/blog/2015/05/30/analysing-dynamodb-index-usage-in-hive-queries/">eventually consistentになる</a>ので、1 IOPSに対して8KBのデータが読み込めます。
+そうすると</p>
+
+<p><code>DynamoDB scan時間 = (20*1024*1024*1024)/(1000*8*1024*60) = 43.7分</code></p>
+
+<p>実際にはEMRクラスタのオーバーヘッドが20分弱程度あるので、これに若干加算します。</p>
+
+<p>図にするとこんな風になります。</p>
+
+<iframe width="670" height="412" seamless frameborder="0" scrolling="no" src="https://docs.google.com/spreadsheets/d/14oyOry-bnrqIgYxdN36Qdwv3VC1lhdku4QffzFh8iIc/pubchart?oid=1201814511&amp;format=interactive"></iframe>
+
+
+<p>バックアップのタイミングでDynamoDBのthroughputをガツンと上げれば、件数によっては短時間で済む場合もあるので、参考にでも！</p>
+
+<p>（※ Production Trafficに影響がないように、Read Throughput Percentは適切に設定する必要があります）</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Michael H. Oshita</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2015-07-02T20:28:00+09:00" pubdate data-updated="true">Jul 2<span>nd</span>, 2015</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/aws/'>aws</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://ijin.github.io/blog/2015/07/02/dynamodb-export-with-datapipeline/" data-via="ijin" data-counturl="http://ijin.github.io/blog/2015/07/02/dynamodb-export-with-datapipeline/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2015/05/01/notes-on-ec2-auto-recovery/" title="Previous Post: EC2 Auto Recoveryの注意点">&laquo; EC2 Auto Recoveryの注意点</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/2015/08/06/github-to-lambda-to-slack/" title="Next Post: GitHubのeventをLambdaで処理してSlackへ通知">GitHubのeventをLambdaで処理してSlackへ通知 &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2019/06/25/serverless-days-tokyo-fukuoka-2019/">Serverless Days Tokyo/Fukuoka 2019開催の告知</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2019/04/18/serverless-days-hamburg-2019/">Serverless Days Hamburg 2019で発表してきた</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2018/12/27/aws-re-invent-2018/">AWS re:Invent 2018に参加してきた</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2018/06/16/rwanda-transform-africa-summit-2018/">ルワンダのTransform Africa Summit 2018に参加してきた</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2018/02/22/serverlessconf-paris-2018/">ServerlessConf Paris 2018で発表してきた</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2017/12/31/aws-re-invent-2017/">AWS re:Invent 2017に参加してきた</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2017/04/30/serverlessconf-austin-2017/">ServerlessConf Austin 2017に参加してきた</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2017/03/27/ruboty-github-pr-release/">ruboty-github_pr_releaseを作った</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2016/12/31/aws-re-invent-2016/">AWS re:Invent 2016に参加してきた</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2016/11/09/serverlessconf-london-2016/">ServerlessConf London 2016に参加してきた。</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2016/07/29/aws-gameday-japan-2016/">AWS GameDay Japan 2016を開催してきた</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2016/06/28/dockercon-2016/">DockerCon 2016に参加してきた</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2016/04/28/terraforming-api-gatewways/">TerraformでAPI Gatewway</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2016/03/31/using-terraform-dev-versions/">Terraformで特定のブランチを使う</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2016/02/18/ssh-and-git-on-aws-lambda/">LambdaでSSHやGitを使ってみよう</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2016/01/14/monitor-lambda-capacity/">Lambdaの容量を監視しよう</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/12/18/co-working-in-hubud/">バリ島のHubudでコワークしてきた</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/12/10/post-lambda-logs-to-slack/">LambdaのログをSlackで見よう</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/11/04/elastic-beanstalk-easy-ssh/">Elastic Beanstalkへの簡単ssh</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/10/26/aws-re-invent-2015/">AWS re:Invent 2015に参加してきた</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/09/30/hashiconf-2015/">#HashiConf 2015に参加してきた</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/09/27/isucon5-qualifier/">ISUCON5の予選に記念参加してきた</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/08/23/yapc-asia-tokyo-2015/">YAPC::Asia Tokyo 2015に参加してきた</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/08/06/github-to-lambda-to-slack/">GitHubのeventをLambdaで処理してSlackへ通知</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/07/02/dynamodb-export-with-datapipeline/">Data PipelineによるDynamoDBのexport</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+<section>
+  <h1>Latest Tweets</h1>
+  <ul id="tweets">
+    <li class="loading">Status updating...</li>
+  </ul>
+  <script type="text/javascript">
+    $.domReady(function(){
+      getTwitterFeed("ijin", 4, false);
+    });
+  </script>
+  <script src="/javascripts/twitter.js" type="text/javascript"> </script>
+  
+    <a href="http://twitter.com/ijin" class="twitter-follow-button" data-show-count="false">Follow @ijin</a>
+  
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2019 - Michael H. Oshita -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'ijin';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://ijin.github.io/blog/2015/07/02/dynamodb-export-with-datapipeline/';
+        var disqus_url = 'http://ijin.github.io/blog/2015/07/02/dynamodb-export-with-datapipeline/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

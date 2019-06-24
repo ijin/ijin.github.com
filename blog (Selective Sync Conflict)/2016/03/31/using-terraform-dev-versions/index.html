@@ -1,0 +1,412 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Terraformで特定のブランチを使う - @ijin</title>
+  <meta name="author" content="Michael H. Oshita">
+
+  
+  <meta name="description" content="HashiCorpのTerraformの開発は非常に活発であり日々進化していますが、リリースまでに待てない実装中や実験的な機能を使いたい場合は、自分で特定のブランチを変更・ビルドして使えます。 リポジトリ取得 1
+2
+3
+$ go get github.com/hashicorp/ &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://ijin.github.io/blog/2016/03/31/using-terraform-dev-versions/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/stylesheets/data-table.css" rel="stylesheet" type="text/css" />
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="@ijin" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<!--<script type="text/javascript">
+document.base_document_write = document.write;
+document.write = function(html) {
+    if (html.match(/^<link rel="stylesheet".+gist-assets\.github\.com\/assets\/embed.*/) == null) {
+        document.base_document_write(html);
+    }
+}
+</script>
+
+-->
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-33110241-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">@ijin</a></h1>
+  
+    <h2>[Michael H. Oshita]</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:ijin.github.io" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Terraformで特定のブランチを使う</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2016-03-31T16:38:00+09:00" pubdate data-updated="true">Mar 31<span>st</span>, 2016</time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>HashiCorpの<a href="https://terraform.io/">Terraform</a>の開発は非常に活発であり日々進化していますが、リリースまでに待てない実装中や実験的な機能を使いたい場合は、自分で特定のブランチを変更・ビルドして使えます。</p>
+
+<h3>リポジトリ取得</h3>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ go get github.com/hashicorp/terraform
+</span><span class='line'>$ cd $GOPATH/src/github.com/hashicorp/terraform
+</span><span class='line'>$ git checkout new-aws-feature</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>commit hash付与</h3>
+
+<p>どのコミットリビジョンを使っているか簡単に分かるように、versionにgitのcommit hashを指定。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>sed -i -e "s/dev/dev - `git rev-parse --short HEAD`/" terraform/version.go</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>ビルド</h3>
+
+<p>make devすると全pluginやproviderがコンパイルされ、非常に時間がかかる（特に最近は対応範囲の広がりが著しく、生成されるバイナリの総容量が増加傾向）。
+よって、特定のproviderを指定して時間短縮する。以下はaws providerで作業している場合。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ make core-dev plugin-dev PLUGIN=provider-aws
+</span><span class='line'>==&gt; Checking that code complies with gofmt requirements...
+</span><span class='line'>/Users/ijin/golang/bin/stringer
+</span><span class='line'>go generate $(go list ./... | grep -v /vendor/)
+</span><span class='line'>go install github.com/hashicorp/terraform
+</span><span class='line'>go install github.com/hashicorp/terraform/builtin/bins/provider-aws
+</span><span class='line'>mv /Users/ijin/golang/bin/provider-aws /Users/ijin/golang/bin/terraform-provider-aws</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>確認</h3>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ terraform version
+</span><span class='line'>Terraform v0.6.15-dev - 123abcd</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Happy Terraforming!</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Michael H. Oshita</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2016-03-31T16:38:00+09:00" pubdate data-updated="true">Mar 31<span>st</span>, 2016</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/golang/'>golang</a>, <a class='category' href='/blog/categories/terraform/'>terraform</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://ijin.github.io/blog/2016/03/31/using-terraform-dev-versions/" data-via="ijin" data-counturl="http://ijin.github.io/blog/2016/03/31/using-terraform-dev-versions/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2016/02/18/ssh-and-git-on-aws-lambda/" title="Previous Post: LambdaでSSHやGitを使ってみよう">&laquo; LambdaでSSHやGitを使ってみよう</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/2016/04/28/terraforming-api-gatewways/" title="Next Post: TerraformでAPI Gatewway">TerraformでAPI Gatewway &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2019/06/25/serverless-days-tokyo-fukuoka-2019/">Serverless Days Tokyo/Fukuoka 2019開催の告知</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2019/04/18/serverless-days-hamburg-2019/">Serverless Days Hamburg 2019で発表してきた</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2018/12/27/aws-re-invent-2018/">AWS re:Invent 2018に参加してきた</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2018/06/16/rwanda-transform-africa-summit-2018/">ルワンダのTransform Africa Summit 2018に参加してきた</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2018/02/22/serverlessconf-paris-2018/">ServerlessConf Paris 2018で発表してきた</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2017/12/31/aws-re-invent-2017/">AWS re:Invent 2017に参加してきた</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2017/04/30/serverlessconf-austin-2017/">ServerlessConf Austin 2017に参加してきた</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2017/03/27/ruboty-github-pr-release/">ruboty-github_pr_releaseを作った</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2016/12/31/aws-re-invent-2016/">AWS re:Invent 2016に参加してきた</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2016/11/09/serverlessconf-london-2016/">ServerlessConf London 2016に参加してきた。</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2016/07/29/aws-gameday-japan-2016/">AWS GameDay Japan 2016を開催してきた</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2016/06/28/dockercon-2016/">DockerCon 2016に参加してきた</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2016/04/28/terraforming-api-gatewways/">TerraformでAPI Gatewway</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2016/03/31/using-terraform-dev-versions/">Terraformで特定のブランチを使う</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2016/02/18/ssh-and-git-on-aws-lambda/">LambdaでSSHやGitを使ってみよう</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2016/01/14/monitor-lambda-capacity/">Lambdaの容量を監視しよう</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/12/18/co-working-in-hubud/">バリ島のHubudでコワークしてきた</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/12/10/post-lambda-logs-to-slack/">LambdaのログをSlackで見よう</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/11/04/elastic-beanstalk-easy-ssh/">Elastic Beanstalkへの簡単ssh</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/10/26/aws-re-invent-2015/">AWS re:Invent 2015に参加してきた</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/09/30/hashiconf-2015/">#HashiConf 2015に参加してきた</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/09/27/isucon5-qualifier/">ISUCON5の予選に記念参加してきた</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/08/23/yapc-asia-tokyo-2015/">YAPC::Asia Tokyo 2015に参加してきた</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/08/06/github-to-lambda-to-slack/">GitHubのeventをLambdaで処理してSlackへ通知</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/07/02/dynamodb-export-with-datapipeline/">Data PipelineによるDynamoDBのexport</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+<section>
+  <h1>Latest Tweets</h1>
+  <ul id="tweets">
+    <li class="loading">Status updating...</li>
+  </ul>
+  <script type="text/javascript">
+    $.domReady(function(){
+      getTwitterFeed("ijin", 4, false);
+    });
+  </script>
+  <script src="/javascripts/twitter.js" type="text/javascript"> </script>
+  
+    <a href="http://twitter.com/ijin" class="twitter-follow-button" data-show-count="false">Follow @ijin</a>
+  
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2019 - Michael H. Oshita -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'ijin';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://ijin.github.io/blog/2016/03/31/using-terraform-dev-versions/';
+        var disqus_url = 'http://ijin.github.io/blog/2016/03/31/using-terraform-dev-versions/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

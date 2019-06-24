@@ -1,0 +1,683 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Auto Scalingによる自動復旧（AWS Lambda+SNS編） - @ijin</title>
+  <meta name="author" content="Michael H. Oshita">
+
+  
+  <meta name="description" content="先週のAWS Summit San Fransiscoにて、ついにLambdaがSNSに対応しました。
+様々なサービスが発表された中、個人的にはこれが一番のヒットです！というのも、この機能によってAWS間のサービスがより連携しやすくなり、 &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://ijin.github.io/blog/2015/04/17/self-healing-with-non-elb-autoscaling4/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/stylesheets/data-table.css" rel="stylesheet" type="text/css" />
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="@ijin" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<!--<script type="text/javascript">
+document.base_document_write = document.write;
+document.write = function(html) {
+    if (html.match(/^<link rel="stylesheet".+gist-assets\.github\.com\/assets\/embed.*/) == null) {
+        document.base_document_write(html);
+    }
+}
+</script>
+
+-->
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-33110241-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">@ijin</a></h1>
+  
+    <h2>[Michael H. Oshita]</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:ijin.github.io" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Auto Scalingによる自動復旧（AWS Lambda+SNS編）</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2015-04-17T14:01:00+09:00" pubdate data-updated="true">Apr 17<span>th</span>, 2015</time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>先週の<a href="http://aws.amazon.com/summits/san-francisco/">AWS Summit San Fransisco</a>にて、ついにLambdaがSNSに<a href="http://docs.aws.amazon.com/sns/latest/dg/sns-lambda.html">対応</a>しました。
+様々なサービスが発表された中、個人的にはこれが一番のヒットです！というのも、この機能によってAWS間のサービスがより連携しやすくなり、新しいリアクティブなアーキテクチャをどんどん実現できそうだからです。</p>
+
+<p>というわけで、少し試してみました。</p>
+
+<p>お題は去年12月に試したAutoScaling + Lambda。（当時はLambdaはまだこの機能がなかったのでSNS→SQSにてイベントをプロセスする仕組みを<a href="/blog/2014/12/05/self-healing-with-non-elb-autoscaling3/">作りました</a>。）</p>
+
+<p>SNS連携によって前回のこれが</p>
+
+<p><img src="https://lh4.googleusercontent.com/-IxSeVgkwfQU/VIIapiet4tI/AAAAAAAABBw/ukic0BIBIT0/w529-h393-no/aws-advent-2014.png"></p>
+
+<p>こうなります。（Lambdaのアイコンが出たので差し替えてます）</p>
+
+<p><img src="https://lh3.googleusercontent.com/-ejPyB1qrZyQ/VTCEjbhe2cI/AAAAAAAABFI/VCYVIo5hFao/w404-h393-no/as-sns-lambda2.png"></p>
+
+<p>うーん、シンプル！</p>
+
+<h3>設定</h3>
+
+<p>前回とほぼ同様。</p>
+
+<p>SNS作成</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ aws sns create-topic --name instance-alert --region ap-northeast-1
+</span><span class='line'>{
+</span><span class='line'>    "TopicArn": "arn:aws:sns:ap-northeast-1:123456789012:instance-alert"
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+
+
+<p>LambdaとSNS連携できるようにポリシーを付与</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ aws lambda add-permission --function-name makeASUnhealty --statement-id sns-instance-alert \
+</span><span class='line'>--action "lambda:invokeFunction" --principal sns.amazonaws.com \
+</span><span class='line'>--source-arn arn:aws:sns:ap-northeast-1:123456789012:instance-alert --region us-west-2                                                                                                                                                                                                  
+</span><span class='line'>{
+</span><span class='line'>    "Statement": "{\"Condition\":{\"ArnLike\":{\"AWS:SourceArn\":\"arn:aws:sns:ap-northeast-1:123456789012:instance-alert\"}},\"Resource\":\"arn:aws:lambda:us-west-2:123456789012:function:makeASUnhealty\",\"Action\":[\"lambda:invokeFunction\"],\"Principal\":{\"Service\":\"sns.amazonaws.com\"},\"Sid\":\"sns-instance-alert\",\"Effect\":\"Allow\"}"
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Subscribe</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ aws sns subscribe --topic-arn arn:aws:sns:ap-northeast-1:123456789012:instance- --protocol lambda \
+</span><span class='line'>--notification-endpoint arn:aws:lambda:us-west-2:123456789012:function:makeASUnhealty --region ap-northeast-1
+</span><span class='line'>{
+</span><span class='line'>    "SubscriptionArn": "arn:aws:sns:ap-northeast-1:123456789012:as-test:4b22eec6-aeb5-4421-7a2f-99ca33a4b8ab"
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+
+
+<p>aws cliはのヘルプにはまだSNSをLambdaへsubscribeするやり方は書いてませんが、上記のようにやればできます。 <a href="http://alestic.com/2015/04/aws-cli-sns-lambda">Thanks Eric!</a></p>
+
+<p>EC2 Status Check</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ export INSTANCE=i-xxxxxxxx
+</span><span class='line'>$ aws cloudwatch put-metric-alarm --alarm-name StatusCheckFailed-Alarm-for-$INSTANCE \
+</span><span class='line'>--alarm-description "Instance $INSTANCE has failed" --metric-name StatusCheckFailed \
+</span><span class='line'>--namespace AWS/EC2 --statistic Maximum --dimensions Name=InstanceId,Value=$INSTANCE \
+</span><span class='line'>--period 60 --unit Count --evaluation-periods 2 --threshold 1 --comparison-operator \
+</span><span class='line'>  GreaterThanOrEqualToThreshold --alarm-actions arn:aws:sns:ap-northeast-1:560336700862:instance-alert \
+</span><span class='line'>--region ap-northeast-1</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Lambda Function</p>
+
+<div><script src='https://gist.github.com/52033eb3b9b02c1fe975.js?file='></script>
+<noscript><pre><code></code></pre></noscript></div>
+
+
+<h3>自動復旧</h3>
+
+<p>通信を遮断し、Status Check Failを発動させる</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ date; sudo ifdown eth0
+</span><span class='line'>Fri Apr 17 03:08:39 UTC 2015</span></code></pre></td></tr></table></div></figure>
+
+
+<p>EC2 Status Check。2分でfail検知</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>Fri Apr 17 12:10:25 JST 2015
+</span><span class='line'>ok
+</span><span class='line'>DETAILS reachability    passed
+</span><span class='line'>
+</span><span class='line'>Fri Apr 17 12:10:31 JST 2015
+</span><span class='line'>impaired
+</span><span class='line'>DETAILS 2015-04-17T03:10:00.000Z        reachability    failed</span></code></pre></td></tr></table></div></figure>
+
+
+<p>SNS通知。さらに2分ちょい。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>Alarm Details:
+</span><span class='line'>- Name:                       StatusCheckFailed-Alarm-for-i-xxxxxxxx
+</span><span class='line'>- Description:                Instance i-xxxxxxxx has failed
+</span><span class='line'>- State Change:               OK -&gt; ALARM
+</span><span class='line'>- Reason for State Change:    Threshold Crossed: 2 datapoints were greater than or equal to the threshold (1.0). The most recent datapoints: [1.0, 1.0].
+</span><span class='line'>- Timestamp:                  Friday 17 April, 2015 03:13:09 UTC
+</span><span class='line'>- AWS Account:                123456789012
+</span><span class='line'>
+</span><span class='line'>Threshold:
+</span><span class='line'>- The alarm is in the ALARM state when the metric is GreaterThanOrEqualToThreshold 1.0 for 60 seconds.
+</span><span class='line'>
+</span><span class='line'>Monitored Metric:
+</span><span class='line'>- MetricNamespace:            AWS/EC2
+</span><span class='line'>- MetricName:                 StatusCheckFailed
+</span><span class='line'>- Dimensions:                 [InstanceId = i-xxxxxxxx]
+</span><span class='line'>- Period:                     60 seconds
+</span><span class='line'>- Statistic:                  Maximum
+</span><span class='line'>- Unit:                       Count</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Lambdaログ</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>2015-04-17T03:13:14.504Z  ac9ed52f-e4af-1e14-b826-ee9008a99db9   Received event:..
+</span><span class='line'>2015-04-17T03:13:14.504Z  ace9d52f-e4af-1e14-b826-ee9008a99db9    Changing instance health for: i-xxxxxxxx
+</span><span class='line'>2015-04-17T03:13:15.682Z  ace9d25f-e4af-1e14-b826-ee9008a99db9    { ResponseMetadata: { RequestId: 'b0194dfb-e4af-1e14-895f-abdf96b0b593' } }
+</span><span class='line'>2015-04-17T03:13:15.684Z  ace9d25f-e4af-1e14-b826-ee9008a99db9    result: ""</span></code></pre></td></tr></table></div></figure>
+
+
+<p>タイムスタンプによるとSNS発砲されてたからLambda発火まで5秒！</p>
+
+<p>Auto ScalingのHealth Status</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>Fri Apr 17 12:13:10 JST 2015
+</span><span class='line'>as-sg   ap-northeast-1a HEALTHY i-ce02563d      as-lc   InService
+</span><span class='line'>
+</span><span class='line'>Fri Apr 17 12:13:15 JST 2015
+</span><span class='line'>as-sg   ap-northeast-1a UNHEALTHY       i-ce02563d      as-lc   InService
+</span><span class='line'>
+</span><span class='line'>Fri Apr 17 12:13:20 JST 2015
+</span><span class='line'>as-sg   ap-northeast-1a UNHEALTHY       i-ce02563d      as-lc   InService
+</span><span class='line'>
+</span><span class='line'>Fri Apr 17 12:13:26 JST 2015
+</span><span class='line'>as-sg   ap-northeast-1a UNHEALTHY       i-ce02563d      as-lc   InService
+</span><span class='line'>
+</span><span class='line'>Fri Apr 17 12:13:31 JST 2015
+</span><span class='line'>as-sg   ap-northeast-1a UNHEALTHY       i-ce02563d      as-lc   InService
+</span><span class='line'>
+</span><span class='line'>Fri Apr 17 12:13:37 JST 2015
+</span><span class='line'>as-sg   ap-northeast-1a UNHEALTHY       i-ce02563d      as-lc   Terminating
+</span><span class='line'>
+</span><span class='line'>Fri Apr 17 12:13:43 JST 2015
+</span><span class='line'>as-sg   ap-northeast-1a UNHEALTHY       i-ce02563d      as-lc   Terminating
+</span><span class='line'>
+</span><span class='line'>Fri Apr 17 12:13:49 JST 2015
+</span><span class='line'>as-sg   ap-northeast-1a UNHEALTHY       i-ce02563d      as-lc   Terminating
+</span><span class='line'>
+</span><span class='line'>Fri Apr 17 12:13:54 JST 2015
+</span><span class='line'>as-sg   ap-northeast-1a UNHEALTHY       i-ce02563d      as-lc   Terminating
+</span><span class='line'>
+</span><span class='line'>Fri Apr 17 12:13:59 JST 2015
+</span><span class='line'>
+</span><span class='line'>Fri Apr 17 12:14:05 JST 2015
+</span><span class='line'>as-sg   ap-northeast-1a HEALTHY i-525601a1      as-lc   Pending
+</span><span class='line'>
+</span><span class='line'>Fri Apr 17 12:14:10 JST 2015
+</span><span class='line'>as-sg   ap-northeast-1a HEALTHY i-525601a1      as-lc   Pending
+</span><span class='line'>
+</span><span class='line'>Fri Apr 17 12:14:16 JST 2015
+</span><span class='line'>as-sg   ap-northeast-1a HEALTHY i-525601a1      as-lc   Pending
+</span><span class='line'>
+</span><span class='line'>Fri Apr 17 12:14:21 JST 2015
+</span><span class='line'>as-sg   ap-northeast-1a HEALTHY i-525601a1      as-lc   Pending
+</span><span class='line'>
+</span><span class='line'>Fri Apr 17 12:14:26 JST 2015
+</span><span class='line'>as-sg   ap-northeast-1a HEALTHY i-525601a1      as-lc   Pending
+</span><span class='line'>
+</span><span class='line'>Fri Apr 17 12:14:32 JST 2015
+</span><span class='line'>as-sg   ap-northeast-1a HEALTHY i-525601a1      as-lc   Pending
+</span><span class='line'>
+</span><span class='line'>Fri Apr 17 12:14:37 JST 2015
+</span><span class='line'>as-sg   ap-northeast-1a HEALTHY i-525601a1      as-lc   InService</span></code></pre></td></tr></table></div></figure>
+
+
+<p>ちゃんとTerminateされてリプレースされてますね。</p>
+
+<p>AutoScalingの通知</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>Service: AWS Auto Scaling
+</span><span class='line'>Time: 2015-04-17T03:13:59.367Z
+</span><span class='line'>RequestId: efa97137-fa15-4aa4-9c8c-5241961a2d0e
+</span><span class='line'>Event: autoscaling:EC2_INSTANCE_TERMINATE
+</span><span class='line'>AccountId: 123456789012
+</span><span class='line'>AutoScalingGroupName: as-sg
+</span><span class='line'>AutoScalingGroupARN: arn:aws:autoscaling:ap-northeast-1:123456789012:autoScalingGroup:c395c157-3a7e-4d56-287b-5ad9b26eb464:autoScalingGroupName/as-sg
+</span><span class='line'>ActivityId: efa97137-fa15-4aa4-9c8c-5241961a2d0e
+</span><span class='line'>Description: Terminating EC2 instance: i-xxxxxxxx
+</span><span class='line'>Cause: At 2015-04-17T03:13:36Z an instance was taken out of service in response to a user health-check.
+</span><span class='line'>StartTime: 2015-04-17T03:13:36.342Z
+</span><span class='line'>EndTime: 2015-04-17T03:13:59.367Z
+</span><span class='line'>StatusCode: InProgress
+</span><span class='line'>StatusMessage:
+</span><span class='line'>Progress: 50
+</span><span class='line'>EC2InstanceId: i-xxxxxxxx
+</span><span class='line'>Details: {"Availability Zone":"ap-northeast-1a","Subnet ID":"subnet-bbbbbbbb"}</span></code></pre></td></tr></table></div></figure>
+
+
+<p>通常は<code>Cause</code>が<code>an instance was taken out of service in response to a EC2 health check indicating it has been terminated or stopped.</code>となるのが<code>an instance was taken out of service in response to a user health-check.</code>となっているのでAutoScalingのEC2 Health Checkより前にアクションが起こされた事が分かります。</p>
+
+<p>障害発生からInstanceがリプレースされて<code>InService</code>になるAuto Healingのトータル時間は6分ちょいになりました。
+<a href="http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-instance-recover.html">EC2 Auto Recovery</a>を使えば済む場合もありますが、あちらはAWS側の障害に起因する<code>StatusCheckFailed_System</code>のみで<code>StatusCheckFailed_Instance</code>はトリガー対象じゃないのと、特定のインスタンスタイプやVPC等若干制限があります。</p>
+
+<h3>終わりに</h3>
+
+<p>ちなみに今回はinstanceやSNSは東京リージョン（ap-northeast-1）、Lambdaはオレゴンリージョン（us-west-2）というリージョンを跨いだ連携も可能という事が分かりました。まだ東京に来てないけど、既にproduction readyなのでもう普通に使っていけます。</p>
+
+<p>いやー。SNS連携によって夢は広がりますねぇ。</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Michael H. Oshita</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2015-04-17T14:01:00+09:00" pubdate data-updated="true">Apr 17<span>th</span>, 2015</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/aws/'>aws</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://ijin.github.io/blog/2015/04/17/self-healing-with-non-elb-autoscaling4/" data-via="ijin" data-counturl="http://ijin.github.io/blog/2015/04/17/self-healing-with-non-elb-autoscaling4/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2015/03/27/serverfesta-2015-spring/" title="Previous Post: サバフェス！2015に参加してきた">&laquo; サバフェス！2015に参加してきた</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/2015/05/01/notes-on-ec2-auto-recovery/" title="Next Post: EC2 Auto Recoveryの注意点">EC2 Auto Recoveryの注意点 &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2019/06/25/serverless-days-tokyo-fukuoka-2019/">Serverless Days Tokyo/Fukuoka 2019開催の告知</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2019/04/18/serverless-days-hamburg-2019/">Serverless Days Hamburg 2019で発表してきた</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2018/12/27/aws-re-invent-2018/">AWS re:Invent 2018に参加してきた</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2018/06/16/rwanda-transform-africa-summit-2018/">ルワンダのTransform Africa Summit 2018に参加してきた</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2018/02/22/serverlessconf-paris-2018/">ServerlessConf Paris 2018で発表してきた</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2017/12/31/aws-re-invent-2017/">AWS re:Invent 2017に参加してきた</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2017/04/30/serverlessconf-austin-2017/">ServerlessConf Austin 2017に参加してきた</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2017/03/27/ruboty-github-pr-release/">ruboty-github_pr_releaseを作った</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2016/12/31/aws-re-invent-2016/">AWS re:Invent 2016に参加してきた</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2016/11/09/serverlessconf-london-2016/">ServerlessConf London 2016に参加してきた。</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2016/07/29/aws-gameday-japan-2016/">AWS GameDay Japan 2016を開催してきた</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2016/06/28/dockercon-2016/">DockerCon 2016に参加してきた</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2016/04/28/terraforming-api-gatewways/">TerraformでAPI Gatewway</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2016/03/31/using-terraform-dev-versions/">Terraformで特定のブランチを使う</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2016/02/18/ssh-and-git-on-aws-lambda/">LambdaでSSHやGitを使ってみよう</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2016/01/14/monitor-lambda-capacity/">Lambdaの容量を監視しよう</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/12/18/co-working-in-hubud/">バリ島のHubudでコワークしてきた</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/12/10/post-lambda-logs-to-slack/">LambdaのログをSlackで見よう</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/11/04/elastic-beanstalk-easy-ssh/">Elastic Beanstalkへの簡単ssh</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/10/26/aws-re-invent-2015/">AWS re:Invent 2015に参加してきた</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/09/30/hashiconf-2015/">#HashiConf 2015に参加してきた</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/09/27/isucon5-qualifier/">ISUCON5の予選に記念参加してきた</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/08/23/yapc-asia-tokyo-2015/">YAPC::Asia Tokyo 2015に参加してきた</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/08/06/github-to-lambda-to-slack/">GitHubのeventをLambdaで処理してSlackへ通知</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/07/02/dynamodb-export-with-datapipeline/">Data PipelineによるDynamoDBのexport</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+<section>
+  <h1>Latest Tweets</h1>
+  <ul id="tweets">
+    <li class="loading">Status updating...</li>
+  </ul>
+  <script type="text/javascript">
+    $.domReady(function(){
+      getTwitterFeed("ijin", 4, false);
+    });
+  </script>
+  <script src="/javascripts/twitter.js" type="text/javascript"> </script>
+  
+    <a href="http://twitter.com/ijin" class="twitter-follow-button" data-show-count="false">Follow @ijin</a>
+  
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2019 - Michael H. Oshita -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'ijin';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://ijin.github.io/blog/2015/04/17/self-healing-with-non-elb-autoscaling4/';
+        var disqus_url = 'http://ijin.github.io/blog/2015/04/17/self-healing-with-non-elb-autoscaling4/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

@@ -1,0 +1,404 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>ServerlessConf Paris 2018で発表してきた - @ijin</title>
+  <meta name="author" content="Michael H. Oshita">
+
+  
+  <meta name="description" content="既に世界数カ所の都市で行われているServerlessConfがフランスのパリで開催されるという事でCFPに応募したら通ってしまったので発表してきました。75個の応募の中から選んで頂いて光栄ですね。 タイトルはAccelerating DevOps with Serverlessで、 &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://ijin.github.io/blog/2018/02/22/serverlessconf-paris-2018/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/stylesheets/data-table.css" rel="stylesheet" type="text/css" />
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="@ijin" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<!--<script type="text/javascript">
+document.base_document_write = document.write;
+document.write = function(html) {
+    if (html.match(/^<link rel="stylesheet".+gist-assets\.github\.com\/assets\/embed.*/) == null) {
+        document.base_document_write(html);
+    }
+}
+</script>
+
+-->
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-33110241-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">@ijin</a></h1>
+  
+    <h2>[Michael H. Oshita]</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:ijin.github.io" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">ServerlessConf Paris 2018で発表してきた</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2018-02-22T02:29:00+09:00" pubdate data-updated="true">Feb 22<span>nd</span>, 2018</time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>既に世界数カ所の都市で行われている<a href="http://serverlessconf.io">ServerlessConf</a>がフランスのパリで開催されるという事でCFPに応募したら通ってしまったので<a href="http://paris.serverlessconf.io/speakers.html">発表</a>してきました。75個の応募の中から選んで頂いて光栄ですね。</p>
+
+<p>タイトルは<strong>Accelerating DevOps with Serverless</strong>で、DevOpsを手助けする為にServerlessを使って解決したストーリーや仕組み。</p>
+
+<script async="true" class="speakerdeck-embed" data-id="b0bc56c91fa54b1eadde7e7d2b5c169f" src="//speakerdeck.com/assets/embed.js"> </script>
+
+
+<hr />
+
+<p>内容としてはシンプルでgithubのbranchに応じて、テスト環境用のECSクラスタ内にrandom portでALBにtarget group, listenerを割り当ててservice作ってコンテナを配置するだけです。branch delete時にはtaskを停止し、逆順に削除していきます。通知はSNSでslack等へ連携可能。</p>
+
+<p>少し特色があるとすれば、serviceを作成したりtaskを停止するのにかなり時間を要する場合があるので、単一のlambdaではなく<a href="https://aws.amazon.com/step-functions/">step functions</a>で制御した事ですかね。今回、<a href="https://serverless.com">serverless framework</a>の<a href="https://github.com/horike37/serverless-step-functions">step functions plugin</a>のおかげで<a href="https://docs.aws.amazon.com/step-functions/latest/dg/concepts-state-machine-data.html">state machine data</a>をjsonで書かなくて済んだので作者の<a href="https://twitter.com/horike37">horike</a>さんには感謝です。</p>
+
+<p><img src="https://lh3.googleusercontent.com/FdRvgy-OwOnIN0ouQWsNV-JeiBURfOujH49arMUpqkCZZTBnYRcpUTuO1xwc4fvHQqCcgzDpyWIe-yUkMh55_GUGMJaotRqhjdj7QfVi7dBv4UyJOF9A4WCggIlouYDDtCxHujluaw=w600-h346-no"></p>
+
+<p>発表した内容のモノは現在、複数プロジェクトで使えるようになるべく汎用的な作りにして<strong>ECS deity</strong>として公開しています。参考にでもなれば。</p>
+
+<p><a href="https://github.com/ijin/ecs-deity">https://github.com/ijin/ecs-deity</a></p>
+
+<p>尚、GitHub eventによる自動デプロイだと毎回煩わしい場合もある（特定のbranch prefixが対象であるにせよ）ので、slackによるchatops手動デプロイも実装中です。</p>
+
+<p>と、まあやってる事はそんなに難しくないので、海外カンファレンスのCFPがあれば誰でも気軽に応募してみると良いと思います！</p>
+
+<h3>Afterthoughts</h3>
+
+<p>やはり、serverlessだとログ周りが様々なCloudWatch logsのlog streamsに分散（api gw, lambda, step functions）しているので、トレーシングがしんどかったりしたけど今回のConfで何度も取り上げられたトピックが<strong>Obervability</strong>だったので皆同様に苦労しているんだなぁと感じました。ブースにもその解決に取り込もうとしている企業がいくつかいたので、今後に期待ですね。</p>
+
+<p>この辺は一緒に行った<a href="https://twitter.com/yoshidashingo">yoshidashingo</a>さんが<a href="http://yoshidashingo.hatenablog.com/entry/serverlessconfparis18">ブログ</a>でよく考察してくれています。</p>
+
+<p>後、Keynote Speakerの<a href="https://twitter.com/theburningmonk">Yan Cui</a>さんのトークが重厚で実に素晴らしかったのでYouTubeに上がったら是非観てください。内容もテンポもスライドも勉強になります。</p>
+
+<h3>最後に</h3>
+
+<ul>
+<li>海外カンファレンスだと世界中からのエンジニアと話せるので非常に良い刺激になりますよ（可能なら発表を！！）</li>
+<li>2月のパリは寒い！行くなら観光客が少なく暖かい6月をオススメされた</li>
+<li>ご飯はどこ行っても美味しい！</li>
+</ul>
+
+
+<p><img src="https://lh3.googleusercontent.com/vcaTvpcnns1YSEmeRfwgBG3Mtsgfv_dJC0UgksXLE7usl7y4lInNrkJKiRkrsPUwdkkby8zrxs-wIZhSngHL7kQlg3c6tSd1HRG849GzQdnXFlYB1FHtu4_Pb9wVYANNR-NffEBshw=w675-h900-no">
+<img src="https://lh3.googleusercontent.com/HFNnHhADFLYTxW1V5qyUqRtr762bCGbeDsCBXbt6Lov_W1tSBAWrlp96IEWFt2hj6WTFa70R6nIVlGiGUq-RDVSOuRBpH3u0zkEQ5RtrVVYjmAAoJdbC9qQOCCjJg4cH2oZ2GK1TZw=w675-h900-no"></p>
+
+<div class="embed-video-container"><iframe src="http://www.youtube.com/embed/qcKKwuVJQPk "></iframe></div>
+
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Michael H. Oshita</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2018-02-22T02:29:00+09:00" pubdate data-updated="true">Feb 22<span>nd</span>, 2018</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/events/'>events</a>, <a class='category' href='/blog/categories/serverless/'>serverless</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://ijin.github.io/blog/2018/02/22/serverlessconf-paris-2018/" data-via="ijin" data-counturl="http://ijin.github.io/blog/2018/02/22/serverlessconf-paris-2018/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2017/12/31/aws-re-invent-2017/" title="Previous Post: AWS re:Invent 2017に参加してきた">&laquo; AWS re:Invent 2017に参加してきた</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/2018/06/16/rwanda-transform-africa-summit-2018/" title="Next Post: ルワンダのTransform Africa Summit 2018に参加してきた">ルワンダのTransform Africa Summit 2018に参加してきた &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2019/06/25/serverless-days-tokyo-fukuoka-2019/">Serverless Days Tokyo/Fukuoka 2019開催の告知</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2019/04/18/serverless-days-hamburg-2019/">Serverless Days Hamburg 2019で発表してきた</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2018/12/27/aws-re-invent-2018/">AWS re:Invent 2018に参加してきた</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2018/06/16/rwanda-transform-africa-summit-2018/">ルワンダのTransform Africa Summit 2018に参加してきた</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2018/02/22/serverlessconf-paris-2018/">ServerlessConf Paris 2018で発表してきた</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2017/12/31/aws-re-invent-2017/">AWS re:Invent 2017に参加してきた</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2017/04/30/serverlessconf-austin-2017/">ServerlessConf Austin 2017に参加してきた</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2017/03/27/ruboty-github-pr-release/">ruboty-github_pr_releaseを作った</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2016/12/31/aws-re-invent-2016/">AWS re:Invent 2016に参加してきた</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2016/11/09/serverlessconf-london-2016/">ServerlessConf London 2016に参加してきた。</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2016/07/29/aws-gameday-japan-2016/">AWS GameDay Japan 2016を開催してきた</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2016/06/28/dockercon-2016/">DockerCon 2016に参加してきた</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2016/04/28/terraforming-api-gatewways/">TerraformでAPI Gatewway</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2016/03/31/using-terraform-dev-versions/">Terraformで特定のブランチを使う</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2016/02/18/ssh-and-git-on-aws-lambda/">LambdaでSSHやGitを使ってみよう</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2016/01/14/monitor-lambda-capacity/">Lambdaの容量を監視しよう</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/12/18/co-working-in-hubud/">バリ島のHubudでコワークしてきた</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/12/10/post-lambda-logs-to-slack/">LambdaのログをSlackで見よう</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/11/04/elastic-beanstalk-easy-ssh/">Elastic Beanstalkへの簡単ssh</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/10/26/aws-re-invent-2015/">AWS re:Invent 2015に参加してきた</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/09/30/hashiconf-2015/">#HashiConf 2015に参加してきた</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/09/27/isucon5-qualifier/">ISUCON5の予選に記念参加してきた</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/08/23/yapc-asia-tokyo-2015/">YAPC::Asia Tokyo 2015に参加してきた</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/08/06/github-to-lambda-to-slack/">GitHubのeventをLambdaで処理してSlackへ通知</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/07/02/dynamodb-export-with-datapipeline/">Data PipelineによるDynamoDBのexport</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+<section>
+  <h1>Latest Tweets</h1>
+  <ul id="tweets">
+    <li class="loading">Status updating...</li>
+  </ul>
+  <script type="text/javascript">
+    $.domReady(function(){
+      getTwitterFeed("ijin", 4, false);
+    });
+  </script>
+  <script src="/javascripts/twitter.js" type="text/javascript"> </script>
+  
+    <a href="http://twitter.com/ijin" class="twitter-follow-button" data-show-count="false">Follow @ijin</a>
+  
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2019 - Michael H. Oshita -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'ijin';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://ijin.github.io/blog/2018/02/22/serverlessconf-paris-2018/';
+        var disqus_url = 'http://ijin.github.io/blog/2018/02/22/serverlessconf-paris-2018/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

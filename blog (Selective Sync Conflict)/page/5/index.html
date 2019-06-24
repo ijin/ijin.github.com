@@ -1,0 +1,1575 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>@ijin</title>
+  <meta name="author" content="Michael H. Oshita">
+
+  
+  <meta name="description" content="先日（5/17/13）cloudpack night #6 - Re:Generate -に参加してきました。 当日の様子はcloudpack吉田さんの以下のレポートで。
+cloudpack Night #6 - re:Generate - を開催しました &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://ijin.github.io/blog/page/5/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/stylesheets/data-table.css" rel="stylesheet" type="text/css" />
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="@ijin" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<!--<script type="text/javascript">
+document.base_document_write = document.write;
+document.write = function(html) {
+    if (html.match(/^<link rel="stylesheet".+gist-assets\.github\.com\/assets\/embed.*/) == null) {
+        document.base_document_write(html);
+    }
+}
+</script>
+
+-->
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-33110241-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">@ijin</a></h1>
+  
+    <h2>[Michael H. Oshita]</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:ijin.github.io" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div class="blog-index">
+  
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2013/05/21/custom-non-rds-multi-az-mysql-replication/">Non-RDSなオレオレMulti-AZ MySQL Replication</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-05-21T18:03:00+09:00" pubdate data-updated="true">May 21<span>st</span>, 2013</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>先日（5/17/13）<a href="http://www.zusaar.com/event/668006">cloudpack night #6 - Re:Generate -</a>に参加してきました。</p>
+
+<p>当日の様子はcloudpack<a href="https://twitter.com/yoshidashingo">吉田</a>さんの以下のレポートで。<br />
+<a href="http://d.hatena.ne.jp/yoshidashingo/20130518/1368853720">cloudpack Night #6 - re:Generate - を開催しました</a></p>
+
+<p>私はDJを少々とLTで参加させて頂いたのでその内容になります。</p>
+
+<h2>オレオレMulti-AZのススメ</h2>
+
+<p>AWS上でMySQLを使う場合、RDSはてっとり早くて良いんですが、たまにもうちょっと柔軟性が欲しい時があります。
+例えば別のストーレジエンジンやディストリビューションを使ったり（Percona Server, MariaDB, TokuDB, Mronnga等）、RDSでは使えないインスタンスファミリー（hi1, m3, c1系）を使ったり、OSレベルでのチューニングができたり、スレーブのバッファプールを予め温めておいたり。等々。</p>
+
+<p>しかし、RDSにはAvailability Zone (AZ)をまたいでフェールオーバーするMulti-AZ機能があり、AWSで設計するにはAZ障害を考慮した方が推奨されます。</p>
+
+<p>そこで、MHAとVPCを組み合わせて柔軟性をもったMulti-AZ環境を実現します。
+（ちなみに私の場合はhi1.4xlargeでPercona Serverを冗長化をする必要があったから）</p>
+
+<h3>MHA</h3>
+
+<p><a href="https://code.google.com/p/mysql-master-ha/">MHA</a>とはFacebookの<a href="http://yoshinorimatsunobu.blogspot.jp/">松信</a>さんがDeNA時代に作ったMySQLの自動フェールオーバーしてくれうナイスなツールです。Master障害時にbinlog同期とSlaveの昇格を全自動でやってくれます。昇格時にはカタログデータベースに更新をかけて新DB構成のIPの情報を更新するか、Virtual IPを切り替えるかをする必要（この担当部分はmaster_ip_failover_scriptで対応）があるけど、今回は後者的なアプローチになります。</p>
+
+<h3>VPC</h3>
+
+<p>ENIを使えばVirtual IP的な使い方はできるけどAZは超えられないので、source/dest. checkを無効化した上でrouting tableによって擬似Virtual IPを実現する<a href="http://aws.clouddesignpattern.org/index.php/CDP:Routing-Based_HA%E3%83%91%E3%82%BF%E3%83%BC%E3%83%B3">Routing-Based HAパターン</a>（CDP 2.0候補）を使います。ADSJ<a href="https://twitter.com/c9katayama">片山</a>さんの<a href="http://d.hatena.ne.jp/c9katayama/20111225/1324837509">エントリ</a>が発端ですね。</p>
+
+<h2>Demo</h2>
+
+<p>以下、LT時に見せたデモ動画</p>
+
+<div class="embed-video-container"><iframe src="http://www.youtube.com/embed/tovb29K6ddc "></iframe></div>
+
+
+<p>擬似Virtual IPに対してそれぞれread/writeを行いつつMasterのプロセスをkillすると、通信できなくエラーが出続けるが20秒以内に自動フェールオーバーが完了しread/write共に再開します。pingも平均0.5msから2.0msに変わった事からAZが移った事が確認できます。</p>
+
+<p>RDSのMulti-AZの場合、フェールオーバーには3-6分かかるので、かなり短時間で復旧が可能です。
+また、RDSはCNAME切替によるDNSベースに対して、MHA+VPC構成の場合はIP指定することができます。そうするとアプリからのresolveが不要になり、去年起こった内部DNSが引けない障害が起きても問題ありません。</p>
+
+<h2>注意点</h2>
+
+<ul>
+<li>RDSな自動バックアップがない
+
+<ul>
+<li>Xtrabackupとbinlogの定期s3保存で対応</li>
+</ul>
+</li>
+<li>Point in Timeリカバリー
+
+<ul>
+<li>Chef等で自動化しましょう</li>
+</ul>
+</li>
+<li>Read Replicaの作成
+
+<ul>
+<li>Chefで頑張りましょう</li>
+</ul>
+</li>
+<li>学習曲線
+
+<ul>
+<li>勉強しましょう</li>
+</ul>
+</li>
+<li>API backplaneがSPoF
+
+<ul>
+<li>AWSに祈りましょう</li>
+</ul>
+</li>
+</ul>
+
+
+<p>特に一番の懸念点は最後のAPI backplane。AWSの今までの大規模障害状況を見ていると、皆が同時に復旧をしようとしAPIへのリクエストが大量に集中してそこがボトルネックになり、リソースの操作不能に陥るという悲惨な事象が何回かありました。まあ、その場合はRDSでも同じような気はしますが、ここは当時の障害を経験にキャパシティが増加されている事を信じておくしかありませんね。。</p>
+
+<h2>おわりに</h2>
+
+<p>とまあ、こんなLTをしたわけですが、この後に続いたCookpadの<a href="https://twitter.com/sgwr_dts">菅原</a>さんの<a href="http://www.slideshare.net/winebarrel/ec2keepalivedlvsdsr">LT</a>の方が盛り上がって自分のは余興に終わってしまいました。</p>
+
+<p>あ、ついでにその日はcpniteの資料作成やDJの選曲であんまり寝てなかったにもかかわらず、無事AWSソリューションアーキテクト（Associate）の認定試験に受かりました！</p>
+
+<p><img src="https://lh5.googleusercontent.com/-d_HVsb6DgBc/UZs39XB1KGI/AAAAAAAAAuw/ntgPp33hcOI/w294-h120-no/Solutions-Architect-Associate.png"></p>
+
+<h2>LTスライド</h2>
+
+<div class="embed-ss-container"><iframe src="http://www.slideshare.net/slideshow/embed_code/21341276 "></iframe></div>
+
+
+
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2013/04/03/accelerating-cross-region-data-transfer/">リージョン間高速データ転送</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-04-03T09:05:00+09:00" pubdate data-updated="true">Apr 3<span>rd</span>, 2013</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>先日の<a href="http://jaws-ug.jp/jawsdays2013/">JAWS DAYS</a>のセッション<a href="http://www.publickey1.jp/blog/13/obama_for_america.html">「Behind the scenes of Presidential Campaign」</a>でリージョン間のデータ転送を高速化するツールとして<a href="http://tsunami-udp.sourceforge.net">tsunami udp</a>と<a href="http://www.cloudopt.com">cloudopt</a>を使った話が出てたので試してみました。</p>
+
+<p>通常、遠距離のサーバはRTTが大きくなるのでスループットが下がり、巨大なデータ転送には苦労しますが、なんと27TBを9時間で転送したとのこと！実際はマシンを並列にして同時転送したらしいので1台での実験です。</p>
+
+<h3>前提</h3>
+
+<ul>
+<li>東京(server1) -> アメリカ西海岸(server2)</li>
+<li>RTT: 120msぐらい</li>
+<li>EC2 instance type: m1.large</li>
+<li>OS: Ubuntu 12.04</li>
+</ul>
+
+
+<h3>ベーステスト</h3>
+
+<p>10Gファイルの作成</p>
+
+<pre><code>server1$ mkdir _tmp; cd _tmp
+server1$ dd if=/dev/zero of=10G count=1 bs=1 seek=10G
+</code></pre>
+
+<p>転送</p>
+
+<pre><code>server1$ scp -rp 10G server2:
+10G     100%   10GB  11.1MB/s   15:22
+</code></pre>
+
+<p>だいたい、90Mbpsぐらい。</p>
+
+<h3>Tsunami UDP</h3>
+
+<p>インストールは両サーバで</p>
+
+<pre><code>sudo apt-get install make gcc autoconf
+wget http://downloads.sourceforge.net/project/tsunami-udp/tsunami-udp/tsunami-v1.1-cvsbuild42/tsunami-v1.1-cvsbuild42.tar.gz
+tar xvfz tsunami-v1.1-cvsbuild42.tar.gz
+cd tsunami-udp-v11-b42
+make
+sudo make install
+</code></pre>
+
+<p>tsunami udpはfetch型の作りなので、送信側のサーバ（server1）で対象ファイルのあるディレクトリに移動してサービス起動</p>
+
+<pre><code>server1$ cd _tmp
+server1$ tsunamid *
+</code></pre>
+
+<p>で、クライアント(server2)からファイルをfetch</p>
+
+<pre><code>server2$ tsunami connect ec2-xx-x-xx-x-x get 10G quit
+</code></pre>
+
+<p>本当はftp-likeは対話型クライアントだけど、ワンライナーでも可能。  <br/>
+転送が完了するとクライアント側で情報が出力されます。</p>
+
+<pre><code>Transfer complete. Flushing to disk and signaling server to stop...
+!!!!
+PC performance figure : 224947 packets dropped (if high this indicates receiving PC overload)
+Transfer duration     : 419.32 seconds
+Total packet data     : 183339.18 Mbit
+Goodput data          : 181958.17 Mbit
+File data             : 81920.00 Mbit
+Throughput            : 437.23 Mbps
+Goodput w/ restarts   : 433.93 Mbps
+Final file rate       : 195.36 Mbps
+Transfer mode         : lossless
+</code></pre>
+
+<p>おお、確かに速い！スループットもセッションでも言ってた476Mbpsに近いし。</p>
+
+<p>サーバ側では</p>
+
+<pre><code>Server 1 transferred 10737418241 bytes in 419.33 seconds (195.4 Mbps)
+</code></pre>
+
+<p>ファイル自身の実際の転送レートはFinal file rateである<strong>195.4Mbps</strong>。
+多分、パラメータチューニングやより速いディスクを使うとスループットはさらに向上すると予想。</p>
+
+<h3>cloudopt</h3>
+
+<p>次は圧縮、TCP最適化、data deduplication等、様々な技術を用いてWANを高速化する<a href="http://www.cloudopt.com">cloudopt</a>の実験。こちらは有料で、ソフトウェアをインストールしてライセンスを購入（15日間のお試しあり）して使う方法とAmazon Marketplaceでセットアップ済みの課金型AMIを起動する方法がとれます。今回はてっとり早く後者で。</p>
+
+<p>AMIはMarketplaceでCloudoptを検索し、各リージョンで1台づつ起動。</p>
+
+<p><img src="https://lh5.googleusercontent.com/-7PWSb_8ClIo/UVuL_bzBeAI/AAAAAAAAAtc/8Lw_bDnaPVE/s665/cloudopt_marketplace_+2013-03-30+at+2.08.07+PM.png"></p>
+
+<p>Ubuntuベースなのが良いですね。</p>
+
+<p>まずscpから呼べるcloudcopyを使っての転送</p>
+
+<pre><code>server1$ scp -rp -S cloudcopy 10G server2:
+10G                 100%   10GB  41.5MB/s   04:07     
+CloudCopy transferred 17.22 MB, saving 99.8% of bandwidth by sending 9.983 fewer GB 
+</code></pre>
+
+<p>お、速い。しかしよく見てみると17.22MBしか転送されてません。どうやらファイル自体が全てゼロ埋めなので圧縮とdeduplicationが最大限効いているみたい。</p>
+
+<p>では、今度は実際のDBのバックアップで転送実験（容量14GB）</p>
+
+<pre><code>server1$ scp -rp -S cloudcopy dbbackup.tar server2:
+dbbackup.tar                100%   14GB  11.2MB/s   20:42   
+CloudCopy transferred 6.041 GB, saving 55.5% of bandwidth by sending 7.528 fewer GB
+</code></pre>
+
+<p>スループットはほぼ一緒だけど、転送容量が削減できてます。</p>
+
+<p>一度転送したファイルはbyte cacheされるので、次に転送する時は差分だけ送るので高速化されます。</p>
+
+<pre><code>server2$ rm dbbackup.tar 
+
+server1$ tar rvf dbbackup.tar file
+server1$ scp -rp -S cloudcopy dbbackup.tar server2:
+dbbackup.tar                100%   14GB  20.0MB/s   11:35  
+CloudCopy transferred 59.57 MB, saving 99.6% of bandwidth by sending 13.511 fewer GB
+</code></pre>
+
+<h3>リージョン間レプリケーション</h3>
+
+<p>次はMySQLのレプリケーション実験。</p>
+
+<p>各インスタンスでのピア設定</p>
+
+<pre><code>server1$ sudo cloudconfig peer_add server2 server2_local_ip(10.x.x.x)
+server2$ sudo cloudconfig peer_add server1 server1_local_ip(10.x.x.x)
+</code></pre>
+
+<p>これでcloudoptを使ったサーバ間のトンネルが確立されます。MySQLのレプリケーションはprivate ipでの設定が必要。
+一通りレプリケーションが出来き、スレーブIOを停止した状態でマスターにしばらく書き込んだのちに再開すると、binlogが転送されるのでcloudstatsコマンドで統計が見れます。</p>
+
+<pre><code>Component - cloudoptimizer
+------------------------------------------------------------
+           Number of connections:                    1
+              Original data size:            111.96 MB
+           Transferred data size:             52.44 MB
+
+            Bandwidth Saving:             59.51 MB (53.2%)
+</code></pre>
+
+<p><strong>53.2%</strong>の転送容量削減！</p>
+
+<h3>結論</h3>
+
+<p>以上を組み合わせれば、新たなCDP候補である「<strong>リージョン間レプリケーションパターン (Cross-Region Replication Pattern)</strong>」が実現できます。</p>
+
+<ul>
+<li>巨大データをリージョン間で転送するにはtsunami udpが有効そう</li>
+<li>リージョン間での差分バックアップやレプリケーション向けにはcloudoptで高速化</li>
+<li>普通のHTTP通信とかも使えるかも</li>
+<li>s3へのアップロード高速化も対応しているのでいずれ試してみたい</li>
+</ul>
+
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2013/02/22/mysql-benchmarks-on-aws-ssd-vs-fusion-io/">AWS SSD (hi1.4xlarge) vs Fusion-IOでのMySQLベンチマーク</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-02-22T17:32:00+09:00" pubdate data-updated="true">Feb 22<span>nd</span>, 2013</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>（※ <a href="#add">追記</a>しました - 5/19/13）</p>
+
+<p>巷ではMySQL 5.6 GAが出て騒がしいですが、ちょっと前に5.5系でAWSのSSDインスタンス（hi1.4xlarge）に載せ替える案件があったので、その時に取ったベンチマークを公表します。以前Fusion-IO (ioDrive Duo)でも同じようにやったので、比較になれば。</p>
+
+<h2>経緯</h2>
+
+<ul>
+<li>あるウェブサービスのDBサイズが巨大でm2.4xlargeでも辛くなってきている</li>
+<li>アクセスパターンによりパーティショニングが効かない</li>
+<li>シャーディングをするにはアプリ改修が大変</li>
+<li>数週間後に急激なアクセスが予想され、時間的余裕がない！</li>
+<li>データサイズの急激な増加によりbuffer poolから溢れ、ディスクアクセスのさらなる発生が懸念</li>
+</ul>
+
+
+<p>というわけで、時間がないのでSSDへの移行を検討し、ベンチマークを取りました。</p>
+
+<h2>ベンチマーク</h2>
+
+<p>buffer poolが徐々に足りなくなった場合のディスクアクセスの発生をシミュレート</p>
+
+<ul>
+<li>sysbenchのoltpモード</li>
+<li>データサイズは12G（5000万件）</li>
+<li>readonly</li>
+<li>uniform（フルスキャン）</li>
+</ul>
+
+
+<p>主要my.cnfパラメータ</p>
+
+<pre><code> sync_binlog = 0
+ innodb_buffer_pool_size = XXG
+ innodb_flush_method = O_DIRECT
+ innodb_flush_log_at_trx_commit = 1
+ innodb_file_per_table
+ innodb_io_capacity = 2000
+</code></pre>
+
+<p>コマンド</p>
+
+<pre><code> time sysbench --test=oltp --oltp-table-size=50000000 --db-driver=mysql --mysql-user=root prepare                                                                                                         
+ time sysbench --test=oltp --oltp-table-size=50000000 --db-driver=mysql --mysql-user=root --num-threads=16 --max-requests=0 --max-time=180 --init-rng=on --oltp-read-only=on --oltp-dist-type=uniform 2&gt;&amp;1 run                                                                                                         
+</code></pre>
+
+<h2>結果</h2>
+
+<p>トランザクション推移</p>
+
+<p><img src="https://docs.google.com/spreadsheet/oimg?key=0Aliw9SoXFJNMdFhhcHJkcDA5MGlackNHTXlPcWt0VWc&oid=2&zx=ii4lryrf8pz8"></p>
+
+<p>レスポンスタイム推移</p>
+
+<p><img src="https://docs.google.com/spreadsheet/oimg?key=0Aliw9SoXFJNMdFhhcHJkcDA5MGlackNHTXlPcWt0VWc&oid=3&zx=c2drap7b5561"></p>
+
+<p>Fusion-IOと比べて半分ぐらい。ioDrvie Duoの公称IOPSが250,000+ IOPSでhi1.4xlargeが120,000 IOPSなので、まあ合致しますね。</p>
+
+<p>まだ整理されてないベンチマーク結果があるので、後ほど追記しようと思います。</p>
+
+<h2>追記 <a name="add">&nbsp;</a></h2>
+
+<p>先日（5/17/13）の<a href="http://www.zusaar.com/event/668006">cloudpack night #6 - Re:Generate -</a>でADSJの荒木さんの発表でMySQLのパフォーマンスの話があったので<a href="https://code.launchpad.net/~percona-dev/perconatools/tpcc-mysql">tpcc-mysql</a>でベンチマークを取った資料を思い出し追記しました。</p>
+
+<ul>
+<li>500 warehouses (50GBぐらい)</li>
+<li>24GB Buffer pool</li>
+<li>16スレッド</li>
+<li>1時間実行</li>
+</ul>
+
+
+<p>コマンド（ロードはかなり時間がかかるので注意）</p>
+
+<pre><code> tpcc_load localhost tpcc root "" 500
+ tpcc_start -d tpcc -u root -p "" -w 500 -c 16 -r 300 -l 3600
+</code></pre>
+
+<p><img src="https://docs.google.com/spreadsheet/oimg?key=0Aliw9SoXFJNMdFhhcHJkcDA5MGlackNHTXlPcWt0VWc&oid=4&zx=y6kwyezb1qth"></p>
+
+<p>hi1.4xlargeの方が安定するまで少し時間がかかってます。<br />
+以下、安定化しだした900sあたりからの数値です。</p>
+
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Fusion-IO</th>
+<th>hi1.4xlarge</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>total</td>
+<td>2288758</td>
+<td>1444417</td>
+</tr>
+<tr>
+<td>avg</td>
+<td>8445.6</td>
+<td>5330.0</td>
+</tr>
+<tr>
+<td>stddev</td>
+<td>245.7</td>
+<td>132.8</td>
+</tr>
+</tbody>
+</table>
+
+
+<p>Fusion-IOに比べて6割ってところでしょうか。
+今回はSSDのephemeral disk1本で試したので、RAID0にするともうちょっと違ってくると思います。</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2013/02/08/self-healing-with-non-elb-autoscaling/">非ELBなAutoscalingによる自動復旧</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-02-08T09:29:00+09:00" pubdate data-updated="true">Feb 8<span>th</span>, 2013</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>バッチ処理等、サーバの冗長化が難しく仕方なく1台で動かさざるを得ない場合があります。でも可用性は確保したい。また、Pacemakerやkeepalived等できなくはないが、お金もあんまりかけられない場合もあります。
+そんな時にAWS上でよく使うのがAutoscalingによる1台構成です。最低台数・最大台数共に「1」に設定しておけばEC2インスタンスが壊れても自動的に新しいのにリプレースされて復旧されます。</p>
+
+<p>しかし、Autoscalingのhealth-check-typeを「EC2」にした場合、インスタンスの起動状態（running, stopped）しか見てくれないので、今までこの構成を実現するのにELBによる死活監視が必要でした。インスタンスがHTTPサーバじゃない場合、ちょっとムダです。</p>
+
+<p>ところが、ちょっと前にAutoscalingがインスタンスの健康状態をチェックするEC2 status checkに<a href="http://aws.amazon.com/about-aws/whats-new/2012/12/14/auto-scaling-now-uses-amazon-ec2-status-checks/">対応</a>し、ELBが不要になったはずなので試してみました。</p>
+
+<p>今回は各種AWSサービスに対応した統合されたPython版の<a href="http://aws.amazon.com/cli/">AWS CLI</a>ツールを使います。</p>
+
+<h3>セットアップ</h3>
+
+<p>まずは、ツールのインストール</p>
+
+<pre><code>sudo apt-get install python-pip
+sudo pip install awscli
+complete -C aws_completer aws
+</code></pre>
+
+<h3>Autoscaling設定</h3>
+
+<p>Launch Configの設定</p>
+
+<pre><code>aws autoscaling create-launch-configuration --image-id ami-4a12aa4b \
+--launch-configuration-name test-lc --instance-type t1.micro --key-name ijin-tokyo \
+--security-groups test --iam-instance-profile test_iam
+
+{
+    "ResponseMetadata": {
+        "RequestId": "c0e66974-7103-11e2-9780-a53199bac60e"
+    }
+}
+</code></pre>
+
+<p>Scaling Groupの設定</p>
+
+<pre><code>aws autoscaling create-auto-scaling-group --auto-scaling-group-name test-sg \
+--launch-configuration-name test-lc --min-size 1 --max-size 1 \
+--health-check-grace-period 180 --tags '{"key":"Name", "value":"as-test"}' \
+'{"key":"Use Case", "value":"test"}' --availability-zones ap-northeast-1a --health-check-type "EC2"
+
+{
+    "ResponseMetadata": {
+        "RequestId": "e3808ef3-7103-11e2-9780-a53199bac60e"
+    }
+}
+</code></pre>
+
+<p>通知</p>
+
+<pre><code>aws autoscaling put-notification-configuration --auto-scaling-group-name test-sg \
+--topic-arn arn:aws:sns:ap-northeast-1:521026608000:test \
+--notification-types autoscaling:EC2_INSTANCE_LAUNCH autoscaling:EC2_INSTANCE_TERMINATE \
+autoscaling:EC2_INSTANCE_LAUNCH_ERROR autoscaling:EC2_INSTANCE_TERMINATE_ERROR
+
+{
+    "ResponseMetadata": {
+        "RequestId": "f68359be-7103-11e2-9a1a-5f77b12b596e"
+    }
+}
+</code></pre>
+
+<p>レスポンスがjsonなのが良いですね。
+また、<a href="http://aws.amazon.com/developertools/2535">Auto Scaling Command Line Tool</a>と違って、tagでスペースが使えるようになったのが素晴らしい！</p>
+
+<p>以上の設定でAutoscalingによってインスタンスが1台立ち上がります。</p>
+
+<h3>自動復旧</h3>
+
+<p>最後にインスタンス不調（status check failure）をシミュレートする為にインスタンス内からネットワークを落とします。</p>
+
+<pre><code>ubuntu@ip-10-128-25-25:~$ sudo ifdown eth0
+</code></pre>
+
+<p>これでstatus checkがfailし、Autoscalingが自動的に新しいインスタンスと取り替えてくれるはず！</p>
+
+<p><img src="https://lh6.googleusercontent.com/-9FpM6ywjg84/URN6q29FD-I/AAAAAAAAAsw/paP8HBnisPE/s161/aws_status_check_2013-02-07+18.06.20.png"></p>
+
+<p><img src="https://lh5.googleusercontent.com/-5avxLvp5RH8/URN6n-ihwiI/AAAAAAAAAso/zOHxli4vM8o/s702/aws_instance_check_2013-02-07+18.09.19.png"></p>
+
+<p>と、期待して待っていたらなかなかアラートメールが来ません。。</p>
+
+<p>設定間違ったかなーっていろいろ見直していたら20分経った頃にやっと到着。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>Service: AWS Auto Scaling
+</span><span class='line'>Time: 2013-02-07T09:17:42.304Z
+</span><span class='line'>RequestId: f395660b-4847-4415-ad33-f8cc5091bdb3
+</span><span class='line'>Event: autoscaling:EC2_INSTANCE_TERMINATE
+</span><span class='line'>AccountId: 521026608000
+</span><span class='line'>AutoScalingGroupName: test-sg
+</span><span class='line'>AutoScalingGroupARN: arn:aws:autoscaling:ap-northeast-1:521026608000:autoScalingGroup:a036877b-dab7-4e5d-a6e1-1d3424b20d14:autoScalingGroupName/test-sg
+</span><span class='line'>ActivityId: f395660b-4837-4415-ad33-f8cc5071bdb3
+</span><span class='line'>Description: Terminating EC2 instance: i-15fadd17
+</span><span class='line'>Cause: At 2013-02-07T09:16:57Z an instance was taken out of service in response to a system health-check.
+</span><span class='line'>StartTime: 2013-02-07T09:16:57.389Z
+</span><span class='line'>EndTime: 2013-02-07T09:17:42.304Z
+</span><span class='line'>StatusCode: InProgress
+</span><span class='line'>StatusMessage:
+</span><span class='line'>Progress: 50
+</span><span class='line'>EC2InstanceId: i-15fadd17
+</span><span class='line'>Details: {}</span></code></pre></td></tr></table></div></figure>
+
+
+<p>うーん。動く事は動いたけど、ちょっと時間がかかるなぁ。</p>
+
+<p>この後何回か試してみたけど、Autoscaling発動までどれも20分ぐらいかかりました。</p>
+
+<h3>結論</h3>
+
+<p>20分程サーバダウンが許容できるようなゆるめの条件に限定した場合には非ELBでも使えるかな。まあ、それでも適用する場面は多々あるとは思いますが。（早める方法あるのかなー。）</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2012/12/03/cdp/">Auto Scalingの設定とデプロイ方法</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-12-03T01:34:00+09:00" pubdate data-updated="true">Dec 3<span>rd</span>, 2012</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p><a href="http://www.zusaar.com/event/451061">CDP Advent Calendar 2012</a>に登録しました。ここ1年ちょいで使い慣れてきたパターンがあり、作った当時はクラウドデザインパターンはなかったのですが、<a href="http://aws.clouddesignpattern.org/index.php/CDP:Clone_Server%E3%83%91%E3%82%BF%E3%83%BC%E3%83%B3">Clone Server</a>と<a href="http://aws.clouddesignpattern.org/index.php/CDP:Scale_Out%E3%83%91%E3%82%BF%E3%83%BC%E3%83%B3">Scale Out</a>パターンの組合せに当てはまると思うので紹介します。ちなみにアプリはRails。</p>
+
+<p>常にデプロイして更新し続けるシステムを手動、あるいは自動スケールアウトする時に便利な手法だったりします。</p>
+
+<p>図にするとこんな感じですかね。</p>
+
+<p><img src="https://lh4.googleusercontent.com/-eDSfSiz0XhU/ULyOlKj_JKI/AAAAAAAAArw/QzSfVJeeUfw/w727-h490-p-k/CDP_Clone%252BScale_Out.png"></p>
+
+<h2>Auto Scaling設定</h2>
+
+<h3>Launch Config</h3>
+
+<p>まず、ベースとなるAMIの起動インスタンスサイズやセキュリティーグループを定義したLaunch Configを設定。</p>
+
+<pre><code>as-create-launch-config cdp-lc --image-id ami-22a51d23 --instance-type m1.small \
+--group cdp_web, cdp_admin
+</code></pre>
+
+<h3>Scaling Group</h3>
+
+<p>次に、Scaling Groupで適用するAvailability Zone、インスタンス数の最小・最大閾値設定、紐尽くELB、死活監視方法・開始待ち時間、タグ等を定義。（ec2addtagではスペース入りのキーを設定できるのにas-create-auto-scaling-groupではできないので注意。早く直して。。）</p>
+
+<pre><code>as-create-auto-scaling-group cdp-sg --launch-configuration cdp-lc \
+--availability-zones ap-northeast-1a  --min-size 1 --max-size 9 --load-balancers cdp \
+--health-check-type ELB --grace-period 300 --tag "k=Name, v=web.cdp" --tag "k=Use_Case, v=Test"
+</code></pre>
+
+<h3>Scaling Out Policy</h3>
+
+<p>Scaling Outのポリシー設定。以下の例ではインスタンス1台を追加し、次のスケールアクションまでは5分間待機。ポリシーのARN (Amazon Resource Name)が出力されるので控えます。</p>
+
+<pre><code>as-put-scaling-policy CDPOut --auto-scaling-group cdp-sg --adjustment 1 --type ChangeInCapacity \
+--cooldown 300
+
+&gt; arn:aws:autoscaling:ap-northeast-1:494850320039:scalingPolicy:d0d4dcf1-fb44-428a-a19c-38946633acf5:autoScalingGroupName/cdp-sg:policyName/CDPOut
+</code></pre>
+
+<h3>Cloudwatchトリガー（Scaling Out）</h3>
+
+<p>Cloudwatchで閾値を超えたらスケールアウトするように設定。以下の例では対象Scaling Group配下のインスタンス達のCPUが1分間で平均75%以上で推移した場合、先ほど設定したScaling OutポリシーがARN経由で実行されます。また、閾値を超過あるいは下回った場合にSNS経由でアラートメールを飛ばします。</p>
+
+<pre><code>mon-put-metric-alarm  CDPHighCPUAlarm --comparison-operator GreaterThanThreshold \
+--evaluation-periods 1 --metric-name CPUUtilization --namespace "AWS/EC2" --period 60 \
+--statistic Average --threshold 75 --dimensions "AutoScalingGroupName=cdp-sg" \
+--ok-actions arn:aws:sns:ap-northeast-1:494850320039:cdp-alert --alarm-actions \
+arn:aws:sns:ap-northeast-1:494850320039:cdp-alert, arn:aws:autoscaling:ap-northeast-1:494850320039:scalingPolicy:d0d4dcf1-fb44-428a-a19c-38946633acf5:autoScalingGroupName/cdp-sg:policyName/CDPOut
+</code></pre>
+
+<h3>Scaling Down Policy</h3>
+
+<p>同じくScaling Downのポリシー設定。インスタンスが起動すると最低1時間は課金されるので頻繁に伸縮するともったいないのでスケールダウンアクションはゆっくりやるのがポイントです。</p>
+
+<pre><code>as-put-scaling-policy CDPDown --auto-scaling-group cdp-sg --adjustment=-1 \
+--type ChangeInCapacity --cooldown 1500
+
+&gt; arn:aws:autoscaling:ap-northeast-1:494850320039:scalingPolicy:de53fbd5-130c-46a8-bf47-25e29f7d358e:autoScalingGroupName/cdp-sg:policyName/CDPDown
+</code></pre>
+
+<h3>Cloudwatchトリガー（Scaling Down）</h3>
+
+<p>スケールダウンのトリガーは平均CPUが35%を25分間下回った場合に実行されます。この閾値周辺のアラートメールはいらないので設定してません。</p>
+
+<pre><code>mon-put-metric-alarm CDPLowCPUAlarm --comparison-operator LessThanThreshold \
+--evaluation-periods 1 --metric-name CPUUtilization --namespace "AWS/EC2" --period 1500 \
+--statistic Average --threshold 35 --dimensions "AutoScalingGroupName=cdp-sg" --alarm-actions \
+arn:aws:autoscaling:ap-northeast-1:494850320039:scalingPolicy:de53fbd5-130c-46a8-bf47-25e29f7d358e:autoScalingGroupName/cdp-sg:policyName/CDPDown
+</code></pre>
+
+<h3>通知</h3>
+
+<p>最後にスケールアクション時に通知が飛ぶように設定。例えば、あるインスタンスが不調により反応がなく、ポリシーによってリプレースされる場合に飛んだりします。</p>
+
+<pre><code>as-put-notification-configuration cdp-sg -t arn:aws:sns:ap-northeast-1:494850320039:cdp-alert \
+-n autoscaling:EC2_INSTANCE_LAUNCH, autoscaling:EC2_INSTANCE_TERMINATE, \
+autoscaling:EC2_INSTANCE_LAUNCH_ERROR, autoscaling:EC2_INSTANCE_TERMINATE_ERROR
+</code></pre>
+
+<h2>APP側の設定</h2>
+
+<h3>ソースコード同期</h3>
+
+<p>同期には起動時にupstart経由でrsyncを叩いて管理サーバから最新ソースを取ってきてサービスを再起動します。転送時の圧縮モードはarcfourが一番スループットが出たのでそれに。</p>
+
+<div><script src='https://gist.github.com/4191986.js?file='></script>
+<noscript><pre><code># sync source code
+description &quot;Update source code&quot;
+
+start on filesystem
+stop on shutdown
+
+task
+console output
+
+script
+time sudo -u deploy rsync -av --delete -e &#39;ssh -c arcfour -i /home/deploy/.ssh/id_dsa -o StrictHostKeyChecking=no&#39; deploy@admin.cdp:/usr/local/apps/project/ /usr/local/rails_apps/project &gt;&gt; /mnt/update.log 2&gt;&amp;1
+/etc/init.d/unicorn upgrade &gt;&gt; /mnt/update.log 2&gt;&amp;1
+/etc/init.d/nginx restart &gt;&gt; /mnt/update.log 2&gt;&amp;1
+end script
+</code></pre></noscript></div>
+
+
+<h2>Capistrano</h2>
+
+<p>デプロイはマスターサーバ（管理兼）上でCapistranoを実行し、ELB配下の生きているインスタンスに対して更新をかけます。deploy.rbに追加する記述は以下の通り。昔はec2 api toolsを直接呼んでパースしたりしてコードが長かったのですが、今は<a href="http://aws.amazon.com/sdkforruby/">AWS SDK for Ruby</a>があり、<a href="http://aws.amazon.com/iam/">IAM role</a>でinstance profileを設定すればわずか数行でできてしまいます！</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="nb">require</span> <span class="s1">&#39;aws-sdk&#39;</span>
+</span><span class='line'><span class="no">AWS</span><span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="ss">:ec2_endpoint</span> <span class="o">=&gt;</span> <span class="s1">&#39;ec2.ap-northeast-1.amazonaws.com&#39;</span><span class="p">,</span> <span class="ss">:elb_endpoint</span> <span class="o">=&gt;</span> <span class="s1">&#39;elasticloadbalancing.ap-northeast-1.amazonaws.com&#39;</span><span class="p">)</span>
+</span><span class='line'><span class="n">instances</span> <span class="o">=</span> <span class="no">AWS</span><span class="o">::</span><span class="no">ELB</span><span class="o">.</span><span class="n">new</span><span class="o">.</span><span class="n">load_balancers</span><span class="o">[</span><span class="s1">&#39;cdp&#39;</span><span class="o">].</span><span class="n">instances</span><span class="o">.</span><span class="n">select</span><span class="p">{</span><span class="o">|</span><span class="n">i</span><span class="o">|</span> <span class="n">i</span><span class="o">.</span><span class="n">exists?</span> <span class="o">&amp;&amp;</span> <span class="n">i</span><span class="o">.</span><span class="n">elb_health</span><span class="o">[</span><span class="ss">:state</span><span class="o">]</span> <span class="o">==</span> <span class="s2">&quot;InService&quot;</span><span class="p">}</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="o">&amp;</span><span class="ss">:public_dns_name</span><span class="p">)</span>
+</span><span class='line'><span class="n">servers</span> <span class="o">=</span> <span class="n">instances</span> <span class="o">&lt;&lt;</span> <span class="s2">&quot;localhost&quot;</span>
+</span><span class='line'><span class="n">role</span> <span class="ss">:app</span> <span class="k">do</span> <span class="n">servers</span> <span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>注意点</h2>
+
+<ul>
+<li>同期するファイル数が多すぎる（数十万個）と、チェックサム比較で時間がかかってしまい同期が終了する前にAuto Scalingの死活監視によってインスタンスがterminateされ、またlaunchされterminateされるという恐怖のスケールループ地獄に陥る。。。（これ、制限できないのかな）</li>
+<li>あらかじめトラフィック増の時間帯が分かっていたら<a href="http://docs.amazonwebservices.com/AutoScaling/latest/DeveloperGuide/scaling_plan.html#schedule_time">Scheduled Action</a>で多めに設定しておいて自動スケールダウンさせた方が吉。</li>
+<li>マスタサーバがSPOFとなりうるので冗長化する、もしくはrsyncよりs3経由にした方が良い。</li>
+<li>急激なトラフィック増ではELB自体のスケールが追いつかない場合も。</li>
+</ul>
+
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2012/11/05/isucon2/">ISUCON2に参加してきた</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-11-05T21:58:00+09:00" pubdate data-updated="true">Nov 5<span>th</span>, 2012</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>開催2年目となる<a href="http://blog.livedoor.jp/techblog/archives/67700199.html">ISUCON (Iikanjini Speed Up CONTEST)</a>に参加してきました。</p>
+
+<p>結果は3位。</p>
+
+<h3>事前準備</h3>
+
+<p><a href="https://twitter.com/cads">@cads</a>と<a href="https://twitter.com/fruwe">@fruwe</a>に声をかけ、「Mr. Frank &amp; Co.」という米西独チームを編成。
+去年のお題を見ると、簡単なブログサイト。実装はphp, python, perl, ruby, node.jsのいずれか。</p>
+
+<ul>
+<li>キャッシュ機構入れるんだったら、慣れてるrubyで実装できるようにrailsでスケルトンプロジェクトをgithubに作っておいてみんなで共有。</li>
+<li>VarnishやResque/Sidekiq, Redisの復習をしてコード追加</li>
+<li>試しに他のrubyバージョンのインストール</li>
+<li>後はテスト用のec2インスタンスの用意。</li>
+</ul>
+
+
+<h3>お題発表</h3>
+
+<p>「NHN48」と「はだいろクローバーZ」のチケット販売システムw。
+お、似たようなシステム前作った事あるからいけるかな？セッション対応でもESI使えるからアドバンテージがあるかもと思ってみる。</p>
+
+<h3>前半戦</h3>
+
+<p>まずは、いつものようにバックアップして戻れるように、gitプロジェクトにも追加。</p>
+
+<p>チームメイト2人にはソースコードを解析をしてもらいつつ、自分は現在の環境の把握とベンチマークを動かすところに集中。どうやら公開されている去年の構成と似た感じでsupervisorによって指定言語のwebアプリが動いている模様。</p>
+
+<p>ひとまず指標となるベースが必要なので、デフォルトで動いているperl版で計ったら大体こんな感じでした。（Scoreが低い方が良い）</p>
+
+<pre><code>Score:533093
+Tickets:922
+</code></pre>
+
+<p>webとdbの負荷が両方高い事を確認。</p>
+
+<p>SQLを見たらCOUNTしてるので、slot分割したcounterテーブルかredisを使えば速くなるよね、と指摘。フロントにキャッシュ入れたいので普段使っているVarnishサポートのlacquer gemがあるので、二人はRailsでの再実装を開始。</p>
+
+<p>ちなみにアクセス分布はこんな感じでした。</p>
+
+<div><script src='https://gist.github.com/4017160.js?file='></script>
+<noscript><pre><code>$grep &quot;POST&quot; access_log  | wc -l
+960
+$ grep &quot;GET /js/&quot; access_log  | wc -l
+1663
+$ grep &quot;GET /css/&quot; access_log  | wc -l
+1113
+$ grep &quot;GET /images/&quot; access_log  | wc -l
+539
+$ grep &quot;GET /ticket/&quot; access_log  | wc -l
+1561
+$ grep &quot;GET /artist/&quot; access_log  | wc -l
+1534
+$ grep &quot;GET / &quot; access_log  | wc -l
+1624</code></pre></noscript></div>
+
+
+<p>perl版のスコアは分かったので、sinatraフレームワークを使ったruby版に変えてベンチマークを取ってみると、</p>
+
+<pre><code>Score:10755528
+Tickets:457
+</code></pre>
+
+<p>性能は約半分。遅いのは分かっていたけど、ジョブワーカーとキャッシュを使えば、対応コードの入ったRailsでもなんとかなるという思いで特に意に介さず。</p>
+
+<p>ただ、unicornが50プロセスもあったので、さすがにこれは多いのでベンチをしつつ、いろいろ調整。
+結局スコアが一番高かった10プロセスに落ち着く。ついでにrubyのGCを切ったりしたけど、目立った効果はなし。
+まだ再実装中で時間もあり、そういえば速いという<a href="http://rubini.us/">rubinius</a>にしたらどうなんだろうと思い、<a href="http://puma.io/">puma</a>も入れてみたけどmysql2 gemが動かず断念。</p>
+
+<p>DBのmy.cnfも見たけど、データ量の割には十分なパラメータだったので、commit毎のflushを変えたぐらい。</p>
+
+<pre><code>innodb_flush_log_at_trx_commit = 0
+</code></pre>
+
+<p>また、いつでも使えるようにと、VarnishとRedisもインストールしておく。</p>
+
+<p>次にデプロイ用のテストができるようにテスト用サーバに環境を用意しつつ、capistrano対応。</p>
+
+<h3>後半戦</h3>
+
+<p>再実装はブラウザからの見た目上は前半でほぼ出来上がっていて、後はベンチを通るかを確認して最適化を始めるというシナリオでした。
+ところが、全然通らずここからハマることに。。</p>
+
+<div><script src='https://gist.github.com/4017170.js?file='></script>
+<noscript><pre><code>{&quot;No one tickets are rendered in /ticket/x&quot;:25}
+{&quot;No one tickets are rendered in /ticket/x&quot;:20}
+{&quot;No one tickets are rendered in /ticket/x&quot;:24}
+{&quot;No one tickets are rendered in /ticket/x&quot;:21}
+Main Bench:agent bench command execute error, code:1
+GET failure response too many, success response: 87%</code></pre></noscript></div>
+
+
+<p>表示エラーなのか遅いからなのか、原因が掴めず四苦八苦。
+ベンチマークアプリは未公開なのでエラー内容を運営側に聞きつつ、アプリを修正。</p>
+
+<p>その間、リバースプロクシをapacheからnginxに変えてimages/css/js等のstatic contentを直接配信するようにしたけど、あまり効果がなかったので元に戻す。
+アプリ修正の度にベンチを走らせるので、別の作業で最適化の確認をとるのが大変でした。チーム内でcontext switchingの問題が発生！</p>
+
+<p>そうこうしていると時間がどんどん流れ、残り1時間を切ったところでRailsを捨てる決断をする。
+せめてキャッシュ入れて最適化しよういう事でVarnishを設定し始める。
+そうするとスコアはぐんぐん伸びて行き、上位に食い込む。</p>
+
+<pre><code>Score:180724
+</code></pre>
+
+<p>さらにESIを使えばもう一段跳ね上がるかもという思いでsinatraにコードを追加してテスト。
+しかし、圧倒的に時間が足りず最後の1分半まで粘ったが断念。
+最後に再起同時のアプリ起動ができる確認をして終了。</p>
+
+<p>最終スコアは以下の通りでした。</p>
+
+<pre><code>Score:216868
+</code></pre>
+
+<p>正直ダメかなと思っていたけど、3位という結果に驚きました。
+チューニングが実質1時間未満の割にはまずまずかも知れないけど、残念感の方が強かったですね。</p>
+
+<h3>反省点</h3>
+
+<p>方向性の転換をもっと早く見極めるべきでした。後ちょっと、後ちょっとの思いでずるずる再実装にこだわったのが良くなくて、捨てる勇気を持てたらと。ジョブワーカーやRedis対応の案（とコード）はあったので後半戦直後にやっていたら優勝の可能性はあったかも。。。後の祭りですが。</p>
+
+<p>ともあれ、非常に楽しかったのでまた来年参加してみたいと思います。
+運営したNHNの方々、ありがとうございます＆お疲れ様でした！</p>
+
+<h3>おまけ</h3>
+
+<p>帰ってから<a href="https://twitter.com/netmarkjp">@netmarkjp</a>さんと平行して#soloconやってました。
+直後に<a href="https://github.com/tagomoris/isucon2">公開</a>されたnode.jsで書かれたベンチマークが動かなくてもいろいろ修正したけど、良い勉強になりました。（今は対応版が再アップ済み）
+chckerがrails版に対して失敗していたような箇所を見つけたので後日検証してみようと思います。</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2012/07/03/tuningathon4/">第4回チューニンガソン(Tuningathon)で優勝してきた</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-07-03T01:29:00+09:00" pubdate data-updated="true">Jul 3<span>rd</span>, 2012</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>3回目の参戦となる<a href="http://www.zusaar.com/event/312053">#tuningathon</a>で<a href="https://twitter.com/tnmt">@tnmt</a>さんと共に優勝してきました。</p>
+
+<p>やった事は相方の<a href="http://blog.tnmt.info/2012/07/01/tuningathon4/">ブログに書かれて</a>いるので、補足。</p>
+
+<h3>開演前</h3>
+
+<p>朝起きると、やたらとアラートが飛んでいるので調べると、うるう秒のせいでサーバ達が高負荷状態に。
+<a href="https://twitter.com/tnmt">@tnmt</a>さんも同じ原因で障害対応中で待ち合わせ時間には間に合わず、参加が危うい感じ。
+自分の方はなんとか片付けて、ぎりぎり開演前に到着。</p>
+
+<h3>お題発表</h3>
+
+<p>前々からやって欲しかったRuby on Rails! で、Refinery CMSというブログのチューニング。<br/>
+内心喜びました。</p>
+
+<h3>前半戦</h3>
+
+<p>作業開始前にはまず何よりもバックアップ。
+いつでも環境を戻せるようにRailsのフォルダをコピーしてMySQLのdumpを取っておく。</p>
+
+<p>速攻でrbenv + ruby-buildを入れて、rubyの最新バージョン（1.9.3-p194）をインストール。
+ビルドの間、まずは環境把握。システムのパッケージ版ruby 1.8.7が入っている事を確認して、
+設定フォルダ（tuningathon/config）配下をさらっと目を通す。
+my.cnfも見て全然パラメータ設定されてないけど/var/lib/mysqlの容量をチェックしたらほぼ空なので、
+ここのチューニングはあまり効果が望めずと判断。やるなら後回し。</p>
+
+<p>ビルドが終えた頃にデフォルト状態のままで動かして、まずベースとなるベンチマーク。
+大体こんな感じでした。</p>
+
+<div><script src='https://gist.github.com/3038461.js?file='></script>
+<noscript><pre><code>12 fetches, 9 max parallel, 45576 bytes, in 10 seconds
+3798 mean bytes/connection
+1.2 fetches/sec, 4557.6 bytes/sec
+msecs/connect: 83.4978 mean, 1000.51 max, 0.044 min
+msecs/first-response: 4880.63 mean, 6446.66 max, 2048.37 min
+HTTP response codes:
+  code 200 -- 12
+Score: 2.439 (get=1.200, comment=1.239(2), check=1.000)</code></pre></noscript></div>
+
+
+<p>topで見ると完全にrubyがCPUを専有しているので、まずそこから着手することに。</p>
+
+<p>次にdevelopment.rbのキャッシュ周りのパラメータをいじる。
+development modeだとソースの変更が即時反映・確認できるよう、毎回クラスをロードしているので遅いんです。</p>
+
+<pre><code>config.cache_classes = true
+config.action_controller.perform_caching = true
+</code></pre>
+
+<p>これでだけでスコアが倍に。</p>
+
+<pre><code>Score: 5.255 (get=2.900, comment=2.355(3), check=1.000)
+</code></pre>
+
+<p>次にruby 1.9.3-p194で動かして計測し、6超え。</p>
+
+<pre><code>Score: 6.102 (get=3.600, comment=2.502(3), check=1.000)
+</code></pre>
+
+<p>この頃にやっと相方が合流し、予めGoogle Docsに書いてあった作業ログを共有。
+unicornへの置き換えを試しみる事に合意。
+設定ファイルを作ってもらっている最中に、jrubyへの置き換えを試すが、
+制約上Gemfileの変更が不可だった為、mysql2のgemを外す事ができずDB接続ができなかったので断念。</p>
+
+<p>unicorn単体で動かすと9ぐらい出たので、worker数を変えたり、
+unicorn_rails gemからRails 3で推奨されている素のunicorn gemを試したりして、16-21。</p>
+
+<pre><code>Score: 16.205 (get=9.900, comment=6.305(7), check=1.000)
+Score: 19.869 (get=13.000, comment=6.869(7), check=1.000)
+Score: 21.812 (get=14.000, comment=7.812(8), check=1.000)
+</code></pre>
+
+<p>ベンチを取り続けると、commentがどんどん溜まって行くので
+viewのrender時間が増えてスコアが落ちたりしたので、毎回DBを初期化したのとRailsを再起動する事によってスコアが安定しだす。</p>
+
+<p>最後にrubyのガベージコレクションを切ったりして、この時点での自己ベストがこんな感じでした。</p>
+
+<pre><code>Score: 29.733 (get=19.000, comment=10.733(11), check=1.000)
+</code></pre>
+
+<h3>後半戦</h3>
+
+<p>rubyで出来そうなところは一通りやったので、次は前々から構想していた
+Railsの前段にReverse Proxyを置く事にチャレンジ。Varnishを入れて設定し始める。</p>
+
+<p>ちょうどこの時期にTL上で<a href="https://twitter.com/netmarkjp">@netmarkjp</a>さんが1000超えのスコアを呟きはじめるので、
+なんらかのReverse Proxyを使ったんだと確信。</p>
+
+<p>実はこの時、1000超えのスコアはこちらでも出てたけど、たまに1とか0が出る不安定さだったので、
+呟きませんでした。（運営側に計測されなかったのは別port&lt;Varnishデフォルトの6081番>で試していたから）</p>
+
+<p>後は黙々と設定をいじりつつ、相方に念の為DBのテーブルにインデックスを張ってもらったり、
+ベンチマークスクリプトを解析してもらって、適切な設定を探るべく試行錯誤な感じ。</p>
+
+<p>16時からの公式計測  段階ではまだスコアが安定してなかったので、ひとまず入賞が確実なrubyオンリーな構成で
+2〜3回来るのを確認。その後、終了20分前になんとか安定したので一気にportを置き換えて、
+DBを初期化し、railsを再起動して待ちかまえる。次の計測でそれまでトップだった<a href="https://twitter.com/netmarkjp">@netmarkjp</a>さんを逆転したようです。</p>
+
+<p>まだ若干時間が余っていたので、Varnishのスレッド数等をいじったりして、17時終了の30秒前に設定を入れて再起動。
+後から知ったのですが、この設定がどうやら効いたようで1番最後の計測でさらにスコアが跳ねた模様。
+最終的なスコアは「<strong>1351.54</strong>」でした。</p>
+
+<p>ちなみにローカル計測ベスト（3200.23）だとこんな感じだったけど、リモート経由だとネットワーク（？）がボトルネックになって
+そこまで出ませんでした。</p>
+
+<div><script src='https://gist.github.com/3038562.js?file='></script>
+<noscript><pre><code>32005 fetches, 9 max parallel, 1.20014e+08 bytes, in 10.0008 seconds  
+3749.86 mean bytes/connection 
+3200.23 fetches/sec, 1.20004e+07 bytes/sec  
+msecs/connect: 0.249777 mean, 64.577 max, 0.023 min 
+msecs/first-response: 2.02407 mean, 1094.87 max, 0.188 min  
+15156 bad byte counts
+HTTP response codes:  
+  code 200 -- 32005    
+Score: 3203.969 (get=3200.244, comment=3.725(4), check=1.000)    </code></pre></noscript></div>
+
+
+<p>varnishの設定ファイルはこんな感じ。
+TTLを強制有効にして、POST後にいかにキャッシュクリアさせるかがポイント。
+じゃないと、チェックの成功率の2乗でペナルティが課され、すごい勢いでスコアが減点されます。</p>
+
+<p>/etc/sysconfig/varnish</p>
+
+<div><script src='https://gist.github.com/3038946.js?file='></script>
+<noscript><pre><code>NFILES=131072
+MEMLOCK=82000
+RELOAD_VCL=1
+
+DAEMON_OPTS=&quot;-a :3000 \
+             -T :6082 \
+             -f /etc/varnish/default.vcl \
+             -t 120 \
+             -S /etc/varnish/secret \
+             -s malloc,64M \
+             -p ban_lurker_sleep=0.01 \
+             -p thread_pool_stack=262144 \
+             -p thread_pool_add_delay=2 \
+             -p thread_pools=2 \
+             -p thread_pool_min=100 \
+             -p thread_pool_max=200&quot;</code></pre></noscript></div>
+
+
+<hr />
+
+<p>/etc/varnish/default.vcl</p>
+
+<div><script src='https://gist.github.com/3038775.js?file='></script>
+<noscript><pre><code># This is a basic VCL configuration file for varnish.  See the vcl(7)
+# man page for details on VCL syntax and semantics.
+# 
+# Default backend definition.  Set this to point to your content
+# server.
+# 
+backend default {
+  .host = &quot;127.0.0.1&quot;;
+  .port = &quot;3001&quot;;
+}
+# 
+# Below is a commented-out copy of the default VCL logic.  If you
+# redefine any of these subroutines, the built-in logic will be
+# appended to your code.
+# sub vcl_recv {
+#     if (req.restarts == 0) {
+#   if (req.http.x-forwarded-for) {
+#       set req.http.X-Forwarded-For =
+#       req.http.X-Forwarded-For + &quot;, &quot; + client.ip;
+#   } else {
+#       set req.http.X-Forwarded-For = client.ip;
+#   }
+#     }
+#     if (req.request != &quot;GET&quot; &amp;&amp;
+#       req.request != &quot;HEAD&quot; &amp;&amp;
+#       req.request != &quot;PUT&quot; &amp;&amp;
+#       req.request != &quot;POST&quot; &amp;&amp;
+#       req.request != &quot;TRACE&quot; &amp;&amp;
+#       req.request != &quot;OPTIONS&quot; &amp;&amp;
+#       req.request != &quot;DELETE&quot;) {
+#         /* Non-RFC2616 or CONNECT which is weird. */
+#         return (pipe);
+#     }
+#     if (req.request != &quot;GET&quot; &amp;&amp; req.request != &quot;HEAD&quot;) {
+#         /* We only deal with GET and HEAD by default */
+#         return (pass);
+#     }
+#     if (req.http.Authorization || req.http.Cookie) {
+#         /* Not cacheable by default */
+#         return (pass);
+#     }
+#     return (lookup);
+# }
+sub vcl_recv {
+    if (req.request == &quot;POST&quot;) {
+    ban(&quot;req.url ~ /&quot;);
+    return(pass);
+    }
+}
+
+# 
+# sub vcl_pipe {
+#     # Note that only the first request to the backend will have
+#     # X-Forwarded-For set.  If you use X-Forwarded-For and want to
+#     # have it set for all requests, make sure to have:
+#     # set bereq.http.connection = &quot;close&quot;;
+#     # here.  It is not set by default as it might break some broken web
+#     # applications, like IIS with NTLM authentication.
+#     return (pipe);
+# }
+# 
+# sub vcl_pass {
+#     return (pass);
+# }
+# 
+# sub vcl_hash {
+#     hash_data(req.url);
+#     if (req.http.host) {
+#         hash_data(req.http.host);
+#     } else {
+#         hash_data(server.ip);
+#     }
+#     return (hash);
+# }
+# 
+# sub vcl_hit {
+#     return (deliver);
+# }
+# 
+# sub vcl_miss {
+#     return (fetch);
+# }
+# 
+# sub vcl_fetch {
+#     if (beresp.ttl &lt;= 0s ||
+#         beresp.http.Set-Cookie ||
+#         beresp.http.Vary == &quot;*&quot;) {
+#       /*
+#        * Mark as &quot;Hit-For-Pass&quot; for the next 2 minutes
+#        */
+#       set beresp.ttl = 120 s;
+#       return (hit_for_pass);
+#     }
+#     return (deliver);
+# }
+sub vcl_fetch {
+    if (beresp.ttl &lt;= 0s) {
+    set beresp.ttl = 120s;
+    }
+}
+
+# 
+# sub vcl_deliver {
+#     return (deliver);
+# }
+sub vcl_deliver {
+    if (obj.hits &gt; 0) {
+        set resp.http.X-Cache = &quot;HIT&quot;;
+    } else {
+        set resp.http.X-Cache = &quot;MISS&quot;;
+    }
+}
+# 
+# sub vcl_error {
+#     set obj.http.Content-Type = &quot;text/html; charset=utf-8&quot;;
+#     set obj.http.Retry-After = &quot;5&quot;;
+#     synthetic {&quot;
+# &lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+# &lt;!DOCTYPE html PUBLIC &quot;-//W3C//DTD XHTML 1.0 Strict//EN&quot;
+#  &quot;http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd&quot;&gt;
+# &lt;html&gt;
+#   &lt;head&gt;
+#     &lt;title&gt;&quot;} + obj.status + &quot; &quot; + obj.response + {&quot;&lt;/title&gt;
+#   &lt;/head&gt;
+#   &lt;body&gt;
+#     &lt;h1&gt;Error &quot;} + obj.status + &quot; &quot; + obj.response + {&quot;&lt;/h1&gt;
+#     &lt;p&gt;&quot;} + obj.response + {&quot;&lt;/p&gt;
+#     &lt;h3&gt;Guru Meditation:&lt;/h3&gt;
+#     &lt;p&gt;XID: &quot;} + req.xid + {&quot;&lt;/p&gt;
+#     &lt;hr&gt;
+#     &lt;p&gt;Varnish cache server&lt;/p&gt;
+#   &lt;/body&gt;
+# &lt;/html&gt;
+# &quot;};
+#     return (deliver);
+# }
+# 
+# sub vcl_init {
+#   return (ok);
+# }
+# 
+# sub vcl_fini {
+#   return (ok);
+# }
+</code></pre></noscript></div>
+
+
+<p>世に出てるの設定例はVarnish 2系が多いので、3系はsyntaxが違うので注意。
+コメントアウトされたコードはデフォルト挙動なので、記述されたのとマージされます。
+<a href="https://twitter.com/netmarkjp">@netmarkjp</a>さんの<a href="http://netmark.jp/2012/07/tuningathon-4.html">設定</a>はvcl_fetch()内でキャッシュクリアしてるけど、
+Varnishの<a href="https://www.varnish-software.com/static/book/_images/vcl.png">フロー</a>的には
+一番最初に呼ばれるvcl_recv()内でやった方がより効果的です。</p>
+
+<h3>まとめ</h3>
+
+<ul>
+<li>Railsは比較的遅いので、いかにヒットさせないかを考える</li>
+<li>でもRubyのチューニングも重要。多分これが2位との差</li>
+<li>ベンチマークスクリプトをよく読んで動きやスコアリングを把握する</li>
+<li>運営側はチャレンジングな事は先にやっておけと推奨していたけど、まず堅実なチューニングをして最後の冒険が良いかと。</li>
+<li>最後まで諦めない気持ち</li>
+</ul>
+
+
+<h3>おまけ</h3>
+
+<p>翌日、出社したら何故か優勝記念と称してMountain Dewが10本贈呈されてましたw</p>
+
+<p><img src="https://lh5.googleusercontent.com/-Ws35zyPY6Ww/UZtL9Wjw9jI/AAAAAAAAAv4/hMp5PFfAFAY/w743-h557-no/IMG_8811.JPG" alt="tuningathon優勝記念" /></p>
+
+<p>最後に運営の皆様、ありがとうございました！</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  <div class="pagination">
+    
+    <a href="/blog/archives">Blog Archives</a>
+    
+    <a class="next" href="/blog/page/4/">Newer &rarr;</a>
+    
+  </div>
+</div>
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2019/06/25/serverless-days-tokyo-fukuoka-2019/">Serverless Days Tokyo/Fukuoka 2019開催の告知</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2019/04/18/serverless-days-hamburg-2019/">Serverless Days Hamburg 2019で発表してきた</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2018/12/27/aws-re-invent-2018/">AWS re:Invent 2018に参加してきた</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2018/06/16/rwanda-transform-africa-summit-2018/">ルワンダのTransform Africa Summit 2018に参加してきた</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2018/02/22/serverlessconf-paris-2018/">ServerlessConf Paris 2018で発表してきた</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2017/12/31/aws-re-invent-2017/">AWS re:Invent 2017に参加してきた</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2017/04/30/serverlessconf-austin-2017/">ServerlessConf Austin 2017に参加してきた</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2017/03/27/ruboty-github-pr-release/">ruboty-github_pr_releaseを作った</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2016/12/31/aws-re-invent-2016/">AWS re:Invent 2016に参加してきた</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2016/11/09/serverlessconf-london-2016/">ServerlessConf London 2016に参加してきた。</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2016/07/29/aws-gameday-japan-2016/">AWS GameDay Japan 2016を開催してきた</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2016/06/28/dockercon-2016/">DockerCon 2016に参加してきた</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2016/04/28/terraforming-api-gatewways/">TerraformでAPI Gatewway</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2016/03/31/using-terraform-dev-versions/">Terraformで特定のブランチを使う</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2016/02/18/ssh-and-git-on-aws-lambda/">LambdaでSSHやGitを使ってみよう</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2016/01/14/monitor-lambda-capacity/">Lambdaの容量を監視しよう</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/12/18/co-working-in-hubud/">バリ島のHubudでコワークしてきた</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/12/10/post-lambda-logs-to-slack/">LambdaのログをSlackで見よう</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/11/04/elastic-beanstalk-easy-ssh/">Elastic Beanstalkへの簡単ssh</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/10/26/aws-re-invent-2015/">AWS re:Invent 2015に参加してきた</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/09/30/hashiconf-2015/">#HashiConf 2015に参加してきた</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/09/27/isucon5-qualifier/">ISUCON5の予選に記念参加してきた</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/08/23/yapc-asia-tokyo-2015/">YAPC::Asia Tokyo 2015に参加してきた</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/08/06/github-to-lambda-to-slack/">GitHubのeventをLambdaで処理してSlackへ通知</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/07/02/dynamodb-export-with-datapipeline/">Data PipelineによるDynamoDBのexport</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+<section>
+  <h1>Latest Tweets</h1>
+  <ul id="tweets">
+    <li class="loading">Status updating&#8230;</li>
+  </ul>
+  <script type="text/javascript">
+    $.domReady(function(){
+      getTwitterFeed("ijin", 4, false);
+    });
+  </script>
+  <script src="/javascripts/twitter.js" type="text/javascript"> </script>
+  
+    <a href="http://twitter.com/ijin" class="twitter-follow-button" data-show-count="false">Follow @ijin</a>
+  
+</section>
+
+
+
+
+
+  
+</aside>
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2019 - Michael H. Oshita -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'ijin';
+      
+        
+        var disqus_script = 'count.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

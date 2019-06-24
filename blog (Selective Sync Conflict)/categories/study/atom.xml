@@ -1,0 +1,498 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: study | @ijin]]></title>
+  <link href="http://ijin.github.io/blog/categories/study/atom.xml" rel="self"/>
+  <link href="http://ijin.github.io/"/>
+  <updated>2019-06-25T04:45:52+09:00</updated>
+  <id>http://ijin.github.io/</id>
+  <author>
+    <name><![CDATA[Michael H. Oshita]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[AWS GameDay Japan 2016を開催してきた]]></title>
+    <link href="http://ijin.github.io/blog/2016/07/29/aws-gameday-japan-2016/"/>
+    <updated>2016-07-29T15:41:00+09:00</updated>
+    <id>http://ijin.github.io/blog/2016/07/29/aws-gameday-japan-2016</id>
+    <content type="html"><![CDATA[<p>過去に何回も参加・開催両方を経験した事がある<a href="http://gameday-japan.connpass.com/event/33531/">AWS GameDay</a>に、またしても運営側として関わりました。</p>
+
+<p>お題は基本的に<a href="/blog/2015/10/26/aws-re-invent-2015/">去年のre:Inventでやった</a>のを若干チューニングしたやつ。
+詳細は今後また別のところで開催される可能性があるので、その時の参加者の為に伏せておきます。</p>
+
+<h3>当日</h3>
+
+<p>競技中はそれぞれのチームのスコアがリアルタイムで見れるダッシュボードがあって白熱した様子が伝わってました。</p>
+
+<p>{% tweet https://twitter.com/ijin/status/756717339312164864?lang=ja %}</p>
+
+<p>これはこれで楽しいんですが、何かが足りない感じ。。。</p>
+
+<br >
+
+
+<br >
+
+
+<br >
+
+
+<br >
+
+
+<br >
+
+
+<p>そう、<strong>グラフ</strong>です！!</p>
+
+<br >
+
+
+<br >
+
+
+<br >
+
+
+<br >
+
+
+<br >
+
+
+<p>参加チームの白熱したバトル（順位の入れ替え等）を時系列で表示し、戦いの軌跡をビジュアライズするアレです。ISUCONでもよく見慣れたあの遷移するグラフがなかったのです！</p>
+
+<p>開始してから気づきました。。</p>
+
+<h1>なので作りました</h1>
+
+<h2>Graphing premiere</h2>
+
+<p>ダッシュボードの作りを見てみると <code>jQuery</code> と <code>React.js</code> を使っている模様。ならば、どこかでendpointを叩いてjsonを取得しているはずなので、いろいろ探したところ、それらしいのがありました。</p>
+
+<p>```javascript
+  getScores: function() {</p>
+
+<pre><code>$.ajax({
+  url: 'https://xxxxxxxxx.execute-api.us-west-2.amazonaws.com/prod/scores',
+  dataType: 'json',
+  cache: false,
+  success: function(data) {
+    this.setState({data: data});
+  }.bind(this),
+  error: function(xhr, status, err) {
+    console.error("scores", status, err.toString());
+  }.bind(this)
+});
+</code></pre>
+
+<p>  },
+```</p>
+
+<p>こうなれば話は簡単で後は返却されるjsonを解析して、定期的にcallしてplotしていけば良いだけです。</p>
+
+<h3>データ送信</h3>
+
+<p>グラフを描画するサーバを用意するのはしんどいので、カスタムメトリックスが作成できる監視サービスを使いました。
+最初は<a href="https://mackerel.io">Mackerel</a>をと思ったけど、独自グラフを一般公開する設定がなさそうだったので<a href="https://www.datadoghq.com">Datadog</a>を採用。</p>
+
+<p>Datadogでカスタムメトリックスを送るにはAPIを直接叩くよりは、<a href="http://docs.datadoghq.com/guides/metrics/">StatsD経由で送信</a>した方が楽なのでrubyでサクっと適当に記述。</p>
+
+<p><code>ruby gameday.rb
+statsd.batch do |s|
+  s.gauge('gameday2016', scores[0]['Profit']*100, :tags =&gt; ["team:" + scores[0]['Team']])
+  s.gauge('gameday2016', scores[1]['Profit']*100, :tags =&gt; ["team:" + scores[1]['Team']])
+  s.gauge('gameday2016', scores[2]['Profit']*100, :tags =&gt; ["team:" + scores[2]['Team']])
+  # etc
+end
+</code></p>
+
+<h3>グラフ描画</h3>
+
+<p>公開ダッシュボードを作成するには <code>TimeBoard</code> ではなく <code>ScreenBoard</code> を選択し、後は必要そうなグラフを追加していくだけ。</p>
+
+<p>グラフ自体はGUIで作っても良いし、jsonで記述可能なので結構柔軟で素敵です。</p>
+
+<p>``` json profits.json
+{
+  "viz": "timeseries",
+  "requests": [</p>
+
+<pre><code>{
+  "q": "avg:gameday2016{*} by {team}",
+  "aggregator": "avg",
+  "conditional_formats": [],
+  "type": "line"
+}
+</code></pre>
+
+<p>  ]
+}
+```</p>
+
+<p>``` json ranking.json
+{
+  "viz": "toplist",
+  "requests": [</p>
+
+<pre><code>{
+  "q": "top(avg:gameday2016{*} by {team}, 20, 'last', 'desc')",
+  "style": {
+    "palette": "dog_classic"
+  },
+  "conditional_formats": [
+    {
+      "palette": "white_on_green",
+      "comparator": "&gt;=",
+      "value": 0
+    },
+    {
+      "palette": "white_on_red",
+      "comparator": "&lt;",
+      "value": 0
+    }
+  ]
+}
+</code></pre>
+
+<p>  ]
+}
+```</p>
+
+<p>できあがったグラフはこんな感じ。
+高負荷発生等のイベント時の対応との比較もできて見やすいと思います。</p>
+
+<p>{% img https://lh3.googleusercontent.com/XoNcTN3HQIlFDHvaSe8uNlcCP8FYRijZNsPVdrnrsmNvEF3XoW6IUDKnU63JDLL7X6W3Ed3mCLaF=w742-h394-no %}</p>
+
+<p>これで各チームのポジション等を伝えやすくなりました。</p>
+
+<p>{% tweet https://twitter.com/ijin/status/756756052192792576?lang=ja %}
+{% tweet https://twitter.com/ijin/status/756766379341025281?lang=ja %}
+{% tweet https://twitter.com/ijin/status/756778321749225472?lang=ja %}</p>
+
+<p>というわけで優勝した<a href="http://inokara.hateblo.jp/entry/2016/07/24/095228">チーム初老丸</a>、おめでとうございます！</p>
+
+<h3>終わりに</h3>
+
+<p>今回は競技の途中から実装しちゃったので次回は最初から用意しておきたいと思います。</p>
+
+<p>{% tweet https://twitter.com/sora_h/status/660379055867334656?lang=ja %}
+（※）実は去年のISUCONの時も似たような事をやってましたね。。</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[ISUCON5の予選に記念参加してきた]]></title>
+    <link href="http://ijin.github.io/blog/2015/09/27/isucon5-qualifier/"/>
+    <updated>2015-09-27T17:01:00+09:00</updated>
+    <id>http://ijin.github.io/blog/2015/09/27/isucon5-qualifier</id>
+    <content type="html"><![CDATA[<p>とあるエンジニアが言い放ちました。</p>
+
+<p>「<em>上位に届かないチームはただの記念参加だよねー。</em>」</p>
+
+<p>というわけで、今年のISUCONは見事に予選落ちしました。</p>
+
+<h3>お題</h3>
+
+<p>「<strong>ISUx</strong>i」というどこか懐かしい響きの「高負荷に耐えられるSNSコミュニティサイト」</p>
+
+<p>友達、記事、コメント、足あと機能が揃っており、以前より複雑度が増したなかなかの凝った作り。</p>
+
+<h3>起こったこと</h3>
+
+<p>これはESIによるpartial cachingが出来るので、Varnishでやってみよう！</p>
+
+<p>と意気込んだものの、エラーが解決できず結局は間に合わずに終了ーーっ。</p>
+
+<h3>やりたかったこと</h3>
+
+<ul>
+<li>Varnish + ESI + Redis &amp; MySQL</li>
+</ul>
+
+
+<h3>やれたこと</h3>
+
+<p>具体的な作業内容は今手元にないので、ぼんやりと。</p>
+
+<ul>
+<li>MySQLのクエリー修正、パラメータ、Indexの追加</li>
+<li>nginxのパラメータ追加</li>
+<li>kernelのパラメータ追加</li>
+<li>一部 redis化</li>
+<li>rubyプロセスの調整</li>
+<li>sidekiqのワーカーで遅延書き込み</li>
+</ul>
+
+
+<h3>はまったとこ</h3>
+
+<p>今回はいろいろ初めてがあったので無駄に時間を潰した感じ。</p>
+
+<ul>
+<li><code>systemd</code> -
+最新のUbuntu 15.04はsystemdなんですね。ずっと14.04 LTSのupstartに慣れていたので、こっちは初めて触わった。</li>
+<li><code>apparmor</code> -
+設定ファイルをsymlinkでやろうとすると読み込まれず。。こいつのせいだと気づくのにちょっと手間取った。いらない子には怒りの<code>apt-get purge</code>を。</li>
+<li><code>mysql</code> -
+なんか設定ファイルが/etc/mysql/my.cnf単体じゃなくて、symlinkされたりいろんなディレクトリに散らばってたりで若干戸惑った。後、上記のapparmor関連で設定ファイルがしばらく全然反映されずに。。</li>
+<li><code>varnish</code> -
+こちらもvclやパラメータ指定が本来<code>/etc/default/varnish</code>で出来るはずが、なかなか反映されずに苦労した。Varnish 4.0のパッケージはapt-getですんなり入るんだけど、起動スクリプトが<code>/etc/init.d/varnish</code>に設置されるのに、そちらは無視され、systemdの方が優先される模様。カスタマイズするには<code>/lib/systemd/system/varnish.service</code>をコピって編集して<code>daemon-reload</code>が必要。詳しくは<a href="http://deshack.net/how-to-varnish-listen-port-80-systemd/">こちら</a></li>
+</ul>
+
+
+<h3>終わりに</h3>
+
+<p>競技内容が確実に進化していて、非常ーーに楽しめました！その分、出題者の苦労が計り知れず。。こんどビールでも奢ります。今年の本戦は残念ながら行けないけど、外野として楽しくポップコーンでも食べながら観戦したい所ですね。</p>
+
+<h3>おまけ</h3>
+
+<p>現在はHashiConfに向けての飛行機の中だけど、悔しいので機内で復習しておきます！</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[YAPC::Asia Tokyo 2015に参加してきた]]></title>
+    <link href="http://ijin.github.io/blog/2015/08/23/yapc-asia-tokyo-2015/"/>
+    <updated>2015-08-23T15:27:00+09:00</updated>
+    <id>http://ijin.github.io/blog/2015/08/23/yapc-asia-tokyo-2015</id>
+    <content type="html"><![CDATA[<p>例年この時期は海外にいるので、なかなか行けなかったYAPC::Asia Tokyo 2015にやっと参加してきた。</p>
+
+<p>スケジュール上、今年は参加できるぞって意気込んでいたら、まさかのSold Out...</p>
+
+<p>それをtwitter上で嘆いていたら、<a href="https://twitter.com/kenjiskywalker">@kenjiskywalker</a>さんから救いの手が！</p>
+
+<p>{% tweet https://twitter.com/kenjiskywalker/status/619079064880463872 %}</p>
+
+<p>感謝！</p>
+
+<p>さて、一口コメント</p>
+
+<p><strong>Consulと自作OSSを活用した100台規模のWebサービス運用</strong>] - <a href="https://twitter.com/fujiwara">@fujiwara</a></p>
+
+<p><a href="https://github.com/sorah/mamiya">mamiya</a>や<a href="http://aws.amazon.com/codedeploy/">AWS CodeDeploy</a>にインスパイアされた<a href="https://github.com/fujiwara/stretcher">stretcher</a>を使ったイベントベースのdeploy周りが面白かった。s3からの取得失敗時の処理は考えてないといけない。</p>
+
+<p><strong>Conway's Law of Distributed Work</strong> - Casey West</p>
+
+<p>最近はリモートワークが殆どなので、なかなか共感できる部分が多かった。コミュニケーション大事。</p>
+
+<p><strong>大規模でも小中規模サービスでも捗る microservices な Web サービスのつくりかた</strong> - <a href="https://twitter.com/yappo">@Yappo</a></p>
+
+<p>どのタイミングでコンポーネントの分割をするか。ちゃんと設計しようねって話</p>
+
+<p><strong>ISUCONの勝ち方</strong> - <a href="https://twitter.com/kazeburo">@kazeburo</a></p>
+
+<p>ポイントがよく纏められていて、うちらのチームでも多くを実践していた。まだ勝ててないけど。
+CPUやB+ Treeの気持ちになって考える事が大事。</p>
+
+<p><strong>我々はどのように冗長化を失敗したのか</strong> - <a href="https://twitter.com/kenjiskywalker">@kenjiskywalker</a></p>
+
+<p>Networkが不安定だと、様々な冗長化に仕組みがうまく作動しない。検証はProductionと同じ環境でやりましょう。</p>
+
+<p><strong>Profiling &amp; Optimizing in Go</strong> - Brad Fitzpatrick</p>
+
+<p>Bradさんのライブコーディング。奥が深かった。</p>
+
+<p><strong>LT</strong></p>
+
+<p>どれもこれもハイレベル！</p>
+
+<p>特に素晴らしかったのが、テンポの良い<a href="https://twitter.com/yoku0825">@yoku0825</a>さんの<strong>MySQL 5.7の罠があなたを狙っている</strong> と超早業を披露した<a href="http://conbu.net">CONBU</a>さんの<strong>CONBUの道具箱</strong></p>
+
+<iframe allowfullscreen="" frameborder="0" height="355" marginheight="0" marginwidth="0" scrolling="no" src="http://ijin.github.io//www.slideshare.net/slideshow/embed_code/key/dJ6c2p0tc7QM3B" style="border-width: 1px; border: 1px solid #CCC; margin-bottom: 5px; max-width: 100%;" width="425"> </iframe>
+
+
+<p> <br /></p>
+
+<p>{% tweet https://twitter.com/spacepro_be/status/635004222291902464 %}</p>
+
+<p>いやー、非常に楽しめました。運営の皆様、ありがとうございました！！</p>
+
+<p>さて、これから出国ー。</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[サバフェス！2015に参加してきた]]></title>
+    <link href="http://ijin.github.io/blog/2015/03/27/serverfesta-2015-spring/"/>
+    <updated>2015-03-27T12:56:00+09:00</updated>
+    <id>http://ijin.github.io/blog/2015/03/27/serverfesta-2015-spring</id>
+    <content type="html"><![CDATA[<p><a href="http://connpass.com/event/11571/">サバフェス！2015 Spring</a>に参加してきました。
+やった内容を少々。</p>
+
+<p><a href="/blog/2013/12/13/serverfesta-2013-autumn">前回</a>と同じくチーム@ijinとして1人で参戦して、順位は「<strong>4位</strong>」。</p>
+
+<p>スコアは<strong>44988.867 TpmC</strong>でした。</p>
+
+<h2>お題</h2>
+
+<p>Mysql on ioDriveでtpcc-mysqlベンチマークのtransaction throughput競争。</p>
+
+<p>第1陣と第2陣に分かれていて、今回は後者での参戦。</p>
+
+<h2>はじめに</h2>
+
+<p>競技期間は5日間あったものの、第1陣で<a href="http://netmark.jp/2015/03/svfes-2.html">結構な地雷があった</a>のと、Fusion-IO（現SanDisk）のioDriveとtpcc-mysqlは2年前に<a href="/blog/2013/02/22/mysql-benchmarks-on-aws-ssd-vs-fusion-io/">触った</a>ので最初はあんまりやる気が起きなくて困ってました。後は前回と違って施せる施策がかなり限定されるというので、正直5日間は長過ぎるのではないかという印象でした。（結果的に第1陣のトラブルとかを鑑みると長さ的には良かったのかも知れないけど）</p>
+
+<p>という事で初日はログインとベンチで基準値を取るだけして終了。</p>
+
+<p>その後、最近のMySQLやioDrive周りの情報収集を軽ーくして数日が経過。。</p>
+
+<p>そして最終日の夜中になって、なんとか本腰を入れてチューニング開始。まあ、やりだしたら楽しいんですけどね。</p>
+
+<h2>マシンスペック</h2>
+
+<ul>
+<li>CentOS 6.4</li>
+<li>Intel(R) Xeon(R) CPU E5-2650 v2 @ 2.60GHz x 32</li>
+<li>32GB RAM</li>
+<li>40G HDD</li>
+<li>320GB ioDrive</li>
+</ul>
+
+
+<h2>制限</h2>
+
+<pre><code>innodb_doublewrite = 1
+innodb_flush_log_at_trx_commit = 1
+</code></pre>
+
+<p>その他レギューレーションは<a href="https://2015spring.serverfesta.info/?page_id=299">こちら</a></p>
+
+<h2>方針</h2>
+
+<p>今までのtwitterの<a href="https://twitter.com/search?q=%23%E3%82%B5%E3%83%90%E3%83%95%E3%82%A7%E3%82%B9">タイムライン</a>からして、どうもベンチをウェブ画面から要求しても並列実行の数とキューイング、及び非常に長い実行時間からして1時間に一回実行できるかどうかも怪しかったのでローカルでこまめに回す方向に。</p>
+
+<p>本番データはtpccの1000 warehouse（70GB+）、16GB Buffer Pool、900sの実行時間だったのでそれを250 warehouse, 4GB Buffer Poolと縮小し120sと短めに設定。こうすることによってローカルでのデータコピー時間やベンチ実行時感が短縮され、時間がない中での細かいパラメータのチューニングに専念できる。Buffer Poolはどうせ一番効くと分かりきってるので、あえて後回し。DBは6年前（MySQL 5.0時代）から手に滲んで愛用しているPercona Serverの5.6版を選択。</p>
+
+<p>スコアの推移はこんな感じ。データセットが小さい分、スコアは大きめ。</p>
+
+<p>{% img https://docs.google.com/spreadsheets/d/1zm6-THRYR_EcLoHgacRScxlhSzeQAkbJ0RXiAI4fiRU/pubchart?oid=1067951178&amp;format=image %}</p>
+
+<p>終盤になってやっと本番に近いデータセットや実行時感で細かいチューニング。</p>
+
+<p>{% img https://docs.google.com/spreadsheets/d/1zm6-THRYR_EcLoHgacRScxlhSzeQAkbJ0RXiAI4fiRU/pubchart?oid=2026636320&amp;format=image %}</p>
+
+<p>最終的にローカルでのベストスコアは<strong>53420.332 TpmC</strong>でした。</p>
+
+<h2>設定ファイル</h2>
+
+<script src="https://gist.github.com/ijin/341bab7569e372e1addb.js"></script>
+
+
+<h2>効果があったもの</h2>
+
+<p>細かいおまじないレベルでのパラメータも他にいくつあったけど、割と効いたのをピックアップ。また、既に設定されていたパラメータは除外（innodb_io_capacity等）</p>
+
+<p>mysql</p>
+
+<pre><code>datadir=/fioa/mysql
+tmpdir=/fioa/tmp
+sync_binlog=0
+innodb_buffer_pool_size = 28150M
+innodb_buffer_pool_instances=16
+innodb_log_file_size=4G
+innodb_log_files_in_group=3
+innodb_log_group_home_dir=/var/log/mysql
+innodb_log_buffer_size=64M
+innodb_data_file_path=ibdata1:76M;../../var/log/mysql/ibdata2:500M:autoextend
+innodb_checksum_algorithm=0
+innodb_max_dirty_pages_pct=90
+innodb_lru_scan_depth=2000
+numa_interleave=1
+flush_caches
+malloc-lib=/usr/lib64/libjemalloc.so.1
+</code></pre>
+
+<p>etc</p>
+
+<pre><code>vm.swappiness=1
+mount option (noatime,nodiratime,  max_batch_time=0,nobarrier,discard)
+cache warmup
+</code></pre>
+
+<p>基本的にはioDriveにIOをなるべく発生させない、もしくは遅延させる関連のパラメータが効いた感じ。この辺は割と正統なチューニング方法。一つ、若干工夫したのは、doublewrite buffer fileの指定方法。シーケンシャルなIOが発生するログ周りの処理はHDDに逃がした方がioDrive/SSD的には負荷低減になるけど、Percona 5.5までは<strong>innodb_doublewrite_file</strong>というパラメータでいつも指定していたのが、5.6ではなんと未実装！なのでベンチマーク前にコピーされるibdata1の予めのサイズを計っておいて、以降の書き込みをHDD側へ逃がすように<strong>innodb_data_file_path</strong>で調整。</p>
+
+<p>他はNUMAによるメモリの偏り調整とmallocライブラリを使う指定。この辺もPerconaやMariaDB専用オプション。</p>
+
+<p>後は一応初動のスコアをちょっとだけ稼ぐためにmysqlのstartup script内にてテーブルをcount(*)してindexをbuffer poolに乗せたぐらい。</p>
+
+<h2>効果が微妙だったもの</h2>
+
+<p>mysql</p>
+
+<pre><code>innodb_flush_method=ALL_O_DIRECT
+innodb_support_xa=0
+innodb_thread_concurrency=N
+innodb_flush_neighbors=0
+query_cache_size=0
+large-pages
+</code></pre>
+
+<p>etc</p>
+
+<pre><code>echo 'noop' &gt; /sys/block/fioa/queue/scheduler
+echo 4096 &gt; /sys/block/fioa/queue/nr_requests
+echo 2 &gt; /sys/block/fioa/queue/rq_affinity
+renice -n19 -p `ps auxf | grep mackerel | grep -v grep | awk ‘{print $2}’`
+</code></pre>
+
+<p>large-pagesでページサイズを大きく設定すればメモリ効率は向上するはずが、少なくともベンチマークにおいては効果なし。また、スケジューラをnoopやdeadlineと変えたり、nr_requestsやrq_affinityを調整してみたけど、デフォルトのOS bypass設定と比べてあまり変化なし。</p>
+
+<h2>試したかったもの</h2>
+
+<ul>
+<li>ioDrvieのblock sizeのリサイズ</li>
+<li>C0 state（CPUのC stateを制御して変動させずにioDriveの処理向上の期待）</li>
+<li>numa_node_forced_local（IO処理をメモリに一番近接しているCPUで行う）</li>
+<li>IRQ pinning（ioDriveのIRQを固定）</li>
+<li>network tuning</li>
+</ul>
+
+
+<p>この中で最後やることリストに乗っけていながらやらなかったネットワーク周りのチューニング。多分、これが敗因。（1位のチームzzz(<a href="https://twitter.com/ttkzw">@ttkzwさん</a>)はローカルベンチマークで51000ぐらいだったので）もっとリモートからベンチが実行される事に意識を向ければ良かったのかもしれないですね。とはいえ、最後はキュー待ちが8チームだったり、結果が不具合で見れなかったりと、バダバタしてたのでそっちに気を取られたのもまた事実。まあ、半日ちょいのチューニングにしてはそこそこ行った感じでしょうか。</p>
+
+<h2>終わりに</h2>
+
+<p>最初は運営側が「目下実装中です！」といいながら<strong>#トラしゅ</strong>をしているような感じでちょっと不安でしたが、最後は（第2陣という事もあり）それなりに楽しめました。ベンチマーク時間の短縮と並列実行数がもうちょっと増やせたらよかったですかね。運営側の皆様、大変お疲れさまでした！</p>
+
+<h2>おまけ</h2>
+
+<p>賞品として3DマッサージピローとSSDを頂きました！</p>
+
+<p>{% tweet https://twitter.com/ijin/status/581048257171820544 %}</p>
+
+<p>個人敵には飛び込みLTした人がもらったDroneの方が良さそうだったけど、ピローは家族に好評でした。</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[ISUCON4の本戦の思い出]]></title>
+    <link href="http://ijin.github.io/blog/2014/12/31/isucon4-final/"/>
+    <updated>2014-12-31T20:52:00+09:00</updated>
+    <id>http://ijin.github.io/blog/2014/12/31/isucon4-final</id>
+    <content type="html"><![CDATA[<p>ISUCON4の本戦の直後にそのままAWS re:Inventへ行ったきりエントリを書いてなかったので思い出だけでも年内に書いておく。</p>
+
+<p>内容の<a href="http://isucon.net/archives/41252218.html">エントリ</a>はたくさんあるので、詳しい内容なそちらに任せます。</p>
+
+<p>結果は予選よりちょい上の<strong>15位</strong>。まあ、中間層は結構団子状態だったので誤差の範囲とも言えますが。。</p>
+
+<h2>Cache-Control</h2>
+
+<p>結局はCache-Controlヘッダーに気づくかどうかという点にかかっていて、達成したのは<a href="http://isucon.net/archives/41634734.html">2チーム</a>のみ。優勝チームのモリスさんが「頭から煙が出る程考えて」やっと直前に答えにたどり着いた事を考えると、ベンチマークツールの挙動が若干不思議な実装になっていたとはいえ、思慮深さが足りなかったと反省。</p>
+
+<h2>冒険しすぎた</h2>
+
+<p>今回はrubyとGoのハイブリッド構成でもろもろチューニング。が、しばらくして帯域が頭打ちに。。
+また、その間にメンバーの一人の<a href="https://twitter.com/fruwe">@fruwe</a>に<a href="http://undertow.io/">Undertow</a>というjavaのフレームワークでチャレンジしてもらうものの（事前の技術検証では結構期待できそうだった）、実装完走にはいたらず。この辺は冒険し過ぎたかな。。振り返ってみれば、結局2位のチームがブレークスルーをしたのを見て、全作業を一旦ストップしてでも皆で考えなおす行動を取れば良かったのかもしれないですね。ただ、当時は予選でのベンチマークツールがいささか不安定だった事と運営側もリアルタイムでバグフィックスをしてたという事情もあり、きっとバグか何かだろうとあまり気にしてなかったのも確か。</p>
+
+<h2>最後に</h2>
+
+<p>とまあ、不完全燃焼だったけど、なんだかんだで面白かったです。運営＆参加者の皆様お疲れ様でした。来年またあるか分からないけど、楽しみにしています。</p>
+]]></content>
+  </entry>
+  
+</feed>

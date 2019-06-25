@@ -59,7 +59,7 @@ categories:
 
 スタックやスポンサーをしてくださる方は是非ともご連絡ください！！
 
-[Serverless Days Tokyo](https://tokyo.serverless.io)
+[Serverless Days Tokyo](https://tokyo.serverlessdays.io)
 
 ## Serverless is a Doctrine, not a Technology
 

@@ -33,8 +33,8 @@ categories:
 
 ### 場所
 
-- Workshop - FGN
-- Conference - FGN
+- Workshop - LINE Fukuoka
+- Conference - LINE Fukuoka
 
 ## CFP
 

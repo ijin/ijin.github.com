@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: lambda | @ijin]]></title>
+  <link href="http://ijin.github.io/blog/categories/lambda/atom.xml" rel="self"/>
+  <link href="http://ijin.github.io/"/>
+  <updated>2019-07-18T23:02:25+09:00</updated>
+  <id>http://ijin.github.io/</id>
+  <author>
+    <name><![CDATA[Michael H. Oshita]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[LambdaでSSHやGitを使ってみよう]]></title>
+    <link href="http://ijin.github.io/blog/2016/02/18/ssh-and-git-on-aws-lambda/"/>
+    <updated>2016-02-18T12:35:00+09:00</updated>
+    <id>http://ijin.github.io/blog/2016/02/18/ssh-and-git-on-aws-lambda</id>
+    <content type="html"><![CDATA[<p>AWS Lambda上で<code>ssh</code>や<code>git</code>を使えたら便利！思ったけど、そもそもバイナリ自体が入ってない上にパッケージのインストールが出来ないので回避方法を悩んでいたところ、幸いそれぞれPython nativeの実装があったので先人の肩に乗っかる事で事無きを得ました。</p>
+
+<h2>SSH</h2>
+
+<p>SSHは<a href="http://www.paramiko.org">Paramiko</a>というライブラリを利用。s3上に<a href="http://docs.aws.amazon.com/AmazonS3/latest/dev/UsingKMSEncryption.html">SSE-KMS</a>で暗号化されたキーファイルをダウンロードし、それを使ってサーバと認証しログイン。</p>
+
+<p>注意点</p>
+
+<ul>
+<li>Lambdaの実行環境にはデフォルトでParamikoが入ってないので、deployment packageに含める必要がある</li>
+<li>Mac上ではpythonライブラリの互換性が衝突する為、Linux（EC2等）上でpackageを作成する必要がある</li>
+<li>最近発表された<a href="https://aws.amazon.com/blogs/aws/new-access-resources-in-a-vpc-from-your-lambda-functions/">VPC対応</a>を使ってprivate networkで通信をしたい場合、外部への経路はそのままでは不可なので、s3の場合はVPC endpointを作成するかNATが必要になってくる。詳しくはこの<a href="http://qiita.com/ijin/items/94c0bc4b8f6f5e77a591">記事</a>を。</li>
+</ul>
+
+
+<p><div><script src='https://gist.github.com/26afca1e9b03ecaf4d8e.js?file='></script>
+<noscript><pre><code></code></pre></noscript></div>
+</p>
+
+<h2>Git</h2>
+
+<p>Gitは<a href="https://github.com/jelmer/dulwich"><code>dulwich</code></a>というライブラリを利用。sshプロトコルの場合、デフォルトではシステム上のsshが利用されるのでPython版の<code>ParamikoSSHVendor</code>クラスを使えばすんなりいくと思いきや、キーファイル指定が出来なかったのでそこを少し改変。また、Lambda上での特殊な環境の為か<code>sys.stderr</code> のencode周りがうまく検出されなかったので、<code>dulwich.porcelain.push</code> methodも若干修正。</p>
+
+<p>Paramikoを使っているので、上記同様パッケージ作成はLinux上で。</p>
+
+<p>以下はprivate repositoryをclone後、別branchに新規ファイルを追加後にcommitし、githubへpushする例。</p>
+
+<p><div><script src='https://gist.github.com/080822d2c7859b528631.js?file='></script>
+<noscript><pre><code></code></pre></noscript></div>
+</p>
+
+<p>それでは、良いLambdaライフを！</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Lambdaの容量を監視しよう]]></title>
+    <link href="http://ijin.github.io/blog/2016/01/14/monitor-lambda-capacity/"/>
+    <updated>2016-01-14T05:23:00+09:00</updated>
+    <id>http://ijin.github.io/blog/2016/01/14/monitor-lambda-capacity</id>
+    <content type="html"><![CDATA[<p><code>2016/1/14</code>現在、AWS Lambdaにはなんと<strong>リージョン</strong>毎！にアップロードできるパッケージの合計サイズがたったの<strong>1.5GB</strong>という<a href="http://docs.aws.amazon.com/lambda/latest/dg/limits.html#limits-list">悲しい制限</a>があります。特にlibraryを同包したり、versioningを使ったりしてCIをガンガン回してると、結構すぐこの上限に達してしまいがちです。そこで、Lambdaの総容量はAWSコンソール上には表示されるものの、トラッキングし辛いので監視する仕組みを作ってみました。</p>
+
+<h2>仕組み</h2>
+
+<p>LambdaのScheduled Eventsを使って、<code>ListFunctions</code>と<code>ListVersionsByFunction</code> APIを叩いて、個別functionの<code>CodeSize</code>をサマって、<code>PutMetricData</code>でCloudWatchに投げて、Alarm設定してるだけ。</p>
+
+<script src="https://gist-it.appspot.com/https://github.com/ijin/check_lambda_capacity/blob/master/lambda_function.py"></script>
+
+
+<p>(*) <code>2016/1/26</code> 追記：<a href="https://twitter.com/marcy_terui">@marcy_terui</a>さんからの<a href="https://twitter.com/marcy_terui/status/689326911634329600">ご指摘</a>でVersionsの容量計算が抜けてました。ありがとうございます。</p>
+
+<p>といっても、今後別アカウントでいちいち設定（IAM role&amp;policy、Lambda、SNS、CloudWatch）するのも非常に面倒くさいので、今回は<a href="http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/working-with-templates-cfn-designer.html">CloudFormation Designer</a>を使って、ほぼ一発で環境を再現できるようにしました。</p>
+
+<h2>CloudFormation</h2>
+
+<p>ボタン作ってみた。<a href="https://console.aws.amazon.com/cloudformation/home?region=ap-northeast-1#/stacks/new?stackName=check-lambda-capacity&templateURL=https://s3-ap-northeast-1.amazonaws.com/ijin/aws/lambda/check_lambda_capacity/check_lambda_capacity.template">
+<img src="https://s3.amazonaws.com/cloudformation-examples/cloudformation-launch-stack.png">
+</a></p>
+
+<h3>Stack Creation</h3>
+
+<p>Designerではこんな感じ。心なしか、jsonの苦痛が多少楽になったような。。後、Propertyの補完機能は良いけどショートカットが<code>Cmd+Space</code>なのでSpotlightさんがぁ。</p>
+
+<p><img src="https://lh3.googleusercontent.com/CLHrqYHPDKPxABDkWdrl0FYbEEC9enKmbOaK75TqhqL5tPnQ8oRjA3_f3N3iJoD5cSanPbbvt9lT=w880-h586-no"></p>
+
+<p>s3からtemplateを指定。
+template urlは<code>https://s3-ap-northeast-1.amazonaws.com/ijin/aws/lambda/check_lambda_capacity/check_lambda_capacity.template</code></p>
+
+<p><img src="https://lh3.googleusercontent.com/XeF-yQk1cxy8z8KnHTJS3mP-onExoYmbJ7-OYISmLd3NYxO4fVCQnqAxygAEu6zdMtzEy16641C-=w826-h268-no"></p>
+
+<p>Parameterとしては以下が指定可能</p>
+
+<ul>
+<li>アラート閾値（Byte単位）</li>
+<li>SNS topic（空の場合は、自動作成される）</li>
+</ul>
+
+
+<p><img src="https://lh3.googleusercontent.com/vX0JiEE_me3Wn6__PbNysmSYVkGiOs4jbqivZm7lOoq18kZpyrV9lj01kL9-rDMCX1JAS7BHVmI4=w902-h509-no"></p>
+
+<p>Stackを作成すると、諸々のリソースが数分で出来上がり。</p>
+
+<p><img src="https://lh3.googleusercontent.com/rQy-Any2cmz9I7YxuGD-Pi8_4VB9dGKFnCbAxWHH4QPjRMF7Y9nKAi2sZPY2HogoL2vpcc8ABy4E=w1050-h260-no"></p>
+
+<h3>Manual Labor</h3>
+
+<p>本当は以上で終了！にしたいところですが、LambdaのScheduled Eventsの設定はAWSコンソールからのみしか出来ないという<del>情けない</del><a href="http://docs.aws.amazon.com/lambda/latest/dg/with-scheduled-events.html">残念な状態</a>（<code>2016/1/14</code>現在）なので、ここからポチポチ設定作業。。（API重視の開発姿勢はどこ行ったんだろう）</p>
+
+<p>(*) <code>2016/1/26</code> 追記：この記事の翌日に発表された <a href="http://docs.aws.amazon.com/AmazonCloudWatch/latest/DeveloperGuide/WhatIsCloudWatchEvents.html"><code>CloudWatch Events</code></a> の <a href="http://docs.aws.amazon.com/AmazonCloudWatch/latest/DeveloperGuide/ScheduledEvents.html"><code>scheduling</code> 機能</a> によって出来るようになりました。なんというタイミング。</p>
+
+<p><img src="https://lh3.googleusercontent.com/2pedymzqDYHJ30u7VglVv-7_6IpFhpOnRdnE4-QxjuIdX1fep2FwtoyDNr1Kl5yEqT1rtjoLDLZx=w581-h238-no"></p>
+
+<p><img src="https://lh3.googleusercontent.com/hcLpNX45gIQZQUQGvsyyIXfOH3s9yDpNLIZJN8TU-RUZDdMGdrsNXAb_NRupjWF9Hf4QrK4y6lXO=w864-h441-no"></p>
+
+<p>最小頻度が5分毎
+<img src="https://lh3.googleusercontent.com/lzuWtzvkK1A5pUSPyShVaFzzOQ13cD8PFVfCAz3rxSYkn5sKirWnhq-4PlKyhuesMlCQtrfH57yx=w862-h507-no"></p>
+
+<h3>Graph</h3>
+
+<p>これで、グラフが取れて閾値を超えたらアラートが飛ぶようになる</p>
+
+<p><img src="https://lh3.googleusercontent.com/yzswstqCbaTzpkYfy5MlRS2I9ur5Is3hI8Eii-o27twq-fYA_6o8SY5Rrn0DbyZEn8UJarGhh_9L=w570-h270-no"></p>
+
+<p><img src="https://lh3.googleusercontent.com/NE43x1KQW76QO7b4TMIjjcEYrpQ07B9SNOb-9L-wEnNKc8oC-69HpgzWiVABnQwBSNGtDz4ayeTR=w286-h221-no"></p>
+
+<h2>Code</h2>
+
+<p>出来上がったCloudFormation templateコードはこちら。<code>AWS::Lambda::Function</code>がlambdaのresource担当だけど、templateにfunctionをインラインで埋め込めるのは現時点では<a href="http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-lambda-function-code.html"><code>nodejs</code>のみ</a>なので仕方なくzipしたpythonコードをs3にアップして参照するようにしてる。</p>
+
+<script src="https://gist-it.appspot.com/https://github.com/ijin/check_lambda_capacity/blob/master/check_lambda_capacity.template"></script>
+
+
+<p>元気があれば、そのうちnode版も書こうかな。。</p>
+
+<p>GitHubのリポジトリは<a href="https://github.com/ijin/check_lambda_capacity">こちらから</a>。</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[LambdaのログをSlackで見よう]]></title>
+    <link href="http://ijin.github.io/blog/2015/12/10/post-lambda-logs-to-slack/"/>
+    <updated>2015-12-10T00:56:00+09:00</updated>
+    <id>http://ijin.github.io/blog/2015/12/10/post-lambda-logs-to-slack</id>
+    <content type="html"><![CDATA[<p><a href="http://qiita.com/advent-calendar/2015/lambda">今年もやるよ！AWS Lambda縛り Advent Calendar 2015</a>の10日分です。</p>
+
+<h2>背景</h2>
+
+<p>AWS Lambdaで開発してるとちょこちょこ実行ログを見たりします。cliであれば、<a href="https://twitter.com/sgwr_dts">@sgwr_dts</a>さんの<a href="https://github.com/winebarrel/lambchop">lambchop</a>が<code>tail</code>的に使えて素敵なんだけど、後で見返したり、検索したりするので、最近ではログをSlackに通知するようにしているのでその紹介を。</p>
+
+<p>イメージはこんな感じ。</p>
+
+<p><img src="https://lh3.googleusercontent.com/A1fsUgw4m52Db4UeOqR3xaQHIGF940MsbA1tchFkF8Pul-ixO6E=w563-h445-no"></p>
+
+<p>ログはCloudWatch logsに溜まるのでsubscriptionさえ出来れば、別にソースはLambdaじゃなくても良いんですけどね。</p>
+
+<h2>Lambda</h2>
+
+<p><div><script src='https://gist.github.com/917193e443ff41cdf98b.js?file='></script>
+<noscript><pre><code></code></pre></noscript></div>
+</p>
+
+<p>CloudWatch logsのイベントをparseして、日付の色付けやタイムゾーン変換等ちょっこっと加工してメッセージと共に指定の<code>#channel</code>に飛ばすようにし、別のSlack通知用lambda functionをinvokeしているだけですね。
+（Slack用のlambdaは<a href="/blog/2015/08/06/github-to-lambda-to-slack/">以前のエントリ</a>を参照）</p>
+
+<p>何故Slackの部分を別functionにしてるかというと、最小単位の機能の切り出しによる<strong>portability</strong>とcross-account間のinvokeが可能となる<strong>reusability</strong>からです。</p>
+
+<h2>紐付け</h2>
+
+<h3>cloudwatch logsにlambda呼び出しの権限設定</h3>
+
+<p><code>
+aws --region ap-northeast-1 lambda add-permission --function-name "cloudwatch_logs" \
+  --statement-id "logs-my_lambda" --principal "logs.ap-northeast-1.amazonaws.com" \
+  --action "lambda:InvokeFunction" --source-account "123456789012" --source-arn \
+  "arn:aws:logs:ap-northeast-1:123456789012:log-group:/aws/lambda/my_lambda:*"
+</code></p>
+
+<h3>subscription filterの作成</h3>
+
+<p><code>
+aws --region ap-northeast-1 logs put-subscription-filter \
+  --log-group-name "/aws/lambda/my_lambda" --filter-name logs-my_lambda \
+  --filter-pattern ""
+  --destination-arn arn:aws:lambda:ap-northeast-1:123456789012:function:cloudwatch_logs`
+</code></p>
+
+<h2>実行</h2>
+
+<p>これでlambda functionが実行されると、Slackにログが通知されます。</p>
+
+<p><img src="https://lh3.googleusercontent.com/-PgkSA7jGbVTf3w1Eq5CZuvUAN4_bkKpR811Vcij5MlLam22C10=w706-h396-no">
+<img src="https://lh3.googleusercontent.com/JKU31Qsd6cOSWe011m8UJaBYljDrXwz08ym0ff79DngGMxDL_y0=w705-h234-no"></p>
+
+<p>うん、見やすい。</p>
+
+<h2>問題点</h2>
+
+<p>これでログが飛ぶようになったのは良いですが、Lambdaが実行されてからSlackへの通知まで10数秒とやや長めの時間がかかってしまうのが現在の難点です。（Immediate Feedbackはないものの履歴や検索用途には十分だけど）</p>
+
+<p>調べてみるとLambdaからCloudWatch logsへの書き出しが一番時間がかかっているのが判明。Logsへ書き出されたら、そこからの処理時間は1〜2秒とちょっと前に<a href="https://aws.amazon.com/about-aws/whats-new/2015/09/near-real-time-processing-of-amazon-cloudwatch-logs-with-aws-lambda/">発表された</a>CloudWatch logsの<em>near realtime processing</em>の通りなので、早く<code>Lambda -&gt; CloudWatch logs</code>も同じような処理時間を実現して欲しいものです。</p>
+
+<p>まあ、別にCloudWatch logsにさえ入れば早いので、lambda logに限らずいろいろ応用できそうですが。</p>
+
+<p>では、Happy Lambda Life!</p>
+
+<p>参考</p>
+
+<ul>
+<li><a href="http://docs.aws.amazon.com/AmazonCloudWatch/latest/DeveloperGuide/Subscriptions.html#LambdaFunctionExample">http://docs.aws.amazon.com/AmazonCloudWatch/latest/DeveloperGuide/Subscriptions.html#LambdaFunctionExample</a></li>
+<li><a href="http://inokara.hateblo.jp/entry/2015/10/18/201212">http://inokara.hateblo.jp/entry/2015/10/18/201212</a></li>
+</ul>
+
+]]></content>
+  </entry>
+  
+</feed>

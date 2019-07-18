@@ -1,0 +1,273 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: docker | @ijin]]></title>
+  <link href="http://ijin.github.io/blog/categories/docker/atom.xml" rel="self"/>
+  <link href="http://ijin.github.io/"/>
+  <updated>2019-07-18T23:02:25+09:00</updated>
+  <id>http://ijin.github.io/</id>
+  <author>
+    <name><![CDATA[Michael H. Oshita]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[DockerCon 2016に参加してきた]]></title>
+    <link href="http://ijin.github.io/blog/2016/06/28/dockercon-2016/"/>
+    <updated>2016-06-28T10:17:00+09:00</updated>
+    <id>http://ijin.github.io/blog/2016/06/28/dockercon-2016</id>
+    <content type="html"><![CDATA[<p>先日、<a href="http://2016.dockercon.com/">DockerCon 2016</a>に参加してきたので、そのメモ。</p>
+
+<h2>To DockerCon you go!</h2>
+
+<p><script async="true" class="speakerdeck-embed" data-id="dd1706017844461583368f3aec9e49b5" src="//speakerdeck.com/assets/embed.js"> </script></p>
+
+<p>ちなみに行く事になった経緯は後日の<a href="http://qiita.com/t-sato/items/b7d33ac38205fe5d2997">JAWS-UGおコンテナ支部 #5</a>でLTしてきました。</p>
+
+<p>パッション大事！</p>
+
+<p>以下、トゥギャッター風に。</p>
+
+<h2>Day 0</h2>
+
+<h3>Pre-Registration &amp; Welcome Party</h3>
+
+<p><img src="https://lh3.googleusercontent.com/EbICBfukR41-rSVc75vfqKH1FW2-tjRofVSSohIEgD4iQMFZImz7wmZc7j6mihcVavhwFStPFKGr=w455-h606-no"></p>
+
+<p>場所はシアトルのWashington State Convention Center。何気にこの地に訪れるのは初。</p>
+
+<p><img src="https://lh3.googleusercontent.com/gcFQaHyxe0yqMvFKpAyMuF0Ht7_NSq4MwIysYy_pkbk6XKhSgme1uCA_h0aBAewWq1LTqEkUv_Lu=w455-h606-no"></p>
+
+<p>Welcome to DockerCon 2016!</p>
+
+<p><div class='embed tweet'><blockquote class="twitter-tweet"><p lang="en" dir="ltr">Moby Dock! <a href="https://twitter.com/hashtag/DockerCon?src=hash">#DockerCon</a> <a href="https://t.co/cNwtOeLxlI">pic.twitter.com/cNwtOeLxlI</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/744699319534575616">June 20, 2016</a></blockquote>
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div></p>
+
+<p><img src="https://lh3.googleusercontent.com/pQvzcaHk0EzEjoHTUwENIzW25Mou2QfQ9DiVZXflPalOgvG7B9S9ZCFVyq6W7lRPSBdU746_6-I7=w808-h606-no"></p>
+
+<p>企業ブース</p>
+
+<p><div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">20時なのにすごい明るい。 <a href="https://t.co/bjdAPk9PKo">pic.twitter.com/bjdAPk9PKo</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/744729346259070976">June 20, 2016</a></blockquote>
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div></p>
+
+<p><img src="https://lh3.googleusercontent.com/UhiotzEzNdpO855q4fqariqpi7yzQyMVunDPAbuTW6QwgvgtI55zuJx8R2ox9siM8AuR-2oHeWIw=w808-h606-no"></p>
+
+<p>Welcome Party</p>
+
+<p><img src="https://lh3.googleusercontent.com/X3cd_omPYz3s1oHy5gbowLj7HZG3uwnotMA9WY3UF5qS5PlZ9tiYkoX3FHi0N68E-GoMbmiWi1A_=w793-h595-no"></p>
+
+<p>Bar</p>
+
+<h2>Day 1</h2>
+
+<h3>Highlights</h3>
+
+<ul>
+<li>Docker 1.12 (orchestration built-in)
+
+<ul>
+<li>swarm mode</li>
+<li>serice api</li>
+<li>cryptographic node identity</li>
+<li>build-in routing mesh</li>
+</ul>
+</li>
+<li>Experimental Distributed Application Bundles (DAB)</li>
+<li>Docker for AWS &amp; Azure (beta)</li>
+<li>Docker for Mac &amp; Windows (public beta)</li>
+</ul>
+
+
+<p><img src="https://lh3.googleusercontent.com/S1EdQrzioZdPZ5B4xpcHefQOIXnCeQgeRDXA2nm-Rwx5rDLNQrIHV7GaoG6OlYh_WTEVmfLZK5qa=w455-h606-no"></p>
+
+<p>ぞろぞろ</p>
+
+<p><div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">これは。。 <a href="https://twitter.com/hashtag/DockerCon?src=hash">#DockerCon</a> <a href="https://t.co/rB563DXO5P">pic.twitter.com/rB563DXO5P</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/744923494589202432">June 20, 2016</a></blockquote>
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">広い。 <a href="https://twitter.com/hashtag/DockerCon?src=hash">#DockerCon</a> <a href="https://t.co/WJbjh4olWJ">pic.twitter.com/WJbjh4olWJ</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/744923505871839233">June 20, 2016</a></blockquote>
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="en" dir="ltr">2014 - 500 attendees<br>2015 - 2000 attendees<br>2016 - 4000 attendees<a href="https://twitter.com/hashtag/DockerCon?src=hash">#DockerCon</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/744928052858126338">June 20, 2016</a></blockquote>
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="en" dir="ltr">Cats shooting lasers. So random. <a href="https://twitter.com/hashtag/DockerCon?src=hash">#DockerCon</a> <a href="https://t.co/uuiQBHLell">pic.twitter.com/uuiQBHLell</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/744928124815577088">June 20, 2016</a></blockquote>
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="en" dir="ltr">Live de-bugging inside a container with <a href="https://twitter.com/docker">@docker</a> for Mac and Windows by <a href="https://twitter.com/AanandPrasad">@AanandPrasad</a> <a href="https://twitter.com/hashtag/dockercon?src=hash">#dockercon</a> <a href="https://t.co/zAUvVUOEc5">pic.twitter.com/zAUvVUOEc5</a></p>&mdash; Betty Junod (@BettyJunod) <a href="https://twitter.com/BettyJunod/status/744935919673708544">June 20, 2016</a></blockquote>
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div></p>
+
+<p><div class='embed tweet'><blockquote class="twitter-tweet"><p lang="en" dir="ltr">Docker 1.12<br>- Swarm mode<br>- Cryptographic node identity<br>- Service API<br>- Built-in routing mesh<a href="https://twitter.com/hashtag/DockerCon?src=hash">#DockerCon</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/744941579647913984">June 20, 2016</a></blockquote>
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="en" dir="ltr">Distributed Application Bundle <a href="https://twitter.com/hashtag/DockerCon?src=hash">#DockerCon</a> <a href="https://t.co/IKhFIdx9Pf">pic.twitter.com/IKhFIdx9Pf</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/744950295835217920">June 20, 2016</a></blockquote>
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div></p>
+
+<h3>Sessions</h3>
+
+<ul>
+<li>The Golden Ticket: Docker and High Security Microservices</li>
+<li>Microservices + Events + Docker = A Perfect Trio</li>
+<li>Thinking Inside the Container: A Continuous Delivery Story</li>
+<li>Docker in Production, Look No Hands!</li>
+</ul>
+
+
+<p><strong>The Golden Ticket: Docker and High Security Microservices</strong></p>
+
+<p><div class='embed tweet'><blockquote class="twitter-tweet"><p lang="en" dir="ltr">apparmor example on golang+docker <a href="https://twitter.com/hashtag/DockerCon?src=hash">#DockerCon</a> <a href="https://t.co/rwuzMYdpIF">pic.twitter.com/rwuzMYdpIF</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/744973236203446272">June 20, 2016</a></blockquote>
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">Sysdig 便利そう。 <a href="https://twitter.com/hashtag/DockerCon?src=hash">#DockerCon</a> <a href="https://t.co/9a0ruRZK9w">pic.twitter.com/9a0ruRZK9w</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/744975496308359168">June 20, 2016</a></blockquote>
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="en" dir="ltr">Seccomp pro tips for Docker/runC <a href="https://twitter.com/hashtag/DockerCon?src=hash">#DockerCon</a> <a href="https://t.co/4n4w4lNlxO">pic.twitter.com/4n4w4lNlxO</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/744976420074446849">June 20, 2016</a></blockquote>
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div></p>
+
+<p><strong>Microservices + Events + Docker = A Perfect Trio</strong></p>
+
+<p><div class='embed tweet'><blockquote class="twitter-tweet"><p lang="en" dir="ltr">Microservices + Events + Docker = A Perfect Trio <a href="https://twitter.com/hashtag/DockerCon?src=hash">#DockerCon</a> <a href="https://t.co/MnbK8FO7OL">pic.twitter.com/MnbK8FO7OL</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/744999360421732352">June 20, 2016</a></blockquote>
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="en" dir="ltr">The Art of Scalability <a href="https://twitter.com/hashtag/DockerCon?src=hash">#DockerCon</a> <a href="https://t.co/aX3MhHiwAO">pic.twitter.com/aX3MhHiwAO</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/745000882610274304">June 20, 2016</a></blockquote>
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="en" dir="ltr">How to atomically update database and publish an event - use event-sourcing. <a href="https://twitter.com/hashtag/DockerCon?src=hash">#DockerCon</a> <a href="https://t.co/cOoCA9N15m">pic.twitter.com/cOoCA9N15m</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/745004762962223104">June 20, 2016</a></blockquote>
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="und" dir="ltr"><a href="https://t.co/udEVJFzxSM">https://t.co/udEVJFzxSM</a> <a href="https://twitter.com/hashtag/DockerCon?src=hash">#DockerCon</a> <a href="https://t.co/zFpQbTLvLA">pic.twitter.com/zFpQbTLvLA</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/745009602677248000">June 20, 2016</a></blockquote>
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div></p>
+
+<p><strong>Thinking Inside the Container: A Continuous Delivery Story</strong></p>
+
+<p><div class='embed tweet'><blockquote class="twitter-tweet"><p lang="en" dir="ltr">Thinking Inside the Container: A Continuous Delivery Story <a href="https://twitter.com/hashtag/DockerCon?src=hash">#DockerCon</a> <a href="https://t.co/5Mr6ijoXYF">pic.twitter.com/5Mr6ijoXYF</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/745012607329906688">June 20, 2016</a></blockquote>
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="en" dir="ltr">10,000-14,000 containers a week.  <a href="https://twitter.com/hashtag/DockerCon?src=hash">#DockerCon</a> <a href="https://t.co/MXtu23Eg7G">pic.twitter.com/MXtu23Eg7G</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/745013610032803840">June 20, 2016</a></blockquote>
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="en" dir="ltr">The reality... <a href="https://twitter.com/hashtag/DockerCon?src=hash">#DockerCon</a> <a href="https://t.co/huScMIX8Ce">pic.twitter.com/huScMIX8Ce</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/745014086392381440">June 20, 2016</a></blockquote>
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="en" dir="ltr">So simple! <a href="https://twitter.com/hashtag/DockerCon?src=hash">#DockerCon</a> <a href="https://t.co/ZfIzpHEQKm">pic.twitter.com/ZfIzpHEQKm</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/745019391960481792">June 20, 2016</a></blockquote>
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="fr" dir="ltr">Garbage Collection <a href="https://twitter.com/hashtag/DockerCon?src=hash">#DockerCon</a> <a href="https://t.co/qUYqmr0TpY">pic.twitter.com/qUYqmr0TpY</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/745019998523908100">June 20, 2016</a></blockquote>
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div></p>
+
+<h3>DockerCon party @ Space Needle</h3>
+
+<p>最後はシアトルの名所（？）、<a href="http://www.spaceneedle.com">Space Needle</a>での貸切パーティー</p>
+
+<p><div class='embed tweet'><blockquote class="twitter-tweet"><p lang="en" dir="ltr"><a href="https://twitter.com/hashtag/DockerCon?src=hash">#DockerCon</a> party! <a href="https://t.co/EIl3FoNUZd">pic.twitter.com/EIl3FoNUZd</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/745097049478045696">June 21, 2016</a></blockquote>
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div></p>
+
+<p><img src="https://lh3.googleusercontent.com/k_fJmctUgvWrWhlHNFsf1taBDn68iRM9fDDOIEZKkmvaPD03bY1bD4Wd_JGOw8f4pRygew0rKx08=w455-h606-no"></p>
+
+<p>中でもワイワイ</p>
+
+<h2>Day 2</h2>
+
+<h3>Highlights</h3>
+
+<ul>
+<li>Docker Datacenter</li>
+<li>AWS Quickstart</li>
+<li>Azure Marcketplace Templates</li>
+<li>Docker Store (private beta)</li>
+</ul>
+
+
+<p><div class='embed tweet'><blockquote class="twitter-tweet"><p lang="und" dir="ltr">Day 2! <a href="https://twitter.com/hashtag/DockerCon?src=hash">#DockerCon</a> <a href="https://t.co/jVobmfYqEO">pic.twitter.com/jVobmfYqEO</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/745288065803968512">June 21, 2016</a></blockquote>
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">今日のテーマは&quot;Democratizing Docker for the Enterprise&quot; <a href="https://twitter.com/hashtag/DockerCon?src=hash">#DockerCon</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/745288586803613696">June 21, 2016</a></blockquote>
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div></p>
+
+<p>個人的には、とある企業でのDockerのユースケースを演じる漫才が面白かった。</p>
+
+<p><div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">Enterprise Opsの日常。まずredditで狐の動画を見る。 <a href="https://twitter.com/hashtag/DockerCon?src=hash">#DockerCon</a> <a href="https://t.co/PtBhwieitx">pic.twitter.com/PtBhwieitx</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/745294134190170112">June 21, 2016</a></blockquote>
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">昨日のデモは猫vs犬の投票システムだったけど、今日のエンプラ版はISOの投票になってる。9000 vs 9001 <a href="https://twitter.com/hashtag/DockerCon?src=hash">#DockerCon</a> <a href="https://t.co/5Cm8jPsUWy">pic.twitter.com/5Cm8jPsUWy</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/745294892423745536">June 21, 2016</a></blockquote>
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="en" dir="ltr">&quot;I&#39;m going to Burning Man&quot; <a href="https://twitter.com/hashtag/DockerCon?src=hash">#DockerCon</a> <a href="https://t.co/B6vnsZfnDX">pic.twitter.com/B6vnsZfnDX</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/745295726700224513">June 21, 2016</a></blockquote>
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="en" dir="ltr">Oh no, Nosebleed!! <a href="https://twitter.com/hashtag/DockerCon?src=hash">#DockerCon</a> <a href="https://t.co/9FjwpBXNCd">pic.twitter.com/9FjwpBXNCd</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/745296068259123201">June 21, 2016</a></blockquote>
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="en" dir="ltr">“The Nosebleed OpenSSL Bug” <a href="https://twitter.com/hashtag/DockCon?src=hash">#DockCon</a> <a href="https://t.co/HqHJl6sNM4">https://t.co/HqHJl6sNM4</a></p>&mdash; Marius Ducea (@mariusducea) <a href="https://twitter.com/mariusducea/status/745296465094860802">June 21, 2016</a></blockquote>
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="en" dir="ltr">&quot;I brought you some  coffee. It doesn&#39;t have all the substances you might have gotten at Burning Man&quot; <a href="https://twitter.com/hashtag/DockerCon?src=hash">#DockerCon</a> <a href="https://t.co/7mTHpBCDMC">pic.twitter.com/7mTHpBCDMC</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/745297941535981569">June 21, 2016</a></blockquote>
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div></p>
+
+<p>AzureのCTO</p>
+
+<p><div class='embed tweet'><blockquote class="twitter-tweet"><p lang="eu" dir="ltr">Azure CTO <a href="https://twitter.com/hashtag/DockerCon?src=hash">#DockerCon</a> <a href="https://t.co/6DHOavOAU4">pic.twitter.com/6DHOavOAU4</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/745300074528333824">June 21, 2016</a></blockquote>
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">AzureのCTOがMacとChromeでデモしてる。</p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/745300681104359424">June 21, 2016</a></blockquote>
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">MacのVisual Studio CodeでC#出来るよアピールか。 <a href="https://twitter.com/hashtag/DockerCon?src=hash">#DockerCon</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/745301503926165504">June 21, 2016</a></blockquote>
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">デモ失敗w <a href="https://twitter.com/hashtag/DockerCon?src=hash">#DockerCon</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/745302570936086528">June 21, 2016</a></blockquote>
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div></p>
+
+<p>ADPのCTO</p>
+
+<p><div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">巨漢。 <a href="https://twitter.com/hashtag/DockerCon?src=hash">#DockerCon</a> <a href="https://t.co/LbXqA01J2o">pic.twitter.com/LbXqA01J2o</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/745305740873633792">June 21, 2016</a></blockquote>
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">鼻息がwww <a href="https://twitter.com/hashtag/dockercon?src=hash">#dockercon</a></p>&mdash; Keisuke Nishitani (@Keisuke69) <a href="https://twitter.com/Keisuke69/status/745305275972759552">June 21, 2016</a></blockquote>
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">いや、良い事言ってるんだけど、どうしても鼻息の方が気になるw</p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/745306231712022528">June 21, 2016</a></blockquote>
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="en" dir="ltr">&quot;Microservices are like chicken nuggets, but we have chickens&quot; <a href="https://twitter.com/hashtag/DockerCon?src=hash">#DockerCon</a> <a href="https://t.co/AZLfOyKgQ7">pic.twitter.com/AZLfOyKgQ7</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/745308374997184512">June 21, 2016</a></blockquote>
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div></p>
+
+<h3>Sessions</h3>
+
+<ul>
+<li>Making Friendly Microservices</li>
+<li>Sharding Containers: Make Go Apps Computer-Friendly Again</li>
+<li>Closing General Session: Moby Dock's Cool Hacks</li>
+</ul>
+
+
+<p><strong>Making Friendly Microservices</strong></p>
+
+<p><div class='embed tweet'><blockquote class="twitter-tweet"><p lang="en" dir="ltr">Friendly microservices <a href="https://twitter.com/hashtag/DockerCon?src=hash">#DockerCon</a> <a href="https://t.co/onL94wSudp">pic.twitter.com/onL94wSudp</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/745353738508853248">June 21, 2016</a></blockquote>
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">お、Atlasが出てきた。 <a href="https://twitter.com/hashtag/DockerCon?src=hash">#DockerCon</a> <a href="https://t.co/rqzoOfLvbY">pic.twitter.com/rqzoOfLvbY</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/745357805347999745">June 21, 2016</a></blockquote>
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">Zipkin知らんかった。 microservices 向けの分散追跡システムらしい。 <a href="https://twitter.com/hashtag/DockerCon?src=hash">#DockerCon</a> <a href="https://t.co/cSfQPXImFG">pic.twitter.com/cSfQPXImFG</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/745357873098567683">June 21, 2016</a></blockquote>
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div></p>
+
+<p><strong>Sharding Containers: Make Go Apps Computer-Friendly Again</strong></p>
+
+<p><div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">wrkでベンチマーク。 <a href="https://twitter.com/hashtag/DockerCon?src=hash">#DockerCon</a> <a href="https://t.co/vxmAUK7U5B">pic.twitter.com/vxmAUK7U5B</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/745398037497806849">June 21, 2016</a></blockquote>
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div></p>
+
+<p><strong>Closing General Session: Moby Dock's Cool Hacks</strong></p>
+
+<p><div class='embed tweet'><blockquote class="twitter-tweet"><p lang="en" dir="ltr">Jeff Nickoloff taking about Services. <a href="https://twitter.com/hashtag/DockerCon?src=hash">#DockerCon</a> <a href="https://t.co/DjHBYBw4dp">pic.twitter.com/DjHBYBw4dp</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/745405126408450050">June 21, 2016</a></blockquote>
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="en" dir="ltr">Demo on Entropy - a failure orchestration microservicen for Docker platforms <a href="https://twitter.com/hashtag/DockerCon?src=hash">#DockerCon</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/745406128679333890">June 22, 2016</a></blockquote>
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">Docker用の chaos monkeyみたいなやつか。 <a href="https://twitter.com/hashtag/DockerCon?src=hash">#DockerCon</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/745406672416342016">June 22, 2016</a></blockquote>
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="en" dir="ltr">latency injection <a href="https://twitter.com/hashtag/DockerCon?src=hash">#DockerCon</a> <a href="https://t.co/xseLsGyaGH">pic.twitter.com/xseLsGyaGH</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/745407885035724800">June 22, 2016</a></blockquote>
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div></p>
+
+<p>Serverless Dockerが面白かった。</p>
+
+<p><div class='embed tweet'><blockquote class="twitter-tweet"><p lang="de" dir="ltr">Serverless Docker!? <a href="https://twitter.com/hashtag/DockerCon?src=hash">#DockerCon</a> <a href="https://t.co/rVxbSelFkq">pic.twitter.com/rVxbSelFkq</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/745408340319051781">June 22, 2016</a></blockquote>
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">Docker内のコードからDocker Swarm上で コンテナを実行して Serverlessを実現。なるほど。 <a href="https://twitter.com/hashtag/DockerCon?src=hash">#DockerCon</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/745410551778410496">June 22, 2016</a></blockquote>
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="en" dir="ltr">How to run Serverless Docker <a href="https://twitter.com/hashtag/DockerCon?src=hash">#DockerCon</a> <a href="https://t.co/QjNQzpTk7q">pic.twitter.com/QjNQzpTk7q</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/745410776848990208">June 22, 2016</a></blockquote>
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="en" dir="ltr">Get involved! <a href="https://t.co/fjFuAACXZR">https://t.co/fjFuAACXZR</a> <a href="https://twitter.com/hashtag/DockerCon?src=hash">#DockerCon</a> <a href="https://twitter.com/hashtag/serverlessdocker?src=hash">#serverlessdocker</a> <a href="https://t.co/ro4XuBWLVw">pic.twitter.com/ro4XuBWLVw</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/745411486625861633">June 22, 2016</a></blockquote>
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div>
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">Lambda内でも docker実行出来たら良いな。</p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/745411898510704640">June 22, 2016</a></blockquote>
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div></p>
+
+<p>Docker on Drones</p>
+
+<p><div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">飛行中のドローンに搭載してる dockerをライブアップデート。すごい。 <a href="https://twitter.com/hashtag/DockerCon?src=hash">#DockerCon</a> <a href="https://t.co/RKWjExgTtu">pic.twitter.com/RKWjExgTtu</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/745412950551212034">June 22, 2016</a></blockquote>
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></div></p>
+
+<h2>終わりに</h2>
+
+<p>世界各国のエンジニアと話せて、Dockerに対する熱量や動向を肌感覚で感じとれて非常に有意義な旅でした。以前の<a href="/blog/2014/04/21/chefconf-2014/">ChefConf</a>や<a href="/blog/2015/09/30/hashiconf-2015/">HashiConf</a>もそうだけど、気になる技術やトレンドがあればTechカンファレンスに直接乗り込んで見るのが一番効率的なので、今後も継続してどこかに参加するようにしたいです。</p>
+
+<p>Thank you!</p>
+
+<p><img src="https://lh3.googleusercontent.com/yPy0EnK1ewU3HbrQyT6pSxR-G--QAHZ2fmwLJ09Jh14sw9yju2q1DQd3pIin-AXJ0ohAJeRqxhAE=w455-h606-no"></p>
+]]></content>
+  </entry>
+  
+</feed>

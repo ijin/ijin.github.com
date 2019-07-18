@@ -1,0 +1,475 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: events | @ijin]]></title>
+  <link href="http://ijin.github.io/blog/categories/events/atom.xml" rel="self"/>
+  <link href="http://ijin.github.io/"/>
+  <updated>2019-07-18T23:02:25+09:00</updated>
+  <id>http://ijin.github.io/</id>
+  <author>
+    <name><![CDATA[Michael H. Oshita]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Serverless Days Tokyo/Fukuoka 2019開催の告知]]></title>
+    <link href="http://ijin.github.io/blog/2019/06/25/serverless-days-tokyo-fukuoka-2019/"/>
+    <updated>2019-06-25T02:07:00+09:00</updated>
+    <id>http://ijin.github.io/blog/2019/06/25/serverless-days-tokyo-fukuoka-2019</id>
+    <content type="html"><![CDATA[<p>前回、Serverless Days Hamburg 2019で<a href="/blog/2019/04/18/serverless-days-hamburg-2019/">発表&amp;予告</a>した通り、サーバーレスコミュニティとして日本でも同イベントを開催する運びとなりました。東京と福岡の2都市開催です！</p>
+
+<h2>Serverless Days Tokyo 2019</h2>
+
+<h3>日付</h3>
+
+<ul>
+<li>2019年10月21日（月） - The Workshop Day</li>
+<li>2019年10月22日（火・祝） - The Conference Day</li>
+</ul>
+
+
+<h3>場所</h3>
+
+<ul>
+<li>Workshop - DMM.comラボ</li>
+<li>Conference - Tabloid</li>
+</ul>
+
+
+<p>カンファレンスは過去にServerlessConf Tokyo 2016をやったとこと同じ会場。</p>
+
+<h2>Serverless Days Fukuoka 2019</h2>
+
+<h3>日付</h3>
+
+<ul>
+<li>2019年12月13日（金） - The Workshop Day</li>
+<li>2019年12月14日（土） - The Conference Day</li>
+</ul>
+
+
+<h3>場所</h3>
+
+<ul>
+<li>Workshop - 天神周辺</li>
+<li>Conference - LINE Fukuoka</li>
+</ul>
+
+
+<h2>CFP</h2>
+
+<p>他のServerless Daysにならって<a href="https://www.papercall.io">PaperCall</a>を使って募集します。選択バイアスを最小にするために匿名化して応募を受け付けれる為、コンテンツの内容によって判断しやすしようという試みです。</p>
+
+<p>3つのトーク尺とワークショップを募集しているのでどしどし応募を〜。</p>
+
+<h3>Talks</h3>
+
+<ul>
+<li>Long Talk 40min</li>
+<li>Short Talk 20min</li>
+<li>Lightning Talk 5min</li>
+<li>Workshop 120min</li>
+</ul>
+
+
+<h3>Mentoring</h3>
+
+<p>今回はちょっと喋ってみたいけど不安のある方・初めての方・自身のない方に対して<strong>メンター制度</strong>を導入しており、応募前のCFPレビューやスピーキングの指導も行えますので相談可能だったりします。</p>
+
+<h2>Staff &amp; Sponsors</h2>
+
+<p>イベントを成功させるには皆さんのお力が必要です。</p>
+
+<p>スタックやスポンサーをしてくださる方は是非ともご連絡ください！！</p>
+
+<p><a href="https://tokyo.serverlessdays.io">Serverless Days Tokyo</a></p>
+
+<h2>Serverless is a Doctrine, not a Technology</h2>
+
+<p>先日、Serverless Daysの生みの親である<a href="https://medium.com/@PaulDJohnston">Paul Johnston</a>によって新しいサーバーレスに関するパラダイムが<a href="https://medium.com/@PaulDJohnston/serverless-is-a-doctrine-not-a-technology-4193ccb66cfc">提唱</a>されました。（<a href="https://qiita.com/toshi0607/items/42940d25ae77d9023302">日本語訳</a>）</p>
+
+<p><strong>サーバーレスは教義であり、テクノロジーではない</strong></p>
+
+<p>単に利用方法だけではなく、Serverless Daysではこういう一歩掘り下げたコンテキストをカバーできればなという思いです。</p>
+
+<ul>
+<li>コードから設定へ</li>
+<li>高LOCから少LOCへ</li>
+<li>サービスの構築から利用へ</li>
+<li>ワークロードの所有から放棄へ</li>
+<li>インスタンス、サーバー、コンテナの不使用（他の方法がない限り）</li>
+<li>サービスによるスケールアップとゼロスケール</li>
+<li>アプリケーション固有のデータレイヤ</li>
+<li>短期間の努力を犠牲にしても長期的な努力を最小限に抑える</li>
+<li>オブサーバビリティ重視の開発</li>
+<li>正当なビジネス・ケースなしに、新しいサービスや技術はなし</li>
+<li>ビジネスにおいて技術者はビジネス価値を提供する為に存在する</li>
+</ul>
+
+
+<p>乞うご期待ですね！</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Serverless Days Hamburg 2019で発表してきた]]></title>
+    <link href="http://ijin.github.io/blog/2019/04/18/serverless-days-hamburg-2019/"/>
+    <updated>2019-04-18T20:59:00+09:00</updated>
+    <id>http://ijin.github.io/blog/2019/04/18/serverless-days-hamburg-2019</id>
+    <content type="html"><![CDATA[<p>去年、ServerlessConf Parisで<a href="/blog/2018/02/22/serverlessconf-paris-2018/">発表</a>してきて、今年はどうしようかなーって思ってたら<a href="https://hamburg.serverlessdays.io">Serverless Days Hamburg</a>のCFPを見つけて気軽に応募したら通っちゃったので発表してきました。</p>
+
+<h2>Serverless Days</h2>
+
+<p>元々<a href="https://www.jeffconf.com/">JeffConf</a>という名でヨーロッパ各地で数回開催されていたサーバーレスのカンファレンスですが、Severless Daysに<a href="https://serverless.zone/goodbye-jeffconf-hello-serverlessdays-9ae26791d3f">改名</a>されました。Serverless Confみたいな大規模カンファレンスではなく、「<strong>One Day. One Track. One Community.</strong>」というスローガンの元で行われるローカルコミュニティ主導の地域密着イベントです。奇しくも去年のServerlessConf Parisの翌日にJeffConf Hamburgが開催されたのですが、スピーカーの懇親会があってスケジュール的に断念したので、今回改めて発表という形で参加できたのは感慨深かったです。</p>
+
+<h2>Hamburg</h2>
+
+<p>場所は去年の美術館から変更されてサッカースタジアムの施設を利用</p>
+
+<p><img src="https://lh3.googleusercontent.com/TTPwH94B7oBmcs9sCcEYjZ9dVi5TRCFXR1VJwFWd2hKK0klA_rtFaKNXHqlFki-86fpNYPh-UNcTnUTw-WtJl0IbSskkcSJizBec2_7JAuwIoy9ZvGCD_oZtSYKNFcU16EQLl8Vk5A=w386-h514-no"></p>
+
+<p>ぎゅうぎゅうに詰められた会場がアットホームで良い感じ</p>
+
+<p><div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">始まる！<a href="https://twitter.com/hashtag/serverlessdayshamburg?src=hash&amp;ref_src=twsrc%5Etfw">#serverlessdayshamburg</a> <a href="https://twitter.com/hashtag/serverlessdays?src=hash&amp;ref_src=twsrc%5Etfw">#serverlessdays</a> <a href="https://t.co/FWjnRwGf0q">pic.twitter.com/FWjnRwGf0q</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/1096327866428547077?ref_src=twsrc%5Etfw">February 15, 2019</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div></p>
+
+<p>Keynoteは安定の<a href="https://twitter.com/theburningmonk">Yan Cui</a>さん。サーバーレスに関わる都市伝説を各個撃破してたw</p>
+
+<p>中でも名言は</p>
+
+<p><div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">「ベンダーロックインの心配をしている間にマーケットからロックアウトされるよ。」名言<a href="https://twitter.com/hashtag/serverlessdayshamburg?src=hash&amp;ref_src=twsrc%5Etfw">#serverlessdayshamburg</a> <a href="https://twitter.com/hashtag/serverlessdays?src=hash&amp;ref_src=twsrc%5Etfw">#serverlessdays</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/1096338823070576640?ref_src=twsrc%5Etfw">February 15, 2019</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div></p>
+
+<p>スピーカーは世界中から招待。覚えてるだけで</p>
+
+<ul>
+<li>アメリカ</li>
+<li>カナダ</li>
+<li>イギリス</li>
+<li>ドイツ</li>
+<li>セルビア</li>
+<li>ボスニア</li>
+<li>イスラエル</li>
+<li>インド</li>
+<li>日本（私）</li>
+</ul>
+
+
+<p>ご飯がドイツらしくビーガンだったけど美味！</p>
+
+<p><img src="https://lh3.googleusercontent.com/OAeojwnXTAdal-DoCsii4G4dJqOSAK6qK9J1BlWufZTEKgdCIMHtLnZRxqXQsNrZT3IGrnR0C3ggxxavjW0i-rmhV7AGGKtleMaac5XRxiCnXHOOEwzu7LF_AiDvDkaMKwKknOyv3Q=w440-h586-no"></p>
+
+<p>以下<a href="https://twitter.com/clairikine">Claire</a>さんによるSketch Note！</p>
+
+<p><div class='embed tweet'><blockquote class="twitter-tweet"><p lang="en" dir="ltr">Keynote: “Debunking Serverless Myths” by <a href="https://twitter.com/theburningmonk?ref_src=twsrc%5Etfw">@theburningmonk</a> <a href="https://twitter.com/hashtag/slsdayshamburg?src=hash&amp;ref_src=twsrc%5Etfw">#slsdayshamburg</a> <a href="https://twitter.com/hashtag/sketchnote?src=hash&amp;ref_src=twsrc%5Etfw">#sketchnote</a> <a href="https://t.co/wX0FQZhif2">pic.twitter.com/wX0FQZhif2</a></p>&mdash; Clairikine (@clairikine) <a href="https://twitter.com/clairikine/status/1096346818647080960?ref_src=twsrc%5Etfw">February 15, 2019</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="en" dir="ltr">“Designing Testable Serverless App Using Hexagonal Architectures” by <a href="https://twitter.com/slobodan_?ref_src=twsrc%5Etfw">@slobodan_</a> <a href="https://twitter.com/hashtag/slsdayshamburg?src=hash&amp;ref_src=twsrc%5Etfw">#slsdayshamburg</a> <a href="https://twitter.com/hashtag/sketchnote?src=hash&amp;ref_src=twsrc%5Etfw">#sketchnote</a> <a href="https://t.co/LTq1RVUo2r">pic.twitter.com/LTq1RVUo2r</a></p>&mdash; Clairikine (@clairikine) <a href="https://twitter.com/clairikine/status/1096370821373800451?ref_src=twsrc%5Etfw">February 15, 2019</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="en" dir="ltr">“Covering Your *aaS: Serverless Means More Than What You Think” by <a href="https://twitter.com/asciimike?ref_src=twsrc%5Etfw">@asciimike</a> <a href="https://twitter.com/hashtag/slsdayshamburg?src=hash&amp;ref_src=twsrc%5Etfw">#slsdayshamburg</a> <a href="https://twitter.com/hashtag/sketchnote?src=hash&amp;ref_src=twsrc%5Etfw">#sketchnote</a> <a href="https://t.co/TwRWVQNMfy">pic.twitter.com/TwRWVQNMfy</a></p>&mdash; Clairikine (@clairikine) <a href="https://twitter.com/clairikine/status/1096433528554864643?ref_src=twsrc%5Etfw">February 15, 2019</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="en" dir="ltr">“Serverless Communities” lightning talk by <a href="https://twitter.com/ijin?ref_src=twsrc%5Etfw">@ijin</a> <a href="https://twitter.com/hashtag/slsdayshamburg?src=hash&amp;ref_src=twsrc%5Etfw">#slsdayshamburg</a> <a href="https://twitter.com/hashtag/sketchnote?src=hash&amp;ref_src=twsrc%5Etfw">#sketchnote</a> <a href="https://t.co/Beob4KyByH">pic.twitter.com/Beob4KyByH</a></p>&mdash; Clairikine (@clairikine) <a href="https://twitter.com/clairikine/status/1096454978879868928?ref_src=twsrc%5Etfw">February 15, 2019</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="en" dir="ltr">“Escape The Lock-In: How Our Functions Run On AWS, Azure and Google Cloud” by <a href="https://twitter.com/c_neijenhuis?ref_src=twsrc%5Etfw">@c_neijenhuis</a> <a href="https://twitter.com/hashtag/slsdayshamburg?src=hash&amp;ref_src=twsrc%5Etfw">#slsdayshamburg</a> <a href="https://twitter.com/hashtag/sketchnote?src=hash&amp;ref_src=twsrc%5Etfw">#sketchnote</a> <a href="https://t.co/Q1K3in11B3">pic.twitter.com/Q1K3in11B3</a></p>&mdash; Clairikine (@clairikine) <a href="https://twitter.com/clairikine/status/1096455000656621568?ref_src=twsrc%5Etfw">February 15, 2019</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="en" dir="ltr">“Zen and the Art of Beer Fermentation Observability” by Ilya Libin <a href="https://twitter.com/hashtag/slsdayshamburg?src=hash&amp;ref_src=twsrc%5Etfw">#slsdayshamburg</a> <a href="https://twitter.com/hashtag/sketchnote?src=hash&amp;ref_src=twsrc%5Etfw">#sketchnote</a> <a href="https://t.co/GiD3nNxDK2">pic.twitter.com/GiD3nNxDK2</a></p>&mdash; Clairikine (@clairikine) <a href="https://twitter.com/clairikine/status/1096455021707907072?ref_src=twsrc%5Etfw">February 15, 2019</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div></p>
+
+<h2>Talk</h2>
+
+<p>技術的な発表が多い中、私のタイトルは<strong>Serverless Communities</strong>といって、サーバーレスのコミュニティにフォーカスした内容でした。日本でのサーバーレスコミュニティの運営に関わってきて得た経験、知見、活動などを共有し、コミュニティ参加の意義を（少し）エモく訴えて、他国のコミュニティやエンジニア達を少しでも刺激・喚起できればなという思いでした。</p>
+
+<p>ここではコミュニティ参加の意義や思いは詳細に書きませんが、一つだけ。</p>
+
+<p><strong>Give to the community. It will give back to you.</strong></p>
+
+<p>どんな些細な形でも良いのでコミュニティ活動に関われば、きっと将来いろんな思わぬ形でそれ以上リターンとして還ってきます。今の自分を（技術的にも仕事的にも）支えてるのは、振り返ればそういった活動から生まれた結果・繋がりだったりするので、是非皆さんにも体験して頂ければなと。（別にそれ目的で関わる必要はなく、むしろプロセス自体が面白いので、そんな事忘れて楽しめば良いと思います）</p>
+
+<p>そして、その繋がりが国を跨いで世界各国まで拡大すればきっと見える景色や可能性も違ってくるでしょう。</p>
+
+<p><img src="https://lh3.googleusercontent.com/ESz5C1v0gyEdGI3Tbj3OOrfnttQorWP9Ot7ZlbK-BqgTh3Hn6jtuQY55osrz3J6evqhKwT0GCwtwx12Tw0TPtCc1xUBTJsd51-9uLxn0zhT7yJBxoSnx7D9Ah2kt5HBsQetPk1GauQ=w514-h318-no"></p>
+
+<p>世界中に広がっていくDaysの予定地！</p>
+
+<h2>Serverless Days JAPAN</h2>
+
+<p>というわけで今年は日本でServerless Confではなく、方向性を変えてServerless Daysを開催します。スピーカー、スタッフ、スポンサー大募集なので、是非とも協力をお願いします！東京・福岡の2都市開催で秋頃開催予定です！</p>
+
+<p><div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">日本でServerless Daysやる為にグローバルチームに入った！</p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/1098937621596655616?ref_src=twsrc%5Etfw">February 22, 2019</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="en" dir="ltr">Yay, ServerlessDays Japan just announced by <a href="https://twitter.com/ijin?ref_src=twsrc%5Etfw">@ijin</a> - if we need an excuse to visit Japan!</p>&mdash; ServerlessDays Hamburg (@ServerlessHAM) <a href="https://twitter.com/ServerlessHAM/status/1096415586240921601?ref_src=twsrc%5Etfw">February 15, 2019</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div></p>
+
+<h3>Slides</h3>
+
+<p><script async="true" class="speakerdeck-embed" data-id="9adad8a7ea0d4066bf36d0f2ee1d424c" src="//speakerdeck.com/assets/embed.js"> </script></p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[AWS re:Invent 2018に参加してきた]]></title>
+    <link href="http://ijin.github.io/blog/2018/12/27/aws-re-invent-2018/"/>
+    <updated>2018-12-27T17:33:00+09:00</updated>
+    <id>http://ijin.github.io/blog/2018/12/27/aws-re-invent-2018</id>
+    <content type="html"><![CDATA[<p>AWS re:Inventの参加記録。かれこれ6回目。</p>
+
+<p><script async="true" class="speakerdeck-embed" data-id="96f7171d83eb429091394cc5fb6f07ec" src="//speakerdeck.com/assets/embed.js"> </script></p>
+
+<p>今年も広かった。本当に広かった。。</p>
+
+<p><img src="https://lh3.googleusercontent.com/TcLThxIp2p9nOxnsNIOsJE9UUYKJ_MLsaa6f8yRDvVFNYySCFF4EsYuptDngfskkVivpCfR_75VItEDYygPFwlFSX3Qe6kRq1dhNJV5SqwNT4pv4RssEsbN10aIdUiQx1AFlWEdH0w=w521-h391-no"></p>
+
+<h2>Game Day</h2>
+
+<p>Microservicesというテーマで昨今の潮流に沿ってる感じで非常に楽しめた。</p>
+
+<p>今年は短く4時間になっていて、2回開催。またWernerのキーノートと重なって、意識を拡張しながらの作業だった。</p>
+
+<p><div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">Werner映った！聞きながら作業出来る。 <a href="https://twitter.com/hashtag/reInvent?src=hash&amp;ref_src=twsrc%5Etfw">#reInvent</a> <a href="https://t.co/E0hDci6Mjy">pic.twitter.com/E0hDci6Mjy</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/1068181345363386371?ref_src=twsrc%5Etfw">November 29, 2018</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div></p>
+
+<h2>Security JAM</h2>
+
+<p>難易度によって課題がレベル分けされていて、それをチーム内で分けてクリアしていくゲーム。Security Forensics的な要素が面白かった。</p>
+
+<p><img src="https://lh3.googleusercontent.com/OA0z6EqWe45eS-es3qQP359heJG-SW8UntHvEGaIQJLEoAuu1BViwXUWAEt_DUx4zcC2qu9Lpm7GX0GPP72f0ntQzKxDpzCkbw29PAVsOERsqSub1C5gkRCjAORK-tg9INOlDxwmPw=w588-h203-no"></p>
+
+<p><div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">Security Jam楽しかった。 <a href="https://twitter.com/hashtag/reInvent?src=hash&amp;ref_src=twsrc%5Etfw">#reInvent</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/1068292529236267008?ref_src=twsrc%5Etfw">November 29, 2018</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div></p>
+
+<h2>Hotel</h2>
+
+<p>今回はJAWS-UG関西の仲間と共に穴場的ロケーションから鑑賞。</p>
+
+<p><div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">始まった！今年も部屋で優雅にストリーミング。 <a href="https://t.co/aTkhQ1SyKg">pic.twitter.com/aTkhQ1SyKg</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/1067811238082633730?ref_src=twsrc%5Etfw">November 28, 2018</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div></p>
+
+<h2>Keynotes</h2>
+
+<p>以下、気になった発表だけ抜粋。</p>
+
+<p><div class='embed tweet'><blockquote class="twitter-tweet"><p lang="en" dir="ltr">Firecracker!? <a href="https://t.co/JUSt1KkPXw">pic.twitter.com/JUSt1KkPXw</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/1067281869949947904?ref_src=twsrc%5Etfw">November 27, 2018</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="en" dir="ltr">AWS Blog: &quot;AWS Ground Station – Ingest and Process Data from Orbiting Satellites&quot; <a href="https://t.co/GsB6Gxwhh8">https://t.co/GsB6Gxwhh8</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/1067510243851145217?ref_src=twsrc%5Etfw">November 27, 2018</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="fr" dir="ltr">Transactions!!!? <a href="https://twitter.com/hashtag/reInvent?src=hash&amp;ref_src=twsrc%5Etfw">#reInvent</a> <a href="https://t.co/lZRzZqOOBg">https://t.co/lZRzZqOOBg</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/1067535680668987392?ref_src=twsrc%5Etfw">November 27, 2018</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">DynamoDB Read/Write Capacity On Demand。便利便利 <a href="https://twitter.com/hashtag/reInvent?src=hash&amp;ref_src=twsrc%5Etfw">#reInvent</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/1067828759523282944?ref_src=twsrc%5Etfw">November 28, 2018</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">時系列DBきた。 Amazon Time streamか。<a href="https://twitter.com/hashtag/reInvent?src=hash&amp;ref_src=twsrc%5Etfw">#reInvent</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/1067829622203531264?ref_src=twsrc%5Etfw">November 28, 2018</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">やっぱ台帳だ。Amazon Quantum Ledger Database (QLDB) <a href="https://twitter.com/hashtag/reInvent?src=hash&amp;ref_src=twsrc%5Etfw">#reInvent</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/1067831552418017280?ref_src=twsrc%5Etfw">November 28, 2018</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">Amazon Managed Blockchainきた！ Hyperledger FabricとEthereum対応 <a href="https://twitter.com/hashtag/reInvent?src=hash&amp;ref_src=twsrc%5Etfw">#reInvent</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/1067831857264250880?ref_src=twsrc%5Etfw">November 28, 2018</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">AWS DeepRacer 何に使うんだ！？<a href="https://twitter.com/hashtag/reInvent?src=hash&amp;ref_src=twsrc%5Etfw">#reInvent</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/1067843490309013505?ref_src=twsrc%5Etfw">November 28, 2018</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="en" dir="ltr">Amazon Personalize <a href="https://twitter.com/hashtag/reInvent?src=hash&amp;ref_src=twsrc%5Etfw">#reInvent</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/1067847520653438976?ref_src=twsrc%5Etfw">November 28, 2018</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="en" dir="ltr">Amazon Forecast! GAだ！ <a href="https://twitter.com/hashtag/reInvent?src=hash&amp;ref_src=twsrc%5Etfw">#reInvent</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/1067848559448313856?ref_src=twsrc%5Etfw">November 28, 2018</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">AWS Outposts - AWSをオンプレで？？？ <a href="https://twitter.com/hashtag/reInvent?src=hash&amp;ref_src=twsrc%5Etfw">#reInvent</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/1067851681772126208?ref_src=twsrc%5Etfw">November 28, 2018</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">Ruby for Lambda!!<br><br>長年の夢がついに。 <a href="https://twitter.com/hashtag/reInvent?src=hash&amp;ref_src=twsrc%5Etfw">#reInvent</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/1068204942257602560?ref_src=twsrc%5Etfw">November 29, 2018</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">Lambda layerによって開発の仕方が結構変わるぞ。共通ライブラリ嬉しい。 <a href="https://twitter.com/hashtag/reInvent?src=hash&amp;ref_src=twsrc%5Etfw">#reInvent</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/1068206219444158464?ref_src=twsrc%5Etfw">November 29, 2018</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div></p>
+
+<h2>re:Play</h2>
+
+<p>DJは2014年以来、2回目の<strong>Skrillex</strong></p>
+
+<p>場所は参加者が増大したので少し離れた場所にあるLas Vegas Festival Groundsにバスで移動。</p>
+
+<p><div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">Skrillex再びか〜。 <a href="https://twitter.com/hashtag/reInvent?src=hash&amp;ref_src=twsrc%5Etfw">#reInvent</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/1068213541591670784?ref_src=twsrc%5Etfw">November 29, 2018</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div></p>
+
+<h2>まとめ</h2>
+
+<ul>
+<li>lambdaのruby対応やっと来た</li>
+<li>Outpostsでオンプレまで攻めてきたか</li>
+<li>Ground Station！？衛生基地局？？？</li>
+<li>広すぎて会えなかった人達がチラホラ</li>
+<li>シルク・ドゥ・ソレイユのMystreは感動した</li>
+</ul>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[ルワンダのTransform Africa Summit 2018に参加してきた]]></title>
+    <link href="http://ijin.github.io/blog/2018/06/16/rwanda-transform-africa-summit-2018/"/>
+    <updated>2018-06-16T13:15:00+09:00</updated>
+    <id>http://ijin.github.io/blog/2018/06/16/rwanda-transform-africa-summit-2018</id>
+    <content type="html"><![CDATA[<p>記憶が風化する前に記録を。</p>
+
+<p>先月、たまたまアフリカに行く機会があったのでその時期に行われていたルワンダの<a href="https://transformafricasummit.org">Transform Africa Summit</a> (TFA)に参加してきました。今回はコミュニティ仲間の<a href="https://twitter.com/yoshidashingo">@yoshidashingo</a>さん、<a href="https://twitter.com/horike37">@horike37</a>さん、<a href="https://twitter.com/jkudo">@jkudo</a>さんと共に（私だけ南アフリカより現地集合）行動を共にしました。</p>
+
+<h2>Rwanda?</h2>
+
+<p><img src="https://lh3.googleusercontent.com/WwGNubqwywVQk_cqRrZerHIOhzjLqDd_oaN5kgTQ8L_Dv-98dNLSNQEIRB4utbBFMvw78ZTxK2CV94kGuEWntJWdqO8AYeplqTHbicj6bAOlikUFRZMUHrSxHTqW9TbKyciGdmjaNQ=w363-h374-no"></p>
+
+<p>そもそもなんでルワンダに行こうという事になったと言うと、IT立国を目指していてアフリカのシンガポール的な位置づけになろうとしていてテック系のスタートアップが多く立ち上がっていて気になったからです。中でも有名なのが道路が未整備な農村地区の病院にドローンで血液を空輸する<a href="https://flyzipline.com">Zipeline</a>やDMMが買収した<a href="https://hehe.rw">DMM Hehe</a>があって面白そうと感じたからです。</p>
+
+<p>汚職が少なく治安もよく、テックスタートアップの為に法改正までするルワンダを見てみたいなって話してた所にちょうどTFAが開催されるで行ってみようという流れでした。</p>
+
+<p><img src="https://lh3.googleusercontent.com/AtWGR__GEnPFIriT0sJghKnGxVAfayapa5dA8cpnasEXZSOyXG2bsTURCD9v8suFHcG9NWusfXcWoxDooqS3zawWmqyRqp5Hqd_oCwgwlpwOAKzi40pH0PSpVVxkTwAtJ4uwgLpnRA=w614-h468-no"></p>
+
+<p>紙幣。教育とITに力を入れているのがよく分かる。</p>
+
+<p><img src="https://lh3.googleusercontent.com/rNJfaiMaVM0lTRz3GkJCz8QoA7ywVWKwGOtKy4OgYmQ2cs1XuqNBM7cAanijGvpR3W0suHLUK8lv5nXlbiHIKstSm4G1ZGbI7XERbaExdJ0cG5y4wZ1U7aBgRzbV_FH_5tOKeTTrDg=w560-h746-no"></p>
+
+<p>首都キガリの中心にあるカンファレンスセンター。モダンな感じ。</p>
+
+<p><img src="https://lh3.googleusercontent.com/oVpcWJm1QfkVnAbsvmMS4_ZTAvClYUTKAl7WmIJKDQQuK3v2E7FBxyErA9w_hOQeOGBw517cK_zHND3mLZ5zztgldB_WTpTC5x4SJJG-3DxsIvIZifBfO4uMZPMSR-FJX30zVIO1XQ=w527-h702-no"></p>
+
+<p>少し外れるとまだまだ発展途上感。</p>
+
+<h2>Transform Africa Summmit</h2>
+
+<p><img src="https://lh3.googleusercontent.com/Gu3eL9tWaCql2rDP1EA6w-9mmn3QpVztOHFZBTg03PdY1PEovjd6ER9RmF_mSDtTpfq5WEnq8U9_yIegzAINdioH8YTSf3wfkRgLOIbPXqUi3WNTaXG4c2_TzMEL11gjwh1ucONvAQ=w560-h746-no"></p>
+
+<h3>250 Startups</h3>
+
+<p>日本のJAICAが支援しているスタートアップのインキュベーションプログラム。</p>
+
+<p>うーーん。拍子抜け。皆さんプレゼンがお下手で、ビジネス戦略やそもそものマーケット分析が全然ダメダメで正直小学生の宿題みたいな内容でした。。水漏れ検知システム、節電システム、自動卵孵化装置等。。もっと世界の勉強が必要なんじゃないかと。</p>
+
+<p>後で知ったのが、250チームからの選抜だと思っていたら最初の8チームでした。この先大丈夫だろうか。</p>
+
+<h3>Face the Gorillas</h3>
+
+<p>マネーの虎みたいなピッチイベント。こちらはより洗練されていて面白かった！</p>
+
+<p><div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">Transform Africa Summitでマネーの虎的なピッチイベントはFace the Gorillasという。アフリカ人的にゴリラは強い存在なので表現的に問題ないらしい。 <a href="https://t.co/A1IaWzuC8R">pic.twitter.com/A1IaWzuC8R</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/994100875525328896?ref_src=twsrc%5Etfw">May 9, 2018</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div></p>
+
+<p><div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">昨日の250 startupsのピッチは小学生の宿題感があったけど今日のゴリラの方は洗練されてて良い。質疑応答もはっきりしてる。</p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/994104818221371392?ref_src=twsrc%5Etfw">May 9, 2018</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">Angolaに続きChadからのピッチ。国々の位置とか全く知らないけど。 <a href="https://twitter.com/hashtag/TAS2018?src=hash&amp;ref_src=twsrc%5Etfw">#TAS2018</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/994109927546343425?ref_src=twsrc%5Etfw">May 9, 2018</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">セネガルの人はフランス語で話し出した。椅子にあった通訳機はこの為か。　<a href="https://twitter.com/hashtag/TAS2018?src=hash&amp;ref_src=twsrc%5Etfw">#TAS2018</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/994118712599904257?ref_src=twsrc%5Etfw">May 9, 2018</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">BitcoinやICOのオファーが出たw<br>　<a href="https://twitter.com/hashtag/TAS2018?src=hash&amp;ref_src=twsrc%5Etfw">#TAS2018</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/994119742129664000?ref_src=twsrc%5Etfw">May 9, 2018</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">最後の若い女性起業家の教育に対する取り組みが熱かった  <a href="https://twitter.com/hashtag/TAS2018?src=hash&amp;ref_src=twsrc%5Etfw">#TAS2018</a> <a href="https://t.co/rUQ9loZGU7">pic.twitter.com/rUQ9loZGU7</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/994124448688234496?ref_src=twsrc%5Etfw">May 9, 2018</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div></p>
+
+<p><img src="https://lh3.googleusercontent.com/sE8Xl_cZe26S3TqPdA3H9XYroGsOI3L9HgJev4FGXTLxm7YL0jHd_rv7zFbt1wh2UHGTE0z5kK_bq-_ubghupgWi3sslNBOA1Zr3VH4orNBCxgaeD9rdRYn6WDMnC13PxS5GhN0V-w=w560-h746-no"></p>
+
+<p>最後の女性が一番パッションを持ってビジョンや取り組みを語たり、全員から出資やメンタリングのオファーが出てきて感動。</p>
+
+<h3>Blockchain</h3>
+
+<p><div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">ブロックチェーンに関するパネルディスカッション <a href="https://twitter.com/hashtag/TAS2018?src=hash&amp;ref_src=twsrc%5Etfw">#TAS2018</a> <a href="https://t.co/yafmwGFEw2">pic.twitter.com/yafmwGFEw2</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/994160492523479040?ref_src=twsrc%5Etfw">May 9, 2018</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">コバルトの採掘に子供の労働が使われてない事をブロックチェーンで追跡するカナダの会社の話 <a href="https://twitter.com/hashtag/TAS2018?src=hash&amp;ref_src=twsrc%5Etfw">#TAS2018</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/994161934307033088?ref_src=twsrc%5Etfw">May 9, 2018</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+<div class='embed tweet'><blockquote class="twitter-tweet"><p lang="ja" dir="ltr">薬を取扱うスタートアップだから偽薬予防やトレーサビリティーにブロックチェーンが適用出来そうって事か。なるほど。　<a href="https://twitter.com/hashtag/TAS2018?src=hash&amp;ref_src=twsrc%5Etfw">#TAS2018</a></p>&mdash; Michael H. Oshita (@ijin) <a href="https://twitter.com/ijin/status/994121155106754560?ref_src=twsrc%5Etfw">May 9, 2018</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div></p>
+
+<p>インフラが未熟や信頼できない国ではブロックチェーンによって信頼を分散させる方がより堅牢なシステムになるのはなるほどなぁという印象。コンテキストにうまく当てはまれば価値が発揮されるケースがあるんだと改めて理解。</p>
+
+<h3>その他</h3>
+
+<p>参考までに同行者仲間のブログはこちら</p>
+
+<ul>
+<li><p><a href="https://yoshidashingo.hatenablog.com/entry/rwanda">ぼくらがルワンダに旅に出る理由</a></p></li>
+<li><p><a href="https://bit.ly/2XoU6uA">ルワンダへ大人の修学旅行をしてきました</a></p></li>
+<li><p><a href="http://level69.net/archives/25489">ルワンダ旅行記 – ICT立国を目指す国で見てきたもの</a></p></li>
+</ul>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[ServerlessConf Paris 2018で発表してきた]]></title>
+    <link href="http://ijin.github.io/blog/2018/02/22/serverlessconf-paris-2018/"/>
+    <updated>2018-02-22T02:29:00+09:00</updated>
+    <id>http://ijin.github.io/blog/2018/02/22/serverlessconf-paris-2018</id>
+    <content type="html"><![CDATA[<p>既に世界数カ所の都市で行われている<a href="http://serverlessconf.io">ServerlessConf</a>がフランスのパリで開催されるという事でCFPに応募したら通ってしまったので<a href="http://paris.serverlessconf.io/speakers.html">発表</a>してきました。75個の応募の中から選んで頂いて光栄ですね。</p>
+
+<p>タイトルは<strong>Accelerating DevOps with Serverless</strong>で、DevOpsを手助けする為にServerlessを使って解決したストーリーや仕組み。</p>
+
+<p><script async="true" class="speakerdeck-embed" data-id="b0bc56c91fa54b1eadde7e7d2b5c169f" src="//speakerdeck.com/assets/embed.js"> </script></p>
+
+<hr />
+
+<p>内容としてはシンプルでgithubのbranchに応じて、テスト環境用のECSクラスタ内にrandom portでALBにtarget group, listenerを割り当ててservice作ってコンテナを配置するだけです。branch delete時にはtaskを停止し、逆順に削除していきます。通知はSNSでslack等へ連携可能。</p>
+
+<p>少し特色があるとすれば、serviceを作成したりtaskを停止するのにかなり時間を要する場合があるので、単一のlambdaではなく<a href="https://aws.amazon.com/step-functions/">step functions</a>で制御した事ですかね。今回、<a href="https://serverless.com">serverless framework</a>の<a href="https://github.com/horike37/serverless-step-functions">step functions plugin</a>のおかげで<a href="https://docs.aws.amazon.com/step-functions/latest/dg/concepts-state-machine-data.html">state machine data</a>をjsonで書かなくて済んだので作者の<a href="https://twitter.com/horike37">horike</a>さんには感謝です。</p>
+
+<p><img src="https://lh3.googleusercontent.com/FdRvgy-OwOnIN0ouQWsNV-JeiBURfOujH49arMUpqkCZZTBnYRcpUTuO1xwc4fvHQqCcgzDpyWIe-yUkMh55_GUGMJaotRqhjdj7QfVi7dBv4UyJOF9A4WCggIlouYDDtCxHujluaw=w600-h346-no"></p>
+
+<p>発表した内容のモノは現在、複数プロジェクトで使えるようになるべく汎用的な作りにして<strong>ECS deity</strong>として公開しています。参考にでもなれば。</p>
+
+<p><a href="https://github.com/ijin/ecs-deity">https://github.com/ijin/ecs-deity</a></p>
+
+<p>尚、GitHub eventによる自動デプロイだと毎回煩わしい場合もある（特定のbranch prefixが対象であるにせよ）ので、slackによるchatops手動デプロイも実装中です。</p>
+
+<p>と、まあやってる事はそんなに難しくないので、海外カンファレンスのCFPがあれば誰でも気軽に応募してみると良いと思います！</p>
+
+<h3>Afterthoughts</h3>
+
+<p>やはり、serverlessだとログ周りが様々なCloudWatch logsのlog streamsに分散（api gw, lambda, step functions）しているので、トレーシングがしんどかったりしたけど今回のConfで何度も取り上げられたトピックが<strong>Obervability</strong>だったので皆同様に苦労しているんだなぁと感じました。ブースにもその解決に取り込もうとしている企業がいくつかいたので、今後に期待ですね。</p>
+
+<p>この辺は一緒に行った<a href="https://twitter.com/yoshidashingo">yoshidashingo</a>さんが<a href="http://yoshidashingo.hatenablog.com/entry/serverlessconfparis18">ブログ</a>でよく考察してくれています。</p>
+
+<p>後、Keynote Speakerの<a href="https://twitter.com/theburningmonk">Yan Cui</a>さんのトークが重厚で実に素晴らしかったのでYouTubeに上がったら是非観てください。内容もテンポもスライドも勉強になります。</p>
+
+<h3>最後に</h3>
+
+<ul>
+<li>海外カンファレンスだと世界中からのエンジニアと話せるので非常に良い刺激になりますよ（可能なら発表を！！）</li>
+<li>2月のパリは寒い！行くなら観光客が少なく暖かい6月をオススメされた</li>
+<li>ご飯はどこ行っても美味しい！</li>
+</ul>
+
+
+<p><img src="https://lh3.googleusercontent.com/vcaTvpcnns1YSEmeRfwgBG3Mtsgfv_dJC0UgksXLE7usl7y4lInNrkJKiRkrsPUwdkkby8zrxs-wIZhSngHL7kQlg3c6tSd1HRG849GzQdnXFlYB1FHtu4_Pb9wVYANNR-NffEBshw=w675-h900-no">
+<img src="https://lh3.googleusercontent.com/HFNnHhADFLYTxW1V5qyUqRtr762bCGbeDsCBXbt6Lov_W1tSBAWrlp96IEWFt2hj6WTFa70R6nIVlGiGUq-RDVSOuRBpH3u0zkEQ5RtrVVYjmAAoJdbC9qQOCCjJg4cH2oZ2GK1TZw=w675-h900-no"></p>
+
+<p><div class="embed-video-container"><iframe src="http://www.youtube.com/embed/qcKKwuVJQPk "></iframe></div></p>
+]]></content>
+  </entry>
+  
+</feed>

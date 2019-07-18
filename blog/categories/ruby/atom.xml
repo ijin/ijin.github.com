@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: ruby | @ijin]]></title>
+  <link href="http://ijin.github.io/blog/categories/ruby/atom.xml" rel="self"/>
+  <link href="http://ijin.github.io/"/>
+  <updated>2019-07-18T23:02:25+09:00</updated>
+  <id>http://ijin.github.io/</id>
+  <author>
+    <name><![CDATA[Michael H. Oshita]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[ruboty-github_pr_releaseを作った]]></title>
+    <link href="http://ijin.github.io/blog/2017/03/27/ruboty-github-pr-release/"/>
+    <updated>2017-03-27T03:23:00+09:00</updated>
+    <id>http://ijin.github.io/blog/2017/03/27/ruboty-github-pr-release</id>
+    <content type="html"><![CDATA[<p>よくプロジェクトで<strong>staging</strong>や<strong>production</strong>ブランチにリリース用のpull requestを送ってmergeする事でCircleCIが走って自動デプロイするような仕組みを入れているんだけど、いちいちGitHub上でポチポチ画面を押すのが面倒くさいのと、久しぶりにやると<code>base</code>や<code>compare</code>とで混乱しそうになるので、ChatOpsを導入して効率化してみました。</p>
+
+<p>Slackと連携できるボットには<a href="https://github.com/r7kamura/ruboty">ruboty</a>を選択。</p>
+
+<p>プラグイン周りでは<a href="https://github.com/r7kamura/ruboty-github">ruboty-github</a>があるけど、微妙に要求に応えれなかったので少し拡張した<a href="https://github.com/ijin/ruboty-github_pr_release">ruboty-github_pr_release</a>を作りました。久々のgem公開。</p>
+
+<h2>Install</h2>
+
+<p><code>ruby Gemfile
+gem 'ruboty-github_pr_release'
+</code></p>
+
+<h2>Release pull request</h2>
+
+<h3>create</h3>
+
+<p>pull requestを作成。それまでmergeしたfeature branch等のタイトルが集約される</p>
+
+<p><code>bash
+ruboty release from &lt;org/repo:from_branch&gt; to &lt;org/repo:to_branch&gt;
+</code></p>
+
+<p><img src="https://lh3.googleusercontent.com/Maeofoz1VcZ_l4dHbiFC9UESHCYg_oJ7NQYgyzsSkDMTTgjm3wFXOpxYMbJCfJ5smE4xOZ1ibTBLIlftaehZP9vAAxiCONthjxq<em>-g83bVSWpi7-GygWY0V-5_n4F59w5BQYTETWPdR3uOg02uHf-YC4ZywaVoslTtA_TjpmzbOgD83uyWbEp50fv5K4opeMZ5Izxxlln_00PE3SLTw9S_mv47oOrTYejPr1pBBS-AT4j7uTFe-8ttvm4OxLq2r6D7G6XFPQYkeJPv5GmHEUIYzNJRITussv5v9Mrg21cDHojiasmZIZ-dW_Zp84kegBza8_BmqicXIPdiofe8T7BD6bqalWYhL2nZikQR1mCRqCSCFFLAFsBFgCMTNrwQuiGCjMF7jbu9knab3SY0pTDU-</em>daW90yh-1fH6C61IbaMlrcL1Zz3QH-63s61Psdi50ULKieXgS0H9L0dv_hf6VjdnNO3EqxHsxRLmDkvH6w93IXaa925pFSF8pKQbFwPxmo5xilZT2QA48JDMiBPjOhes1ECAn7gsqdbAVE4Qjbjwjo2DMdrpAwcBUTk_XHtI5tKmXtsOH9Ux-9PeCqyKhYV8ovcZpVUIE0p4GUhSe12Ubz7vvpyJdtk3cAhduKLWAlbTkQvCsiyng7iTDVVoGEgP0Lf0PCSHBUgV=w690-h341-no"></p>
+
+<p><img src="https://lh3.googleusercontent.com/k9nSfgSE2UGJdSmbYFwFiA3c2_hfdFQeVH2ODGuGz_a8n55jn7KQF6PHAAbYVIA9UO9CJz4PCBJMcP5nqC7TIsAW7TpUgy95DfrdlCsGgpT0bmH8WVKN-wBQgkQbV4g5GyJSCnUYQtXMZ68KQ2-742cHZjD71ZvzSWmCQVIcpDetVcYVvAMvvZmAq6bYAHL2mrsdLaPhA8ghLe-yQBa5mzU93Z-9F4JlsIZJnDDVKweOdnbVb0Hvz2_LKmtFIAZVuitG-FIYpHlipFspT9A7cxgmoUsun_bk1sjz6G62ME47yJ8TreJXgy541VubqorxNpw_oxh7fmY4yfHV-NPee6ir_Gh8XiBUUfwnwmJlcH9XakKYJIiSG2N4rNO4IQEruJGbGF3xtZBbLr6B-FS1i6Hbyu3b00Oll9gOpMe4-3lVjhdLj_mvSXnsqEfFAZiFxxsCZMzRVf1EaaZz4pnJESH8I-jsDhvPbZjG17URM462tDrKhPPMqxLlIIrvToOfOm6WE6VgmaRamU9qNvkNkdbT7D40QMZtNv6oQPefCCi3sGvVupA9rRYMgSjkxIsjB54143O4neWF0i8m-3b_DDUhSSENbcY65JsfpjeN69QoQc1m_6xYMwyUZrLSlgjKUU9WGbEF_JuKf4vlJjyl5iEw7S-eSqPFXyVE=w788-h323-no"></p>
+
+<h3>update</h3>
+
+<p>pull request作成後に新たなコミットを取り込む時やタイトルを変更したい時</p>
+
+<p><code>bash
+ruboty update release from &lt;org/repo:from_branch&gt; to &lt;org/repo:to_branch&gt; as "new title"
+</code></p>
+
+<p><img src="https://lh3.googleusercontent.com/lBtqLfDzm-i0Fx2gmgFLf5kqCLggaHcoWYIHz3Gc8V-gkEAVAHnYUqUHPyD3qIrZDPf0aqK_iMooTu1lqqNodLO48Kz-4TINxSjJ55odD2D2efC5Q7FKp7F1hf9ZsUqg3lwjRe0SXZjqpn_tdGU6Aj8sT6dFHneCwGLdvpIk4CeeMvqpMCK1jcVMIg2bIexqzL2WXB8UqCnUN7X5guuYXOiwujAqpMHcR7ksTAkCJQ-jqlgN2J<strong>HsA_nAZRmkraosxx6wedZW6</strong>xfoFE0pKeqYMAKxLFKyZf-KNHqeu6929EiBNlMYjJbvzQcSP8LFS274EhbvJj9kEgVZ_b9q0n9wRatYS9l4riIwXJUpJu4LqAadR9RPg57t_o1Gk6bCOP0--QHcAwii7VahP8pJGfqE-AWU3BKvCi9CWHhtbFjfXIMgNJVVjuH7NiskyO2Gv-Q5Nw2XsJOOwNZpcFGBgBIgmimOvbgP65AMCNRTwCuM4cHWBksEdxHDYtIKKyZgHxbNfpZ96bbWimVatU03b3rp9-v7NNnfGpo3dYFfLmkzyoxht80N6PrY-z9eWIXAluqNPHL0Hoo6GpyZ_DPJQDGV3fgLpFa5qq6G-bAU6CoOy-PTMdwLfk1mT-X2Qb4cFkTkP5_fam-K-a7648ieTLesk6u-tO3shqSO=w716-h173-no"></p>
+
+<h3>deploy</h3>
+
+<p>pull requestをmergeしてデプロイ</p>
+
+<p><code>bash
+ruboty deploy release from &lt;org/repo:from_branch&gt; to &lt;org/repo:to_branch&gt;
+</code></p>
+
+<p><img src="https://lh3.googleusercontent.com/3FgcgasCewgjRRRVwbFyxqTAaLyjmVR0R0pJEg7j6YmG00AIuvfvWLb86XptuQrPf2WvKcgmWZASqNJXhRvyW2Pwe60MSDlIFX-RLVKfw5VsTOJdvZ1skig0n5xLlr5RvkLjxCNRvaa9EHQwp78olWdlL4UIL5z1YJswu4UVFQrG1AAaP_neCEwckXzEV68kU4p0J-OSYiH2w-69_x2-46Rpdo-mgwaHsq8gMYU7E6N2pv5lIGnFjQVWXBMh6Ct4zq5XsDQ_Y59pf29TXujZwrRm960DcbYWG2_eEW4A73jLhLfZOBJja-wBnzdi-lHtj_cbGKyfZ2uyKZMuZ1hZOgtXV9WraCYZltMBR1Rx_aU9Aeod-FFh_z223N4Yv77G76rylZBb-KPJ9yoXDPMq4bvpYp64ovcsaeP1BzACOHwNtExXxmj33KDW5U_OhBTTAVSnmiv9jHPwyJvjbtaPHHWZCBACOmgY9U4kSWHyMvzlEmDucq84CVEZiAAbUt_Q8BCluz22qOvuJ0b7LYQj3vMnoYFXg43Qlzgegmc1LNtaApAqIXEao4H8u7KM-iAUhL65DfrMGwhM4uqIKJ-IFOZ-6Yq5R5JX2khonzSbb82gbjLRyOwaCVipOZAYgBoJRphEBV1n3duHWZR0DLU3rlro2BdSAqLUJp7h=w661-h329-no"></p>
+
+<h3>alias</h3>
+
+<p><a href="https://github.com/r7kamura/ruboty-alias">ruboty-alias</a>や<a href="https://github.com/zeny-io/ruboty-scoped_alias">ruboty-scoped_alias</a>を使うとさらにコマンドを短縮して便利です。scopedにすると部屋毎にプロジェクトを割り当てたりも可能。</p>
+
+<p><code>bash
+ruboty scoped alias release production -&gt; release from ijin/test:staging to ijin/test:production
+ruboty scoped alias deploy production -&gt; deploy release from ijin/test:staging to ijin/test:production
+</code></p>
+
+<p><img src="https://lh3.googleusercontent.com/o-8Ft9YoejCyQC6xtFH1B49rE9Ch9c0eDnV0Ax8YbbG3yn7GQ-vsXu_9spPY8r_kWK3edUSqmFWcmOuMopiAy4WX20Hx50_phtBNUC0CR3ojEF2Vl1ylagOUp0rPb10N0JLIH3Bg3a5A2aXliL_SOcVoHBvjK7tgwJFMrBtOomzmDrA9mvlwLplNgoQq_00siqasIVU4uyHexrHCLx5iB1bHsIMJQS1f_gkFYyWHjho8lBGKH8xBoayrkRv2APmTXfwYkPGFnSAwnc9XnNI_ABx64rQzHgIWTYMPt_1Bn-VDNlVtlo0Zg0ew7ZWS1zn1wHHNfb6oNxStMAI9dfPeQLZTkBxOPxkwWIvByYUEq_C6J63VZwYkG511DSMYPxfgC7AKDTU3CPKadcER5lkK7V5hmIRe1ZivzZsTXi3leJyAslQMYem1GPBGD8DbEddrldt6S8uLq2L8cDiDMGh7j9_y-Ctb3TwruuN5512TEmCyToLUsDOszrj9ByjSQ0jup2e8_QMIkb9OWFzozyUX-lAesx57ZXf42JiD2HGELkJ5ko-iQWNLjoUIbRnJJZ--laTB55dTdGYHIAmE6rJhq1T8AtTqNKLdrL8GLN5I9Wu4bs_Jzc4HZj2cTx5Onw3_8MCM8UXO9M_Sxsq75KsoEUNNvAq-IIF5afkm=w681-h343-no"></p>
+
+<p><img src="https://lh3.googleusercontent.com/AkKCJiYbkN2l0vDZ_YxZzisxTbq3z-hXWpZ1OOdR7g6WVQKs9X9CYAZv3yoYBACPcWPpumaIkE_q9enlrag9HoPk9tiR1XjsxTLRZarcldX9QXdgSYwXUdvugVn1oVphGvYxiw63HnsvjUiQM76Sywq8DGMCTEVb4U0GvW99vQ-D9M18jNmf-wbUeZifM_UpFRIDADuWpxzEr_rcBfv5DkElBfQagz9iYO1Aw5KttM4P6PHA0qowrWnkjBTku47rkgitxgRLHGpb4CFJAfSu2IT1ICxOLEfEB-coo97U6aAWInSHIut3RWCVB0B8lzYq466l9XlqY3dcNEOHfQVTUZvuRsPBwBFVdELGvcKjeVsQl1Fxw_p0bpWrti2W3xmaKSWylcFGPc6f6ag2T6Vn8bc26TA7OWO7lGRZTMsCeJJ1q3nKcaUNzP1SvCVn2Y_9oW_mZc7wtRnalnxt-eYnzv6jDt1c2ryzhWTNLXFEVlRfuaPd7SNx0eYZdHBs0dK9dTjeu5UUDDkSJbxx2SHcv7ok5LsheYuO481Hk4q_61RYjCfKWlC2qtSYOTnHkYZ88doCipbkAsshRWmBzu_RTXHv5WibEP36WZ1NucCNiemtin1Ze7qRYuRX9mzPxIs5Pz2uP9Omg-xUqfpZALxaZqwiVVX7bhZmckFP=w658-h334-no"></p>
+
+<p>簡単！</p>
+
+<h2>注意</h2>
+
+<ul>
+<li>開発branchにmergeされたサマリーを作成するのでGit/GitHub flow等が前提（直接branchにコミットしない）</li>
+<li>mergeをrevertしてしまうと、branch間の差分が取れなくなるので開発branch（develop等）から修正fixを新たにpull requestとして送る必要がある</li>
+<li>ruboty-githubは個々人で認証をしているので、チャネルではなく、rubotyに対してDMで認証するべき（remember my github token xxx）</li>
+</ul>
+
+
+<h2>参考</h2>
+
+<ul>
+<li><a href="https://github.com/motemen/git-pr-release">git-pr-release</a></li>
+<li><a href="https://github.com/rockuapps/hubot-deploy-builder">hubot-deploy-builder</a></li>
+</ul>
+
+
+<h2>おまけ</h2>
+
+<p>ほとんど作り終えたところでほぼ同じ機能を持った<a href="https://github.com/increments/ruboty-qiita-github">increments/ruboty-qiita-github</a>に気づいたけど、気にせずリリースしちゃった。一応merge周りはこっちの方が若干楽なので。。</p>
+]]></content>
+  </entry>
+  
+</feed>

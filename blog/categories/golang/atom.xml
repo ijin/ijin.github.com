@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: golang | @ijin]]></title>
+  <link href="http://ijin.github.io/blog/categories/golang/atom.xml" rel="self"/>
+  <link href="http://ijin.github.io/"/>
+  <updated>2019-07-18T23:02:25+09:00</updated>
+  <id>http://ijin.github.io/</id>
+  <author>
+    <name><![CDATA[Michael H. Oshita]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Terraformで特定のブランチを使う]]></title>
+    <link href="http://ijin.github.io/blog/2016/03/31/using-terraform-dev-versions/"/>
+    <updated>2016-03-31T16:38:00+09:00</updated>
+    <id>http://ijin.github.io/blog/2016/03/31/using-terraform-dev-versions</id>
+    <content type="html"><![CDATA[<p>HashiCorpの<a href="https://terraform.io/">Terraform</a>の開発は非常に活発であり日々進化していますが、リリースまでに待てない実装中や実験的な機能を使いたい場合は、自分で特定のブランチを変更・ビルドして使えます。</p>
+
+<h3>リポジトリ取得</h3>
+
+<p><code>
+$ go get github.com/hashicorp/terraform
+$ cd $GOPATH/src/github.com/hashicorp/terraform
+$ git checkout new-aws-feature
+</code></p>
+
+<h3>commit hash付与</h3>
+
+<p>どのコミットリビジョンを使っているか簡単に分かるように、versionにgitのcommit hashを指定。</p>
+
+<p><code>
+sed -i -e "s/dev/dev - `git rev-parse --short HEAD`/" terraform/version.go
+</code></p>
+
+<h3>ビルド</h3>
+
+<p>make devすると全pluginやproviderがコンパイルされ、非常に時間がかかる（特に最近は対応範囲の広がりが著しく、生成されるバイナリの総容量が増加傾向）。
+よって、特定のproviderを指定して時間短縮する。以下はaws providerで作業している場合。</p>
+
+<p><code>
+$ make core-dev plugin-dev PLUGIN=provider-aws
+==&gt; Checking that code complies with gofmt requirements...
+/Users/ijin/golang/bin/stringer
+go generate $(go list ./... | grep -v /vendor/)
+go install github.com/hashicorp/terraform
+go install github.com/hashicorp/terraform/builtin/bins/provider-aws
+mv /Users/ijin/golang/bin/provider-aws /Users/ijin/golang/bin/terraform-provider-aws
+</code></p>
+
+<h3>確認</h3>
+
+<p><code>
+$ terraform version
+Terraform v0.6.15-dev - 123abcd
+</code></p>
+
+<p>Happy Terraforming!</p>
+]]></content>
+  </entry>
+  
+</feed>
